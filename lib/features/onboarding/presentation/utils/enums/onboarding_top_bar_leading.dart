@@ -1,0 +1,1 @@
+enum OnboardingTopBarLeading { logo, back }

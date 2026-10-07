@@ -1,0 +1,23 @@
+{
+  "@@locale": "en",
+  "appTitle": "pulse",
+  "@appTitle": { "description": "App name and header wordmark" },
+  "back": "Back",
+  "@back": { "description": "Accessibility label of the back arrow" },
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get started",
+  "alreadyHaveAccount": "I already have an account",
+  "signIn": "Sign in",
+  "onboardingPageIndicator": "Page {current} of {total}",
+  "@onboardingPageIndicator": {
+    "description": "Accessibility label of the onboarding page dots",
+    "placeholders": { "current": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "onboarding1Title": "Share the moments that move you",
+  "onboarding1Body": "Post photos and stories from your day, and see what your friends are up to.",
+  "onboarding2Title": "Swipe through short videos",
+  "onboarding2Body": "Quick, full-screen clips from creators you follow and new ones picked for you.",
+  "onboarding3Title": "Stay close with chat",
+  "onboarding3Body": "Message friends one on one or in groups. Send photos, shorts and voice notes."
+}
