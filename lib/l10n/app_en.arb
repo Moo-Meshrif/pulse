@@ -1,23 +1,264 @@
 {
   "@@locale": "en",
   "appTitle": "pulse",
-  "@appTitle": { "description": "App name and header wordmark" },
+  "@appTitle": {
+    "description": "App name and header wordmark"
+  },
   "back": "Back",
-  "@back": { "description": "Accessibility label of the back arrow" },
+  "@back": {
+    "description": "Accessibility label of the back arrow"
+  },
   "skip": "Skip",
   "next": "Next",
   "getStarted": "Get started",
   "alreadyHaveAccount": "I already have an account",
   "signIn": "Sign in",
+  "terms": "Terms",
+  "privacyPolicy": "Privacy Policy",
+  "comingSoon": "Coming soon",
   "onboardingPageIndicator": "Page {current} of {total}",
   "@onboardingPageIndicator": {
     "description": "Accessibility label of the onboarding page dots",
-    "placeholders": { "current": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "onboarding1Title": "Share the moments that move you",
   "onboarding1Body": "Post photos and stories from your day, and see what your friends are up to.",
   "onboarding2Title": "Swipe through short videos",
   "onboarding2Body": "Quick, full-screen clips from creators you follow and new ones picked for you.",
   "onboarding3Title": "Stay close with chat",
-  "onboarding3Body": "Message friends one on one or in groups. Send photos, shorts and voice notes."
+  "onboarding3Body": "Message friends one on one or in groups. Send photos, shorts and voice notes.",
+  "showPassword": "Show password",
+  "@showPassword": {
+    "description": "Accessibility label of the eye button while the password is hidden"
+  },
+  "hidePassword": "Hide password",
+  "@hidePassword": {
+    "description": "Accessibility label of the eye button while the password is visible"
+  },
+  "stepOf": "Step {n} of 6",
+  "@stepOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "required": "Required",
+  "optional": "Optional",
+  "strengthWeak": "Weak",
+  "strengthFair": "Fair",
+  "strengthGood": "Good",
+  "strengthStrong": "Strong",
+  "passwordStrength": "Password strength: {strength}",
+  "@passwordStrength": {
+    "description": "Accessibility label of the password strength meter",
+    "placeholders": {
+      "strength": {
+        "type": "String"
+      }
+    }
+  },
+  "otpDigit": "Digit {n} of 6",
+  "@otpDigit": {
+    "description": "Accessibility label of one verification-code box",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleMet": "{rule}, met",
+  "@ruleMet": {
+    "description": "Accessibility label of a satisfied password rule",
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotMet": "{rule}, not met",
+  "@ruleNotMet": {
+    "description": "Accessibility label of an unmet password rule",
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
+  "google": "Google",
+  "apple": "Apple",
+  "loading": "Loading",
+  "@loading": {
+    "description": "Accessibility label of the loading indicator"
+  },
+  "offlineTitle": "You're offline",
+  "@offlineTitle": {
+    "description": "Splash: title when the first request failed because the connection is lost"
+  },
+  "offlineBody": "Check your Wi-Fi or mobile data. We'll try again as soon as you're back online.",
+  "@offlineBody": {
+    "description": "Splash: body of the offline screen"
+  },
+  "cantReachTitle": "Can't reach Pulse",
+  "@cantReachTitle": {
+    "description": "Splash: title when the first request failed for another reason"
+  },
+  "cantReachBody": "Something went wrong on our side. Your account is safe — please try again in a moment.",
+  "@cantReachBody": {
+    "description": "Splash: body of the can't-reach screen"
+  },
+  "tryAgain": "Try again",
+  "@tryAgain": {
+    "description": "Button that runs the failed request again"
+  },
+  "signInTitle": "Welcome back",
+  "@signInTitle": {
+    "description": "Sign in: title"
+  },
+  "signInSubtitle": "Sign in to catch up on your feed.",
+  "@signInSubtitle": {
+    "description": "Sign in: subtitle under the title"
+  },
+  "identifierLabel": "Email or username",
+  "@identifierLabel": {
+    "description": "Sign in: label of the first field"
+  },
+  "emailHint": "you@example.com",
+  "@emailHint": {
+    "description": "Hint of an email field"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label of a password field"
+  },
+  "passwordHint": "Your password",
+  "@passwordHint": {
+    "description": "Sign in: hint of the password field"
+  },
+  "forgotPassword": "Forgot password?",
+  "@forgotPassword": {
+    "description": "Sign in: link to the password reset"
+  },
+  "signInButton": "Sign in",
+  "@signInButton": {
+    "description": "Sign in: primary button"
+  },
+  "orContinueWith": "or continue with",
+  "@orContinueWith": {
+    "description": "Divider above the Google and Apple buttons"
+  },
+  "newToPulse": "New to Pulse?",
+  "@newToPulse": {
+    "description": "Sign in: footer prompt before the Create account link"
+  },
+  "createAccount": "Create account",
+  "@createAccount": {
+    "description": "Sign in: footer link to the sign-up flow"
+  },
+  "errorCredentials": "Incorrect email or password",
+  "@errorCredentials": {
+    "description": "Sign in: snackbar when the credentials are wrong"
+  },
+  "errorIdentifierRequired": "Enter your email or username",
+  "@errorIdentifierRequired": {
+    "description": "Sign in: shown under the empty email or username field"
+  },
+  "errorPasswordRequired": "Enter your password",
+  "@errorPasswordRequired": {
+    "description": "Sign in: shown under the empty password field"
+  },
+  "errorTooManyAttempts": "Too many attempts. Try again in {time}.",
+  "@errorTooManyAttempts": {
+    "description": "Sign in: snackbar while sign-in is throttled; {time} is a m:ss countdown",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "errorNetwork": "No connection. Check your internet and try again.",
+  "@errorNetwork": {
+    "description": "Snackbar when a request failed because the device is offline or timed out"
+  },
+  "forgotTitle": "Forgot password?",
+  "@forgotTitle": {
+    "description": "Forgot password: title"
+  },
+  "forgotSubtitle": "Enter the email linked to your account and we'll send you a reset link.",
+  "@forgotSubtitle": {
+    "description": "Forgot password: subtitle"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label of an email field"
+  },
+  "sendResetLink": "Send reset link",
+  "@sendResetLink": {
+    "description": "Forgot password: primary button"
+  },
+  "backToSignIn": "Back to sign in",
+  "@backToSignIn": {
+    "description": "Button that returns to the Sign in screen"
+  },
+  "errorGeneric": "Something went wrong. Try again.",
+  "@errorGeneric": {
+    "description": "Snackbar when a request failed"
+  },
+  "errorInvalidEmail": "Enter a valid email",
+  "@errorInvalidEmail": {
+    "description": "Shown under an email field whose text is not an address"
+  },
+  "sentTitle": "Check your email",
+  "@sentTitle": {
+    "description": "Reset link sent dialog: title"
+  },
+  "sentBody": "We sent a reset link to {email}. Open it to set a new password.",
+  "@sentBody": {
+    "description": "Reset link sent dialog: body; {email} is the masked address, set in bold",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "openEmailApp": "Open email app",
+  "@openEmailApp": {
+    "description": "Reset link sent dialog: opens the mail app"
+  },
+  "noEmailApp": "No email app found",
+  "@noEmailApp": {
+    "description": "Snackbar when the mail app could not be opened"
+  },
+  "didntGetIt": "Didn't get it?",
+  "@didntGetIt": {
+    "description": "Reset link sent dialog: prompt before Resend and Change email"
+  },
+  "resendLink": "Resend link",
+  "@resendLink": {
+    "description": "Reset link sent dialog: sends the link again"
+  },
+  "resendLinkIn": "Resend link in {time}",
+  "@resendLinkIn": {
+    "description": "Reset link sent dialog: Resend while the cooldown runs; {time} is m:ss",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "changeEmail": "Change email",
+  "@changeEmail": {
+    "description": "Reset link sent dialog: closes it and focuses the email field"
+  },
+  "linkResent": "Link sent again",
+  "@linkResent": {
+    "description": "Snackbar after the reset link was sent again"
+  }
 }

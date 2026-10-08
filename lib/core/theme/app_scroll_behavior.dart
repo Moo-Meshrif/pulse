@@ -2,9 +2,8 @@ import 'dart:ui' show PointerDeviceKind;
 
 import 'package:flutter/material.dart';
 
-/// Material scrolling plus drag from every pointer. By default a mouse cannot drag a `PageView` or a
-/// list on web and desktop; trackpads and pens do not either on some platforms. The platform
-/// scrollbar (desktop and web) and overscroll feel stay Material's.
+/// Material scrolling plus drag from every pointer, so a mouse can drag a `PageView` or list on web and
+/// desktop.
 class AppScrollBehavior extends MaterialScrollBehavior {
   const AppScrollBehavior();
 

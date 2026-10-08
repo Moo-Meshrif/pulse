@@ -8,11 +8,8 @@ abstract final class AppDesignSize {
   static const double height = 844;
 }
 
-/// One responsive factor for every dimension and font size, from the window's shortest side
-/// relative to the design width: phones below 390 shrink to at most [min]; tablets and desktop
-/// windows grow to at most [max]. The shortest side is used so a phone in landscape does not grow.
-/// Getters, not constants, and rebuilt on resize by `AppScaleScope`. Content width is capped
-/// separately (`ContentWidth`), so growth never makes a line too long.
+/// One responsive factor for every dimension and font size, from the window's shortest side (so a phone in
+/// landscape does not grow), clamped to [min]..[max]. Getters, rebuilt on resize by `AppScaleScope`.
 abstract final class AppScale {
   static const double min = 0.85;
   static const double max = 1.25;

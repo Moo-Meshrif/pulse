@@ -13,14 +13,34 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
+import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 import '../../app/app_module.dart' as _i431;
+import '../../features/auth/data/datasource/auth_datasource.dart' as _i43;
+import '../../features/auth/domain/use_case/is_signed_in_use_case.dart'
+    as _i710;
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart'
+    as _i104;
+import '../../features/auth/presentation/cubit/sign_in_cubit.dart' as _i329;
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
     as _i834;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
     as _i807;
-import '../storage/local_storage_service.dart' as _i744;
-import '../storage/shared_prefs_storage_service.dart' as _i674;
+import '../../features/profile/data/datasource/follows_datasource.dart'
+    as _i861;
+import '../../features/profile/data/datasource/interests_datasource.dart'
+    as _i152;
+import '../../features/profile/data/datasource/profile_datasource.dart'
+    as _i320;
+import '../../features/profile/data/datasource/profile_local_datasource.dart'
+    as _i126;
+import '../../features/profile/data/repository/profile_repository.dart'
+    as _i508;
+import '../../features/profile/domain/use_case/get_signup_step_use_case.dart'
+    as _i697;
+import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i125;
+import '../services/launch_service.dart' as _i1016;
+import '../services/local_storage_service.dart' as _i527;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -34,15 +54,64 @@ extension GetItInjectableX on _i174.GetIt {
       () => appModule.sharedPreferences,
       preResolve: true,
     );
-    gh.lazySingleton<_i744.LocalStorageService>(
-      () => _i674.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
+    gh.lazySingleton<_i454.SupabaseClient>(() => appModule.supabaseClient);
+    gh.lazySingleton<_i1016.LaunchService>(
+      () => _i1016.UrlLauncherLaunchService(),
+    );
+    gh.lazySingleton<_i43.AuthDatasource>(
+      () => _i43.SupabaseAuthDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i152.InterestsDatasource>(
+      () => _i152.SupabaseInterestsDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i527.LocalStorageService>(
+      () => _i527.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i861.FollowsDatasource>(
+      () => _i861.SupabaseFollowsDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.factory<_i710.IsSignedInUseCase>(
+      () => _i710.IsSignedInUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.lazySingleton<_i320.ProfileDatasource>(
+      () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.factory<_i104.ForgotPasswordCubit>(
+      () => _i104.ForgotPasswordCubit(
+        gh<_i43.AuthDatasource>(),
+        gh<_i1016.LaunchService>(),
+      ),
+    );
     gh.lazySingleton<_i834.OnboardingDatasource>(
-      () => _i834.OnboardingDatasource(gh<_i744.LocalStorageService>()),
+      () => _i834.OnboardingDatasource(gh<_i527.LocalStorageService>()),
+    );
+    gh.lazySingleton<_i126.ProfileLocalDatasource>(
+      () => _i126.ProfileLocalDatasource(gh<_i527.LocalStorageService>()),
     );
     gh.factory<_i807.OnboardingCubit>(
       () => _i807.OnboardingCubit(gh<_i834.OnboardingDatasource>()),
+    );
+    gh.lazySingleton<_i508.ProfileRepository>(
+      () => _i508.ProfileRepositoryImpl(
+        gh<_i320.ProfileDatasource>(),
+        gh<_i126.ProfileLocalDatasource>(),
+      ),
+    );
+    gh.factory<_i697.GetSignupStepUseCase>(
+      () => _i697.GetSignupStepUseCase(gh<_i508.ProfileRepository>()),
+    );
+    gh.factory<_i125.SplashCubit>(
+      () => _i125.SplashCubit(
+        gh<_i710.IsSignedInUseCase>(),
+        gh<_i697.GetSignupStepUseCase>(),
+      ),
+    );
+    gh.factory<_i329.SignInCubit>(
+      () => _i329.SignInCubit(
+        gh<_i43.AuthDatasource>(),
+        gh<_i697.GetSignupStepUseCase>(),
+      ),
     );
     return this;
   }

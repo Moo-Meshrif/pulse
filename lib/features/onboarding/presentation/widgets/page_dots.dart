@@ -4,9 +4,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_dimens.dart';
 
-/// Page indicator: the active dot is a 24x8 pill in `primary`, the others 8x8 `switchOff`.
-/// Width and color animate over 250 ms ease-in-out (instant when the system asks to
-/// reduce motion). Announced as "Page N of M".
+/// Page indicator, announced as "Page N of M". Animation is instant when the system asks to reduce motion.
 class PageDots extends StatelessWidget {
   const PageDots({super.key, required this.count, required this.index});
 

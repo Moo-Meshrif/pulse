@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// A recolored SVG icon. Only icons that indicate direction (back, forward, chevrons,
-/// share) pass `directional: true`; they flip in RTL. Symmetric icons never flip
+/// A recolored SVG icon. Only direction icons pass `directional: true` and flip in RTL
 /// (docs/specs/_theme/rtl.md).
 class AppSvgIcon extends StatelessWidget {
   const AppSvgIcon(

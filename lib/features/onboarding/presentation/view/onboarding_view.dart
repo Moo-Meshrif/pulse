@@ -12,9 +12,8 @@ import '../widgets/onboarding_panel.dart';
 import '../widgets/onboarding_text_block.dart';
 import '../widgets/onboarding_top_bar.dart';
 
-/// The onboarding flow: one scaffold (top bar, pages, footer) hosting a swipeable
-/// `PageView`. The current page is local UI state: a `ValueNotifier` owned here, so only the
-/// top bar and footer rebuild when it changes, never the pages.
+/// The onboarding flow: one scaffold hosting a swipeable `PageView`. The page index is a local
+/// `ValueNotifier`, so only the top bar and footer rebuild.
 class OnboardingView extends StatefulWidget {
   const OnboardingView({
     super.key,

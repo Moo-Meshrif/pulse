@@ -7,10 +7,8 @@ import '../../../../core/widgets/widgets.dart';
 import 'page_dots.dart';
 import 'sign_in_link.dart';
 
-/// Footer of one onboarding page; it lives inside the page's scroll view (`SliverFillRemaining`), so it
-/// sits at the bottom on tall screens and scrolls with the content on short ones or at large text.
-/// Pages before the last: dots at the start, Next at the end. Last page: dots centered, Get started
-/// full width, then the Sign in link.
+/// Footer of one onboarding page. It lives inside the page's scroll view, so it sits at the bottom on tall
+/// screens and scrolls with the content on short ones.
 class OnboardingFooter extends StatelessWidget {
   const OnboardingFooter({
     super.key,

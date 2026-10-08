@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/error_reporter.dart';
-import '../../../../core/storage/local_storage_service.dart';
-import '../../../../core/storage/storage_keys.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/storage_keys.dart';
 
 /// Local flag: has the user finished the onboarding flow (Skip, Get started or Sign in)?
 /// Writes the `onboarding_seen` key ([StorageKeys.onboardingSeen]); storage goes through the shared [LocalStorageService].

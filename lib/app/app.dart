@@ -35,7 +35,6 @@ class App extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: _resolveLocale,
-      // Built-in Navigator, no routing package.
       initialRoute: AppRoutes.root,
       onGenerateRoute: AppRouter.onGenerateRoute,
       onGenerateInitialRoutes: AppRouter.onGenerateInitialRoutes,

@@ -29,6 +29,14 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Pulse uses the camera to take your profile photo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pulse uses your photos to set your profile picture.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

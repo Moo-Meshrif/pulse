@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_dimens.dart';
-import '../../../../core/theme/app_scale.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_scale.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../utils/enums/onboarding_top_bar_leading.dart';
 
@@ -37,7 +36,7 @@ class OnboardingTopBar extends StatelessWidget {
           OnboardingTopBarLeading.logo => const Expanded(
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: _LogoLockup(),
+              child: LogoLockup(),
             ),
           ),
           OnboardingTopBarLeading.back => _BackButton(onPressed: onBack!),
@@ -47,42 +46,6 @@ class OnboardingTopBar extends StatelessWidget {
       ],
     ),
   );
-}
-
-/// Logo mark + wordmark. In RTL the pair moves to the right as a unit; the drawing is
-/// never flipped and the wordmark stays in Latin letters.
-class _LogoLockup extends StatelessWidget {
-  const _LogoLockup();
-
-  @override
-  Widget build(BuildContext context) {
-    final wordmark = AppTextStyles.latin.logo.copyWith(
-      fontSize: AppScale.scale(20),
-      color: context.appColors.textPrimary,
-    );
-    return Semantics(
-      label: context.l10n.appTitle,
-      child: ExcludeSemantics(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(
-                OnboardingDimens.logoMarkRadius,
-              ),
-              child: SvgPicture.asset(
-                AppAssets.logo,
-                width: OnboardingDimens.logoMarkSize,
-                height: OnboardingDimens.logoMarkSize,
-              ),
-            ),
-            SizedBox(width: OnboardingDimens.logoToWordmarkGap),
-            Flexible(child: AppText(context.l10n.appTitle, style: wordmark)),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _BackButton extends StatelessWidget {

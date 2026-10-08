@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'app_scale.dart';
 
-/// Spacing scale (dp) from docs/specs/_theme/spacing-radius-shadows.md. Getters over [AppScale.scale]:
-/// every token below (spacing, radius, shadow) is scaled with the window, so a feature that uses
-/// them scales for free. Never `const`: the factor changes with the window.
+/// Spacing scale (dp) from docs/specs/_theme/spacing-radius-shadows.md. Getters over [AppScale.scale],
+/// never `const`: the factor changes with the window.
 abstract final class AppSpacing {
   static double get s4 => AppScale.scale(4);
   static double get s8 => AppScale.scale(8);
@@ -32,6 +31,12 @@ abstract final class AppRadius {
   static double get bottomSheetTop => AppScale.scale(28);
   static double get onboardingPanel => AppScale.scale(32);
 
+  /// Dialog card (= bottom sheet top, 28).
+  static double get dialog => AppScale.scale(28);
+  static double get checkbox => AppScale.scale(6);
+  static double get logoTile => AppScale.scale(14);
+  static double get iconTile => AppScale.scale(22);
+
   /// Pills, chips, buttons and switches are fully rounded: `height / 2`.
   static double pill(double height) => height / 2;
 }
@@ -45,12 +50,180 @@ abstract final class AppShadows {
       blurRadius: AppScale.scale(30),
     ),
   ];
+
+  /// Dialog card: 0 12 30 #161A19 @ 12%, the same shadow as the onboarding cards.
+  static List<BoxShadow> get dialog => onboardingCards;
 }
 
-/// Values of the onboarding flow (docs/specs/onboarding/01-design-tokens.md, 02-components.md).
-///
-/// Sizes are the 390 x 844 design values, scaled responsively with [AppScale.size] (smaller on small phones, larger on tablets and desktop, clamped). Tap targets (44 dp boxes, the 56 dp button) never shrink.
-/// Getters, not constants: the scale follows the window (`AppScaleScope`).
+/// Shared dialog shell and its content (docs/specs/auth/01-design-tokens.md, 02-components.md C14).
+abstract final class DialogDimens {
+  /// Backdrop blur under the scrim (sigma x and y). A blur radius is not a layout size: not scaled.
+  static const double backdropBlurSigma = 12;
+
+  /// The card is `screen width - 2 * margin`, at most [maxWidth].
+  static double get margin => AppScale.scale(24);
+  static double get maxWidth => AppScale.scale(342);
+  static EdgeInsets get padding => EdgeInsets.symmetric(
+    horizontal: AppScale.scale(24),
+    vertical: AppScale.scale(28),
+  );
+  static double get iconCircle => AppScale.scale(56);
+  static double get icon => AppScale.scale(24);
+  static double get iconToTitleGap => AppScale.scale(16);
+  static double get titleToMessageGap => AppScale.scale(8);
+  static double get messageToActionsGap => AppScale.scale(24);
+  static double get actionGap => AppScale.scale(12);
+  static double get stackedActionGap => AppScale.scale(8);
+
+  static const Duration transition = Duration(milliseconds: 180);
+  static const double enterScale = 0.96;
+}
+
+/// The loading indicator shown while a screen waits for its first data.
+abstract final class LoadingDimens {
+  static double get size => AppScale.scale(32);
+  static const double stroke = 3; // unscaled: stroke
+}
+
+/// The splash (docs/specs/auth/screens/s13-splash.md). All `[estimated]` from the screenshots (Q26).
+abstract final class SplashDimens {
+  static double get logoTile => AppScale.scale(72);
+  static double get logoTileRadius => AppScale.scale(22);
+  static double get logoToWordmarkGap => AppScale.scale(14);
+  static double get spinnerSize => AppScale.scale(28);
+  static const double spinnerStroke = 3; // unscaled: stroke
+  static double get spinnerBottom =>
+      AppScale.scale(38); // above the bottom safe area
+  static double get headerTop => AppScale.scale(24); // below the top safe area
+  static double get problemCircle => AppScale.scale(96);
+  static double get problemIcon => AppScale.scale(40);
+  static double get circleToTitleGap => AppScale.scale(24);
+  static double get titleToBodyGap => AppScale.scale(8);
+  static double get bodySide => AppScale.scale(40);
+}
+
+/// Pill buttons of the auth flow: primary states, outline, soft, danger
+/// (docs/specs/auth/01-design-tokens.md "button states", "outline pill button").
+abstract final class AuthButtonDimens {
+  /// Primary button disabled fill: `primary` @ 40%.
+  static const double disabledOpacity = 0.4;
+  static double get spinnerSize => AppScale.scale(20);
+  static const double spinnerStroke = 2; // unscaled: stroke
+  static const double outlineBorderWidth = 1; // unscaled: hairline
+  /// Outline pills have no fixed height: vertical padding 15 (+ 16/700 label).
+  static double get outlineVerticalPadding => AppScale.scale(15);
+
+  /// Soft and danger pills (dialog actions, S9, S10).
+  static const double pillHeight = 48; // tap target: fixed
+}
+
+/// Auth form fields, tiles, chips, checkbox, avatars, OTP, progress and strength bars
+/// (docs/specs/auth/01-design-tokens.md "New / differs", 02-components.md).
+abstract final class AuthDimens {
+  // Input: padding 15 v / 16 h, no fixed height; 1 px border, 1.5 on focus and error.
+  static EdgeInsets get inputPadding => EdgeInsets.symmetric(
+    horizontal: AppScale.scale(16),
+    vertical: AppScale.scale(15),
+  );
+  static const double inputBorderWidth = 1; // unscaled: hairline
+  static const double inputActiveBorderWidth = 1.5; // unscaled: focus / error
+  // Password eye: 22 icon in a 44 tap target.
+  static double get eyeIcon => AppScale.scale(22);
+  static const double eyeTapTarget = 44; // tap target: fixed
+
+  // Logo tile 48 (radius 14) and icon tile 72 (radius 22, icon 32).
+  static double get logoTile => AppScale.scale(48);
+  static double get iconTile => AppScale.scale(72);
+  static double get iconTileIcon => AppScale.scale(32);
+  static double get tileToTitleGap => AppScale.scale(24);
+
+  // Sign-up progress: 6 segments, height 4, gap 4.
+  static double get progressSegmentHeight => AppScale.scale(4);
+  static double get progressSegmentGap => AppScale.scale(4);
+  static const Duration progressDuration = Duration(milliseconds: 200);
+
+  // Password strength: 4 segments, height 4, gap 6; the short S11 variant is 68 wide, gap 4.
+  static double get strengthSegmentHeight => AppScale.scale(4);
+  static double get strengthSegmentGap => AppScale.scale(6);
+  static double get strengthShortSegmentWidth => AppScale.scale(68);
+  static double get strengthShortSegmentGap => AppScale.scale(4);
+
+  // OTP box ~50 x 60 [estimated], gap 8, radius 14; borders: idle 1, filled/error 1.5, focused 2.
+  static double get otpBoxWidth => AppScale.scale(50);
+  static double get otpBoxHeight => AppScale.scale(60);
+  static double get otpBoxGap => AppScale.scale(8);
+  static const double otpMinBoxWidth = 44; // tap target: fixed
+  static const double otpIdleBorderWidth = 1; // unscaled: hairline
+  static const double otpFilledBorderWidth = 1.5; // unscaled
+  static const double otpFocusedBorderWidth = 2; // unscaled
+
+  // Chips: interest h44, gender h40, h-padding 18, label 15/700 (`name`); selected shows a 16 check + gap 6.
+  static double get interestChipHeight => AppScale.scale(44);
+  static double get genderChipHeight => AppScale.scale(40);
+  static double get segmentedChipHeight => AppScale.scale(40); // [estimated]
+  static double get chipHorizontalPadding => AppScale.scale(18);
+  static double get chipWrapSpacing => AppScale.scale(10);
+  static double get interestChipRunSpacing => AppScale.scale(12);
+  static double get chipCheckSize => AppScale.scale(16);
+  static double get chipCheckGap => AppScale.scale(6);
+  static const double chipMinTapHeight = 44; // tap target: fixed
+  static const double chipBorderWidth = 1; // unscaled: hairline
+
+  // Avatars: upload circle 88 (dashed 1.5, camera 28, badge 28 + plus 14), list circle 48.
+  static double get avatarUpload => AppScale.scale(88);
+  static const double avatarDashedWidth = 1.5; // unscaled: stroke
+  static double get avatarCameraIcon => AppScale.scale(28);
+  static double get avatarBadge => AppScale.scale(28);
+  static double get avatarBadgePlus => AppScale.scale(14);
+  static double get avatarList => AppScale.scale(48);
+
+  // Checkbox: 24 square, radius 6, check 16 (20 on S11).
+  static double get checkbox => AppScale.scale(24);
+  static double get checkboxCompact => AppScale.scale(20);
+  static double get checkboxCheck => AppScale.scale(16);
+  static const double checkboxBorderWidth = 1; // unscaled: hairline
+  static double get checkboxToLabelGap => AppScale.scale(12);
+
+  // Password rules list (S11): a 6 dot, or a check once met, in a fixed slot so the text never shifts.
+  static double get ruleDot => AppScale.scale(6);
+  static double get ruleIconSlot => AppScale.scale(14);
+  static double get ruleCheck => AppScale.scale(14);
+  static double get ruleIconGap => AppScale.scale(8);
+  static double get ruleRowGap => AppScale.scale(8);
+  static double get checkboxCheckCompact => AppScale.scale(14);
+
+  // Step bar (S3-S8): back / Skip tap targets 44.
+  static const double tapTarget = 44; // tap target: fixed
+  static double get stepBarIcon => AppScale.scale(24);
+  static double get stepBarSegmentsGap => AppScale.scale(8);
+
+  // "or continue with" divider: 1 px lines, gap 12.
+  static const double dividerLineWidth = 1; // unscaled: hairline
+  static double get dividerGap => AppScale.scale(12);
+  static const double dividerLabelMaxShare =
+      0.6; // share of the row the label may take before it wraps
+  static double get socialGap => AppScale.scale(12);
+
+  // Sign in (S1): logo ~56 from the top [estimated], 32 above the form, 24 above the button and the
+  // divider, 20 above the social row, the footer ~28 above the bottom.
+  static double get signInTopGap => AppScale.scale(56);
+  static double get signInFormGap => AppScale.scale(32);
+  static double get signInSectionGap => AppScale.scale(24);
+  static double get signInSocialGap => AppScale.scale(20);
+  static double get signInFooterBottom => AppScale.scale(28);
+  static const double linkTapHeight = 44; // tap target: fixed
+
+  // Forgot password (S2): the lock tile ~24 under the back arrow [estimated], 32 above the field, 24
+  // above the button. S9 footer: 20 above the links, 8 between them.
+  static double get forgotTileTopGap => AppScale.scale(24);
+  static double get headerToFormGap => AppScale.scale(32);
+  static double get formToButtonGap => AppScale.scale(24);
+  static double get linkRowTopGap => AppScale.scale(20);
+  static double get linkRowGap => AppScale.scale(8);
+}
+
+/// Onboarding values (docs/specs/onboarding/01-design-tokens.md), 390 x 844 design sizes scaled with
+/// [AppScale.size]. Tap targets never shrink. Getters, not constants: the scale follows the window.
 abstract final class OnboardingDimens {
   // Top bar: padding 16 12 0 20 (top, trailing, bottom, leading).
   static EdgeInsetsDirectional get topBarPadding =>

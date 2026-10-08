@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_text_styles.dart';
 
-/// The app's text widget. `style` is an `AppTextStyles` token (`context.text.body` by default)
-/// and `color` comes from `AppColors`. A size or weight that no token has is a new token,
-/// not a `copyWith` in a feature.
+/// The app's text widget: `style` is an `AppTextStyles` token and `color` comes from `AppColors`. A size or
+/// weight no token has is a new token, not a `copyWith`.
 class AppText extends StatelessWidget {
   const AppText(
     this.text, {

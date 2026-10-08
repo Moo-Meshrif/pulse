@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'app_scale.dart';
 
-/// Text styles from docs/specs/_theme/typography.md. They are `inherit: false`, so the
-/// ambient Material text theme (which adds its own letter spacing and line height) never
-/// changes their exact values. They carry no color: widgets
-/// add it from `AppColors` (`style.copyWith(color: context.appColors.textPrimary)`).
+/// Text styles from docs/specs/_theme/typography.md. `inherit: false`, so the Material text theme never
+/// alters them; no color, add it from `AppColors`.
 ///
-/// Read them with `context.text.<style>`: Arabic locales get the Arabic set
-/// (docs/specs/_theme/rtl.md): Noto Sans Arabic, same size and weight,
-/// letterSpacing 0 (negative tracking breaks the letter joins) and line height +0.1.
-/// The UPPERCASE `section` style is uppercased by the widget in Latin only; Arabic has no letter case.
+/// Arabic locales get their own set (docs/specs/_theme/rtl.md): letterSpacing 0, because negative tracking
+/// breaks letter joins.
 @immutable
 class AppTextStyles {
   const AppTextStyles._({
@@ -21,6 +17,7 @@ class AppTextStyles {
     required this.titleSm,
     required this.messagesTitle,
     required this.stat,
+    required this.otpDigit,
     required this.button,
     required this.body,
     required this.subtitle,
@@ -44,6 +41,9 @@ class AppTextStyles {
   final TextStyle titleSm;
   final TextStyle messagesTitle;
   final TextStyle stat;
+
+  /// Verification-code digit (auth S4): Sora 24/700.
+  final TextStyle otpDigit;
   final TextStyle button;
   final TextStyle body;
   final TextStyle subtitle;
@@ -104,6 +104,12 @@ class AppTextStyles {
       inherit: false,
       fontFamily: _sora,
       fontSize: 18,
+      fontWeight: FontWeight.w700,
+    ),
+    otpDigit: TextStyle(
+      inherit: false,
+      fontFamily: _sora,
+      fontSize: 24,
       fontWeight: FontWeight.w700,
     ),
     button: TextStyle(
@@ -224,6 +230,13 @@ class AppTextStyles {
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
     ),
+    otpDigit: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 24,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
     button: TextStyle(
       inherit: false,
       fontFamily: _arabic,
@@ -310,6 +323,7 @@ class AppTextStyles {
       titleSm: f(titleSm),
       messagesTitle: f(messagesTitle),
       stat: f(stat),
+      otpDigit: f(otpDigit),
       button: f(button),
       body: f(body),
       subtitle: f(subtitle),

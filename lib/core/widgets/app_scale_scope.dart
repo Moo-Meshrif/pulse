@@ -2,13 +2,10 @@ import 'package:flutter/widgets.dart';
 
 import '../theme/app_scale.dart';
 
-/// Re-reads `AppScale` when the window changes (browser resize, rotation, split screen). Put it
-/// above `MaterialApp`.
+/// Re-reads `AppScale` when the window changes. Put it above `MaterialApp`.
 ///
-/// `AppScale` getters are plain statics, so a widget that is not recreated (a route page, a `const`
-/// subtree) would keep its old sizes. When the factor actually changes, every element below is
-/// marked dirty (state is kept; only `build` runs again). The factor is clamped, so while a window is
-/// dragged beyond the clamp range no rebuild happens at all.
+/// The getters are plain statics, so on a real factor change every element below is marked dirty (state is
+/// kept); inside the clamp range nothing rebuilds.
 class AppScaleScope extends StatefulWidget {
   const AppScaleScope({super.key, required this.builder});
 

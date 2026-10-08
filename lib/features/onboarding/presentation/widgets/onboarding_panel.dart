@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_dimens.dart';
 
-/// The illustration panel: 420 high, radius 32, 20 side margins, clipped. It shows the
-/// illustration PNG (text baked in, one per language, square corners: the radius comes
-/// from the `ClipRRect` below, not from the image) over its fill color. While the PNG
-/// is missing it shows the bare fill. Decorative: excluded from semantics.
+/// The illustration panel. The PNG has square corners (the radius comes from the `ClipRRect`) and shows the
+/// bare fill while the file is missing. Decorative: excluded from semantics.
 class OnboardingPanel extends StatelessWidget {
   const OnboardingPanel({
     super.key,

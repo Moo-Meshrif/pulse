@@ -9,6 +9,7 @@ abstract final class AppAssets {
   static const bell = '$_icons/ic_bell.svg';
   static const block = '$_icons/ic_block.svg';
   static const bookmark = '$_icons/ic_bookmark.svg';
+  static const cloudAlert = '$_icons/ic_cloud_alert.svg';
   static const camera = '$_icons/ic_camera.svg';
   static const chat = '$_icons/ic_chat.svg';
   static const chatFilled = '$_icons/ic_chat_filled.svg';
@@ -31,6 +32,7 @@ abstract final class AppAssets {
   static const image = '$_icons/ic_image.svg';
   static const laptop = '$_icons/ic_laptop.svg';
   static const location = '$_icons/ic_location.svg';
+  static const key = '$_icons/ic_key.svg';
   static const lock = '$_icons/ic_lock.svg';
   static const logout = '$_icons/ic_logout.svg';
   static const mail = '$_icons/ic_mail.svg';
@@ -48,9 +50,12 @@ abstract final class AppAssets {
   static const shortsFilled = '$_icons/ic_shorts_filled.svg';
   static const smile = '$_icons/ic_smile.svg';
   static const tagPerson = '$_icons/ic_tag_person.svg';
+  static const trash = '$_icons/ic_trash.svg';
   static const upload = '$_icons/ic_upload.svg';
   static const verified = '$_icons/ic_verified.svg';
   static const videoCamera = '$_icons/ic_video_camera.svg';
+  static const wifiOff = '$_icons/ic_wifi_off.svg';
+  static const warning = '$_icons/ic_warning.svg';
   static const volume = '$_icons/ic_volume.svg';
   static const logo = '$_icons/logo.svg';
 

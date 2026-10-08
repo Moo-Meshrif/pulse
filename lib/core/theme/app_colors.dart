@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Color tokens from docs/specs/_theme/colors.md (light theme). Read them with
-/// `context.appColors.<token>`; never use `Color(0xFF…)` in a widget.
-///
-/// Dark values are not defined yet (light only for now). When they are, add
-/// `AppColors.dark` and pass it to a dark `ThemeData`.
+/// Light color tokens (docs/specs/_theme/colors.md). Read them with `context.appColors.<token>`. Dark
+/// values are not defined yet.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -26,6 +23,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.dashed,
     required this.like,
     required this.danger,
+    required this.dangerSoft,
     required this.online,
     required this.warning,
     required this.scrim,
@@ -54,6 +52,9 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color dashed;
   final Color like;
   final Color danger;
+
+  /// Leave-dialog icon circle fill (danger @ ~12% on white). Auth spec delta.
+  final Color dangerSoft;
   final Color online;
   final Color warning;
   final Color scrim;
@@ -66,26 +67,27 @@ class AppColors extends ThemeExtension<AppColors> {
   final List<Color> avatarBackgrounds;
 
   static const light = AppColors(
-    primary: Color(0xFF2E6B63), // #2E6B63
-    primaryPressed: Color(0xFF1F4D47), // #1F4D47
-    primarySoft: Color(0xFFE2EEEB), // #E2EEEB
-    storyRing: Color(0xFF9DBDB7), // #9DBDB7
-    background: Color(0xFFF3F4F3), // #F3F4F3
-    surface: Color(0xFFFFFFFF), // #FFFFFF
-    surfaceMuted: Color(0xFFF7F8F7), // #F7F8F7
-    segmentTrack: Color(0xFFE3E7E5), // #E3E7E5
-    textPrimary: Color(0xFF161A19), // #161A19
-    textSecondary: Color(0xFF5B6461), // #5B6461
-    iconInactive: Color(0xFF3D4644), // #3D4644
-    textOnPrimary: Color(0xFFFFFFFF), // #FFFFFF
-    border: Color(0xFFD5DAD8), // #D5DAD8
-    divider: Color(0xFFE3E6E4), // #E3E6E4
-    switchOff: Color(0xFFC9D3D0), // #C9D3D0
-    dashed: Color(0xFF9AA6A2), // #9AA6A2
-    like: Color(0xFFE0323C), // #E0323C
-    danger: Color(0xFFC42B34), // #C42B34
-    online: Color(0xFF2FA864), // #2FA864
-    warning: Color(0xFFD98A1E), // #D98A1E
+    primary: Color(0xFF2E6B63),
+    primaryPressed: Color(0xFF1F4D47),
+    primarySoft: Color(0xFFE2EEEB),
+    storyRing: Color(0xFF9DBDB7),
+    background: Color(0xFFF3F4F3),
+    surface: Color(0xFFFFFFFF),
+    surfaceMuted: Color(0xFFF7F8F7),
+    segmentTrack: Color(0xFFE3E7E5),
+    textPrimary: Color(0xFF161A19),
+    textSecondary: Color(0xFF5B6461),
+    iconInactive: Color(0xFF3D4644),
+    textOnPrimary: Color(0xFFFFFFFF),
+    border: Color(0xFFD5DAD8),
+    divider: Color(0xFFE3E6E4),
+    switchOff: Color(0xFFC9D3D0),
+    dashed: Color(0xFF9AA6A2),
+    like: Color(0xFFE0323C),
+    danger: Color(0xFFC42B34),
+    dangerSoft: Color(0xFFFBE4E5),
+    online: Color(0xFF2FA864),
+    warning: Color(0xFFD98A1E),
     scrim: Color(0x66161A19), // #161A19 @ 40%
     videoChip: Color(0x73161A19), // #161A19 @ 45%
     glassFill: Color(0x8CFFFFFF), // #FFFFFF @ 55%
@@ -122,6 +124,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? dashed,
     Color? like,
     Color? danger,
+    Color? dangerSoft,
     Color? online,
     Color? warning,
     Color? scrim,
@@ -149,6 +152,7 @@ class AppColors extends ThemeExtension<AppColors> {
     dashed: dashed ?? this.dashed,
     like: like ?? this.like,
     danger: danger ?? this.danger,
+    dangerSoft: dangerSoft ?? this.dangerSoft,
     online: online ?? this.online,
     warning: warning ?? this.warning,
     scrim: scrim ?? this.scrim,
@@ -181,6 +185,7 @@ class AppColors extends ThemeExtension<AppColors> {
       dashed: Color.lerp(dashed, other.dashed, t)!,
       like: Color.lerp(like, other.like, t)!,
       danger: Color.lerp(danger, other.danger, t)!,
+      dangerSoft: Color.lerp(dangerSoft, other.dangerSoft, t)!,
       online: Color.lerp(online, other.online, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       scrim: Color.lerp(scrim, other.scrim, t)!,
