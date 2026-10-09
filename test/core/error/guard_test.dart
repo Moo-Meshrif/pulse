@@ -89,10 +89,34 @@ void main() {
       );
     });
 
-    test('a retryable fetch error is a NetworkFailure', () async {
+    test(
+      'a retryable fetch error without a status is a NetworkFailure',
+      () async {
+        expect(
+          await failureOf(AuthRetryableFetchException(message: 'offline')),
+          const NetworkFailure(),
+        );
+      },
+    );
+
+    test('a failed confirmation email is emailSendFailed', () async {
       expect(
-        await failureOf(AuthRetryableFetchException(message: 'offline')),
-        const NetworkFailure(),
+        await failureOf(
+          AuthRetryableFetchException(
+            message: '{"message":"Error sending confirmation email"}',
+            statusCode: '500',
+          ),
+        ),
+        const AuthFailure(AuthFailureReason.emailSendFailed),
+      );
+    });
+
+    test('a retryable fetch error with a status is a ServerFailure', () async {
+      expect(
+        await failureOf(
+          AuthRetryableFetchException(message: 'mail', statusCode: '500'),
+        ),
+        const ServerFailure(statusCode: 500),
       );
     });
   });
@@ -107,6 +131,16 @@ void main() {
         const AuthFailure(AuthFailureReason.invalidCredentials),
       );
     });
+
+    test(
+      '400 bad_request (a malformed identifier) is invalid credentials',
+      () async {
+        expect(
+          await failureOf(fn(400, {'code': 'bad_request'})),
+          const AuthFailure(AuthFailureReason.invalidCredentials),
+        );
+      },
+    );
 
     test('403 email_not_confirmed carries the email', () async {
       expect(

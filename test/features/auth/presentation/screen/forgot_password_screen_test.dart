@@ -84,19 +84,27 @@ void main() {
     expect(sendButton(tester).onPressed, isNotNull);
   });
 
-  testView('a badly shaped email shows the format error, no request', (
-    tester,
-  ) async {
-    await open(tester);
-    await sendFor(tester, 'ada');
+  testView(
+    'a badly shaped email shows the format error once the field is left, Send stays off',
+    (tester) async {
+      await open(tester);
+      await tester.enterText(find.byType(TextField), 'ada');
+      await tester.pump();
+      expect(find.text(l10nEn.errorInvalidEmail), findsNothing);
+      expect(sendButton(tester).onPressed, isNull);
 
-    expect(find.text(l10nEn.errorInvalidEmail), findsOneWidget);
-    verifyNever(() => auth.sendPasswordReset(any()));
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pump();
+      expect(find.text(l10nEn.errorInvalidEmail), findsOneWidget);
+      expect(sendButton(tester).onPressed, isNull);
 
-    await tester.enterText(find.byType(TextField), 'ada@');
-    await tester.pump();
-    expect(find.text(l10nEn.errorInvalidEmail), findsNothing);
-  });
+      await tester.enterText(find.byType(TextField), 'ada@example.com');
+      await tester.pump();
+      expect(find.text(l10nEn.errorInvalidEmail), findsNothing);
+      expect(sendButton(tester).onPressed, isNotNull);
+      verifyNever(() => auth.sendPasswordReset(any()));
+    },
+  );
 
   testView('a failed request shows its failure in a snackbar', (tester) async {
     sendReturns(const Left(NetworkFailure()));

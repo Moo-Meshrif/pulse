@@ -88,29 +88,22 @@ void main() {
       find.textContaining(l10nEn.createAccount, findRichText: true),
       findsOneWidget,
     );
-    expect(button(tester).onPressed, isNotNull);
+    expect(button(tester).onPressed, isNull);
   });
 
-  testView('Sign in with empty fields flags both and sends nothing', (
+  testView('Sign in stays disabled until both fields have text', (
     tester,
   ) async {
     await open(tester);
-    await tester.tap(find.text(l10nEn.signInButton));
-    await tester.pump();
-
-    expect(find.text(l10nEn.errorIdentifierRequired), findsOneWidget);
-    expect(find.text(l10nEn.errorPasswordRequired), findsOneWidget);
-    verifyNever(
-      () => auth.signIn(
-        identifier: any(named: 'identifier'),
-        password: any(named: 'password'),
-      ),
-    );
+    expect(button(tester).onPressed, isNull);
 
     await tester.enterText(field('identifier'), 'ada_l');
     await tester.pump();
-    expect(find.text(l10nEn.errorIdentifierRequired), findsNothing);
-    expect(find.text(l10nEn.errorPasswordRequired), findsOneWidget);
+    expect(button(tester).onPressed, isNull);
+
+    await tester.enterText(field('password'), 'secret1');
+    await tester.pump();
+    expect(button(tester).onPressed, isNotNull);
   });
 
   testView('wrong credentials show the message in a snackbar', (tester) async {

@@ -193,16 +193,8 @@
   "@createAccount": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "errorCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+  "errorCredentials": "البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة",
   "@errorCredentials": {
-    "x-review": "Arabic draft: pending user approval"
-  },
-  "errorIdentifierRequired": "أدخل بريدك الإلكتروني أو اسم المستخدم",
-  "@errorIdentifierRequired": {
-    "x-review": "Arabic draft: pending user approval"
-  },
-  "errorPasswordRequired": "أدخل كلمة المرور",
-  "@errorPasswordRequired": {
     "x-review": "Arabic draft: pending user approval"
   },
   "errorTooManyAttempts": "محاولات كثيرة جدًا. حاول مرة أخرى بعد {time}.",
@@ -236,6 +228,18 @@
   },
   "backToSignIn": "العودة إلى تسجيل الدخول",
   "@backToSignIn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorEmailSend": "تعذّر إرسال البريد الإلكتروني حالياً. حاول مرة أخرى بعد قليل.",
+  "@errorEmailSend": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorRateLimited": "طلبات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.",
+  "@errorRateLimited": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorServer": "تعذّر إكمال طلبك حالياً. حاول مرة أخرى بعد قليل.",
+  "@errorServer": {
     "x-review": "Arabic draft: pending user approval"
   },
   "errorGeneric": "حدث خطأ ما. حاول مرة أخرى.",
@@ -290,6 +294,418 @@
   },
   "linkResent": "تم إرسال الرابط مرة أخرى",
   "@linkResent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "signUpTitle": "أنشئ حسابك",
+  "@signUpTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "signUpSubtitle": "ابدأ ببريدك الإلكتروني وكلمة مرور فقط.",
+  "@signUpSubtitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "passwordHintMin": "8 أحرف على الأقل",
+  "@passwordHintMin": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "agreePrefix": "أوافق على",
+  "@agreePrefix": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "agreeAnd": "و",
+  "@agreeAnd": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "orSignUpWith": "أو سجّل باستخدام",
+  "@orSignUpWith": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "continueButton": "متابعة",
+  "@continueButton": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "alreadyOnPulse": "لديك حساب على Pulse؟",
+  "@alreadyOnPulse": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorPasswordShort": "يجب ألا تقل كلمة المرور عن 8 أحرف",
+  "@errorPasswordShort": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorEmailExists": "يوجد حساب بهذا البريد بالفعل",
+  "@errorEmailExists": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorAccountNotFound": "لا يوجد حساب بهذا البريد",
+  "@errorAccountNotFound": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "verifyTitle": "تحقق من بريدك",
+  "@verifyTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "verifySubtitle": "أرسلنا رمزًا من 6 أرقام إلى {email}. أدخله أدناه للتحقق من حسابك.",
+  "@verifySubtitle": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "resendCode": "إعادة إرسال الرمز",
+  "@resendCode": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "resendCodeIn": "إعادة الإرسال خلال {time}",
+  "@resendCodeIn": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "verify": "تحقق",
+  "@verify": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "useDifferentEmail": "استخدام بريد آخر",
+  "@useDifferentEmail": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorWrongCode": "رمز غير صحيح، حاول مرة أخرى",
+  "@errorWrongCode": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "aboutTitle": "عنك",
+  "@aboutTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "aboutSubtitle": "بهذه الطريقة سيجدك الناس على Pulse.",
+  "@aboutSubtitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "fullNameLabel": "الاسم الكامل",
+  "@fullNameLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "fullNameHint": "اسمك",
+  "@fullNameHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "usernameLabel": "اسم المستخدم",
+  "@usernameLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "usernameHint": "اسم المستخدم",
+  "@usernameHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "usernameHelper": "الأحرف والأرقام والنقاط والشرطة السفلية. 3 أحرف على الأقل.",
+  "@usernameHelper": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "birthdayLabel": "تاريخ الميلاد",
+  "@birthdayLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "birthdayHint": "DD / MM / YYYY",
+  "@birthdayHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "birthdayHelper": "يُستخدم للتأكد من عمرك. لا يظهر في ملفك الشخصي.",
+  "@birthdayHelper": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "genderLabel": "الجنس",
+  "@genderLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "genderOptional": "(اختياري)",
+  "@genderOptional": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "genderFemale": "أنثى",
+  "@genderFemale": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "genderMale": "ذكر",
+  "@genderMale": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "genderPreferNot": "أفضّل عدم الذكر",
+  "@genderPreferNot": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorUsernameTaken": "اسم المستخدم مستخدم بالفعل",
+  "@errorUsernameTaken": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorMinAge": "يجب أن يكون عمرك 18 عامًا على الأقل",
+  "@errorMinAge": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTitle": "أعدّ ملفك الشخصي",
+  "@profileTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileSubtitle": "كل شيء اختياري. يمكنك إضافته لاحقًا من الإعدادات.",
+  "@profileSubtitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "addPhoto": "أضف صورة",
+  "@addPhoto": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "addPhotoHint": "الملفات التي تحتوي على صورة تحصل على متابعين أكثر.",
+  "@addPhotoHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "bioLabel": "نبذة",
+  "@bioLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "bioHint": "بضع كلمات عنك",
+  "@bioHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "cityLabel": "المدينة",
+  "@cityLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "cityHint": "أين تقيم؟",
+  "@cityHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "phoneLabel": "رقم الهاتف",
+  "@phoneLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "phoneHint": "+20 ••• ••• ••••",
+  "@phoneHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "phoneHelper": "يساعد أصدقاءك على إيجادك ويتيح لك استعادة حسابك. يبقى خاصًا.",
+  "@phoneHelper": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "takePhoto": "التقاط صورة",
+  "@takePhoto": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "chooseGallery": "اختيار من المعرض",
+  "@chooseGallery": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "removePhoto": "إزالة الصورة",
+  "@removePhoto": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorPhone": "أدخل رقم هاتف صالحًا",
+  "@errorPhone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "interestsTitle": "ما اهتماماتك؟",
+  "@interestsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "interestsSubtitle": "اختر بعض المواضيع ليشبهك موجزك ومقاطعك القصيرة.",
+  "@interestsSubtitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "selectedCount": "تم اختيار {n}",
+  "@selectedCount": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "interestsError": "تعذّر تحميل المواضيع",
+  "@interestsError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "retry": "إعادة المحاولة",
+  "@retry": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followTitle": "تابع أشخاصًا تعرفهم",
+  "@followTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followSubtitle": "ستظهر منشوراتهم ومقاطعهم القصيرة في موجزك. يمكنك التغيير في أي وقت.",
+  "@followSubtitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "tabSuggested": "مقترحون",
+  "@tabSuggested": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "tabContacts": "من جهات الاتصال",
+  "@tabContacts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "tabPopular": "الأكثر شعبية",
+  "@tabPopular": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "suggestedForYou": "مقترحون لك",
+  "@suggestedForYou": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followAll": "متابعة الكل",
+  "@followAll": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "follow": "متابعة",
+  "@follow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "following": "تتابعه",
+  "@following": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followPerson": "تابع {name}",
+  "@followPerson": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unfollowPerson": "إلغاء متابعة {name}",
+  "@unfollowPerson": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mutualFriends": "{n, plural, one{صديق مشترك} two{صديقان مشتركان} few{{n} أصدقاء مشتركين} many{{n} صديقًا مشتركًا} other{{n} صديق مشترك}}",
+  "@mutualFriends": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "livesIn": "يسكن في {city}",
+  "@livesIn": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "followHint": "تابع 3 أشخاص على الأقل لموجز أفضل",
+  "@followHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "noSuggestions": "لا توجد اقتراحات بعد",
+  "@noSuggestions": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followError": "تعذّر تحميل الأشخاص",
+  "@followError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "leaveTitle": "مغادرة التسجيل؟",
+  "@leaveTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "leaveBody": "تم حفظ تقدمك. يمكنك المتابعة من حيث توقفت في المرة القادمة التي تسجّل فيها الدخول.",
+  "@leaveBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "keepGoing": "واصل",
+  "@keepGoing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "leave": "مغادرة",
+  "@leave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "resetTitle": "عيّن كلمة مرور جديدة",
+  "@resetTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "resetSubtitle": "لـ {email}. استخدم كلمة مرور لم تستخدمها على Pulse من قبل.",
+  "@resetSubtitle": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "newPasswordLabel": "كلمة المرور الجديدة",
+  "@newPasswordLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "ruleLength": "8 أحرف على الأقل",
+  "@ruleLength": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "ruleNumber": "تحتوي على رقم",
+  "@ruleNumber": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "ruleCase": "أحرف كبيرة وصغيرة",
+  "@ruleCase": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "confirmLabel": "تأكيد كلمة المرور الجديدة",
+  "@confirmLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "confirmHint": "أعد كتابتها",
+  "@confirmHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "logoutOthers": "تسجيل الخروج من جميع الأجهزة الأخرى",
+  "@logoutOthers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "updatePassword": "تحديث كلمة المرور",
+  "@updatePassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorMismatch": "كلمتا المرور غير متطابقتين",
+  "@errorMismatch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "linkExpiredTitle": "انتهت صلاحية هذا الرابط",
+  "@linkExpiredTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "linkExpiredBody": "اطلب رابطًا جديدًا لإعادة تعيين كلمة مرورك.",
+  "@linkExpiredBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "requestNewLink": "طلب رابط جديد",
+  "@requestNewLink": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "updatedTitle": "تم تحديث كلمة المرور",
+  "@updatedTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "updatedBodyOthers": "يمكنك الآن تسجيل الدخول بكلمة مرورك الجديدة. تم تسجيل الخروج من الأجهزة الأخرى.",
+  "@updatedBodyOthers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "updatedBody": "يمكنك الآن تسجيل الدخول بكلمة مرورك الجديدة.",
+  "@updatedBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "close": "إغلاق",
+  "@close": {
     "x-review": "Arabic draft: pending user approval"
   }
 }

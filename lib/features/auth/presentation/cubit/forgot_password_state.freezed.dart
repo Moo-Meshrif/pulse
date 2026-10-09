@@ -16,8 +16,8 @@ T _$identity<T>(T value) => value;
 mixin _$ForgotPasswordState {
 
  String get email;/// A send or a resend is in flight.
- bool get loading;/// The email is not shaped like an address; shown under the field until the user edits it.
- bool get invalidEmail;/// Why sending failed; the screen shows a snackbar.
+ bool get loading;/// The user left the email field; the format error may show from now on.
+ bool get emailTouched;/// Why sending failed; the screen shows a snackbar.
  Failure? get failure;/// Time left before "Resend link" works; zero when it may be used.
  Duration get cooldown;/// One-shot: the link was sent to this email, so the screen opens the "link sent" dialog.
  String? get sentTo;/// One-shot: a notice for the dialog's snackbar.
@@ -34,20 +34,20 @@ $ForgotPasswordStateCopyWith<ForgotPasswordState> get copyWith => _$ForgotPasswo
 @override
 bool operator ==(Object other) {
   final _this = this as ForgotPasswordState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ForgotPasswordState&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.invalidEmail, _this.invalidEmail) || other.invalidEmail == _this.invalidEmail)&&(identical(other.failure, _this.failure) || other.failure == _this.failure)&&(identical(other.cooldown, _this.cooldown) || other.cooldown == _this.cooldown)&&(identical(other.sentTo, _this.sentTo) || other.sentTo == _this.sentTo)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.focusRequest, _this.focusRequest) || other.focusRequest == _this.focusRequest));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ForgotPasswordState&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.emailTouched, _this.emailTouched) || other.emailTouched == _this.emailTouched)&&(identical(other.failure, _this.failure) || other.failure == _this.failure)&&(identical(other.cooldown, _this.cooldown) || other.cooldown == _this.cooldown)&&(identical(other.sentTo, _this.sentTo) || other.sentTo == _this.sentTo)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.focusRequest, _this.focusRequest) || other.focusRequest == _this.focusRequest));
 }
 
 
 @override
 int get hashCode {
   final _this = this as ForgotPasswordState;
-  return Object.hash(runtimeType,_this.email,_this.loading,_this.invalidEmail,_this.failure,_this.cooldown,_this.sentTo,_this.message,_this.focusRequest);
+  return Object.hash(runtimeType,_this.email,_this.loading,_this.emailTouched,_this.failure,_this.cooldown,_this.sentTo,_this.message,_this.focusRequest);
 }
 
 @override
 String toString() {
   final _this = this as ForgotPasswordState;
-  return 'ForgotPasswordState(email: ${_this.email}, loading: ${_this.loading}, invalidEmail: ${_this.invalidEmail}, failure: ${_this.failure}, cooldown: ${_this.cooldown}, sentTo: ${_this.sentTo}, message: ${_this.message}, focusRequest: ${_this.focusRequest})';
+  return 'ForgotPasswordState(email: ${_this.email}, loading: ${_this.loading}, emailTouched: ${_this.emailTouched}, failure: ${_this.failure}, cooldown: ${_this.cooldown}, sentTo: ${_this.sentTo}, message: ${_this.message}, focusRequest: ${_this.focusRequest})';
 }
 
 
@@ -58,7 +58,7 @@ abstract mixin class $ForgotPasswordStateCopyWith<$Res>  {
   factory $ForgotPasswordStateCopyWith(ForgotPasswordState value, $Res Function(ForgotPasswordState) _then) = _$ForgotPasswordStateCopyWithImpl;
 @useResult
 $Res call({
- String email, bool loading, bool invalidEmail, Failure? failure, Duration cooldown, String? sentTo, ResetLinkMessage? message, int focusRequest
+ String email, bool loading, bool emailTouched, Failure? failure, Duration cooldown, String? sentTo, ResetLinkMessage? message, int focusRequest
 });
 
 
@@ -75,11 +75,11 @@ class _$ForgotPasswordStateCopyWithImpl<$Res>
 
 /// Create a copy of ForgotPasswordState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? loading = null,Object? invalidEmail = null,Object? failure = freezed,Object? cooldown = null,Object? sentTo = freezed,Object? message = freezed,Object? focusRequest = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? loading = null,Object? emailTouched = null,Object? failure = freezed,Object? cooldown = null,Object? sentTo = freezed,Object? message = freezed,Object? focusRequest = null,}) {
   return _then(ForgotPasswordState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
-as bool,invalidEmail: null == invalidEmail ? _self.invalidEmail : invalidEmail // ignore: cast_nullable_to_non_nullable
+as bool,emailTouched: null == emailTouched ? _self.emailTouched : emailTouched // ignore: cast_nullable_to_non_nullable
 as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,cooldown: null == cooldown ? _self.cooldown : cooldown // ignore: cast_nullable_to_non_nullable
 as Duration,sentTo: freezed == sentTo ? _self.sentTo : sentTo // ignore: cast_nullable_to_non_nullable
@@ -170,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  bool loading,  bool invalidEmail,  Failure? failure,  Duration cooldown,  String? sentTo,  ResetLinkMessage? message,  int focusRequest)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  bool loading,  bool emailTouched,  Failure? failure,  Duration cooldown,  String? sentTo,  ResetLinkMessage? message,  int focusRequest)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ForgotPasswordState() when $default != null:
-return $default(_that.email,_that.loading,_that.invalidEmail,_that.failure,_that.cooldown,_that.sentTo,_that.message,_that.focusRequest);case _:
+return $default(_that.email,_that.loading,_that.emailTouched,_that.failure,_that.cooldown,_that.sentTo,_that.message,_that.focusRequest);case _:
   return orElse();
 
 }
@@ -191,10 +191,10 @@ return $default(_that.email,_that.loading,_that.invalidEmail,_that.failure,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  bool loading,  bool invalidEmail,  Failure? failure,  Duration cooldown,  String? sentTo,  ResetLinkMessage? message,  int focusRequest)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  bool loading,  bool emailTouched,  Failure? failure,  Duration cooldown,  String? sentTo,  ResetLinkMessage? message,  int focusRequest)  $default,) {final _that = this;
 switch (_that) {
 case _ForgotPasswordState():
-return $default(_that.email,_that.loading,_that.invalidEmail,_that.failure,_that.cooldown,_that.sentTo,_that.message,_that.focusRequest);case _:
+return $default(_that.email,_that.loading,_that.emailTouched,_that.failure,_that.cooldown,_that.sentTo,_that.message,_that.focusRequest);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +211,10 @@ return $default(_that.email,_that.loading,_that.invalidEmail,_that.failure,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  bool loading,  bool invalidEmail,  Failure? failure,  Duration cooldown,  String? sentTo,  ResetLinkMessage? message,  int focusRequest)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  bool loading,  bool emailTouched,  Failure? failure,  Duration cooldown,  String? sentTo,  ResetLinkMessage? message,  int focusRequest)?  $default,) {final _that = this;
 switch (_that) {
 case _ForgotPasswordState() when $default != null:
-return $default(_that.email,_that.loading,_that.invalidEmail,_that.failure,_that.cooldown,_that.sentTo,_that.message,_that.focusRequest);case _:
+return $default(_that.email,_that.loading,_that.emailTouched,_that.failure,_that.cooldown,_that.sentTo,_that.message,_that.focusRequest);case _:
   return null;
 
 }
@@ -226,14 +226,14 @@ return $default(_that.email,_that.loading,_that.invalidEmail,_that.failure,_that
 
 
 class _ForgotPasswordState extends ForgotPasswordState {
-  const _ForgotPasswordState({this.email = '', this.loading = false, this.invalidEmail = false, this.failure, this.cooldown = Duration.zero, this.sentTo, this.message, this.focusRequest = 0}): super._();
+  const _ForgotPasswordState({this.email = '', this.loading = false, this.emailTouched = false, this.failure, this.cooldown = Duration.zero, this.sentTo, this.message, this.focusRequest = 0}): super._();
   
 
 @override@JsonKey() final  String email;
 /// A send or a resend is in flight.
 @override@JsonKey() final  bool loading;
-/// The email is not shaped like an address; shown under the field until the user edits it.
-@override@JsonKey() final  bool invalidEmail;
+/// The user left the email field; the format error may show from now on.
+@override@JsonKey() final  bool emailTouched;
 /// Why sending failed; the screen shows a snackbar.
 @override final  Failure? failure;
 /// Time left before "Resend link" works; zero when it may be used.
@@ -255,18 +255,18 @@ _$ForgotPasswordStateCopyWith<_ForgotPasswordState> get copyWith => __$ForgotPas
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ForgotPasswordState&&(identical(other.email, email) || other.email == email)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.invalidEmail, invalidEmail) || other.invalidEmail == invalidEmail)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.cooldown, cooldown) || other.cooldown == cooldown)&&(identical(other.sentTo, sentTo) || other.sentTo == sentTo)&&(identical(other.message, message) || other.message == message)&&(identical(other.focusRequest, focusRequest) || other.focusRequest == focusRequest));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ForgotPasswordState&&(identical(other.email, email) || other.email == email)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.emailTouched, emailTouched) || other.emailTouched == emailTouched)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.cooldown, cooldown) || other.cooldown == cooldown)&&(identical(other.sentTo, sentTo) || other.sentTo == sentTo)&&(identical(other.message, message) || other.message == message)&&(identical(other.focusRequest, focusRequest) || other.focusRequest == focusRequest));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,email,loading,invalidEmail,failure,cooldown,sentTo,message,focusRequest);
+    return Object.hash(runtimeType,email,loading,emailTouched,failure,cooldown,sentTo,message,focusRequest);
 }
 
 @override
 String toString() {
-    return 'ForgotPasswordState(email: $email, loading: $loading, invalidEmail: $invalidEmail, failure: $failure, cooldown: $cooldown, sentTo: $sentTo, message: $message, focusRequest: $focusRequest)';
+    return 'ForgotPasswordState(email: $email, loading: $loading, emailTouched: $emailTouched, failure: $failure, cooldown: $cooldown, sentTo: $sentTo, message: $message, focusRequest: $focusRequest)';
 }
 
 
@@ -277,7 +277,7 @@ abstract mixin class _$ForgotPasswordStateCopyWith<$Res> implements $ForgotPassw
   factory _$ForgotPasswordStateCopyWith(_ForgotPasswordState value, $Res Function(_ForgotPasswordState) _then) = __$ForgotPasswordStateCopyWithImpl;
 @override @useResult
 $Res call({
- String email, bool loading, bool invalidEmail, Failure? failure, Duration cooldown, String? sentTo, ResetLinkMessage? message, int focusRequest
+ String email, bool loading, bool emailTouched, Failure? failure, Duration cooldown, String? sentTo, ResetLinkMessage? message, int focusRequest
 });
 
 
@@ -294,11 +294,11 @@ class __$ForgotPasswordStateCopyWithImpl<$Res>
 
 /// Create a copy of ForgotPasswordState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? loading = null,Object? invalidEmail = null,Object? failure = freezed,Object? cooldown = null,Object? sentTo = freezed,Object? message = freezed,Object? focusRequest = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? loading = null,Object? emailTouched = null,Object? failure = freezed,Object? cooldown = null,Object? sentTo = freezed,Object? message = freezed,Object? focusRequest = null,}) {
   return _then(_ForgotPasswordState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
-as bool,invalidEmail: null == invalidEmail ? _self.invalidEmail : invalidEmail // ignore: cast_nullable_to_non_nullable
+as bool,emailTouched: null == emailTouched ? _self.emailTouched : emailTouched // ignore: cast_nullable_to_non_nullable
 as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,cooldown: null == cooldown ? _self.cooldown : cooldown // ignore: cast_nullable_to_non_nullable
 as Duration,sentTo: freezed == sentTo ? _self.sentTo : sentTo // ignore: cast_nullable_to_non_nullable

@@ -38,10 +38,6 @@ class SignInCubit extends BaseCubit<SignInState> {
 
   Future<void> submit() async {
     if (!state.canSubmit) return;
-    if (state.identifier.trim().isEmpty || state.password.isEmpty) {
-      emit(state.copyWith(showRequired: true));
-      return;
-    }
     emit(state.copyWith(loading: true, failure: null));
     final result = await _auth.signIn(
       identifier: state.identifier.trim(),

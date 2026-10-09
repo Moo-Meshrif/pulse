@@ -28,7 +28,7 @@ Scaffold (bg background) > SafeArea > scrollable, ContentWidth, side padding 24
 | Footer | New to Pulse? Create account | | textSecondary / primary | 15 | bottom | -> /register |
 
 ## States
-- Default: Sign in enabled. Pressing it with an empty field shows a danger caption under that field ("Enter your email or username" / "Enter your password") and sends nothing; typing clears it [user].
+- Default: Sign in disabled until both fields have text [user]; no "required" captions.
 - Loading: spinner in button, fields read-only.
 - Error: wrong credentials (or unknown username) -> snackbar "Incorrect email or password" [user]. No format error: a value containing "@" is treated as an email, anything else as a username [user].
 - Unverified email: the function answers 403 with the account's email only after the correct password; go to S4 with that email (returned in `AuthFailure.email`, the field may have held a username) and send a new code [user].

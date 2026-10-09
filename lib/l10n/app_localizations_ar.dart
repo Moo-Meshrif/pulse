@@ -174,13 +174,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get createAccount => 'إنشاء حساب';
 
   @override
-  String get errorCredentials => 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
-
-  @override
-  String get errorIdentifierRequired => 'أدخل بريدك الإلكتروني أو اسم المستخدم';
-
-  @override
-  String get errorPasswordRequired => 'أدخل كلمة المرور';
+  String get errorCredentials =>
+      'البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة';
 
   @override
   String errorTooManyAttempts(String time) {
@@ -205,6 +200,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backToSignIn => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get errorEmailSend =>
+      'تعذّر إرسال البريد الإلكتروني حالياً. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get errorRateLimited => 'طلبات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.';
+
+  @override
+  String get errorServer => 'تعذّر إكمال طلبك حالياً. حاول مرة أخرى بعد قليل.';
 
   @override
   String get errorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
@@ -242,4 +247,317 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get linkResent => 'تم إرسال الرابط مرة أخرى';
+
+  @override
+  String get signUpTitle => 'أنشئ حسابك';
+
+  @override
+  String get signUpSubtitle => 'ابدأ ببريدك الإلكتروني وكلمة مرور فقط.';
+
+  @override
+  String get passwordHintMin => '8 أحرف على الأقل';
+
+  @override
+  String get agreePrefix => 'أوافق على';
+
+  @override
+  String get agreeAnd => 'و';
+
+  @override
+  String get orSignUpWith => 'أو سجّل باستخدام';
+
+  @override
+  String get continueButton => 'متابعة';
+
+  @override
+  String get alreadyOnPulse => 'لديك حساب على Pulse؟';
+
+  @override
+  String get errorPasswordShort => 'يجب ألا تقل كلمة المرور عن 8 أحرف';
+
+  @override
+  String get errorEmailExists => 'يوجد حساب بهذا البريد بالفعل';
+
+  @override
+  String get errorAccountNotFound => 'لا يوجد حساب بهذا البريد';
+
+  @override
+  String get verifyTitle => 'تحقق من بريدك';
+
+  @override
+  String verifySubtitle(String email) {
+    return 'أرسلنا رمزًا من 6 أرقام إلى $email. أدخله أدناه للتحقق من حسابك.';
+  }
+
+  @override
+  String get resendCode => 'إعادة إرسال الرمز';
+
+  @override
+  String resendCodeIn(String time) {
+    return 'إعادة الإرسال خلال $time';
+  }
+
+  @override
+  String get verify => 'تحقق';
+
+  @override
+  String get useDifferentEmail => 'استخدام بريد آخر';
+
+  @override
+  String get errorWrongCode => 'رمز غير صحيح، حاول مرة أخرى';
+
+  @override
+  String get aboutTitle => 'عنك';
+
+  @override
+  String get aboutSubtitle => 'بهذه الطريقة سيجدك الناس على Pulse.';
+
+  @override
+  String get fullNameLabel => 'الاسم الكامل';
+
+  @override
+  String get fullNameHint => 'اسمك';
+
+  @override
+  String get usernameLabel => 'اسم المستخدم';
+
+  @override
+  String get usernameHint => 'اسم المستخدم';
+
+  @override
+  String get usernameHelper =>
+      'الأحرف والأرقام والنقاط والشرطة السفلية. 3 أحرف على الأقل.';
+
+  @override
+  String get birthdayLabel => 'تاريخ الميلاد';
+
+  @override
+  String get birthdayHint => 'DD / MM / YYYY';
+
+  @override
+  String get birthdayHelper =>
+      'يُستخدم للتأكد من عمرك. لا يظهر في ملفك الشخصي.';
+
+  @override
+  String get genderLabel => 'الجنس';
+
+  @override
+  String get genderOptional => '(اختياري)';
+
+  @override
+  String get genderFemale => 'أنثى';
+
+  @override
+  String get genderMale => 'ذكر';
+
+  @override
+  String get genderPreferNot => 'أفضّل عدم الذكر';
+
+  @override
+  String get errorUsernameTaken => 'اسم المستخدم مستخدم بالفعل';
+
+  @override
+  String get errorMinAge => 'يجب أن يكون عمرك 18 عامًا على الأقل';
+
+  @override
+  String get profileTitle => 'أعدّ ملفك الشخصي';
+
+  @override
+  String get profileSubtitle =>
+      'كل شيء اختياري. يمكنك إضافته لاحقًا من الإعدادات.';
+
+  @override
+  String get addPhoto => 'أضف صورة';
+
+  @override
+  String get addPhotoHint =>
+      'الملفات التي تحتوي على صورة تحصل على متابعين أكثر.';
+
+  @override
+  String get bioLabel => 'نبذة';
+
+  @override
+  String get bioHint => 'بضع كلمات عنك';
+
+  @override
+  String get cityLabel => 'المدينة';
+
+  @override
+  String get cityHint => 'أين تقيم؟';
+
+  @override
+  String get phoneLabel => 'رقم الهاتف';
+
+  @override
+  String get phoneHint => '+20 ••• ••• ••••';
+
+  @override
+  String get phoneHelper =>
+      'يساعد أصدقاءك على إيجادك ويتيح لك استعادة حسابك. يبقى خاصًا.';
+
+  @override
+  String get takePhoto => 'التقاط صورة';
+
+  @override
+  String get chooseGallery => 'اختيار من المعرض';
+
+  @override
+  String get removePhoto => 'إزالة الصورة';
+
+  @override
+  String get errorPhone => 'أدخل رقم هاتف صالحًا';
+
+  @override
+  String get interestsTitle => 'ما اهتماماتك؟';
+
+  @override
+  String get interestsSubtitle =>
+      'اختر بعض المواضيع ليشبهك موجزك ومقاطعك القصيرة.';
+
+  @override
+  String selectedCount(int n) {
+    return 'تم اختيار $n';
+  }
+
+  @override
+  String get interestsError => 'تعذّر تحميل المواضيع';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get followTitle => 'تابع أشخاصًا تعرفهم';
+
+  @override
+  String get followSubtitle =>
+      'ستظهر منشوراتهم ومقاطعهم القصيرة في موجزك. يمكنك التغيير في أي وقت.';
+
+  @override
+  String get tabSuggested => 'مقترحون';
+
+  @override
+  String get tabContacts => 'من جهات الاتصال';
+
+  @override
+  String get tabPopular => 'الأكثر شعبية';
+
+  @override
+  String get suggestedForYou => 'مقترحون لك';
+
+  @override
+  String get followAll => 'متابعة الكل';
+
+  @override
+  String get follow => 'متابعة';
+
+  @override
+  String get following => 'تتابعه';
+
+  @override
+  String followPerson(String name) {
+    return 'تابع $name';
+  }
+
+  @override
+  String unfollowPerson(String name) {
+    return 'إلغاء متابعة $name';
+  }
+
+  @override
+  String mutualFriends(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n صديق مشترك',
+      many: '$n صديقًا مشتركًا',
+      few: '$n أصدقاء مشتركين',
+      two: 'صديقان مشتركان',
+      one: 'صديق مشترك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String livesIn(String city) {
+    return 'يسكن في $city';
+  }
+
+  @override
+  String get followHint => 'تابع 3 أشخاص على الأقل لموجز أفضل';
+
+  @override
+  String get noSuggestions => 'لا توجد اقتراحات بعد';
+
+  @override
+  String get followError => 'تعذّر تحميل الأشخاص';
+
+  @override
+  String get leaveTitle => 'مغادرة التسجيل؟';
+
+  @override
+  String get leaveBody =>
+      'تم حفظ تقدمك. يمكنك المتابعة من حيث توقفت في المرة القادمة التي تسجّل فيها الدخول.';
+
+  @override
+  String get keepGoing => 'واصل';
+
+  @override
+  String get leave => 'مغادرة';
+
+  @override
+  String get resetTitle => 'عيّن كلمة مرور جديدة';
+
+  @override
+  String resetSubtitle(String email) {
+    return 'لـ $email. استخدم كلمة مرور لم تستخدمها على Pulse من قبل.';
+  }
+
+  @override
+  String get newPasswordLabel => 'كلمة المرور الجديدة';
+
+  @override
+  String get ruleLength => '8 أحرف على الأقل';
+
+  @override
+  String get ruleNumber => 'تحتوي على رقم';
+
+  @override
+  String get ruleCase => 'أحرف كبيرة وصغيرة';
+
+  @override
+  String get confirmLabel => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get confirmHint => 'أعد كتابتها';
+
+  @override
+  String get logoutOthers => 'تسجيل الخروج من جميع الأجهزة الأخرى';
+
+  @override
+  String get updatePassword => 'تحديث كلمة المرور';
+
+  @override
+  String get errorMismatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get linkExpiredTitle => 'انتهت صلاحية هذا الرابط';
+
+  @override
+  String get linkExpiredBody => 'اطلب رابطًا جديدًا لإعادة تعيين كلمة مرورك.';
+
+  @override
+  String get requestNewLink => 'طلب رابط جديد';
+
+  @override
+  String get updatedTitle => 'تم تحديث كلمة المرور';
+
+  @override
+  String get updatedBodyOthers =>
+      'يمكنك الآن تسجيل الدخول بكلمة مرورك الجديدة. تم تسجيل الخروج من الأجهزة الأخرى.';
+
+  @override
+  String get updatedBody => 'يمكنك الآن تسجيل الدخول بكلمة مرورك الجديدة.';
+
+  @override
+  String get close => 'إغلاق';
 }

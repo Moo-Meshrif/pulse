@@ -30,7 +30,39 @@ void main() {
     expect(find.text(l10nEn.comingSoon), findsOneWidget);
   });
 
-  for (final route in [AppRoutes.home, AppRoutes.resetPassword]) {
+  testWidgets('/register opens the sign-up Account step', (tester) async {
+    await openRoute(tester, AppRoutes.register);
+    expect(find.text(l10nEn.signUpTitle), findsOneWidget);
+  });
+
+  testWidgets('/register?step=2&email=… opens Verify email for that address', (
+    tester,
+  ) async {
+    setUpView(tester);
+    await tester.bootApp(prefs: {'onboarding_seen': true});
+    tester
+        .state<NavigatorState>(find.byType(Navigator))
+        .pushNamed(AppRoutes.verifyEmailAt('ada@example.com'));
+    // The code boxes blink a cursor for ever, so the page never settles.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text(l10nEn.verifyTitle), findsOneWidget);
+    expect(
+      find.textContaining('ada•••@example.com', findRichText: true),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    '/reset-password without a recovery session says the link expired',
+    (tester) async {
+      await openRoute(tester, AppRoutes.resetPassword);
+      expect(find.text(l10nEn.linkExpiredTitle), findsOneWidget);
+      expect(find.text(l10nEn.requestNewLink), findsOneWidget);
+    },
+  );
+
+  for (final route in [AppRoutes.home]) {
     testWidgets('$route opens its placeholder', (tester) async {
       await openRoute(tester, route);
       expect(find.text(route), findsOneWidget);

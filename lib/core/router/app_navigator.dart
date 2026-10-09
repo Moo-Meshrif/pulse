@@ -20,4 +20,20 @@ abstract final class AppNavigator {
 
   static void back<T extends Object?>(BuildContext context, [T? result]) =>
       Navigator.of(context).pop<T>(result);
+
+  /// There is a screen below this one to go back to.
+  static bool canBack(BuildContext context) => Navigator.of(context).canPop();
+
+  /// Opens [route] on a clean stack from outside the widget tree (a deep link), unless it is already the
+  /// screen being shown.
+  static void resetToUnlessCurrent(NavigatorState navigator, String route) {
+    var alreadyThere = false;
+    navigator.popUntil((current) {
+      alreadyThere = current.settings.name == route;
+      return true;
+    });
+    if (!alreadyThere) {
+      navigator.pushNamedAndRemoveUntil(route, (_) => false);
+    }
+  }
 }

@@ -174,13 +174,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createAccount => 'Create account';
 
   @override
-  String get errorCredentials => 'Incorrect email or password';
-
-  @override
-  String get errorIdentifierRequired => 'Enter your email or username';
-
-  @override
-  String get errorPasswordRequired => 'Enter your password';
+  String get errorCredentials => 'Incorrect email/username or password';
 
   @override
   String errorTooManyAttempts(String time) {
@@ -206,6 +200,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get errorEmailSend =>
+      'We couldn\'t send the email right now. Please try again in a few minutes.';
+
+  @override
+  String get errorRateLimited =>
+      'Too many requests. Please wait a moment and try again.';
+
+  @override
+  String get errorServer =>
+      'We couldn\'t complete that right now. Please try again shortly.';
 
   @override
   String get errorGeneric => 'Something went wrong. Try again.';
@@ -243,4 +249,313 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkResent => 'Link sent again';
+
+  @override
+  String get signUpTitle => 'Create your account';
+
+  @override
+  String get signUpSubtitle => 'Start with just your email and a password.';
+
+  @override
+  String get passwordHintMin => 'At least 8 characters';
+
+  @override
+  String get agreePrefix => 'I agree to the';
+
+  @override
+  String get agreeAnd => 'and';
+
+  @override
+  String get orSignUpWith => 'or sign up with';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get alreadyOnPulse => 'Already on Pulse?';
+
+  @override
+  String get errorPasswordShort => 'Password must be at least 8 characters';
+
+  @override
+  String get errorEmailExists => 'An account with this email already exists';
+
+  @override
+  String get errorAccountNotFound => 'No account found with this email';
+
+  @override
+  String get verifyTitle => 'Check your email';
+
+  @override
+  String verifySubtitle(String email) {
+    return 'We sent a 6-digit code to $email. Enter it below to verify your account.';
+  }
+
+  @override
+  String get resendCode => 'Resend code';
+
+  @override
+  String resendCodeIn(String time) {
+    return 'Resend code in $time';
+  }
+
+  @override
+  String get verify => 'Verify';
+
+  @override
+  String get useDifferentEmail => 'Use a different email';
+
+  @override
+  String get errorWrongCode => 'Wrong code, try again';
+
+  @override
+  String get aboutTitle => 'About you';
+
+  @override
+  String get aboutSubtitle => 'This is how people will find you on Pulse.';
+
+  @override
+  String get fullNameLabel => 'Full name';
+
+  @override
+  String get fullNameHint => 'Your name';
+
+  @override
+  String get usernameLabel => 'Username';
+
+  @override
+  String get usernameHint => 'username';
+
+  @override
+  String get usernameHelper =>
+      'Letters, numbers, dots and underscores. At least 3 characters.';
+
+  @override
+  String get birthdayLabel => 'Birthday';
+
+  @override
+  String get birthdayHint => 'DD / MM / YYYY';
+
+  @override
+  String get birthdayHelper =>
+      'Used to confirm your age. It isn\'t shown on your profile.';
+
+  @override
+  String get genderLabel => 'Gender';
+
+  @override
+  String get genderOptional => '(optional)';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderPreferNot => 'Prefer not to say';
+
+  @override
+  String get errorUsernameTaken => 'Username is taken';
+
+  @override
+  String get errorMinAge => 'You must be at least 18';
+
+  @override
+  String get profileTitle => 'Set up your profile';
+
+  @override
+  String get profileSubtitle =>
+      'All optional. You can add these later in Settings.';
+
+  @override
+  String get addPhoto => 'Add a photo';
+
+  @override
+  String get addPhotoHint => 'Profiles with a photo get more follows.';
+
+  @override
+  String get bioLabel => 'Bio';
+
+  @override
+  String get bioHint => 'A few words about you';
+
+  @override
+  String get cityLabel => 'City';
+
+  @override
+  String get cityHint => 'Where are you based?';
+
+  @override
+  String get phoneLabel => 'Phone number';
+
+  @override
+  String get phoneHint => '+20 ••• ••• ••••';
+
+  @override
+  String get phoneHelper =>
+      'Helps friends find you and lets you recover your account. Kept private.';
+
+  @override
+  String get takePhoto => 'Take photo';
+
+  @override
+  String get chooseGallery => 'Choose from gallery';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get errorPhone => 'Enter a valid phone number';
+
+  @override
+  String get interestsTitle => 'What are you into?';
+
+  @override
+  String get interestsSubtitle =>
+      'Pick a few topics so your feed and shorts feel like you.';
+
+  @override
+  String selectedCount(int n) {
+    return '$n selected';
+  }
+
+  @override
+  String get interestsError => 'Couldn\'t load topics';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get followTitle => 'Follow people you know';
+
+  @override
+  String get followSubtitle =>
+      'Their posts and shorts will show up in your feed. You can change this anytime.';
+
+  @override
+  String get tabSuggested => 'Suggested';
+
+  @override
+  String get tabContacts => 'From contacts';
+
+  @override
+  String get tabPopular => 'Popular';
+
+  @override
+  String get suggestedForYou => 'SUGGESTED FOR YOU';
+
+  @override
+  String get followAll => 'Follow all';
+
+  @override
+  String get follow => 'Follow';
+
+  @override
+  String get following => 'Following';
+
+  @override
+  String followPerson(String name) {
+    return 'Follow $name';
+  }
+
+  @override
+  String unfollowPerson(String name) {
+    return 'Unfollow $name';
+  }
+
+  @override
+  String mutualFriends(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n mutual friends',
+      one: '1 mutual friend',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String livesIn(String city) {
+    return 'Lives in $city';
+  }
+
+  @override
+  String get followHint => 'Follow at least 3 people for a better feed';
+
+  @override
+  String get noSuggestions => 'No suggestions yet';
+
+  @override
+  String get followError => 'Couldn\'t load people';
+
+  @override
+  String get leaveTitle => 'Leave sign-up?';
+
+  @override
+  String get leaveBody =>
+      'Your progress is saved. You can pick up where you left off the next time you sign in.';
+
+  @override
+  String get keepGoing => 'Keep going';
+
+  @override
+  String get leave => 'Leave';
+
+  @override
+  String get resetTitle => 'Set a new password';
+
+  @override
+  String resetSubtitle(String email) {
+    return 'For $email. Use something you haven\'t used on Pulse before.';
+  }
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get ruleLength => 'At least 8 characters';
+
+  @override
+  String get ruleNumber => 'Contains a number';
+
+  @override
+  String get ruleCase => 'Upper and lower case letters';
+
+  @override
+  String get confirmLabel => 'Confirm new password';
+
+  @override
+  String get confirmHint => 'Type it again';
+
+  @override
+  String get logoutOthers => 'Log out of all other devices';
+
+  @override
+  String get updatePassword => 'Update password';
+
+  @override
+  String get errorMismatch => 'Passwords don\'t match';
+
+  @override
+  String get linkExpiredTitle => 'This link has expired';
+
+  @override
+  String get linkExpiredBody => 'Request a new link to reset your password.';
+
+  @override
+  String get requestNewLink => 'Request a new link';
+
+  @override
+  String get updatedTitle => 'Password updated';
+
+  @override
+  String get updatedBodyOthers =>
+      'You can now sign in with your new password. Other devices have been logged out.';
+
+  @override
+  String get updatedBody => 'You can now sign in with your new password.';
+
+  @override
+  String get close => 'Close';
 }

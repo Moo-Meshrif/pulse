@@ -9,7 +9,13 @@ import 'failures.dart';
 /// Maps Supabase's exceptions to [Failure]s; returns null for anything it does not recognise.
 /// The one file that knows Supabase's error shapes: a REST backend replaces it.
 Failure? backendFailure(Object error) => switch (error) {
-  AuthRetryableFetchException() => const NetworkFailure(),
+  // gotrue also throws this for any 5xx answer; only one without a status never reached the server.
+  AuthRetryableFetchException(:final statusCode, :final message) =>
+    statusCode == null
+        ? const NetworkFailure()
+        : message.contains('Error sending')
+        ? const AuthFailure(AuthFailureReason.emailSendFailed)
+        : ServerFailure(statusCode: int.tryParse(statusCode)),
   AuthSessionMissingException() => const AuthFailure(
     AuthFailureReason.sessionExpired,
   ),
@@ -56,6 +62,11 @@ Failure _function(FunctionException error) {
   final body = details is Map ? details : const <String, Object?>{};
   return switch ((error.status, body['code'])) {
     (401, 'invalid_credentials') => const AuthFailure(
+      AuthFailureReason.invalidCredentials,
+    ),
+    // An identifier or password the function cannot even parse (too short, bad characters) matches
+    // no account, so it gets the same answer as a wrong password.
+    (400, 'bad_request') => const AuthFailure(
       AuthFailureReason.invalidCredentials,
     ),
     (403, 'email_not_confirmed') => AuthFailure(

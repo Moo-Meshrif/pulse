@@ -130,6 +130,14 @@ final class SupabaseAuthDatasource implements AuthDatasource {
 
   @override
   Future<Result<Unit>> sendPasswordReset(String email) => Guard.run(() async {
+    // Supabase answers success for an unknown email, so ask the database first.
+    final exists = await _client.rpc<bool>(
+      'email_exists',
+      params: {'p_email': email.trim()},
+    );
+    if (!exists) {
+      throw const AuthRejectedException(AuthFailureReason.accountNotFound);
+    }
     await _auth.resetPasswordForEmail(
       email.trim(),
       redirectTo: AppConfig.recoveryRedirectUrl,

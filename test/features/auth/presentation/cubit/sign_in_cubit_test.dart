@@ -44,25 +44,22 @@ void main() {
     password: 'secret1',
   );
 
-  test('empty fields are only flagged once Sign in was pressed', () async {
+  test('Sign in needs text in both fields', () {
     final c = cubit();
-    expect(c.state.canSubmit, isTrue);
-    expect(c.state.identifierMissing, isFalse);
-    await c.submit();
-    expect(c.state.identifierMissing, isTrue);
-    expect(c.state.passwordMissing, isTrue);
+    expect(c.state.canSubmit, isFalse);
     c.identifierChanged('ada');
-    expect(c.state.identifierMissing, isFalse);
-    expect(c.state.passwordMissing, isTrue);
+    expect(c.state.canSubmit, isFalse);
+    c.passwordChanged('secret1');
+    expect(c.state.canSubmit, isTrue);
     c.identifierChanged('   ');
-    expect(c.state.identifierMissing, isTrue);
+    expect(c.state.canSubmit, isFalse);
   });
 
   blocTest<SignInCubit, SignInState>(
     'submit with an empty field sends nothing',
     build: cubit,
     act: (c) => c.submit(),
-    expect: () => [const SignInState(showRequired: true)],
+    expect: () => <SignInState>[],
     verify: (_) => verifyNever(
       () => auth.signIn(
         identifier: any(named: 'identifier'),

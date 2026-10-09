@@ -262,7 +262,11 @@ void main() {
 
   group('password reset', () {
     test('the reset email links back to the app', () async {
-      final backend = BackendDouble((_) async => BackendDouble.json({}));
+      final backend = BackendDouble(
+        (request) async => request.url.path.endsWith('/rpc/email_exists')
+            ? BackendDouble.json(true)
+            : BackendDouble.json({}),
+      );
       final result = await SupabaseAuthDatasource(backend.client)
           .sendPasswordReset(' dip@example.com ');
       expect(result.isRight, isTrue);
@@ -272,6 +276,25 @@ void main() {
         AppConfig.recoveryRedirectUrl,
       );
       expect(body(request)['email'], 'dip@example.com');
+    });
+
+    test('an email with no account is refused and nothing is sent', () async {
+      final backend = BackendDouble(
+        (request) async => request.url.path.endsWith('/rpc/email_exists')
+            ? BackendDouble.json(false)
+            : BackendDouble.json({}),
+      );
+      final result = await SupabaseAuthDatasource(backend.client)
+          .sendPasswordReset('ghost@example.com');
+      expect(
+        result.fold((f) => f, (_) => null),
+        isA<AuthFailure>().having(
+          (f) => f.reason,
+          'reason',
+          AuthFailureReason.accountNotFound,
+        ),
+      );
+      expect(backend.to('/recover'), isEmpty);
     });
 
     test('updatePassword puts the new password on the user', () async {

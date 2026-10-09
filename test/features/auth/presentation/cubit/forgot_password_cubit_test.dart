@@ -31,28 +31,28 @@ void main() {
 
   const cooldown = Duration(seconds: 30);
 
-  test('Send is disabled until the email has text', () {
+  test('Send is disabled until the email is valid', () {
     final c = cubit();
     expect(c.state.canSubmit, isFalse);
     c.emailChanged('  ');
+    expect(c.state.canSubmit, isFalse);
+    c.emailChanged('ada@');
     expect(c.state.canSubmit, isFalse);
     c.emailChanged('ada@example.com');
     expect(c.state.canSubmit, isTrue);
   });
 
-  blocTest<ForgotPasswordCubit, ForgotPasswordState>(
-    'a badly shaped email is refused without a request, and editing clears the error',
-    build: cubit,
-    seed: () => const ForgotPasswordState(email: 'ada'),
-    act: (c) async {
-      await c.submit();
-      c.emailChanged('ada@');
+  test(
+    'the format error shows only after leaving a non-empty invalid email',
+    () {
+      final c = cubit();
+      c.emailChanged('ada');
+      expect(c.state.emailInvalidShown, isFalse);
+      c.emailLeft();
+      expect(c.state.emailInvalidShown, isTrue);
+      c.emailChanged('ada@example.com');
+      expect(c.state.emailInvalidShown, isFalse);
     },
-    expect: () => [
-      const ForgotPasswordState(email: 'ada', invalidEmail: true),
-      const ForgotPasswordState(email: 'ada@'),
-    ],
-    verify: (_) => verifyNever(() => auth.sendPasswordReset(any())),
   );
 
   testWidgets(

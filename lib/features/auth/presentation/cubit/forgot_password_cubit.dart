@@ -4,7 +4,6 @@ import '../../../../core/services/launch_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../data/datasource/auth_datasource.dart';
 import '../utils/countdown.dart';
-import '../utils/email_format.dart';
 import '../utils/enums/reset_link_message.dart';
 import 'forgot_password_state.dart';
 
@@ -23,16 +22,13 @@ class ForgotPasswordCubit extends BaseCubit<ForgotPasswordState> {
 
   final _countdown = Countdown();
 
-  void emailChanged(String value) =>
-      emit(state.copyWith(email: value, invalidEmail: false));
+  void emailChanged(String value) => emit(state.copyWith(email: value));
+
+  void emailLeft() => emit(state.copyWith(emailTouched: true));
 
   Future<void> submit() async {
     if (!state.canSubmit) return;
     final email = state.email.trim();
-    if (!isValidEmail(email)) {
-      emit(state.copyWith(invalidEmail: true));
-      return;
-    }
     emit(state.copyWith(loading: true, failure: null));
     final result = await _auth.sendPasswordReset(email);
     result.fold(

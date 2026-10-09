@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../features/auth/presentation/screen/forgot_password_screen.dart';
 import '../../features/auth/presentation/screen/legal_placeholder_screen.dart';
+import '../../features/auth/presentation/cubit/sign_up_cubit.dart';
+import '../../features/auth/presentation/screen/reset_password_screen.dart';
 import '../../features/auth/presentation/screen/sign_in_screen.dart';
+import '../../features/auth/presentation/screen/sign_up_screen.dart';
 import '../../features/auth/presentation/utils/enums/legal_document.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
@@ -21,15 +24,9 @@ abstract final class AppRouter {
       AppRoutes.root => _root(settings),
       AppRoutes.onboarding => _page(settings, const OnboardingScreen()),
       AppRoutes.signIn => _page(settings, const SignInScreen()),
-      AppRoutes.register => _page(
-        settings,
-        const PlaceholderScreen(route: AppRoutes.register),
-      ),
+      AppRoutes.register => _register(settings),
       AppRoutes.forgotPassword => _page(settings, const ForgotPasswordScreen()),
-      AppRoutes.resetPassword => _page(
-        settings,
-        const PlaceholderScreen(route: AppRoutes.resetPassword),
-      ),
+      AppRoutes.resetPassword => _page(settings, const ResetPasswordScreen()),
       AppRoutes.terms => _page(
         settings,
         const LegalPlaceholderScreen(kind: LegalDocument.terms),
@@ -44,6 +41,19 @@ abstract final class AppRouter {
       ),
       _ => _page(settings, const NotFoundScreen()),
     };
+  }
+
+  /// `/register?step=N&email=…` opens the sign-up flow at step N (default 1).
+  static Route<dynamic> _register(RouteSettings settings) {
+    final query = Uri.parse(settings.name ?? AppRoutes.register)
+        .queryParameters;
+    return _page(
+      settings,
+      SignUpScreen(
+        step: int.tryParse(query['step'] ?? '') ?? SignUpCubit.firstStep,
+        email: query['email'],
+      ),
+    );
   }
 
   /// First launch shows onboarding; afterwards the splash screen picks Sign in, Home or the sign-up step

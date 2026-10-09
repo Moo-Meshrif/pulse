@@ -251,7 +251,7 @@ Spec defaults accepted by the user: avatar color = stable hash of user id -> pal
 
 
 ### Phase 6: Sign-up shell, Account (S3) and Verify email (S4)
-**Status:** [ ]
+**Status:** [x] (screenshot comparison on a device and the real end-to-end check with B1 are still to do)
 - **Goal:** the `SignUpFlow` screen with the shared step bar, hosting S3 and S4.
 - **Depends on:** Phases 2, 3. B1 only for the real end-to-end check.
 - **Spec refs:** `screens/s3-signup-account.md`, `screens/s4-signup-verify-email.md`, `00-overview.md` (Structure, Back rules), `02-components.md` (C7-C10, C15).
@@ -269,7 +269,7 @@ Spec defaults accepted by the user: avatar color = stable hash of user id -> pal
 - **Verify:** Cubit tests (enable rules, strength, email exists, wrong code, cooldown, step transitions); widget tests EN + AR + 1.5x text scale; compare to `s3`, `s4` screenshots; real verification once B1 is done.
 
 ### Phase 7: About you (S5) and Profile (S6)
-**Status:** [ ]
+**Status:** [x] (screenshot comparison on a device still to do; the interests-empty skip after S6 moves to Phase 8, see below)
 - **Goal:** steps 3 and 4 save to Supabase through `profile`'s use cases.
 - **Depends on:** Phase 6.
 - **Spec refs:** `screens/s5-signup-about-you.md`, `screens/s6-signup-profile.md`, `02-components.md` (C3, C11, C13).
@@ -283,7 +283,7 @@ Spec defaults accepted by the user: avatar color = stable hash of user id -> pal
 - **Verify:** Cubit tests (validation, taken username, age, phone, counter, photo set/remove); widget tests EN + AR; compare to `s5`, `s6` screenshots.
 
 ### Phase 8: Interests (S7), Follow (S8) and Leave dialog (S10)
-**Status:** [ ]
+**Status:** [x] (screenshot comparison on a device and a live run against Supabase are still to do)
 - **Goal:** the last two steps, the Home hand-off and the leave-confirmation behavior across steps 3-8 (S10 copy now says progress is saved; resume is at the saved step).
 - **Depends on:** Phase 7.
 - **Spec refs:** `screens/s7-signup-interests.md`, `screens/s8-signup-follow.md`, `screens/s10-leave-signup-dialog.md`, `02-components.md` (C11, C12, C14, C15), `00-overview.md` (Navigation map).
@@ -299,7 +299,7 @@ Spec defaults accepted by the user: avatar color = stable hash of user id -> pal
 - **Verify:** Cubit tests (selection, skip-when-empty for S7 and S8, follow all, unfollow, leave flow, back rules); widget tests EN + AR; compare to `s7`, `s8`, `s10` screenshots.
 
 ### Phase 9: Set new password (S11) and Password updated (S12)
-**Status:** [ ]
+**Status:** [x] (screenshot comparison on a device and a real recovery link are still to do; the link itself is Phase 10 / B4)
 - **Goal:** the reset-password screen works once a recovery session exists, finishing in the S12 dialog.
 - **Depends on:** Phases 2, 3, 4.
 - **Spec refs:** `screens/s11-set-new-password.md`, `screens/s12-password-updated-dialog.md`, `02-components.md` (C2, C8, C8b, C9, C14).
@@ -314,14 +314,14 @@ Spec defaults accepted by the user: avatar color = stable hash of user id -> pal
 - **Verify:** Cubit tests (rules, mismatch, enable, both checkbox paths, error); widget tests EN + AR; compare to `s11`, `s12` screenshots.
 
 ### Phase 10: Integration
-**Status:** [ ]
+**Status:** [~] (code done and tested with mocks; the two blocked items B1 and B4 need your dashboard steps and a device run)
 - **Goal:** the flows work end to end and the flows are verified against the real backend.
 - **Depends on:** Phases 4-9. **B1** (real OTP), **B4** (deep link and expired-link state).
 - **Spec refs:** `00-overview.md` (Navigation map, Resume), `open-questions.md` (Q2, Q13), all screens' navigation sections.
 - **Tasks:**
-  - [ ] Walk every arrow in the navigation map and fix mismatches (including S9 -> S1, S11 -> S1, S10 leave, resume at step 3).
-  - [ ] Confirm `app.dart` starts at `/` and the start-up decision from Phase 3 behaves for: first launch, no session, complete session, incomplete session.
-  - [ ] **[blocked: B4]** Recovery deep link: URL scheme, native configuration, Supabase redirect URL, route to `/reset-password` on the recovery event.
+  - [x] Walk every arrow in the navigation map and fix mismatches (including S9 -> S1, S11 -> S1, S10 leave, resume at step 3).
+  - [x] Confirm `app.dart` starts at `/` and the start-up decision from Phase 3 behaves for: first launch, no session, complete session, incomplete session.
+  - [~] **[blocked: B4]** Recovery deep link: URL scheme and native configuration (Android + iOS) and the route to `/reset-password` on the recovery event are done; still yours: add `pulse://reset-password` to the Supabase redirect URLs (dashboard) and try a real link on a device.
   - [ ] **[blocked: B1]** Real sign-up -> OTP -> profile run.
 - **Out of scope:** new features, social login.
 - **Done when:** a new user can register through step 6 and land on `/home`; a returning user signs in; reset via an emailed link ends in S12 and `/sign-in`. Blocked items remain listed as blocked until their blockers close.

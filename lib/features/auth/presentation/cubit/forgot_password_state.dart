@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/error/failures.dart';
+import '../utils/email_format.dart';
 import '../utils/enums/reset_link_message.dart';
 
 part 'forgot_password_state.freezed.dart';
@@ -17,8 +18,8 @@ abstract class ForgotPasswordState with _$ForgotPasswordState {
     /// A send or a resend is in flight.
     @Default(false) bool loading,
 
-    /// The email is not shaped like an address; shown under the field until the user edits it.
-    @Default(false) bool invalidEmail,
+    /// The user left the email field; the format error may show from now on.
+    @Default(false) bool emailTouched,
 
     /// Why sending failed; the screen shows a snackbar.
     Failure? failure,
@@ -36,7 +37,11 @@ abstract class ForgotPasswordState with _$ForgotPasswordState {
     @Default(0) int focusRequest,
   }) = _ForgotPasswordState;
 
-  bool get canSubmit => email.trim().isNotEmpty && !loading;
+  bool get emailValid => isValidEmail(email);
+
+  bool get emailInvalidShown => emailTouched && email.isNotEmpty && !emailValid;
+
+  bool get canSubmit => emailValid && !loading;
 
   bool get canResend => cooldown <= Duration.zero && !loading;
 }

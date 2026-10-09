@@ -9,13 +9,43 @@ import 'package:pulse/core/theme/app_scroll_behavior.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
+import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/features/profile/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
+import 'package:pulse/features/profile/domain/use_case/clear_local_profile_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/complete_signup_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/get_interests_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/get_suggested_profiles_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/save_interests_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/set_following_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/save_about_you_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_case.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockAuthDatasource extends Mock implements AuthDatasource {}
+
+class MockSaveAboutYouUseCase extends Mock implements SaveAboutYouUseCase {}
+
+class MockSaveProfileDetailsUseCase extends Mock
+    implements SaveProfileDetailsUseCase {}
+
+class MockGetInterestsUseCase extends Mock implements GetInterestsUseCase {}
+
+class MockSaveInterestsUseCase extends Mock implements SaveInterestsUseCase {}
+
+class MockGetSuggestedProfilesUseCase extends Mock
+    implements GetSuggestedProfilesUseCase {}
+
+class MockSetFollowingUseCase extends Mock implements SetFollowingUseCase {}
+
+class MockCompleteSignupUseCase extends Mock implements CompleteSignupUseCase {}
+
+class MockClearLocalProfileUseCase extends Mock
+    implements ClearLocalProfileUseCase {}
+
+class MockPhotoPickerService extends Mock implements PhotoPickerService {}
 
 class MockProfileDatasource extends Mock implements ProfileDatasource {}
 
@@ -104,12 +134,18 @@ extension PumpApp on WidgetTester {
     // The Supabase adapters need a Supabase session: tests get signed-out mocks unless they pass their own.
     final signedOut = MockAuthDatasource();
     when(() => signedOut.hasSession).thenReturn(false);
+    when(() => signedOut.passwordRecovery)
+        .thenAnswer((_) => const Stream.empty());
     await getIt.unregister<AuthDatasource>();
     await getIt.unregister<ProfileDatasource>();
+    await getIt.unregister<InterestsDatasource>();
+    await getIt.unregister<FollowsDatasource>();
     getIt.registerSingleton<AuthDatasource>(auth ?? signedOut);
     getIt.registerSingleton<ProfileDatasource>(
       profiles ?? MockProfileDatasource(),
     );
+    getIt.registerSingleton<InterestsDatasource>(MockInterestsDatasource());
+    getIt.registerSingleton<FollowsDatasource>(MockFollowsDatasource());
     addTearDown(getIt.reset);
     await pumpWidget(App(key: UniqueKey()));
     await pumpAndSettle();

@@ -27,7 +27,7 @@ Feature-first Flutter app (EN + AR, light theme only): `lib/features/<feature>/{
 - **Errors:** `ErrorReporter` + global handlers (`FlutterError.onError`, `PlatformDispatcher.onError`) in `lib/main.dart`.
 - **Theme:** tokens in `lib/core/theme/`. Use `context.appColors.<token>` (ThemeExtension), `context.text.<style>` (no color; Arabic set chosen by locale), `AppSpacing`/`AppRadius`/`AppShadows`. All `AppTextStyles` are `inherit: false` on purpose. Fonts: Sora (headings), Noto Sans, Noto Sans Arabic. RTL rules: `docs/specs/_theme/rtl.md`. Asset paths go in `lib/core/constants/app_assets.dart`.
 - **Localization:** gen-l10n from `lib/l10n/app_en.arb` (template) and `app_ar.arb`; read via `context.l10n`. Arabic strings are drafts tagged `x-review` until the user approves them. Unsupported device locales fall back to English.
-- **Widgets:** shared (used by 2+ features) in `lib/core/widgets/` with barrel `widgets.dart`; feature-only widgets in `features/<f>/presentation/widgets/`. File placement: `data/{datasource,model,enums}`, `presentation/{screen,view,cubit,widgets,utils/enums}`; screen provides the Cubit, view is the pure UI.
+- **Widgets:** shared (used by 2+ features) in `lib/core/widgets/` with barrel `widgets.dart`; feature-only widgets in `features/<f>/presentation/widgets/`. File placement: `data/{datasource,model,enums}`, `presentation/{screen,view,cubit,widgets,utils/enums}`; screen provides the Cubit, view is the UI and reads its own Cubit through small `BlocSelector`/`BlocBuilder` widgets, and the screen holds the `BlocListener` for one-shot effects (navigation, snackbar, dialog).
 
 ## Testing
 
@@ -35,4 +35,4 @@ Feature-first Flutter app (EN + AR, light theme only): `lib/features/<feature>/{
 
 ## Known state
 
-`lib/app/app.dart` has `initialRoute` temporarily set to `/onboarding` (plan Phase 7 restores start-up routing via `/`). `.claude/project-conventions.md` has a stale note saying there is no `BaseCubit` yet; it exists in `lib/core/state/base_cubit.dart`.
+`lib/app/app.dart` starts at `/` (start-up routing is live) and listens for the password-recovery event (`WatchPasswordRecoveryUseCase`) to open `/reset-password`. The reset link is `pulse://reset-password`: native scheme set in `AndroidManifest.xml` / `Info.plist` (Flutter's own deep-link routing is off; `supabase_flutter` reads the link). `.claude/project-conventions.md` is an index; the area files are in `.claude/conventions/`.

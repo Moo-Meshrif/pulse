@@ -162,17 +162,9 @@
   "@createAccount": {
     "description": "Sign in: footer link to the sign-up flow"
   },
-  "errorCredentials": "Incorrect email or password",
+  "errorCredentials": "Incorrect email/username or password",
   "@errorCredentials": {
     "description": "Sign in: snackbar when the credentials are wrong"
-  },
-  "errorIdentifierRequired": "Enter your email or username",
-  "@errorIdentifierRequired": {
-    "description": "Sign in: shown under the empty email or username field"
-  },
-  "errorPasswordRequired": "Enter your password",
-  "@errorPasswordRequired": {
-    "description": "Sign in: shown under the empty password field"
   },
   "errorTooManyAttempts": "Too many attempts. Try again in {time}.",
   "@errorTooManyAttempts": {
@@ -206,6 +198,18 @@
   "backToSignIn": "Back to sign in",
   "@backToSignIn": {
     "description": "Button that returns to the Sign in screen"
+  },
+  "errorEmailSend": "We couldn't send the email right now. Please try again in a few minutes.",
+  "@errorEmailSend": {
+    "description": "Snackbar: the verification or reset email could not be sent"
+  },
+  "errorRateLimited": "Too many requests. Please wait a moment and try again.",
+  "@errorRateLimited": {
+    "description": "Snackbar: the server rate-limited the request"
+  },
+  "errorServer": "We couldn't complete that right now. Please try again shortly.",
+  "@errorServer": {
+    "description": "Snackbar: the server answered with an error"
   },
   "errorGeneric": "Something went wrong. Try again.",
   "@errorGeneric": {
@@ -260,5 +264,417 @@
   "linkResent": "Link sent again",
   "@linkResent": {
     "description": "Snackbar after the reset link was sent again"
+  },
+  "signUpTitle": "Create your account",
+  "@signUpTitle": {
+    "description": "Sign-up Account step: title"
+  },
+  "signUpSubtitle": "Start with just your email and a password.",
+  "@signUpSubtitle": {
+    "description": "Sign-up Account step: subtitle"
+  },
+  "passwordHintMin": "At least 8 characters",
+  "@passwordHintMin": {
+    "description": "Sign-up Account step: password field hint"
+  },
+  "agreePrefix": "I agree to the",
+  "@agreePrefix": {
+    "description": "Sign-up Account step: before the Terms link in the checkbox line"
+  },
+  "agreeAnd": "and",
+  "@agreeAnd": {
+    "description": "Sign-up Account step: between the Terms and Privacy Policy links"
+  },
+  "orSignUpWith": "or sign up with",
+  "@orSignUpWith": {
+    "description": "Sign-up Account step: divider above the social buttons"
+  },
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Sign-up Account step: primary button"
+  },
+  "alreadyOnPulse": "Already on Pulse?",
+  "@alreadyOnPulse": {
+    "description": "Sign-up Account step: prompt before the Sign in link"
+  },
+  "errorPasswordShort": "Password must be at least 8 characters",
+  "@errorPasswordShort": {
+    "description": "Shown under the password field when it is too short"
+  },
+  "errorEmailExists": "An account with this email already exists",
+  "@errorEmailExists": {
+    "description": "Shown under the email field when sign-up finds the address registered"
+  },
+  "errorAccountNotFound": "No account found with this email",
+  "@errorAccountNotFound": {
+    "description": "Shown under the email field when forgot password finds no account with the address"
+  },
+  "verifyTitle": "Check your email",
+  "@verifyTitle": {
+    "description": "Sign-up Verify email step: title"
+  },
+  "verifySubtitle": "We sent a 6-digit code to {email}. Enter it below to verify your account.",
+  "@verifySubtitle": {
+    "description": "Sign-up Verify email step: subtitle; {email} is the masked address, set in bold",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "resendCode": "Resend code",
+  "@resendCode": {
+    "description": "Sign-up Verify email step: sends the code again"
+  },
+  "resendCodeIn": "Resend code in {time}",
+  "@resendCodeIn": {
+    "description": "Sign-up Verify email step: Resend while the cooldown runs; {time} is m:ss",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "verify": "Verify",
+  "@verify": {
+    "description": "Sign-up Verify email step: primary button"
+  },
+  "useDifferentEmail": "Use a different email",
+  "@useDifferentEmail": {
+    "description": "Sign-up Verify email step: goes back to the Account step"
+  },
+  "errorWrongCode": "Wrong code, try again",
+  "@errorWrongCode": {
+    "description": "Shown under the code boxes when the code is wrong or expired"
+  },
+  "aboutTitle": "About you",
+  "@aboutTitle": {
+    "description": "Sign-up About you step: title"
+  },
+  "aboutSubtitle": "This is how people will find you on Pulse.",
+  "@aboutSubtitle": {
+    "description": "Sign-up About you step: subtitle"
+  },
+  "fullNameLabel": "Full name",
+  "@fullNameLabel": {
+    "description": "Full name field label"
+  },
+  "fullNameHint": "Your name",
+  "@fullNameHint": {
+    "description": "Full name field hint"
+  },
+  "usernameLabel": "Username",
+  "@usernameLabel": {
+    "description": "Username field label"
+  },
+  "usernameHint": "username",
+  "@usernameHint": {
+    "description": "Username field hint, after the @"
+  },
+  "usernameHelper": "Letters, numbers, dots and underscores. At least 3 characters.",
+  "@usernameHelper": {
+    "description": "Username field helper; red when the format is wrong"
+  },
+  "birthdayLabel": "Birthday",
+  "@birthdayLabel": {
+    "description": "Birthday field label"
+  },
+  "birthdayHint": "DD / MM / YYYY",
+  "@birthdayHint": {
+    "description": "Birthday field hint"
+  },
+  "birthdayHelper": "Used to confirm your age. It isn't shown on your profile.",
+  "@birthdayHelper": {
+    "description": "Birthday field helper"
+  },
+  "genderLabel": "Gender",
+  "@genderLabel": {
+    "description": "Gender chips label"
+  },
+  "genderOptional": "(optional)",
+  "@genderOptional": {
+    "description": "Gender chips label suffix"
+  },
+  "genderFemale": "Female",
+  "@genderFemale": {
+    "description": "Gender chip"
+  },
+  "genderMale": "Male",
+  "@genderMale": {
+    "description": "Gender chip"
+  },
+  "genderPreferNot": "Prefer not to say",
+  "@genderPreferNot": {
+    "description": "Gender chip"
+  },
+  "errorUsernameTaken": "Username is taken",
+  "@errorUsernameTaken": {
+    "description": "Shown under the username field when somebody has it"
+  },
+  "errorMinAge": "You must be at least 18",
+  "@errorMinAge": {
+    "description": "Shown under the birthday field for a younger user"
+  },
+  "profileTitle": "Set up your profile",
+  "@profileTitle": {
+    "description": "Sign-up Profile step: title"
+  },
+  "profileSubtitle": "All optional. You can add these later in Settings.",
+  "@profileSubtitle": {
+    "description": "Sign-up Profile step: subtitle"
+  },
+  "addPhoto": "Add a photo",
+  "@addPhoto": {
+    "description": "Profile photo picker title"
+  },
+  "addPhotoHint": "Profiles with a photo get more follows.",
+  "@addPhotoHint": {
+    "description": "Profile photo picker caption"
+  },
+  "bioLabel": "Bio",
+  "@bioLabel": {
+    "description": "Bio field label"
+  },
+  "bioHint": "A few words about you",
+  "@bioHint": {
+    "description": "Bio field hint"
+  },
+  "cityLabel": "City",
+  "@cityLabel": {
+    "description": "City field label"
+  },
+  "cityHint": "Where are you based?",
+  "@cityHint": {
+    "description": "City field hint"
+  },
+  "phoneLabel": "Phone number",
+  "@phoneLabel": {
+    "description": "Phone field label"
+  },
+  "phoneHint": "+20 ••• ••• ••••",
+  "@phoneHint": {
+    "description": "Phone field hint"
+  },
+  "phoneHelper": "Helps friends find you and lets you recover your account. Kept private.",
+  "@phoneHelper": {
+    "description": "Phone field helper"
+  },
+  "takePhoto": "Take photo",
+  "@takePhoto": {
+    "description": "Photo sheet: opens the camera"
+  },
+  "chooseGallery": "Choose from gallery",
+  "@chooseGallery": {
+    "description": "Photo sheet: opens the photo library"
+  },
+  "removePhoto": "Remove photo",
+  "@removePhoto": {
+    "description": "Photo sheet: clears the chosen photo"
+  },
+  "errorPhone": "Enter a valid phone number",
+  "@errorPhone": {
+    "description": "Shown under the phone field"
+  },
+  "interestsTitle": "What are you into?",
+  "@interestsTitle": {
+    "description": "Interests step: title"
+  },
+  "interestsSubtitle": "Pick a few topics so your feed and shorts feel like you.",
+  "@interestsSubtitle": {
+    "description": "Interests step: subtitle"
+  },
+  "selectedCount": "{n} selected",
+  "@selectedCount": {
+    "description": "Interests step: caption above Continue; {n} is how many topics are picked",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "interestsError": "Couldn't load topics",
+  "@interestsError": {
+    "description": "Interests step: shown when the topics could not be loaded"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button that loads a list again"
+  },
+  "followTitle": "Follow people you know",
+  "@followTitle": {
+    "description": "Follow step: title"
+  },
+  "followSubtitle": "Their posts and shorts will show up in your feed. You can change this anytime.",
+  "@followSubtitle": {
+    "description": "Follow step: subtitle"
+  },
+  "tabSuggested": "Suggested",
+  "@tabSuggested": {
+    "description": "Follow step: tab"
+  },
+  "tabContacts": "From contacts",
+  "@tabContacts": {
+    "description": "Follow step: tab"
+  },
+  "tabPopular": "Popular",
+  "@tabPopular": {
+    "description": "Follow step: tab"
+  },
+  "suggestedForYou": "SUGGESTED FOR YOU",
+  "@suggestedForYou": {
+    "description": "Follow step: heading over the suggested list"
+  },
+  "followAll": "Follow all",
+  "@followAll": {
+    "description": "Follow step: follows everyone listed"
+  },
+  "follow": "Follow",
+  "@follow": {
+    "description": "Follow button"
+  },
+  "following": "Following",
+  "@following": {
+    "description": "Follow button once followed"
+  },
+  "followPerson": "Follow {name}",
+  "@followPerson": {
+    "description": "Follow button's screen-reader label",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unfollowPerson": "Unfollow {name}",
+  "@unfollowPerson": {
+    "description": "Following button's screen-reader label",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mutualFriends": "{n, plural, =1{1 mutual friend} other{{n} mutual friends}}",
+  "@mutualFriends": {
+    "description": "Follow step: meta line under a name",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "livesIn": "Lives in {city}",
+  "@livesIn": {
+    "description": "Follow step: meta line under a name",
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "followHint": "Follow at least 3 people for a better feed",
+  "@followHint": {
+    "description": "Follow step: hint under Continue"
+  },
+  "noSuggestions": "No suggestions yet",
+  "@noSuggestions": {
+    "description": "Follow step: an empty tab"
+  },
+  "followError": "Couldn't load people",
+  "@followError": {
+    "description": "Follow step: shown when a tab could not be loaded"
+  },
+  "leaveTitle": "Leave sign-up?",
+  "@leaveTitle": {
+    "description": "Leave dialog: title"
+  },
+  "leaveBody": "Your progress is saved. You can pick up where you left off the next time you sign in.",
+  "@leaveBody": {
+    "description": "Leave dialog: body"
+  },
+  "keepGoing": "Keep going",
+  "@keepGoing": {
+    "description": "Leave dialog: stays in sign-up"
+  },
+  "leave": "Leave",
+  "@leave": {
+    "description": "Leave dialog: leaves sign-up"
+  },
+  "resetTitle": "Set a new password",
+  "@resetTitle": {
+    "description": "Set new password screen: title"
+  },
+  "resetSubtitle": "For {email}. Use something you haven't used on Pulse before.",
+  "@resetSubtitle": {
+    "description": "Set new password screen: subtitle; {email} is the masked address, set in bold",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "newPasswordLabel": "New password",
+  "@newPasswordLabel": {
+    "description": "Set new password screen: field label"
+  },
+  "ruleLength": "At least 8 characters",
+  "@ruleLength": {
+    "description": "Password rule"
+  },
+  "ruleNumber": "Contains a number",
+  "@ruleNumber": {
+    "description": "Password rule"
+  },
+  "ruleCase": "Upper and lower case letters",
+  "@ruleCase": {
+    "description": "Password rule"
+  },
+  "confirmLabel": "Confirm new password",
+  "@confirmLabel": {
+    "description": "Set new password screen: field label"
+  },
+  "confirmHint": "Type it again",
+  "@confirmHint": {
+    "description": "Set new password screen: field hint"
+  },
+  "logoutOthers": "Log out of all other devices",
+  "@logoutOthers": {
+    "description": "Set new password screen: checkbox"
+  },
+  "updatePassword": "Update password",
+  "@updatePassword": {
+    "description": "Set new password screen: primary button"
+  },
+  "errorMismatch": "Passwords don't match",
+  "@errorMismatch": {
+    "description": "Shown under the confirm field"
+  },
+  "linkExpiredTitle": "This link has expired",
+  "@linkExpiredTitle": {
+    "description": "Set new password screen: title when the reset link is no longer valid"
+  },
+  "linkExpiredBody": "Request a new link to reset your password.",
+  "@linkExpiredBody": {
+    "description": "Set new password screen: body when the reset link is no longer valid"
+  },
+  "requestNewLink": "Request a new link",
+  "@requestNewLink": {
+    "description": "Set new password screen: opens Forgot password"
+  },
+  "updatedTitle": "Password updated",
+  "@updatedTitle": {
+    "description": "Password updated dialog: title"
+  },
+  "updatedBodyOthers": "You can now sign in with your new password. Other devices have been logged out.",
+  "@updatedBodyOthers": {
+    "description": "Password updated dialog: body when other devices were logged out"
+  },
+  "updatedBody": "You can now sign in with your new password.",
+  "@updatedBody": {
+    "description": "Password updated dialog: body"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Screen-reader label of an X button"
   }
 }

@@ -82,6 +82,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             autofocus: true,
             child: Scaffold(
               body: SafeArea(
+                bottom: false,
                 child: ContentWidth(
                   child: Column(
                     children: [

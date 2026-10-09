@@ -395,20 +395,8 @@ abstract class AppLocalizations {
   /// Sign in: snackbar when the credentials are wrong
   ///
   /// In en, this message translates to:
-  /// **'Incorrect email or password'**
+  /// **'Incorrect email/username or password'**
   String get errorCredentials;
-
-  /// Sign in: shown under the empty email or username field
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your email or username'**
-  String get errorIdentifierRequired;
-
-  /// Sign in: shown under the empty password field
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your password'**
-  String get errorPasswordRequired;
 
   /// Sign in: snackbar while sign-in is throttled; {time} is a m:ss countdown
   ///
@@ -451,6 +439,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to sign in'**
   String get backToSignIn;
+
+  /// Snackbar: the verification or reset email could not be sent
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t send the email right now. Please try again in a few minutes.'**
+  String get errorEmailSend;
+
+  /// Snackbar: the server rate-limited the request
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Please wait a moment and try again.'**
+  String get errorRateLimited;
+
+  /// Snackbar: the server answered with an error
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t complete that right now. Please try again shortly.'**
+  String get errorServer;
 
   /// Snackbar when a request failed
   ///
@@ -517,6 +523,564 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Link sent again'**
   String get linkResent;
+
+  /// Sign-up Account step: title
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get signUpTitle;
+
+  /// Sign-up Account step: subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Start with just your email and a password.'**
+  String get signUpSubtitle;
+
+  /// Sign-up Account step: password field hint
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get passwordHintMin;
+
+  /// Sign-up Account step: before the Terms link in the checkbox line
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the'**
+  String get agreePrefix;
+
+  /// Sign-up Account step: between the Terms and Privacy Policy links
+  ///
+  /// In en, this message translates to:
+  /// **'and'**
+  String get agreeAnd;
+
+  /// Sign-up Account step: divider above the social buttons
+  ///
+  /// In en, this message translates to:
+  /// **'or sign up with'**
+  String get orSignUpWith;
+
+  /// Sign-up Account step: primary button
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// Sign-up Account step: prompt before the Sign in link
+  ///
+  /// In en, this message translates to:
+  /// **'Already on Pulse?'**
+  String get alreadyOnPulse;
+
+  /// Shown under the password field when it is too short
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get errorPasswordShort;
+
+  /// Shown under the email field when sign-up finds the address registered
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists'**
+  String get errorEmailExists;
+
+  /// Shown under the email field when forgot password finds no account with the address
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this email'**
+  String get errorAccountNotFound;
+
+  /// Sign-up Verify email step: title
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get verifyTitle;
+
+  /// Sign-up Verify email step: subtitle; {email} is the masked address, set in bold
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {email}. Enter it below to verify your account.'**
+  String verifySubtitle(String email);
+
+  /// Sign-up Verify email step: sends the code again
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get resendCode;
+
+  /// Sign-up Verify email step: Resend while the cooldown runs; {time} is m:ss
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code in {time}'**
+  String resendCodeIn(String time);
+
+  /// Sign-up Verify email step: primary button
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
+
+  /// Sign-up Verify email step: goes back to the Account step
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different email'**
+  String get useDifferentEmail;
+
+  /// Shown under the code boxes when the code is wrong or expired
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong code, try again'**
+  String get errorWrongCode;
+
+  /// Sign-up About you step: title
+  ///
+  /// In en, this message translates to:
+  /// **'About you'**
+  String get aboutTitle;
+
+  /// Sign-up About you step: subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'This is how people will find you on Pulse.'**
+  String get aboutSubtitle;
+
+  /// Full name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullNameLabel;
+
+  /// Full name field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get fullNameHint;
+
+  /// Username field label
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get usernameLabel;
+
+  /// Username field hint, after the @
+  ///
+  /// In en, this message translates to:
+  /// **'username'**
+  String get usernameHint;
+
+  /// Username field helper; red when the format is wrong
+  ///
+  /// In en, this message translates to:
+  /// **'Letters, numbers, dots and underscores. At least 3 characters.'**
+  String get usernameHelper;
+
+  /// Birthday field label
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday'**
+  String get birthdayLabel;
+
+  /// Birthday field hint
+  ///
+  /// In en, this message translates to:
+  /// **'DD / MM / YYYY'**
+  String get birthdayHint;
+
+  /// Birthday field helper
+  ///
+  /// In en, this message translates to:
+  /// **'Used to confirm your age. It isn\'t shown on your profile.'**
+  String get birthdayHelper;
+
+  /// Gender chips label
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get genderLabel;
+
+  /// Gender chips label suffix
+  ///
+  /// In en, this message translates to:
+  /// **'(optional)'**
+  String get genderOptional;
+
+  /// Gender chip
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// Gender chip
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// Gender chip
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not to say'**
+  String get genderPreferNot;
+
+  /// Shown under the username field when somebody has it
+  ///
+  /// In en, this message translates to:
+  /// **'Username is taken'**
+  String get errorUsernameTaken;
+
+  /// Shown under the birthday field for a younger user
+  ///
+  /// In en, this message translates to:
+  /// **'You must be at least 18'**
+  String get errorMinAge;
+
+  /// Sign-up Profile step: title
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your profile'**
+  String get profileTitle;
+
+  /// Sign-up Profile step: subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'All optional. You can add these later in Settings.'**
+  String get profileSubtitle;
+
+  /// Profile photo picker title
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get addPhoto;
+
+  /// Profile photo picker caption
+  ///
+  /// In en, this message translates to:
+  /// **'Profiles with a photo get more follows.'**
+  String get addPhotoHint;
+
+  /// Bio field label
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get bioLabel;
+
+  /// Bio field hint
+  ///
+  /// In en, this message translates to:
+  /// **'A few words about you'**
+  String get bioHint;
+
+  /// City field label
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get cityLabel;
+
+  /// City field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Where are you based?'**
+  String get cityHint;
+
+  /// Phone field label
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phoneLabel;
+
+  /// Phone field hint
+  ///
+  /// In en, this message translates to:
+  /// **'+20 ••• ••• ••••'**
+  String get phoneHint;
+
+  /// Phone field helper
+  ///
+  /// In en, this message translates to:
+  /// **'Helps friends find you and lets you recover your account. Kept private.'**
+  String get phoneHelper;
+
+  /// Photo sheet: opens the camera
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get takePhoto;
+
+  /// Photo sheet: opens the photo library
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get chooseGallery;
+
+  /// Photo sheet: clears the chosen photo
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// Shown under the phone field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number'**
+  String get errorPhone;
+
+  /// Interests step: title
+  ///
+  /// In en, this message translates to:
+  /// **'What are you into?'**
+  String get interestsTitle;
+
+  /// Interests step: subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a few topics so your feed and shorts feel like you.'**
+  String get interestsSubtitle;
+
+  /// Interests step: caption above Continue; {n} is how many topics are picked
+  ///
+  /// In en, this message translates to:
+  /// **'{n} selected'**
+  String selectedCount(int n);
+
+  /// Interests step: shown when the topics could not be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load topics'**
+  String get interestsError;
+
+  /// Button that loads a list again
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Follow step: title
+  ///
+  /// In en, this message translates to:
+  /// **'Follow people you know'**
+  String get followTitle;
+
+  /// Follow step: subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Their posts and shorts will show up in your feed. You can change this anytime.'**
+  String get followSubtitle;
+
+  /// Follow step: tab
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested'**
+  String get tabSuggested;
+
+  /// Follow step: tab
+  ///
+  /// In en, this message translates to:
+  /// **'From contacts'**
+  String get tabContacts;
+
+  /// Follow step: tab
+  ///
+  /// In en, this message translates to:
+  /// **'Popular'**
+  String get tabPopular;
+
+  /// Follow step: heading over the suggested list
+  ///
+  /// In en, this message translates to:
+  /// **'SUGGESTED FOR YOU'**
+  String get suggestedForYou;
+
+  /// Follow step: follows everyone listed
+  ///
+  /// In en, this message translates to:
+  /// **'Follow all'**
+  String get followAll;
+
+  /// Follow button
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get follow;
+
+  /// Follow button once followed
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get following;
+
+  /// Follow button's screen-reader label
+  ///
+  /// In en, this message translates to:
+  /// **'Follow {name}'**
+  String followPerson(String name);
+
+  /// Following button's screen-reader label
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow {name}'**
+  String unfollowPerson(String name);
+
+  /// Follow step: meta line under a name
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 mutual friend} other{{n} mutual friends}}'**
+  String mutualFriends(int n);
+
+  /// Follow step: meta line under a name
+  ///
+  /// In en, this message translates to:
+  /// **'Lives in {city}'**
+  String livesIn(String city);
+
+  /// Follow step: hint under Continue
+  ///
+  /// In en, this message translates to:
+  /// **'Follow at least 3 people for a better feed'**
+  String get followHint;
+
+  /// Follow step: an empty tab
+  ///
+  /// In en, this message translates to:
+  /// **'No suggestions yet'**
+  String get noSuggestions;
+
+  /// Follow step: shown when a tab could not be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load people'**
+  String get followError;
+
+  /// Leave dialog: title
+  ///
+  /// In en, this message translates to:
+  /// **'Leave sign-up?'**
+  String get leaveTitle;
+
+  /// Leave dialog: body
+  ///
+  /// In en, this message translates to:
+  /// **'Your progress is saved. You can pick up where you left off the next time you sign in.'**
+  String get leaveBody;
+
+  /// Leave dialog: stays in sign-up
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going'**
+  String get keepGoing;
+
+  /// Leave dialog: leaves sign-up
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get leave;
+
+  /// Set new password screen: title
+  ///
+  /// In en, this message translates to:
+  /// **'Set a new password'**
+  String get resetTitle;
+
+  /// Set new password screen: subtitle; {email} is the masked address, set in bold
+  ///
+  /// In en, this message translates to:
+  /// **'For {email}. Use something you haven\'t used on Pulse before.'**
+  String resetSubtitle(String email);
+
+  /// Set new password screen: field label
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// Password rule
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get ruleLength;
+
+  /// Password rule
+  ///
+  /// In en, this message translates to:
+  /// **'Contains a number'**
+  String get ruleNumber;
+
+  /// Password rule
+  ///
+  /// In en, this message translates to:
+  /// **'Upper and lower case letters'**
+  String get ruleCase;
+
+  /// Set new password screen: field label
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get confirmLabel;
+
+  /// Set new password screen: field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Type it again'**
+  String get confirmHint;
+
+  /// Set new password screen: checkbox
+  ///
+  /// In en, this message translates to:
+  /// **'Log out of all other devices'**
+  String get logoutOthers;
+
+  /// Set new password screen: primary button
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get updatePassword;
+
+  /// Shown under the confirm field
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match'**
+  String get errorMismatch;
+
+  /// Set new password screen: title when the reset link is no longer valid
+  ///
+  /// In en, this message translates to:
+  /// **'This link has expired'**
+  String get linkExpiredTitle;
+
+  /// Set new password screen: body when the reset link is no longer valid
+  ///
+  /// In en, this message translates to:
+  /// **'Request a new link to reset your password.'**
+  String get linkExpiredBody;
+
+  /// Set new password screen: opens Forgot password
+  ///
+  /// In en, this message translates to:
+  /// **'Request a new link'**
+  String get requestNewLink;
+
+  /// Password updated dialog: title
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get updatedTitle;
+
+  /// Password updated dialog: body when other devices were logged out
+  ///
+  /// In en, this message translates to:
+  /// **'You can now sign in with your new password. Other devices have been logged out.'**
+  String get updatedBodyOthers;
+
+  /// Password updated dialog: body
+  ///
+  /// In en, this message translates to:
+  /// **'You can now sign in with your new password.'**
+  String get updatedBody;
+
+  /// Screen-reader label of an X button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

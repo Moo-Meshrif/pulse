@@ -175,6 +175,17 @@ abstract final class AuthDimens {
   static double get avatarCameraIcon => AppScale.scale(28);
   static double get avatarBadge => AppScale.scale(28);
   static double get avatarBadgePlus => AppScale.scale(14);
+  static const double avatarBadgeRing = 2; // unscaled: stroke
+
+  // Follow step (S8): the Follow pill is ~34 high (14 text + 8 v-padding), the tabs ~40, 20 between
+  // the blocks; Interests (S7): skeleton chips.
+  static double get followPillHeight => AppScale.scale(34);
+  static double get followTabHeight => AppScale.scale(40);
+  static double get followSectionGap => AppScale.scale(20);
+  static double get followSkeletonName => AppScale.scale(120);
+  static double get followSkeletonMeta => AppScale.scale(80);
+  static double get skeletonLineHeight => AppScale.scale(12);
+  static double get interestSkeletonWidth => AppScale.scale(96);
   static double get avatarList => AppScale.scale(48);
 
   // Checkbox: 24 square, radius 6, check 16 (20 on S11).
@@ -220,6 +231,21 @@ abstract final class AuthDimens {
   static double get formToButtonGap => AppScale.scale(24);
   static double get linkRowTopGap => AppScale.scale(20);
   static double get linkRowGap => AppScale.scale(8);
+
+  // Sign-up Account (S3) [estimated, ~ in the spec]: 24 under the step bar and above the fields, 10 under
+  // the password, 18 above the terms line, 14 above the note, 24 above the divider, 16 above the social row.
+  static double get signUpTopGap => AppScale.scale(24);
+  static double get signUpMeterGap => AppScale.scale(10);
+  static double get signUpTermsGap => AppScale.scale(18);
+  static double get signUpNoteGap => AppScale.scale(14);
+  static double get signUpDividerGap => AppScale.scale(24);
+  static double get signUpSocialGap => AppScale.scale(16);
+
+  // Verify email (S4): the code boxes ~32 under the header, the resend row ~24 under them, the link
+  // under the button 12.
+  static double get otpTopGap => AppScale.scale(32);
+  static double get resendTopGap => AppScale.scale(24);
+  static double get ctaLinkGap => AppScale.scale(12);
 }
 
 /// Onboarding values (docs/specs/onboarding/01-design-tokens.md), 390 x 844 design sizes scaled with
@@ -269,7 +295,7 @@ abstract final class OnboardingDimens {
         AppScale.scale(24),
         AppScale.scale(32),
         AppScale.scale(24),
-        0,
+        AppScale.scale(12),
       );
   static double get titleBodyGap => AppScale.scale(12);
 

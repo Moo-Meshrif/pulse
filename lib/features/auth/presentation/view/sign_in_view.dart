@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/l10n.dart';
+import '../../../../core/router/app_navigator.dart';
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../cubit/sign_in_cubit.dart';
 import '../cubit/sign_in_state.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_switch_link.dart';
@@ -10,25 +14,11 @@ import '../widgets/forgot_password_link.dart';
 import '../widgets/or_divider.dart';
 import '../widgets/social_buttons_row.dart';
 
-/// Sign in's pure UI (docs/specs/auth/screens/s1-signin.md). The text controllers are local UI state;
-/// everything else comes from [state] and the callbacks. Fields are read-only while a request runs.
+/// Sign in's UI (docs/specs/auth/screens/s1-signin.md). The text controllers are local UI state. Only
+/// the parts that depend on the Cubit's state listen to it (fields: `loading`; button: `loading` and
+/// `canSubmit`), so typing never rebuilds the rest of the page.
 class SignInView extends StatefulWidget {
-  const SignInView({
-    super.key,
-    required this.state,
-    required this.onIdentifierChanged,
-    required this.onPasswordChanged,
-    required this.onSubmit,
-    required this.onForgotPassword,
-    required this.onCreateAccount,
-  });
-
-  final SignInState state;
-  final ValueChanged<String> onIdentifierChanged;
-  final ValueChanged<String> onPasswordChanged;
-  final VoidCallback onSubmit;
-  final VoidCallback onForgotPassword;
-  final VoidCallback onCreateAccount;
+  const SignInView({super.key});
 
   @override
   State<SignInView> createState() => _SignInViewState();
@@ -47,15 +37,25 @@ class _SignInViewState extends State<SignInView> {
     super.dispose();
   }
 
+  SignInCubit get _cubit => context.read<SignInCubit>();
+
+  // The button only reads these two, so a keystroke rebuilds it only when one flips.
+  bool _buttonStateChanged(SignInState before, SignInState state) =>
+      before.loading != state.loading || before.canSubmit != state.canSubmit;
+
+  void _openForgotPassword() =>
+      AppNavigator.push(context, AppRoutes.forgotPassword);
+
+  void _openRegister() => AppNavigator.push(context, AppRoutes.register);
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final state = widget.state;
     return Scaffold(
       body: SafeArea(
         child: ContentWidth(
           child: CustomScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const ClampingScrollPhysics(),
             slivers: [
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -77,48 +77,53 @@ class _SignInViewState extends State<SignInView> {
                           subtitle: l10n.signInSubtitle,
                         ),
                         SizedBox(height: AuthDimens.signInFormGap),
-                        AppTextField(
-                          label: l10n.identifierLabel,
-                          hint: l10n.emailHint,
-                          controller: _identifier,
-                          forceLtr: true,
-                          readOnly: state.loading,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          autofillHints: const [
-                            AutofillHints.username,
-                            AutofillHints.email,
-                          ],
-                          errorText: state.identifierMissing
-                              ? l10n.errorIdentifierRequired
-                              : null,
-                          onChanged: widget.onIdentifierChanged,
-                          onSubmitted: (_) => _passwordFocus.requestFocus(),
+                        _LoadingSelector(
+                          builder: (loading) => AppTextField(
+                            label: l10n.identifierLabel,
+                            hint: l10n.emailHint,
+                            controller: _identifier,
+                            forceLtr: true,
+                            readOnly: loading,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [
+                              AutofillHints.username,
+                              AutofillHints.email,
+                            ],
+                            onChanged: context
+                                .read<SignInCubit>()
+                                .identifierChanged,
+                            onSubmitted: (_) => _passwordFocus.requestFocus(),
+                          ),
                         ),
                         SizedBox(height: AppSpacing.fieldGap),
-                        AppTextField(
-                          label: l10n.passwordLabel,
-                          hint: l10n.passwordHint,
-                          controller: _password,
-                          focusNode: _passwordFocus,
-                          isPassword: true,
-                          readOnly: state.loading,
-                          textInputAction: TextInputAction.done,
-                          autofillHints: const [AutofillHints.password],
-                          errorText: state.passwordMissing
-                              ? l10n.errorPasswordRequired
-                              : null,
-                          onChanged: widget.onPasswordChanged,
-                          onSubmitted: (_) => widget.onSubmit(),
+                        _LoadingSelector(
+                          builder: (loading) => AppTextField(
+                            label: l10n.passwordLabel,
+                            hint: l10n.passwordHint,
+                            controller: _password,
+                            focusNode: _passwordFocus,
+                            isPassword: true,
+                            readOnly: loading,
+                            textInputAction: TextInputAction.done,
+                            autofillHints: const [AutofillHints.password],
+                            onChanged: context
+                                .read<SignInCubit>()
+                                .passwordChanged,
+                            onSubmitted: (_) => _cubit.submit(),
+                          ),
                         ),
                         SizedBox(height: AppSpacing.fieldGap),
-                        ForgotPasswordLink(onPressed: widget.onForgotPassword),
+                        ForgotPasswordLink(onPressed: _openForgotPassword),
                         SizedBox(height: AuthDimens.signInSectionGap),
-                        PrimaryButton(
-                          label: l10n.signInButton,
-                          expand: true,
-                          loading: state.loading,
-                          onPressed: state.canSubmit ? widget.onSubmit : null,
+                        BlocBuilder<SignInCubit, SignInState>(
+                          buildWhen: _buttonStateChanged,
+                          builder: (context, state) => PrimaryButton(
+                            label: l10n.signInButton,
+                            expand: true,
+                            loading: state.loading,
+                            onPressed: state.canSubmit ? _cubit.submit : null,
+                          ),
                         ),
                         SizedBox(height: AuthDimens.signInSectionGap),
                         OrDivider(text: l10n.orContinueWith),
@@ -129,7 +134,7 @@ class _SignInViewState extends State<SignInView> {
                         AuthSwitchLink(
                           prompt: l10n.newToPulse,
                           action: l10n.createAccount,
-                          onPressed: widget.onCreateAccount,
+                          onPressed: _openRegister,
                         ),
                         SizedBox(height: AuthDimens.signInFooterBottom),
                       ],
@@ -143,4 +148,18 @@ class _SignInViewState extends State<SignInView> {
       ),
     );
   }
+}
+
+/// Rebuilds its child only when the request's `loading` flag flips.
+class _LoadingSelector extends StatelessWidget {
+  const _LoadingSelector({required this.builder});
+
+  final Widget Function(bool loading) builder;
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocSelector<SignInCubit, SignInState, bool>(
+        selector: (state) => state.loading,
+        builder: (context, loading) => builder(loading),
+      );
 }

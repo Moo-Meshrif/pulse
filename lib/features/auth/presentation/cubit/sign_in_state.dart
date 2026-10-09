@@ -15,9 +15,6 @@ abstract class SignInState with _$SignInState {
     @Default('') String password,
     @Default(false) bool loading,
 
-    /// Sign in was pressed with an empty field; the empty ones then show a "required" caption.
-    @Default(false) bool showRequired,
-
     /// Why the last attempt failed; cleared when the user edits a field.
     Failure? failure,
 
@@ -33,10 +30,10 @@ abstract class SignInState with _$SignInState {
 
   bool get throttled => retryIn != null;
 
-  bool get identifierMissing => showRequired && identifier.trim().isEmpty;
-
-  bool get passwordMissing => showRequired && password.isEmpty;
-
-  /// Nothing is in flight and the throttle is over. Empty fields are caught by [SignInCubit.submit].
-  bool get canSubmit => !loading && !throttled;
+  /// Both fields have text, nothing is in flight and the throttle is over.
+  bool get canSubmit =>
+      identifier.trim().isNotEmpty &&
+      password.isNotEmpty &&
+      !loading &&
+      !throttled;
 }

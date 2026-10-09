@@ -19,9 +19,14 @@ import '../../app/app_module.dart' as _i431;
 import '../../features/auth/data/datasource/auth_datasource.dart' as _i43;
 import '../../features/auth/domain/use_case/is_signed_in_use_case.dart'
     as _i710;
+import '../../features/auth/domain/use_case/watch_password_recovery_use_case.dart'
+    as _i121;
 import '../../features/auth/presentation/cubit/forgot_password_cubit.dart'
     as _i104;
+import '../../features/auth/presentation/cubit/reset_password_cubit.dart'
+    as _i476;
 import '../../features/auth/presentation/cubit/sign_in_cubit.dart' as _i329;
+import '../../features/auth/presentation/cubit/sign_up_cubit.dart' as _i102;
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
     as _i834;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
@@ -36,11 +41,28 @@ import '../../features/profile/data/datasource/profile_local_datasource.dart'
     as _i126;
 import '../../features/profile/data/repository/profile_repository.dart'
     as _i508;
+import '../../features/profile/domain/use_case/clear_local_profile_use_case.dart'
+    as _i428;
+import '../../features/profile/domain/use_case/complete_signup_use_case.dart'
+    as _i890;
+import '../../features/profile/domain/use_case/get_interests_use_case.dart'
+    as _i586;
 import '../../features/profile/domain/use_case/get_signup_step_use_case.dart'
     as _i697;
+import '../../features/profile/domain/use_case/get_suggested_profiles_use_case.dart'
+    as _i433;
+import '../../features/profile/domain/use_case/save_about_you_use_case.dart'
+    as _i357;
+import '../../features/profile/domain/use_case/save_interests_use_case.dart'
+    as _i597;
+import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
+    as _i255;
+import '../../features/profile/domain/use_case/set_following_use_case.dart'
+    as _i1018;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i125;
 import '../services/launch_service.dart' as _i1016;
 import '../services/local_storage_service.dart' as _i527;
+import '../services/photo_picker_service.dart' as _i94;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -55,6 +77,9 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.lazySingleton<_i454.SupabaseClient>(() => appModule.supabaseClient);
+    gh.lazySingleton<_i94.PhotoPickerService>(
+      () => _i94.ImagePickerPhotoPickerService(),
+    );
     gh.lazySingleton<_i1016.LaunchService>(
       () => _i1016.UrlLauncherLaunchService(),
     );
@@ -74,6 +99,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i710.IsSignedInUseCase>(
       () => _i710.IsSignedInUseCase(gh<_i43.AuthDatasource>()),
     );
+    gh.factory<_i121.WatchPasswordRecoveryUseCase>(
+      () => _i121.WatchPasswordRecoveryUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i476.ResetPasswordCubit>(
+      () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
+    );
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
     );
@@ -82,6 +113,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i43.AuthDatasource>(),
         gh<_i1016.LaunchService>(),
       ),
+    );
+    gh.factory<_i433.GetSuggestedProfilesUseCase>(
+      () => _i433.GetSuggestedProfilesUseCase(gh<_i861.FollowsDatasource>()),
+    );
+    gh.factory<_i1018.SetFollowingUseCase>(
+      () => _i1018.SetFollowingUseCase(gh<_i861.FollowsDatasource>()),
+    );
+    gh.factory<_i586.GetInterestsUseCase>(
+      () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
     );
     gh.lazySingleton<_i834.OnboardingDatasource>(
       () => _i834.OnboardingDatasource(gh<_i527.LocalStorageService>()),
@@ -98,12 +138,45 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i126.ProfileLocalDatasource>(),
       ),
     );
+    gh.factory<_i597.SaveInterestsUseCase>(
+      () => _i597.SaveInterestsUseCase(
+        gh<_i152.InterestsDatasource>(),
+        gh<_i508.ProfileRepository>(),
+      ),
+    );
+    gh.factory<_i428.ClearLocalProfileUseCase>(
+      () => _i428.ClearLocalProfileUseCase(gh<_i508.ProfileRepository>()),
+    );
+    gh.factory<_i890.CompleteSignupUseCase>(
+      () => _i890.CompleteSignupUseCase(gh<_i508.ProfileRepository>()),
+    );
     gh.factory<_i697.GetSignupStepUseCase>(
       () => _i697.GetSignupStepUseCase(gh<_i508.ProfileRepository>()),
+    );
+    gh.factory<_i357.SaveAboutYouUseCase>(
+      () => _i357.SaveAboutYouUseCase(gh<_i508.ProfileRepository>()),
+    );
+    gh.factory<_i255.SaveProfileDetailsUseCase>(
+      () => _i255.SaveProfileDetailsUseCase(gh<_i508.ProfileRepository>()),
     );
     gh.factory<_i125.SplashCubit>(
       () => _i125.SplashCubit(
         gh<_i710.IsSignedInUseCase>(),
+        gh<_i697.GetSignupStepUseCase>(),
+      ),
+    );
+    gh.factory<_i102.SignUpCubit>(
+      () => _i102.SignUpCubit(
+        gh<_i43.AuthDatasource>(),
+        gh<_i357.SaveAboutYouUseCase>(),
+        gh<_i255.SaveProfileDetailsUseCase>(),
+        gh<_i94.PhotoPickerService>(),
+        gh<_i586.GetInterestsUseCase>(),
+        gh<_i597.SaveInterestsUseCase>(),
+        gh<_i433.GetSuggestedProfilesUseCase>(),
+        gh<_i1018.SetFollowingUseCase>(),
+        gh<_i890.CompleteSignupUseCase>(),
+        gh<_i428.ClearLocalProfileUseCase>(),
         gh<_i697.GetSignupStepUseCase>(),
       ),
     );

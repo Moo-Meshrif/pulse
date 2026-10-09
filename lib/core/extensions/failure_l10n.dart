@@ -14,6 +14,8 @@ extension FailureL10n on Failure {
       NetworkFailure() || TimeoutFailure() => l10n.errorNetwork,
       AuthFailure(reason: AuthFailureReason.invalidCredentials) =>
         l10n.errorCredentials,
+      AuthFailure(reason: AuthFailureReason.accountNotFound) =>
+        l10n.errorAccountNotFound,
       AuthFailure(
         :final retryAfter,
         reason: AuthFailureReason.tooManyAttempts,
@@ -21,6 +23,16 @@ extension FailureL10n on Failure {
         l10n.errorTooManyAttempts(
           formatCountdown(retryAfter ?? const Duration(minutes: 1)),
         ),
+      AuthFailure(reason: AuthFailureReason.emailSendFailed) =>
+        l10n.errorEmailSend,
+      AuthFailure(reason: AuthFailureReason.rateLimited) =>
+        l10n.errorRateLimited,
+      AuthFailure(reason: AuthFailureReason.emailTaken) =>
+        l10n.errorEmailExists,
+      AuthFailure(reason: AuthFailureReason.invalidCode) =>
+        l10n.errorWrongCode,
+      ConflictFailure() => l10n.errorUsernameTaken,
+      ServerFailure() => l10n.errorServer,
       _ => l10n.errorGeneric,
     };
   }

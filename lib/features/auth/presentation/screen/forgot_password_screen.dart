@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/snack_bar_context.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../core/router/app_navigator.dart';
 import '../cubit/forgot_password_cubit.dart';
 import '../cubit/forgot_password_state.dart';
 import '../view/forgot_password_view.dart';
@@ -28,25 +27,13 @@ class ForgotPasswordScreen extends StatelessWidget {
         ),
         BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
           listenWhen: (_, state) => state.sentTo != null,
-          listener: (context, state) {
-            ResetLinkSentDialog.show(
-              context,
-              cubit: context.read<ForgotPasswordCubit>(),
-            );
-          },
+          listener: (context, state) => ResetLinkSentDialog.show(
+            context,
+            cubit: context.read<ForgotPasswordCubit>(),
+          ),
         ),
       ],
-      child: BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
-        builder: (context, state) {
-          final cubit = context.read<ForgotPasswordCubit>();
-          return ForgotPasswordView(
-            state: state,
-            onEmailChanged: cubit.emailChanged,
-            onSubmit: cubit.submit,
-            onBack: () => AppNavigator.back(context),
-          );
-        },
-      ),
+      child: const ForgotPasswordView(),
     ),
   );
 }

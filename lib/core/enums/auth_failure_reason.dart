@@ -10,6 +10,9 @@ enum AuthFailureReason {
   /// An account with this email already exists.
   emailTaken,
 
+  /// No account has this email (forgot password).
+  accountNotFound,
+
   /// The verification code is wrong or expired.
   invalidCode,
 
@@ -24,6 +27,9 @@ enum AuthFailureReason {
 
   /// Too many sign-in attempts from this device or for this account: wait `AuthFailure.retryAfter`.
   tooManyAttempts,
+
+  /// The server could not send the verification or reset email (mail provider problem).
+  emailSendFailed,
 
   /// No valid session (signed out, expired or revoked).
   sessionExpired,

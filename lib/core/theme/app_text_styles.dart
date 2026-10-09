@@ -28,6 +28,7 @@ class AppTextStyles {
     required this.meta,
     required this.caption,
     required this.badge,
+    required this.action,
   });
 
   static const _sora = 'Sora';
@@ -54,6 +55,9 @@ class AppTextStyles {
   final TextStyle meta;
   final TextStyle caption;
   final TextStyle badge;
+
+  /// 14/700: compact actions (Follow, Follow all).
+  final TextStyle action;
 
   static const latin = AppTextStyles._(
     logo: TextStyle(
@@ -175,6 +179,13 @@ class AppTextStyles {
       fontFamily: _noto,
       fontSize: 11,
       fontWeight: FontWeight.w700,
+    ),
+    action: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
     ),
   );
 
@@ -310,6 +321,13 @@ class AppTextStyles {
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
     ),
+    action: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
   );
 
   /// Every style with its size multiplied by [factor] (the responsive scale; see [AppScale]).
@@ -334,6 +352,7 @@ class AppTextStyles {
       meta: f(meta),
       caption: f(caption),
       badge: f(badge),
+      action: f(action),
     );
   }
 

@@ -15,7 +15,8 @@ abstract final class Guard {
     try {
       return Right(await call());
     } catch (error, stackTrace) {
-      return Left(_toFailure(error, stackTrace));
+      final failure = _toFailure(error, stackTrace);
+      return Left(failure);
     }
   }
 
@@ -31,7 +32,8 @@ abstract final class Guard {
               _reported(const UnexpectedFailure(), error, stackTrace),
       };
 
-  /// Parse errors and unknown errors are bugs, not user conditions: report them (non-fatal).
+  /// Parse errors and unknown errors are bugs, not user conditions (the user only sees the generic
+  /// message): report them (non-fatal). Handled failures (network, credentials, ...) are not logged.
   static Failure _reported(
     Failure failure,
     Object error,
