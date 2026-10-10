@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/enums/gender.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
@@ -18,8 +17,14 @@ import '../../../../helpers/backend_double.dart';
 void main() {
   const uid = BackendDouble.uid;
 
-  Failure? failureOf(Either<Failure, Object?> result) =>
-      result.fold((f) => f, (_) => null);
+  Future<Failure?> failureOf(Future<Object?> call) async {
+    try {
+      await call;
+    } on Failure catch (failure) {
+      return failure;
+    }
+    return null;
+  }
 
   /// A signed-in client whose non-auth requests go to [handler].
   Future<BackendDouble> signedIn(
@@ -52,7 +57,7 @@ void main() {
       final result = await SupabaseProfileDatasource(backend.client)
           .getProfile();
 
-      final profile = result.getOrElse((_) => const ProfileModel());
+      final profile = result;
       expect(profile.username, 'dip');
       expect(profile.birthday, DateTime.utc(1999, 2, 3));
       expect(profile.gender, Gender.male);
@@ -67,17 +72,16 @@ void main() {
         (_) async => BackendDouble.postgrestError(406, 'PGRST116'),
       );
       expect(
-        failureOf(await SupabaseProfileDatasource(backend.client).getProfile()),
+        await failureOf(SupabaseProfileDatasource(backend.client).getProfile()),
         const NotFoundFailure(),
       );
     });
 
     test('without a session it is sessionExpired and sends nothing', () async {
       final backend = BackendDouble((_) async => BackendDouble.json({}));
-      final result = await SupabaseProfileDatasource(backend.client)
-          .getProfile();
+      final result = SupabaseProfileDatasource(backend.client).getProfile();
       expect(
-        failureOf(result),
+        await failureOf(result),
         const AuthFailure(AuthFailureReason.sessionExpired),
       );
       expect(backend.requests, isEmpty);
@@ -88,10 +92,7 @@ void main() {
     test('asks the function and returns its answer', () async {
       final backend = await signedIn((_) async => BackendDouble.json(true));
       final repo = SupabaseProfileDatasource(backend.client);
-      expect(
-        await repo.isUsernameAvailable('dip'),
-        const Right<Failure, bool>(true),
-      );
+      expect(await repo.isUsernameAvailable('dip'), true);
       expect(jsonBody(backend.to('is_username_available').single), {
         'p_username': 'dip',
       });
@@ -102,7 +103,7 @@ void main() {
       expect(
         await SupabaseProfileDatasource(backend.client)
             .isUsernameAvailable('dip'),
-        const Right<Failure, bool>(false),
+        false,
       );
     });
   });
@@ -129,7 +130,7 @@ void main() {
           );
       // It returns the row as the server now stores it, for the repository to save.
       expect(
-        result.getOrElse((_) => const ProfileModel()),
+        result,
         ProfileModel(
           id: uid,
           username: 'dip',
@@ -154,9 +155,9 @@ void main() {
       final backend = await signedIn(
         (_) async => BackendDouble.postgrestError(409, '23505'),
       );
-      final result = await SupabaseProfileDatasource(backend.client)
+      final result = SupabaseProfileDatasource(backend.client)
           .updateProfile(const ProfileUpdateModel(username: 'dip'));
-      expect(failureOf(result), const ConflictFailure());
+      expect(await failureOf(result), const ConflictFailure());
     });
   });
 
@@ -187,7 +188,7 @@ void main() {
         contains('image/jpeg'),
       ); // the part's own content type
       expect(
-        result.getOrElse((_) => ''),
+        result,
         'https://test.supabase.co/storage/v1/object/public/avatars/$uid/avatar'
         '?v=${DateTime.utc(2026, 10, 8).millisecondsSinceEpoch}',
       );
@@ -200,10 +201,7 @@ void main() {
         }
         return http.Response('', 204);
       });
-      final result = await SupabaseProfileDatasource(backend.client)
-          .removeAvatar();
-
-      expect(result.isRight, isTrue);
+      await SupabaseProfileDatasource(backend.client).removeAvatar();
       expect(jsonBody(backend.requests.first), {
         'prefixes': ['$uid/avatar'],
       });
@@ -226,9 +224,7 @@ void main() {
       });
       final datasource = SupabaseProfileDatasource(backend.client);
 
-      final profile = (await datasource.getProfile()).getOrElse(
-        (_) => const ProfileModel(),
-      );
+      final profile = await datasource.getProfile();
       expect(profile.gender, Gender.preferNotToSay);
       expect(profile.signupStep, SignupStep.complete);
 
@@ -249,9 +245,8 @@ void main() {
         (_) async =>
             BackendDouble.json({'id': uid, 'gender': 'x', 'signup_step': 9}),
       );
-      final profile = (await SupabaseProfileDatasource(
-        backend.client,
-      ).getProfile()).getOrElse((_) => const ProfileModel(id: 'failed'));
+      final profile = await SupabaseProfileDatasource(backend.client)
+          .getProfile();
       expect(profile, const ProfileModel(id: uid));
     });
   });

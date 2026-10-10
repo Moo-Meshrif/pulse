@@ -4,7 +4,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
@@ -28,7 +27,7 @@ void main() {
   SplashCubit cubit() => SplashCubit(isSignedIn, getSignupStep);
 
   void stepIs(SignupStep step) =>
-      when(() => getSignupStep()).thenAnswer((_) async => Right(step));
+      when(() => getSignupStep()).thenAnswer((_) async => step);
 
   test('starts undecided', () {
     expect(cubit().state, const SplashState.deciding());
@@ -74,7 +73,7 @@ void main() {
 
   void stepFails(Failure failure) {
     when(() => isSignedIn()).thenReturn(true);
-    when(() => getSignupStep()).thenAnswer((_) async => Left(failure));
+    when(() => getSignupStep()).thenThrow(failure);
   }
 
   for (final failure in <Failure>[
@@ -119,11 +118,10 @@ void main() {
     setUp: () {
       when(() => isSignedIn()).thenReturn(true);
       var calls = 0;
-      when(() => getSignupStep()).thenAnswer(
-        (_) async => ++calls == 1
-            ? const Left(NetworkFailure())
-            : const Right(SignupStep.complete),
-      );
+      when(() => getSignupStep()).thenAnswer((_) async {
+        if (++calls == 1) throw const NetworkFailure();
+        return SignupStep.complete;
+      });
     },
     build: cubit,
     act: (c) async {
@@ -143,11 +141,9 @@ void main() {
     setUp: () {
       when(() => isSignedIn()).thenReturn(true);
       var calls = 0;
-      when(() => getSignupStep()).thenAnswer(
-        (_) async => Left(
-          ++calls == 1 ? const NetworkFailure() : const UnexpectedFailure(),
-        ),
-      );
+      when(() => getSignupStep()).thenAnswer((_) async {
+        throw ++calls == 1 ? const NetworkFailure() : const UnexpectedFailure();
+      });
     },
     build: cubit,
     act: (c) async {

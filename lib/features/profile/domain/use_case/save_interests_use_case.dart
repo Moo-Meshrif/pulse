@@ -1,7 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
-import '../../../../core/utils/either.dart';
 import '../../data/datasource/interests_datasource.dart';
 import '../../data/enums/signup_step.dart';
 import '../../data/repository/profile_repository.dart';
@@ -16,14 +14,12 @@ class SaveInterestsUseCase {
   final InterestsDatasource _interests;
   final ProfileRepository _profiles;
 
-  Future<Result<Unit>> call(List<int> interestIds) async {
+  Future<void> call(List<int> interestIds) async {
     if (interestIds.isNotEmpty) {
-      final saved = await _interests.saveInterests(interestIds);
-      if (saved case Left(:final value)) return Left(value);
+      await _interests.saveInterests(interestIds);
     }
-    final advanced = await _profiles.updateProfile(
+    await _profiles.updateProfile(
       const ProfileUpdateEntity(signupStep: SignupStep.follow),
     );
-    return advanced.map((_) => unit);
   }
 }

@@ -37,23 +37,29 @@ class SignInCubit extends BaseCubit<SignInState> {
   );
 
   Future<void> submit() async {
-    if (!state.canSubmit) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _auth.signIn(
-      identifier: state.identifier.trim(),
-      password: state.password,
+    await run(
+      prevent: !state.canSubmit,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _auth.signIn(
+        identifier: state.identifier.trim(),
+        password: state.password,
+      ),
+      onSuccess: (_) => _signedIn(),
+      onFailure: _failed,
     );
-    await result.fold(_failed, (_) => _signedIn());
   }
 
   Future<void> _signedIn() async {
-    final result = await _getSignupStep();
-    result.fold(_failed, (step) {
-      final route = step == SignupStep.complete
-          ? AppRoutes.home
-          : AppRoutes.registerAt(step.number);
-      _go(route, clearStack: true);
-    });
+    await run(
+      _getSignupStep.call,
+      onSuccess: (step) {
+        final route = step == SignupStep.complete
+            ? AppRoutes.home
+            : AppRoutes.registerAt(step.number);
+        _go(route, clearStack: true);
+      },
+      onFailure: _failed,
+    );
   }
 
   Future<void> _failed(Failure failure) async {
@@ -62,7 +68,11 @@ class SignInCubit extends BaseCubit<SignInState> {
       :final email?,
     )) {
       // A fresh code for the Verify email step; if it cannot be sent, that step has "Resend code".
-      await _auth.resendSignUpCode(email);
+      try {
+        await _auth.resendSignUpCode(email);
+      } on Failure {
+        // Not fatal, see above.
+      }
       _go(AppRoutes.verifyEmailAt(email));
       return;
     }

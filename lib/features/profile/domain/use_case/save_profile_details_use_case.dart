@@ -2,8 +2,6 @@ import 'dart:typed_data';
 
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
-import '../../../../core/utils/either.dart';
 import '../../data/enums/signup_step.dart';
 import '../../data/repository/profile_repository.dart';
 import '../entity/profile_update_entity.dart';
@@ -17,7 +15,7 @@ class SaveProfileDetailsUseCase {
 
   final ProfileRepository _profiles;
 
-  Future<Result<Unit>> call({
+  Future<void> call({
     Uint8List? photo,
     String? photoContentType,
     String? bio,
@@ -27,22 +25,15 @@ class SaveProfileDetailsUseCase {
   }) async {
     String? avatarUrl;
     if (photo == null && removeAvatar) {
-      final removed = await _profiles.removeAvatar();
-      if (removed case Left(:final value)) return Left(value);
+      await _profiles.removeAvatar();
     }
     if (photo != null) {
-      final uploaded = await _profiles.uploadAvatar(
+      avatarUrl = await _profiles.uploadAvatar(
         photo,
         contentType: photoContentType ?? 'image/jpeg',
       );
-      switch (uploaded) {
-        case Left(:final value):
-          return Left(value);
-        case Right(:final value):
-          avatarUrl = value;
-      }
     }
-    final saved = await _profiles.updateProfile(
+    await _profiles.updateProfile(
       ProfileUpdateEntity(
         avatarUrl: avatarUrl,
         bio: _filled(bio),
@@ -51,7 +42,6 @@ class SaveProfileDetailsUseCase {
         signupStep: SignupStep.interests,
       ),
     );
-    return saved.map((_) => unit);
   }
 
   String? _filled(String? text) {

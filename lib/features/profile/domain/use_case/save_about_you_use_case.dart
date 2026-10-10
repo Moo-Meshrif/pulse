@@ -1,8 +1,6 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../../core/error/result.dart';
-import '../../../../core/utils/either.dart';
 import '../../data/enums/gender.dart';
 import '../../data/enums/signup_step.dart';
 import '../../data/repository/profile_repository.dart';
@@ -16,23 +14,17 @@ class SaveAboutYouUseCase {
 
   final ProfileRepository _profiles;
 
-  Future<Result<Unit>> call({
+  Future<void> call({
     required String fullName,
     required String username,
     required DateTime birthday,
     Gender? gender,
   }) async {
     final name = username.trim().toLowerCase();
-    final available = await _profiles.isUsernameAvailable(name);
-    switch (available) {
-      case Left(:final value):
-        return Left(value);
-      case Right(value: false):
-        return const Left(ConflictFailure());
-      case Right():
-        break;
+    if (!await _profiles.isUsernameAvailable(name)) {
+      throw const ConflictFailure();
     }
-    final saved = await _profiles.updateProfile(
+    await _profiles.updateProfile(
       ProfileUpdateEntity(
         fullName: fullName.trim(),
         username: name,
@@ -41,6 +33,5 @@ class SaveAboutYouUseCase {
         signupStep: SignupStep.profile,
       ),
     );
-    return saved.map((_) => unit);
   }
 }

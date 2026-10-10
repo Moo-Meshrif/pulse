@@ -1,7 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
-import '../../../../core/utils/either.dart';
 import '../../data/enums/signup_step.dart';
 import '../../data/repository/profile_repository.dart';
 import '../entity/profile_update_entity.dart';
@@ -13,10 +11,7 @@ class CompleteSignupUseCase {
 
   final ProfileRepository _profiles;
 
-  Future<Result<Unit>> call() async {
-    final saved = await _profiles.updateProfile(
-      const ProfileUpdateEntity(signupStep: SignupStep.complete),
-    );
-    return saved.map((_) => unit);
-  }
+  Future<void> call() => _profiles.updateProfile(
+    const ProfileUpdateEntity(signupStep: SignupStep.complete),
+  );
 }

@@ -5,7 +5,6 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_theme.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/reset_password_screen.dart';
@@ -24,10 +23,9 @@ void main() {
     auth = MockAuthDatasource();
     when(() => auth.currentEmail).thenReturn('ada.lovelace@example.com');
     when(() => auth.passwordRecovery).thenAnswer((_) => const Stream.empty());
-    when(() => auth.updatePassword(any()))
-        .thenAnswer((_) async => const Right(unit));
+    when(() => auth.updatePassword(any())).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
-        .thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async {});
     await getIt.reset();
     getIt.registerFactory<ResetPasswordCubit>(() => ResetPasswordCubit(auth));
     addTearDown(getIt.reset);
@@ -182,8 +180,7 @@ void main() {
   testView('a failed update shows the message and keeps the form', (
     tester,
   ) async {
-    when(() => auth.updatePassword(any()))
-        .thenAnswer((_) async => const Left(NetworkFailure()));
+    when(() => auth.updatePassword(any())).thenThrow(const NetworkFailure());
     await open(tester);
     await fill(tester);
     await tester.tap(find.text(l10nEn.updatePassword));

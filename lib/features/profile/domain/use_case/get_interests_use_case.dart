@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
 import '../../data/datasource/interests_datasource.dart';
 import '../../data/model/interest_model.dart';
 
@@ -11,5 +10,5 @@ class GetInterestsUseCase {
 
   final InterestsDatasource _interests;
 
-  Future<Result<List<InterestModel>>> call() => _interests.getInterests();
+  Future<List<InterestModel>> call() => _interests.getInterests();
 }

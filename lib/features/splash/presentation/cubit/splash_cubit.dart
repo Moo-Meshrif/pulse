@@ -29,8 +29,11 @@ class SplashCubit extends BaseCubit<SplashState> {
       emit(const SplashState.go(AppRoutes.signIn));
       return;
     }
-    final result = await _getSignupStep();
-    emit(result.fold(_failed, (step) => SplashState.go(_routeFor(step))));
+    await run(
+      _getSignupStep.call,
+      onSuccess: (step) => SplashState.go(_routeFor(step)),
+      onFailure: _failed,
+    );
   }
 
   /// "Try again": back to loading, then decide again.

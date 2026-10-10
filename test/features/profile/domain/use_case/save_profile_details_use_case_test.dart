@@ -3,12 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_update_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_case.dart';
 
+import '../../../../helpers/failure_of.dart';
 import '../../../../helpers/pump_app.dart';
 
 void main() {
@@ -28,15 +28,15 @@ void main() {
     when(
       () =>
           profiles.uploadAvatar(any(), contentType: any(named: 'contentType')),
-    ).thenAnswer((_) async => const Right('https://cdn/avatar?v=1'));
+    ).thenAnswer((_) async => 'https://cdn/avatar?v=1');
     when(() => profiles.updateProfile(any()))
-        .thenAnswer((_) async => const Right(ProfileEntity()));
+        .thenAnswer((_) async => const ProfileEntity());
   });
 
   test(
     'uploads the photo first, then saves its URL with the trimmed fields',
     () async {
-      final result = await useCase(
+      await useCase(
         photo: photo,
         photoContentType: 'image/png',
         bio: ' Hi ',
@@ -44,7 +44,6 @@ void main() {
         phone: '+20 100 123 4567',
       );
 
-      expect(result.isRight, isTrue);
       verifyInOrder([
         () => profiles.uploadAvatar(photo, contentType: 'image/png'),
         () => profiles.updateProfile(
@@ -93,23 +92,21 @@ void main() {
     when(
       () =>
           profiles.uploadAvatar(any(), contentType: any(named: 'contentType')),
-    ).thenAnswer((_) async => const Left(NetworkFailure()));
+    ).thenThrow(const NetworkFailure());
 
-    final result = await useCase(photo: photo, bio: 'Hi');
-
-    expect(result.fold((f) => f, (_) => null), const NetworkFailure());
+    expect(
+      await failureOf(useCase(photo: photo, bio: 'Hi')),
+      const NetworkFailure(),
+    );
     verifyNever(() => profiles.updateProfile(any()));
   });
 
   test(
     'removeAvatar deletes the saved photo before saving when none is picked',
     () async {
-      when(() => profiles.removeAvatar())
-          .thenAnswer((_) async => const Right(unit));
+      when(() => profiles.removeAvatar()).thenAnswer((_) async {});
 
-      final result = await useCase(removeAvatar: true);
-
-      expect(result.isRight, isTrue);
+      await useCase(removeAvatar: true);
       verifyInOrder([
         () => profiles.removeAvatar(),
         () => profiles.updateProfile(any()),
@@ -124,12 +121,9 @@ void main() {
   });
 
   test('a failed removal stops the save', () async {
-    when(() => profiles.removeAvatar())
-        .thenAnswer((_) async => const Left(NetworkFailure()));
+    when(() => profiles.removeAvatar()).thenThrow(const NetworkFailure());
 
-    final result = await useCase(removeAvatar: true);
-
-    expect(result.isLeft, isTrue);
+    expect(await failureOf(useCase(removeAvatar: true)), isA<NetworkFailure>());
     verifyNever(() => profiles.updateProfile(any()));
   });
 }

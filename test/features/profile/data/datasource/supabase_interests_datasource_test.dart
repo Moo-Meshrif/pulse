@@ -3,14 +3,19 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 
 import '../../../../helpers/backend_double.dart';
 
 void main() {
-  Failure? failureOf(Either<Failure, Object?> result) =>
-      result.fold((f) => f, (_) => null);
+  Future<Failure?> failureOf(Future<Object?> call) async {
+    try {
+      await call;
+    } on Failure catch (failure) {
+      return failure;
+    }
+    return null;
+  }
 
   /// A signed-in client whose non-auth requests go to [handler].
   Future<BackendDouble> signedIn(
@@ -51,7 +56,7 @@ void main() {
       final result = await SupabaseInterestsDatasource(backend.client)
           .getInterests();
 
-      final interests = result.getOrElse((_) => []);
+      final interests = result;
       expect(interests.map((i) => i.slug), ['travel', 'photography']);
       expect(interests.first.nameFor('ar'), 'سفر');
       expect(
@@ -64,9 +69,7 @@ void main() {
 
     test('saving replaces the user\'s interests with the chosen ids', () async {
       final backend = await signedIn((_) async => http.Response('', 204));
-      final result = await SupabaseInterestsDatasource(backend.client)
-          .saveInterests([1, 5]);
-      expect(result.isRight, isTrue);
+      await SupabaseInterestsDatasource(backend.client).saveInterests([1, 5]);
       expect(jsonBody(backend.to('set_user_interests').single), {
         'p_ids': [1, 5],
       });
@@ -80,8 +83,8 @@ void main() {
         (_) async => BackendDouble.postgrestError(500, '500'),
       );
       expect(
-        failureOf(
-          await SupabaseInterestsDatasource(server.client).getInterests(),
+        await failureOf(
+          SupabaseInterestsDatasource(server.client).getInterests(),
         ),
         const ServerFailure(statusCode: 500),
       );
@@ -90,8 +93,8 @@ void main() {
         (_) async => throw http.ClientException('offline'),
       );
       expect(
-        failureOf(
-          await SupabaseInterestsDatasource(offline.client).getInterests(),
+        await failureOf(
+          SupabaseInterestsDatasource(offline.client).getInterests(),
         ),
         const NetworkFailure(),
       );

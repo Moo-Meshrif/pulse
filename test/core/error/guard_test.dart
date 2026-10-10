@@ -7,17 +7,35 @@ import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/exceptions.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/error/guard.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() {
   Future<Failure?> failureOf(Object error) async {
-    final result = await Guard.run<int>(() async => throw error);
-    return result.fold((f) => f, (_) => null);
+    try {
+      await Guard.run<int>(() async => throw error);
+    } on Failure catch (failure) {
+      return failure;
+    }
+    return null;
   }
 
-  test('a value comes back as a Right', () async {
-    expect(await Guard.run(() async => 5), const Right<Failure, int>(5));
+  test('a value comes back as it is', () async {
+    expect(await Guard.run(() async => 5), 5);
+  });
+
+  test('a thrown Failure passes through untouched', () async {
+    expect(await failureOf(const ConflictFailure()), const ConflictFailure());
+  });
+
+  test('toFailure maps an error and keeps a Failure', () {
+    expect(
+      Guard.toFailure(TimeoutException('slow'), StackTrace.empty),
+      const TimeoutFailure(),
+    );
+    expect(
+      Guard.toFailure(const NetworkFailure(), StackTrace.empty),
+      const NetworkFailure(),
+    );
   });
 
   group('app exceptions', () {

@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
 import '../../data/datasource/follows_datasource.dart';
 import '../../data/enums/suggestion_tab.dart';
 import '../../data/model/suggested_profile_model.dart';
@@ -12,6 +11,6 @@ class GetSuggestedProfilesUseCase {
 
   final FollowsDatasource _follows;
 
-  Future<Result<List<SuggestedProfileModel>>> call(SuggestionTab tab) =>
+  Future<List<SuggestedProfileModel>> call(SuggestionTab tab) =>
       _follows.getSuggestedProfiles(tab);
 }

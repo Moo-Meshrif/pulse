@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/data/enums/gender.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_update_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/save_about_you_use_case.dart';
 
+import '../../../../helpers/failure_of.dart';
 import '../../../../helpers/pump_app.dart';
 
 void main() {
@@ -22,22 +22,21 @@ void main() {
     profiles = MockProfileRepository();
     useCase = SaveAboutYouUseCase(profiles);
     when(() => profiles.isUsernameAvailable(any()))
-        .thenAnswer((_) async => const Right(true));
+        .thenAnswer((_) async => true);
     when(() => profiles.updateProfile(any()))
-        .thenAnswer((_) async => const Right(ProfileEntity()));
+        .thenAnswer((_) async => const ProfileEntity());
   });
 
   test(
     'checks the lowercase username, then saves the fields and advances',
     () async {
-      final result = await useCase(
+      await useCase(
         fullName: '  Ada Lovelace ',
         username: ' Ada_L ',
         birthday: birthday,
         gender: Gender.female,
       );
 
-      expect(result.isRight, isTrue);
       verifyInOrder([
         () => profiles.isUsernameAvailable('ada_l'),
         () => profiles.updateProfile(
@@ -55,15 +54,14 @@ void main() {
 
   test('a taken username is a conflict and nothing is saved', () async {
     when(() => profiles.isUsernameAvailable(any()))
-        .thenAnswer((_) async => const Right(false));
+        .thenAnswer((_) async => false);
 
-    final result = await useCase(
-      fullName: 'Ada',
-      username: 'ada_l',
-      birthday: birthday,
+    expect(
+      await failureOf(
+        useCase(fullName: 'Ada', username: 'ada_l', birthday: birthday),
+      ),
+      const ConflictFailure(),
     );
-
-    expect(result.fold((f) => f, (_) => null), const ConflictFailure());
     verifyNever(() => profiles.updateProfile(any()));
   });
 
@@ -71,15 +69,14 @@ void main() {
     'a failed availability check is returned and nothing is saved',
     () async {
       when(() => profiles.isUsernameAvailable(any()))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+          .thenThrow(const NetworkFailure());
 
-      final result = await useCase(
-        fullName: 'Ada',
-        username: 'ada_l',
-        birthday: birthday,
+      expect(
+        await failureOf(
+          useCase(fullName: 'Ada', username: 'ada_l', birthday: birthday),
+        ),
+        const NetworkFailure(),
       );
-
-      expect(result.fold((f) => f, (_) => null), const NetworkFailure());
       verifyNever(() => profiles.updateProfile(any()));
     },
   );
@@ -88,15 +85,14 @@ void main() {
     'losing the username to someone else while saving is a conflict',
     () async {
       when(() => profiles.updateProfile(any()))
-          .thenAnswer((_) async => const Left(ConflictFailure()));
+          .thenThrow(const ConflictFailure());
 
-      final result = await useCase(
-        fullName: 'Ada',
-        username: 'ada_l',
-        birthday: birthday,
+      expect(
+        await failureOf(
+          useCase(fullName: 'Ada', username: 'ada_l', birthday: birthday),
+        ),
+        const ConflictFailure(),
       );
-
-      expect(result.fold((f) => f, (_) => null), const ConflictFailure());
     },
   );
 }

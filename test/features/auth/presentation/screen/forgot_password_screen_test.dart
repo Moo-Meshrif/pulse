@@ -3,9 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/error/result.dart';
 import 'package:pulse/core/theme/app_theme.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/core/services/launch_service.dart';
 import 'package:pulse/features/auth/presentation/cubit/forgot_password_cubit.dart';
@@ -33,8 +31,10 @@ void main() {
     addTearDown(getIt.reset);
   });
 
-  void sendReturns(Result<Unit> result) =>
-      when(() => auth.sendPasswordReset(any())).thenAnswer((_) async => result);
+  void sendReturns([Failure? failure]) =>
+      when(() => auth.sendPasswordReset(any())).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
   Future<void> open(WidgetTester tester, {Locale? locale}) async {
     await tester.pumpWidget(
@@ -107,7 +107,7 @@ void main() {
   );
 
   testView('a failed request shows its failure in a snackbar', (tester) async {
-    sendReturns(const Left(NetworkFailure()));
+    sendReturns(const NetworkFailure());
     await open(tester);
     await sendFor(tester, 'ada@example.com');
 
@@ -118,7 +118,7 @@ void main() {
   testView(
     'a sent link opens the dialog over the screen with the masked email',
     (tester) async {
-      sendReturns(const Right(unit));
+      sendReturns();
       await open(tester);
       await sendFor(tester, 'ada@example.com');
 
@@ -135,7 +135,7 @@ void main() {
   testView('Open email app launches the mail app, or says there is none', (
     tester,
   ) async {
-    sendReturns(const Right(unit));
+    sendReturns();
     await open(tester);
     await sendFor(tester, 'ada@example.com');
 
@@ -153,7 +153,7 @@ void main() {
   testView('Resend is available after 30 s and shows "Link sent again"', (
     tester,
   ) async {
-    sendReturns(const Right(unit));
+    sendReturns();
     await open(tester);
     await sendFor(tester, 'ada@example.com');
 
@@ -176,7 +176,7 @@ void main() {
   testView('Change email closes the dialog and focuses the field', (
     tester,
   ) async {
-    sendReturns(const Right(unit));
+    sendReturns();
     await open(tester);
     await sendFor(tester, 'ada@example.com');
 
@@ -193,7 +193,7 @@ void main() {
   testView('a tap on the barrier closes the dialog and stays on S2', (
     tester,
   ) async {
-    sendReturns(const Right(unit));
+    sendReturns();
     await open(tester);
     await sendFor(tester, 'ada@example.com');
 
@@ -205,7 +205,7 @@ void main() {
   });
 
   testView('Back to sign in in the dialog resets to /sign-in', (tester) async {
-    sendReturns(const Right(unit));
+    sendReturns();
     await open(tester);
     await sendFor(tester, 'ada@example.com');
 
@@ -231,7 +231,7 @@ void main() {
   testView(
     'Arabic: texts in Arabic, the arrow on the right, email left-to-right',
     (tester) async {
-      sendReturns(const Right(unit));
+      sendReturns();
       await open(tester, locale: const Locale('ar'));
 
       expect(find.text(l10nAr.forgotTitle), findsOneWidget);
@@ -256,7 +256,7 @@ void main() {
     (tester) async {
       tester.view.physicalSize = const Size(320, 568);
       tester.platformDispatcher.textScaleFactorTestValue = 1.5;
-      sendReturns(const Right(unit));
+      sendReturns();
       await open(tester);
       await sendFor(tester, 'ada@example.com');
 

@@ -5,8 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/error/result.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/core/enums/photo_source.dart';
 import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/core/router/app_routes.dart';
@@ -74,23 +72,21 @@ void main() {
     clearLocal = MockClearLocalProfileUseCase();
     getSignupStep = MockGetSignupStep();
     getDraft = MockGetSignupDraftUseCase();
-    when(() => getDraft())
-        .thenAnswer((_) async => const Right(ProfileEntity()));
+    when(() => getDraft()).thenAnswer((_) async => const ProfileEntity());
     when(() => getInterests())
-        .thenAnswer((_) async => const Right([interest1, interest2]));
-    when(() => saveInterests(any())).thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async => const [interest1, interest2]);
+    when(() => saveInterests(any())).thenAnswer((_) async {});
     when(() => getPeople(SuggestionTab.suggested))
-        .thenAnswer((_) async => const Right([ada, bob]));
+        .thenAnswer((_) async => const [ada, bob]);
     when(() => getPeople(SuggestionTab.popular))
-        .thenAnswer((_) async => const Right([bob]));
+        .thenAnswer((_) async => const [bob]);
     when(() => setFollowing(any(), following: any(named: 'following')))
-        .thenAnswer((_) async => const Right(unit));
-    when(() => setFollowing.all(any()))
-        .thenAnswer((_) async => const Right(unit));
-    when(() => complete()).thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async {});
+    when(() => setFollowing.all(any())).thenAnswer((_) async {});
+    when(() => complete()).thenAnswer((_) async {});
     when(() => clearLocal()).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
-        .thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async {});
   });
 
   SignUpCubit cubit() => SignUpCubit(
@@ -108,22 +104,30 @@ void main() {
     getDraft,
   );
 
-  void signUpReturns(Result<Unit> result) => when(
-    () => auth.signUp(
-      email: any(named: 'email'),
-      password: any(named: 'password'),
-    ),
-  ).thenAnswer((_) async => result);
+  void signUpReturns([Failure? failure]) =>
+      when(
+        () => auth.signUp(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
-  void verifyReturns(Result<Unit> result) => when(
-    () => auth.verifySignUpCode(
-      email: any(named: 'email'),
-      code: any(named: 'code'),
-    ),
-  ).thenAnswer((_) async => result);
+  void verifyReturns([Failure? failure]) =>
+      when(
+        () => auth.verifySignUpCode(
+          email: any(named: 'email'),
+          code: any(named: 'code'),
+        ),
+      ).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
-  void resendReturns(Result<Unit> result) =>
-      when(() => auth.resendSignUpCode(any())).thenAnswer((_) async => result);
+  void resendReturns([Failure? failure]) =>
+      when(() => auth.resendSignUpCode(any())).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
   const cooldown = Duration(seconds: 30);
 
@@ -188,7 +192,7 @@ void main() {
     testWidgets('a created account moves to Verify email with the cooldown', (
       tester,
     ) async {
-      signUpReturns(const Right(unit));
+      signUpReturns();
       final c = filled();
       await c.submitAccount();
 
@@ -202,16 +206,13 @@ void main() {
     });
 
     test('a taken email stays on Account until the email is edited', () async {
-      signUpReturns(const Left(AuthFailure(AuthFailureReason.emailTaken)));
+      signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
       when(
         () => auth.signIn(
           identifier: any(named: 'identifier'),
           password: any(named: 'password'),
         ),
-      ).thenAnswer(
-        (_) async =>
-            const Left(AuthFailure(AuthFailureReason.invalidCredentials)),
-      );
+      ).thenThrow(const AuthFailure(AuthFailureReason.invalidCredentials));
       final c = filled();
       await c.submitAccount();
 
@@ -227,18 +228,20 @@ void main() {
     });
 
     group('a taken email', () {
-      void signInReturns(Result<Unit> result) => when(
-        () => auth.signIn(
-          identifier: any(named: 'identifier'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => result);
+      void signInReturns([Failure? failure]) =>
+          when(
+            () => auth.signIn(
+              identifier: any(named: 'identifier'),
+              password: any(named: 'password'),
+            ),
+          ).thenAnswer((_) async {
+            if (failure != null) throw failure;
+          });
 
       test('with the same password resumes at the step still to do', () async {
-        signUpReturns(const Left(AuthFailure(AuthFailureReason.emailTaken)));
-        signInReturns(const Right(unit));
-        when(() => getSignupStep())
-            .thenAnswer((_) async => const Right(SignupStep.profile));
+        signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
+        signInReturns();
+        when(() => getSignupStep()).thenAnswer((_) async => SignupStep.profile);
         final c = filled();
         await c.submitAccount();
 
@@ -249,10 +252,10 @@ void main() {
       });
 
       test('with a finished sign-up goes Home', () async {
-        signUpReturns(const Left(AuthFailure(AuthFailureReason.emailTaken)));
-        signInReturns(const Right(unit));
+        signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
+        signInReturns();
         when(() => getSignupStep())
-            .thenAnswer((_) async => const Right(SignupStep.complete));
+            .thenAnswer((_) async => SignupStep.complete);
         final c = filled();
         final routes = <String?>[];
         c.stream.listen((s) => routes.add(s.route));
@@ -264,10 +267,8 @@ void main() {
       });
 
       test('with another password stays taken', () async {
-        signUpReturns(const Left(AuthFailure(AuthFailureReason.emailTaken)));
-        signInReturns(
-          const Left(AuthFailure(AuthFailureReason.invalidCredentials)),
-        );
+        signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
+        signInReturns(const AuthFailure(AuthFailureReason.invalidCredentials));
         final c = filled();
         await c.submitAccount();
 
@@ -279,7 +280,7 @@ void main() {
     });
 
     test('another failure is kept for a snackbar', () async {
-      signUpReturns(const Left(NetworkFailure()));
+      signUpReturns(const NetworkFailure());
       final c = filled();
       await c.submitAccount();
 
@@ -290,7 +291,7 @@ void main() {
 
   group('Verify email', () {
     Future<SignUpCubit> atVerify() async {
-      signUpReturns(const Right(unit));
+      signUpReturns();
       final c = filled();
       await c.submitAccount();
       return c;
@@ -308,7 +309,7 @@ void main() {
     testWidgets('a right code moves on to About you and stops the cooldown', (
       tester,
     ) async {
-      verifyReturns(const Right(unit));
+      verifyReturns();
       final c = await atVerify();
       c.codeChanged('123456');
       await c.verify();
@@ -324,7 +325,7 @@ void main() {
     testWidgets('a wrong code shows under the boxes until it is edited', (
       tester,
     ) async {
-      verifyReturns(const Left(AuthFailure(AuthFailureReason.invalidCode)));
+      verifyReturns(const AuthFailure(AuthFailureReason.invalidCode));
       final c = await atVerify();
       c.codeChanged('000000');
       await c.verify();
@@ -342,7 +343,7 @@ void main() {
     testWidgets(
       'Resend is refused during the cooldown, then sends and restarts it',
       (tester) async {
-        resendReturns(const Right(unit));
+        resendReturns();
         final c = await atVerify();
         await c.resend();
         verifyNever(() => auth.resendSignUpCode(any()));
@@ -370,7 +371,7 @@ void main() {
     testWidgets('a failed resend keeps the cooldown off and reports it', (
       tester,
     ) async {
-      resendReturns(const Left(NetworkFailure()));
+      resendReturns(const NetworkFailure());
       final c = await atVerify();
       await tester.pump(cooldown);
       await c.resend();
@@ -421,14 +422,17 @@ void main() {
   group('About you', () {
     final birthday = DateTime(1999, 5, 20);
 
-    void saveAboutReturns(Result<Unit> result) => when(
-      () => saveAbout(
-        fullName: any(named: 'fullName'),
-        username: any(named: 'username'),
-        birthday: any(named: 'birthday'),
-        gender: any(named: 'gender'),
-      ),
-    ).thenAnswer((_) async => result);
+    void saveAboutReturns([Failure? failure]) =>
+        when(
+          () => saveAbout(
+            fullName: any(named: 'fullName'),
+            username: any(named: 'username'),
+            birthday: any(named: 'birthday'),
+            gender: any(named: 'gender'),
+          ),
+        ).thenAnswer((_) async {
+          if (failure != null) throw failure;
+        });
 
     SignUpCubit atAbout() => cubit()
       ..open(step: SignUpCubit.aboutYouStep)
@@ -481,7 +485,7 @@ void main() {
     });
 
     test('a saved step moves on to Profile', () async {
-      saveAboutReturns(const Right(unit));
+      saveAboutReturns();
       final c = atAbout()..genderToggled(Gender.female);
       await c.submitAbout();
 
@@ -498,7 +502,7 @@ void main() {
     });
 
     test('a taken username stays on the step until it is edited', () async {
-      saveAboutReturns(const Left(ConflictFailure()));
+      saveAboutReturns(const ConflictFailure());
       final c = atAbout();
       await c.submitAbout();
 
@@ -513,7 +517,7 @@ void main() {
     });
 
     test('another failure is kept for a snackbar', () async {
-      saveAboutReturns(const Left(NetworkFailure()));
+      saveAboutReturns(const NetworkFailure());
       final c = atAbout();
       await c.submitAbout();
 
@@ -540,16 +544,19 @@ void main() {
       contentType: 'image/png',
     );
 
-    void saveProfileReturns(Result<Unit> result) => when(
-      () => saveProfile(
-        photo: any(named: 'photo'),
-        photoContentType: any(named: 'photoContentType'),
-        bio: any(named: 'bio'),
-        city: any(named: 'city'),
-        phone: any(named: 'phone'),
-        removeAvatar: any(named: 'removeAvatar'),
-      ),
-    ).thenAnswer((_) async => result);
+    void saveProfileReturns([Failure? failure]) =>
+        when(
+          () => saveProfile(
+            photo: any(named: 'photo'),
+            photoContentType: any(named: 'photoContentType'),
+            bio: any(named: 'bio'),
+            city: any(named: 'city'),
+            phone: any(named: 'phone'),
+            removeAvatar: any(named: 'removeAvatar'),
+          ),
+        ).thenAnswer((_) async {
+          if (failure != null) throw failure;
+        });
 
     SignUpCubit atProfile() => cubit()..open(step: SignUpCubit.profileStep);
 
@@ -559,16 +566,14 @@ void main() {
 
     test('a resumed sign-up brings back what was entered before', () async {
       when(() => getDraft()).thenAnswer(
-        (_) async => Right(
-          ProfileEntity(
-            fullName: 'Ada Lovelace',
-            username: 'ada',
-            birthday: DateTime(1990, 5, 1),
-            bio: 'Hi',
-            city: 'Cairo',
-            phone: '+966 512345678',
-            avatarUrl: 'https://x/a.png',
-          ),
+        (_) async => ProfileEntity(
+          fullName: 'Ada Lovelace',
+          username: 'ada',
+          birthday: DateTime(1990, 5, 1),
+          bio: 'Hi',
+          city: 'Cairo',
+          phone: '+966 512345678',
+          avatarUrl: 'https://x/a.png',
         ),
       );
       final c = cubit()..open(step: SignUpCubit.profileStep);
@@ -612,9 +617,9 @@ void main() {
 
     test('removing a restored photo deletes it when Continue saves', () async {
       when(() => getDraft()).thenAnswer(
-        (_) async => const Right(ProfileEntity(avatarUrl: 'https://x/a.png')),
+        (_) async => const ProfileEntity(avatarUrl: 'https://x/a.png'),
       );
-      saveProfileReturns(const Right(unit));
+      saveProfileReturns();
       final c = atProfile();
       await Future<void>.delayed(Duration.zero);
       expect(c.state.avatarUrl, 'https://x/a.png');
@@ -643,7 +648,7 @@ void main() {
     });
 
     test('Continue saves what was given and moves to Interests', () async {
-      saveProfileReturns(const Right(unit));
+      saveProfileReturns();
       when(() => photos.pick(any())).thenAnswer((_) async => picked);
       final c = atProfile()
         ..bioChanged('Hi')
@@ -666,7 +671,7 @@ void main() {
     });
 
     test('Skip saves nothing and moves on', () async {
-      saveProfileReturns(const Right(unit));
+      saveProfileReturns();
       final c = atProfile()..bioChanged('typed but skipped');
       await c.skipProfile();
 
@@ -684,7 +689,7 @@ void main() {
     });
 
     test('a failed save stays on the step with the failure', () async {
-      saveProfileReturns(const Left(NetworkFailure()));
+      saveProfileReturns(const NetworkFailure());
       final c = atProfile();
       await c.submitProfile();
 
@@ -711,7 +716,7 @@ void main() {
           city: any(named: 'city'),
           phone: any(named: 'phone'),
         ),
-      ).thenAnswer((_) async => const Right(unit));
+      ).thenAnswer((_) async {});
       final c = cubit()..open(step: SignUpCubit.profileStep);
       await c.skipProfile();
       return c;
@@ -727,7 +732,7 @@ void main() {
     });
 
     test('no topics: the step is passed over and Follow opens', () async {
-      when(() => getInterests()).thenAnswer((_) async => const Right([]));
+      when(() => getInterests()).thenAnswer((_) async => const []);
       final c = await atInterests();
 
       verify(() => saveInterests(const [])).called(1);
@@ -737,15 +742,13 @@ void main() {
     test(
       'a failed load opens the step with Retry, which loads again',
       () async {
-        when(() => getInterests())
-            .thenAnswer((_) async => const Left(NetworkFailure()));
+        when(() => getInterests()).thenThrow(const NetworkFailure());
         final c = await atInterests();
 
         expect(c.state.step, SignUpCubit.interestsStep);
         expect(c.state.interestsStatus, LoadStatus.failed);
 
-        when(() => getInterests())
-            .thenAnswer((_) async => const Right([interest1]));
+        when(() => getInterests()).thenAnswer((_) async => const [interest1]);
         await c.retryInterests();
         expect(c.state.interestsStatus, LoadStatus.loaded);
         expect(c.state.interests, [interest1]);
@@ -783,8 +786,7 @@ void main() {
     });
 
     test('a failed save stays on the step with the failure', () async {
-      when(() => saveInterests(any()))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => saveInterests(any())).thenThrow(const NetworkFailure());
       final c = await atInterests();
       await c.submitInterests();
 
@@ -796,7 +798,7 @@ void main() {
     test(
       'both lists empty: Follow is passed over and sign-up ends at Home',
       () async {
-        when(() => getPeople(any())).thenAnswer((_) async => const Right([]));
+        when(() => getPeople(any())).thenAnswer((_) async => const []);
         final c = await atInterests();
         final routes = <String>[];
         c.stream.listen((s) {
@@ -843,13 +845,13 @@ void main() {
 
     test('a tab that fails to load shows Retry and loads again', () async {
       when(() => getPeople(SuggestionTab.popular))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+          .thenThrow(const NetworkFailure());
       final c = await atFollow();
       c.tabSelected(FollowTab.popular);
       expect(c.state.followStatus, LoadStatus.failed);
 
       when(() => getPeople(SuggestionTab.popular))
-          .thenAnswer((_) async => const Right([bob]));
+          .thenAnswer((_) async => const [bob]);
       await c.retryPeople();
       expect(c.state.followStatus, LoadStatus.loaded);
       expect(c.state.visiblePeople, [bob]);
@@ -875,7 +877,7 @@ void main() {
 
     test('a failed follow puts the button back and reports it', () async {
       when(() => setFollowing(any(), following: any(named: 'following')))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+          .thenThrow(const NetworkFailure());
       final c = await atFollow();
       await c.followToggled('u1');
 
@@ -896,8 +898,7 @@ void main() {
     );
 
     test('a failed Follow all undoes only its own follows', () async {
-      when(() => setFollowing.all(any()))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => setFollowing.all(any())).thenThrow(const NetworkFailure());
       final c = await atFollow();
       await c.followToggled('u1');
       await c.followAll();
@@ -920,8 +921,7 @@ void main() {
     });
 
     test('a failed finish stays on Follow with the failure', () async {
-      when(() => complete())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => complete()).thenThrow(const NetworkFailure());
       final c = await atFollow();
       await c.finishFollow();
 
@@ -938,7 +938,7 @@ void main() {
         await Future<void>.delayed(Duration.zero);
         expect(c.state.step, SignUpCubit.interestsStep);
 
-        when(() => getInterests()).thenAnswer((_) async => const Right([]));
+        when(() => getInterests()).thenAnswer((_) async => const []);
         final empty = await atFollow();
         empty.backOneStep();
         await Future<void>.delayed(Duration.zero);
@@ -963,7 +963,7 @@ void main() {
 
     test('goes to Sign in even when signing out fails', () async {
       when(() => auth.signOut(others: any(named: 'others')))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+          .thenThrow(const NetworkFailure());
       final c = cubit();
       final routes = <String>[];
       c.stream.listen((s) {

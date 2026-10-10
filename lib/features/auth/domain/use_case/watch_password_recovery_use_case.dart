@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/utils/either.dart';
 import '../../data/datasource/auth_datasource.dart';
 
 /// `auth`'s public signal that the app was opened from a password-recovery link, for the app shell to
@@ -11,5 +10,5 @@ class WatchPasswordRecoveryUseCase {
 
   final AuthDatasource _auth;
 
-  Stream<Unit> call() => _auth.passwordRecovery;
+  Stream<void> call() => _auth.passwordRecovery;
 }

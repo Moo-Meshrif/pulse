@@ -7,7 +7,6 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/features/splash/presentation/widgets/splash_loading.dart';
 import 'package:pulse/l10n/app_localizations.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
@@ -63,8 +62,7 @@ void main() {
 
   testWidgets('a finished sign-up goes Home', (tester) async {
     when(() => isSignedIn()).thenReturn(true);
-    when(() => getSignupStep())
-        .thenAnswer((_) async => const Right(SignupStep.complete));
+    when(() => getSignupStep()).thenAnswer((_) async => SignupStep.complete);
 
     await openSplash(tester);
 
@@ -73,8 +71,7 @@ void main() {
 
   testWidgets('a pending sign-up resumes at its saved step', (tester) async {
     when(() => isSignedIn()).thenReturn(true);
-    when(() => getSignupStep())
-        .thenAnswer((_) async => const Right(SignupStep.profile));
+    when(() => getSignupStep()).thenAnswer((_) async => SignupStep.profile);
 
     await openSplash(tester);
 
@@ -83,9 +80,8 @@ void main() {
 
   testWidgets('an expired session goes to Sign in', (tester) async {
     when(() => isSignedIn()).thenReturn(true);
-    when(() => getSignupStep()).thenAnswer(
-      (_) async => const Left(AuthFailure(AuthFailureReason.sessionExpired)),
-    );
+    when(() => getSignupStep())
+        .thenThrow(const AuthFailure(AuthFailureReason.sessionExpired));
 
     await openSplash(tester);
 
@@ -96,8 +92,7 @@ void main() {
     'a lost connection stays on the offline screen, with no raw error',
     (tester) async {
       when(() => isSignedIn()).thenReturn(true);
-      when(() => getSignupStep())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => getSignupStep()).thenThrow(const NetworkFailure());
 
       await openSplash(tester);
 
@@ -112,8 +107,7 @@ void main() {
 
   testWidgets('any other failure shows Can\'t reach Pulse', (tester) async {
     when(() => isSignedIn()).thenReturn(true);
-    when(() => getSignupStep())
-        .thenAnswer((_) async => const Left(ServerFailure(statusCode: 500)));
+    when(() => getSignupStep()).thenThrow(const ServerFailure(statusCode: 500));
 
     await openSplash(tester);
 
@@ -128,9 +122,9 @@ void main() {
     when(() => isSignedIn()).thenReturn(true);
     var calls = 0;
     when(() => getSignupStep()).thenAnswer((_) async {
-      if (++calls == 1) return const Left(NetworkFailure());
+      if (++calls == 1) throw const NetworkFailure();
       await Future<void>.delayed(const Duration(seconds: 1));
-      return const Right(SignupStep.complete);
+      return SignupStep.complete;
     });
 
     await openSplash(tester);
@@ -150,8 +144,7 @@ void main() {
     tester,
   ) async {
     when(() => isSignedIn()).thenReturn(true);
-    when(() => getSignupStep())
-        .thenAnswer((_) async => const Left(NetworkFailure()));
+    when(() => getSignupStep()).thenThrow(const NetworkFailure());
 
     await openSplash(tester);
     await tester.tap(find.text(l10nEn.tryAgain));
@@ -180,7 +173,7 @@ void main() {
       when(() => getSignupStep()).thenAnswer(
         (_) => Future.delayed(
           const Duration(seconds: 1),
-          () => const Right(SignupStep.complete),
+          () => SignupStep.complete,
         ),
       );
 
@@ -203,10 +196,8 @@ void main() {
     final handle = tester.ensureSemantics();
     when(() => isSignedIn()).thenReturn(true);
     when(() => getSignupStep()).thenAnswer(
-      (_) => Future.delayed(
-        const Duration(seconds: 1),
-        () => const Right(SignupStep.complete),
-      ),
+      (_) =>
+          Future.delayed(const Duration(seconds: 1), () => SignupStep.complete),
     );
 
     await tester.pumpWidget(app());

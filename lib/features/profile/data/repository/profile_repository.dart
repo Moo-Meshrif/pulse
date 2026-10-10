@@ -3,8 +3,6 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../../core/error/result.dart';
-import '../../../../core/utils/either.dart';
 import '../../domain/entity/profile_entity.dart';
 import '../../domain/entity/profile_update_entity.dart';
 import '../datasource/profile_datasource.dart';
@@ -17,22 +15,19 @@ import '../model/profile_update_model.dart';
 abstract interface class ProfileRepository {
   /// The profile from the server (and saved locally). Only when the connection fails does it return the
   /// saved copy, if there is one; any other failure (a revoked session) is returned as it is.
-  Future<Result<ProfileEntity>> getProfile();
+  Future<ProfileEntity> getProfile();
 
-  Future<Result<bool>> isUsernameAvailable(String username);
+  Future<bool> isUsernameAvailable(String username);
 
   /// Writes only the fields that are set, then saves the profile as the server now stores it, and
   /// returns it. A taken username is `ConflictFailure`.
-  Future<Result<ProfileEntity>> updateProfile(ProfileUpdateEntity update);
+  Future<ProfileEntity> updateProfile(ProfileUpdateEntity update);
 
   /// Stores the picture and returns its public URL (not yet saved on the profile).
-  Future<Result<String>> uploadAvatar(
-    Uint8List bytes, {
-    required String contentType,
-  });
+  Future<String> uploadAvatar(Uint8List bytes, {required String contentType});
 
   /// Deletes the picture on the server and in the saved copy.
-  Future<Result<Unit>> removeAvatar();
+  Future<void> removeAvatar();
 
   /// Forgets the saved copy of the signed-in user's profile (call before signing out).
   Future<void> clearLocalProfile();
@@ -46,56 +41,43 @@ class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileLocalDatasource _local;
 
   @override
-  Future<Result<ProfileEntity>> getProfile() async {
-    final result = await _remote.getProfile();
-    switch (result) {
-      case Right(:final value):
-        await _local.write(value);
-        return Right(_toEntity(value));
-      case Left(:final value):
-        // Only a lost connection falls back to the copy: anything else is a real answer.
-        if (value is NetworkFailure || value is TimeoutFailure) {
-          final userId = _remote.currentUserId;
-          final saved = userId == null ? null : _local.read(userId);
-          if (saved != null) return Right(_toEntity(saved));
-        }
-        return Left(value);
+  Future<ProfileEntity> getProfile() async {
+    try {
+      final profile = await _remote.getProfile();
+      await _local.write(profile);
+      return _toEntity(profile);
+    } on Failure catch (failure) {
+      // Only a lost connection falls back to the copy: anything else is a real answer.
+      if (failure is NetworkFailure || failure is TimeoutFailure) {
+        final userId = _remote.currentUserId;
+        final saved = userId == null ? null : _local.read(userId);
+        if (saved != null) return _toEntity(saved);
+      }
+      rethrow;
     }
   }
 
   @override
-  Future<Result<bool>> isUsernameAvailable(String username) =>
+  Future<bool> isUsernameAvailable(String username) =>
       _remote.isUsernameAvailable(username);
 
   @override
-  Future<Result<ProfileEntity>> updateProfile(
-    ProfileUpdateEntity update,
-  ) async {
-    final result = await _remote.updateProfile(_toUpdateModel(update));
-    switch (result) {
-      case Right(:final value):
-        await _local.write(value);
-        return Right(_toEntity(value));
-      case Left(:final value):
-        return Left(value);
-    }
+  Future<ProfileEntity> updateProfile(ProfileUpdateEntity update) async {
+    final profile = await _remote.updateProfile(_toUpdateModel(update));
+    await _local.write(profile);
+    return _toEntity(profile);
   }
 
   @override
-  Future<Result<String>> uploadAvatar(
-    Uint8List bytes, {
-    required String contentType,
-  }) => _remote.uploadAvatar(bytes, contentType: contentType);
+  Future<String> uploadAvatar(Uint8List bytes, {required String contentType}) =>
+      _remote.uploadAvatar(bytes, contentType: contentType);
 
   @override
-  Future<Result<Unit>> removeAvatar() async {
-    final result = await _remote.removeAvatar();
-    if (result.isRight) {
-      final userId = _remote.currentUserId;
-      final saved = userId == null ? null : _local.read(userId);
-      if (saved != null) await _local.write(saved.copyWith(clearAvatar: true));
-    }
-    return result;
+  Future<void> removeAvatar() async {
+    await _remote.removeAvatar();
+    final userId = _remote.currentUserId;
+    final saved = userId == null ? null : _local.read(userId);
+    if (saved != null) await _local.write(saved.copyWith(clearAvatar: true));
   }
 
   @override

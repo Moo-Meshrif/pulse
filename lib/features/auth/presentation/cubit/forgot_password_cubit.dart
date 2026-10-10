@@ -27,30 +27,33 @@ class ForgotPasswordCubit extends BaseCubit<ForgotPasswordState> {
   void emailLeft() => emit(state.copyWith(emailTouched: true));
 
   Future<void> submit() async {
-    if (!state.canSubmit) return;
     final email = state.email.trim();
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _auth.sendPasswordReset(email);
-    result.fold(
-      (failure) => emit(state.copyWith(loading: false, failure: failure)),
-      (_) {
+    await run(
+      prevent: !state.canSubmit,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _auth.sendPasswordReset(email),
+      onSuccess: (_) {
         _startCooldown(loading: false, sentTo: email);
-        emit(state.copyWith(sentTo: null));
+        return state.copyWith(sentTo: null);
       },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
   /// "Resend link" in the dialog; ignored during the cooldown.
   Future<void> resend() async {
-    if (!state.canResend) return;
-    emit(state.copyWith(loading: true));
-    final result = await _auth.sendPasswordReset(state.email.trim());
-    result.fold((_) => _notify(ResetLinkMessage.resendFailed, loading: false), (
-      _,
-    ) {
-      _startCooldown(loading: false);
-      _notify(ResetLinkMessage.resent);
-    });
+    await run(
+      prevent: !state.canResend,
+      loading: state.copyWith(loading: true),
+      () => _auth.sendPasswordReset(state.email.trim()),
+      onSuccess: (_) {
+        _startCooldown(loading: false);
+        _notify(ResetLinkMessage.resent);
+      },
+      onFailure: (_) {
+        _notify(ResetLinkMessage.resendFailed, loading: false);
+      },
+    );
   }
 
   Future<void> openEmailApp() async {

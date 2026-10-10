@@ -4,9 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/error/result.dart';
 import 'package:pulse/core/theme/app_theme.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_in_screen.dart';
@@ -27,19 +25,21 @@ void main() {
   setUp(() async {
     auth = MockAuthDatasource();
     getSignupStep = _MockGetSignupStep();
-    when(() => getSignupStep())
-        .thenAnswer((_) async => const Right(SignupStep.complete));
+    when(() => getSignupStep()).thenAnswer((_) async => SignupStep.complete);
     await getIt.reset();
     getIt.registerFactory<SignInCubit>(() => SignInCubit(auth, getSignupStep));
     addTearDown(getIt.reset);
   });
 
-  void signInReturns(Result<Unit> result) => when(
-    () => auth.signIn(
-      identifier: any(named: 'identifier'),
-      password: any(named: 'password'),
-    ),
-  ).thenAnswer((_) async => result);
+  void signInReturns([Failure? failure]) =>
+      when(
+        () => auth.signIn(
+          identifier: any(named: 'identifier'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
   Future<void> open(WidgetTester tester, {Locale? locale}) async {
     await tester.pumpWidget(
@@ -107,9 +107,7 @@ void main() {
   });
 
   testView('wrong credentials show the message in a snackbar', (tester) async {
-    signInReturns(
-      const Left(AuthFailure(AuthFailureReason.invalidCredentials)),
-    );
+    signInReturns(const AuthFailure(AuthFailureReason.invalidCredentials));
     await open(tester);
     await fill(tester);
 
@@ -130,11 +128,9 @@ void main() {
     'too many attempts show a snackbar and keep Sign in disabled until the countdown ends',
     (tester) async {
       signInReturns(
-        const Left(
-          AuthFailure(
-            AuthFailureReason.tooManyAttempts,
-            retryAfter: Duration(seconds: 90),
-          ),
+        const AuthFailure(
+          AuthFailureReason.tooManyAttempts,
+          retryAfter: Duration(seconds: 90),
         ),
       );
       await open(tester);
@@ -153,7 +149,7 @@ void main() {
   );
 
   testView('a finished account goes Home', (tester) async {
-    signInReturns(const Right(unit));
+    signInReturns();
     await open(tester);
     await fill(tester);
 
@@ -164,9 +160,8 @@ void main() {
   });
 
   testView('an unfinished sign-up resumes at its step', (tester) async {
-    signInReturns(const Right(unit));
-    when(() => getSignupStep())
-        .thenAnswer((_) async => const Right(SignupStep.interests));
+    signInReturns();
+    when(() => getSignupStep()).thenAnswer((_) async => SignupStep.interests);
     await open(tester);
     await fill(tester);
 
@@ -180,15 +175,12 @@ void main() {
     tester,
   ) async {
     signInReturns(
-      const Left(
-        AuthFailure(
-          AuthFailureReason.emailNotConfirmed,
-          email: 'ada@example.com',
-        ),
+      const AuthFailure(
+        AuthFailureReason.emailNotConfirmed,
+        email: 'ada@example.com',
       ),
     );
-    when(() => auth.resendSignUpCode(any()))
-        .thenAnswer((_) async => const Right(unit));
+    when(() => auth.resendSignUpCode(any())).thenAnswer((_) async {});
     await open(tester);
     await fill(tester);
 
@@ -237,9 +229,7 @@ void main() {
   testView('Arabic: texts in Arabic, the identifier stays left-to-right', (
     tester,
   ) async {
-    signInReturns(
-      const Left(AuthFailure(AuthFailureReason.invalidCredentials)),
-    );
+    signInReturns(const AuthFailure(AuthFailureReason.invalidCredentials));
     await open(tester, locale: const Locale('ar'));
 
     expect(find.text(l10nAr.signInTitle), findsOneWidget);

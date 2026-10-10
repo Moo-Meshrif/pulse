@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
 import '../../data/enums/signup_step.dart';
 import '../../data/repository/profile_repository.dart';
 
@@ -12,8 +11,8 @@ class GetSignupStepUseCase {
 
   final ProfileRepository _profiles;
 
-  Future<Result<SignupStep>> call() async {
-    final result = await _profiles.getProfile();
-    return result.map((profile) => profile.signupStep ?? SignupStep.aboutYou);
+  Future<SignupStep> call() async {
+    final profile = await _profiles.getProfile();
+    return profile.signupStep ?? SignupStep.aboutYou;
   }
 }

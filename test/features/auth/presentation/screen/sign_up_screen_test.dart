@@ -20,7 +20,6 @@ import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_colors.dart';
 import 'package:pulse/core/theme/app_theme.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_up_cubit.dart';
@@ -101,23 +100,20 @@ void main() {
     complete = MockCompleteSignupUseCase();
     clearLocal = MockClearLocalProfileUseCase();
     getDraft = MockGetSignupDraftUseCase();
-    when(() => getDraft())
-        .thenAnswer((_) async => const Right(ProfileEntity()));
-    when(() => getInterests())
-        .thenAnswer((_) async => const Right([travel, food]));
-    when(() => saveInterests(any())).thenAnswer((_) async => const Right(unit));
+    when(() => getDraft()).thenAnswer((_) async => const ProfileEntity());
+    when(() => getInterests()).thenAnswer((_) async => const [travel, food]);
+    when(() => saveInterests(any())).thenAnswer((_) async {});
     when(() => getPeople(SuggestionTab.suggested))
-        .thenAnswer((_) async => const Right([ada, bob, nobody]));
+        .thenAnswer((_) async => const [ada, bob, nobody]);
     when(() => getPeople(SuggestionTab.popular))
-        .thenAnswer((_) async => const Right([bob]));
+        .thenAnswer((_) async => const [bob]);
     when(() => setFollowing(any(), following: any(named: 'following')))
-        .thenAnswer((_) async => const Right(unit));
-    when(() => setFollowing.all(any()))
-        .thenAnswer((_) async => const Right(unit));
-    when(() => complete()).thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async {});
+    when(() => setFollowing.all(any())).thenAnswer((_) async {});
+    when(() => complete()).thenAnswer((_) async {});
     when(() => clearLocal()).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
-        .thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async {});
     when(
       () => saveAbout(
         fullName: any(named: 'fullName'),
@@ -125,7 +121,7 @@ void main() {
         birthday: any(named: 'birthday'),
         gender: any(named: 'gender'),
       ),
-    ).thenAnswer((_) async => const Right(unit));
+    ).thenAnswer((_) async {});
     when(
       () => saveProfile(
         photo: any(named: 'photo'),
@@ -134,7 +130,7 @@ void main() {
         city: any(named: 'city'),
         phone: any(named: 'phone'),
       ),
-    ).thenAnswer((_) async => const Right(unit));
+    ).thenAnswer((_) async {});
     when(() => photos.pick(any())).thenAnswer(
       (_) async => PickedPhoto(bytes: _png, contentType: 'image/png'),
     );
@@ -143,15 +139,14 @@ void main() {
         email: any(named: 'email'),
         password: any(named: 'password'),
       ),
-    ).thenAnswer((_) async => const Right(unit));
+    ).thenAnswer((_) async {});
     when(
       () => auth.verifySignUpCode(
         email: any(named: 'email'),
         code: any(named: 'code'),
       ),
-    ).thenAnswer((_) async => const Right(unit));
-    when(() => auth.resendSignUpCode(any()))
-        .thenAnswer((_) async => const Right(unit));
+    ).thenAnswer((_) async {});
+    when(() => auth.resendSignUpCode(any())).thenAnswer((_) async {});
     await getIt.reset();
     getIt.registerFactory<SignUpCubit>(
       () => SignUpCubit(
@@ -280,18 +275,13 @@ void main() {
           email: any(named: 'email'),
           password: any(named: 'password'),
         ),
-      ).thenAnswer(
-        (_) async => const Left(AuthFailure(AuthFailureReason.emailTaken)),
-      );
+      ).thenThrow(const AuthFailure(AuthFailureReason.emailTaken));
       when(
         () => auth.signIn(
           identifier: any(named: 'identifier'),
           password: any(named: 'password'),
         ),
-      ).thenAnswer(
-        (_) async =>
-            const Left(AuthFailure(AuthFailureReason.invalidCredentials)),
-      );
+      ).thenThrow(const AuthFailure(AuthFailureReason.invalidCredentials));
       await open(tester);
       await fillAccount(tester);
       await tester.tap(find.text(l10nEn.continueButton));
@@ -388,9 +378,7 @@ void main() {
           email: any(named: 'email'),
           code: any(named: 'code'),
         ),
-      ).thenAnswer(
-        (_) async => const Left(AuthFailure(AuthFailureReason.invalidCode)),
-      );
+      ).thenThrow(const AuthFailure(AuthFailureReason.invalidCode));
       await open(tester);
       await toVerify(tester);
       await tester.enterText(find.byType(EditableText), '000000');
@@ -591,7 +579,7 @@ void main() {
           birthday: any(named: 'birthday'),
           gender: any(named: 'gender'),
         ),
-      ).thenAnswer((_) async => const Left(ConflictFailure()));
+      ).thenThrow(const ConflictFailure());
       await open(tester, step: 3);
       await fillAbout(tester);
       await tester.tap(find.text(l10nEn.continueButton));
@@ -850,12 +838,11 @@ void main() {
     testView('a failed load shows the message and Retry loads again', (
       tester,
     ) async {
-      when(() => getInterests())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => getInterests()).thenThrow(const NetworkFailure());
       await open(tester, step: 5);
 
       expect(find.text(l10nEn.interestsError), findsOneWidget);
-      when(() => getInterests()).thenAnswer((_) async => const Right([travel]));
+      when(() => getInterests()).thenAnswer((_) async => const [travel]);
       await tester.tap(find.text(l10nEn.retry));
       await tester.pumpAndSettle();
 
@@ -961,7 +948,7 @@ void main() {
       tester,
     ) async {
       when(() => getPeople(SuggestionTab.popular))
-          .thenAnswer((_) async => const Right([]));
+          .thenAnswer((_) async => const []);
       await open(tester, step: 6);
       await selectTab(tester, l10nEn.tabPopular);
 
@@ -971,13 +958,13 @@ void main() {
 
     testView('a tab that failed shows Retry', (tester) async {
       when(() => getPeople(SuggestionTab.popular))
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+          .thenThrow(const NetworkFailure());
       await open(tester, step: 6);
       await selectTab(tester, l10nEn.tabPopular);
 
       expect(find.text(l10nEn.followError), findsOneWidget);
       when(() => getPeople(SuggestionTab.popular))
-          .thenAnswer((_) async => const Right([bob]));
+          .thenAnswer((_) async => const [bob]);
       await tester.tap(find.text(l10nEn.retry));
       await tester.pumpAndSettle();
       expect(find.byType(FollowRow), findsOneWidget);

@@ -5,14 +5,19 @@ import 'package:http/http.dart' as http;
 import 'package:pulse/core/constants/app_config.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 
 import '../../../../helpers/backend_double.dart';
 
 void main() {
-  Failure? failureOf(Either<Failure, Object?> result) =>
-      result.fold((f) => f, (_) => null);
+  Future<Failure?> failureOf(Future<Object?> call) async {
+    try {
+      await call;
+    } on Failure catch (failure) {
+      return failure;
+    }
+    return null;
+  }
 
   Map<String, dynamic> body(http.Request request) =>
       jsonDecode(request.body) as Map<String, dynamic>;
@@ -38,12 +43,8 @@ void main() {
       final backend = signInBackend();
       final datasource = SupabaseAuthDatasource(backend.client);
 
-      final result = await datasource.signIn(
-        identifier: ' dip.roy ',
-        password: 'secret',
-      );
+      await datasource.signIn(identifier: ' dip.roy ', password: 'secret');
 
-      expect(result, const Right<Failure, Unit>(unit));
       expect(body(backend.to('/functions/v1/sign-in').single), {
         'identifier': 'dip.roy',
         'password': 'secret',
@@ -80,13 +81,10 @@ void main() {
         );
         final datasource = SupabaseAuthDatasource(backend.client);
 
-        final result = await datasource.signIn(
-          identifier: 'nobody',
-          password: 'x',
-        );
+        final result = datasource.signIn(identifier: 'nobody', password: 'x');
 
         expect(
-          failureOf(result),
+          await failureOf(result),
           const AuthFailure(AuthFailureReason.invalidCredentials),
         );
         expect(backend.to('/token'), isEmpty);
@@ -103,10 +101,10 @@ void main() {
             'email': 'dip@example.com',
           }, status: 403),
         );
-        final result = await SupabaseAuthDatasource(backend.client)
+        final result = SupabaseAuthDatasource(backend.client)
             .signIn(identifier: 'dip.roy', password: 'x');
 
-        final failure = failureOf(result)! as AuthFailure;
+        final failure = (await failureOf(result))! as AuthFailure;
         expect(failure.reason, AuthFailureReason.emailNotConfirmed);
         expect(failure.email, 'dip@example.com');
         expect(failure.retryAfter, isNull);
@@ -120,10 +118,10 @@ void main() {
           'retry_after': 897,
         }, status: 429),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .signIn(identifier: 'dip.roy', password: 'x');
 
-      final failure = failureOf(result)! as AuthFailure;
+      final failure = (await failureOf(result))! as AuthFailure;
       expect(failure.reason, AuthFailureReason.tooManyAttempts);
       expect(failure.retryAfter, const Duration(seconds: 897));
       expect(failure.email, isNull);
@@ -133,23 +131,23 @@ void main() {
       final backend = signInBackend(
         function: BackendDouble.json({'code': 'server_error'}, status: 500),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .signIn(identifier: 'a@b.co', password: 'x');
-      expect(failureOf(result), const ServerFailure(statusCode: 500));
+      expect(await failureOf(result), const ServerFailure(statusCode: 500));
     });
 
     test('an answer without a refresh token is a ParseFailure', () async {
       final backend = signInBackend(function: BackendDouble.json({'ok': true}));
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .signIn(identifier: 'a@b.co', password: 'x');
-      expect(failureOf(result), const ParseFailure());
+      expect(await failureOf(result), const ParseFailure());
     });
 
     test('offline is a NetworkFailure', () async {
       final backend = signInBackend(throwing: http.ClientException('offline'));
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .signIn(identifier: 'a@b.co', password: 'x');
-      expect(failureOf(result), const NetworkFailure());
+      expect(await failureOf(result), const NetworkFailure());
     });
   });
 
@@ -171,9 +169,8 @@ void main() {
           ),
         ),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      await SupabaseAuthDatasource(backend.client)
           .signUp(email: 'new@example.com', password: 'Passw0rd!');
-      expect(result.isRight, isTrue);
       expect(body(backend.to('/signup').single)['email'], 'new@example.com');
     });
 
@@ -184,10 +181,10 @@ void main() {
           (_) async =>
               BackendDouble.json(BackendDouble.userJson(identities: [])),
         );
-        final result = await SupabaseAuthDatasource(backend.client)
+        final result = SupabaseAuthDatasource(backend.client)
             .signUp(email: 'taken@example.com', password: 'Passw0rd!');
         expect(
-          failureOf(result),
+          await failureOf(result),
           const AuthFailure(AuthFailureReason.emailTaken),
         );
       },
@@ -197,10 +194,10 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.authError(422, 'weak_password'),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .signUp(email: 'a@b.co', password: '1');
       expect(
-        failureOf(result),
+        await failureOf(result),
         const AuthFailure(AuthFailureReason.weakPassword),
       );
     });
@@ -211,9 +208,8 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.sessionResponse(),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      await SupabaseAuthDatasource(backend.client)
           .verifySignUpCode(email: 'dip@example.com', code: '123456');
-      expect(result.isRight, isTrue);
       expect(
         body(backend.to('/verify').single),
         containsPair('type', 'signup'),
@@ -228,19 +224,18 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.authError(403, 'otp_expired'),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .verifySignUpCode(email: 'dip@example.com', code: '000000');
       expect(
-        failureOf(result),
+        await failureOf(result),
         const AuthFailure(AuthFailureReason.invalidCode),
       );
     });
 
     test('resend asks for a new signup code', () async {
       final backend = BackendDouble((_) async => BackendDouble.json({}));
-      final result = await SupabaseAuthDatasource(backend.client)
+      await SupabaseAuthDatasource(backend.client)
           .resendSignUpCode('dip@example.com');
-      expect(result.isRight, isTrue);
       expect(
         body(backend.to('/resend').single),
         containsPair('type', 'signup'),
@@ -251,10 +246,10 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.authError(429, 'over_email_send_rate_limit'),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .resendSignUpCode('a@b.co');
       expect(
-        failureOf(result),
+        await failureOf(result),
         const AuthFailure(AuthFailureReason.rateLimited),
       );
     });
@@ -267,9 +262,8 @@ void main() {
             ? BackendDouble.json(true)
             : BackendDouble.json({}),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      await SupabaseAuthDatasource(backend.client)
           .sendPasswordReset(' dip@example.com ');
-      expect(result.isRight, isTrue);
       final request = backend.to('/recover').single;
       expect(
         request.url.queryParameters['redirect_to'],
@@ -284,10 +278,10 @@ void main() {
             ? BackendDouble.json(false)
             : BackendDouble.json({}),
       );
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .sendPasswordReset('ghost@example.com');
       expect(
-        result.fold((f) => f, (_) => null),
+        await failureOf(result),
         isA<AuthFailure>().having(
           (f) => f.reason,
           'reason',
@@ -305,9 +299,8 @@ void main() {
         return BackendDouble.sessionResponse();
       });
       await backend.signIn();
-      final result = await SupabaseAuthDatasource(backend.client)
+      await SupabaseAuthDatasource(backend.client)
           .updatePassword('N3wPassw0rd');
-      expect(result.isRight, isTrue);
       final request = backend.to('/user').single;
       expect(request.method, 'PUT');
       expect(body(request)['password'], 'N3wPassw0rd');
@@ -321,10 +314,10 @@ void main() {
         return BackendDouble.sessionResponse();
       });
       await backend.signIn();
-      final result = await SupabaseAuthDatasource(backend.client)
+      final result = SupabaseAuthDatasource(backend.client)
           .updatePassword('same');
       expect(
-        failureOf(result),
+        await failureOf(result),
         const AuthFailure(AuthFailureReason.samePassword),
       );
     });
@@ -339,9 +332,7 @@ void main() {
       await backend.signIn();
       final datasource = SupabaseAuthDatasource(backend.client);
 
-      final result = await datasource.signOut();
-
-      expect(result.isRight, isTrue);
+      await datasource.signOut();
       expect(
         backend.to('/logout').single.url.queryParameters['scope'],
         'local',
@@ -361,9 +352,7 @@ void main() {
         await backend.signIn();
         final datasource = SupabaseAuthDatasource(backend.client);
 
-        final result = await datasource.signOut(others: true);
-
-        expect(result.isRight, isTrue);
+        await datasource.signOut(others: true);
         expect(
           backend.to('/logout').single.url.queryParameters['scope'],
           'others',

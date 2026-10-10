@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/error/failures.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../data/datasource/auth_datasource.dart';
@@ -33,32 +34,41 @@ class ResetPasswordCubit extends BaseCubit<ResetPasswordState> {
       emit(state.copyWith(logoutOthers: value));
 
   Future<void> submit() async {
-    if (!state.canSubmit) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _auth.updatePassword(state.password);
-    await result.fold(
-      (failure) async => emit(state.copyWith(loading: false, failure: failure)),
-      (_) async {
+    await run(
+      prevent: !state.canSubmit,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _auth.updatePassword(state.password),
+      onSuccess: (_) async {
         // The password is already changed: failing to sign out the others only changes what the dialog says.
-        final others = state.logoutOthers
-            ? (await _auth.signOut(others: true)).isRight
-            : false;
-        emit(
-          state.copyWith(
-            loading: false,
-            updated: true,
-            othersLoggedOut: others,
-          ),
+        final others = state.logoutOthers && await _signOutOthers();
+        return state.copyWith(
+          loading: false,
+          updated: true,
+          othersLoggedOut: others,
         );
       },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
+  }
+
+  Future<bool> _signOutOthers() async {
+    try {
+      await _auth.signOut(others: true);
+      return true;
+    } on Failure {
+      return false;
+    }
   }
 
   /// The X and the dialog's "Sign in": ends the recovery session and opens Sign in. The session is dropped
   /// on this device even when the server cannot be reached.
   Future<void> leave() async {
     emit(state.copyWith(loading: true));
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } on Failure {
+      // Dropped on this device regardless.
+    }
     emit(state.copyWith(loading: false, route: AppRoutes.signIn));
     emit(state.copyWith(route: null));
   }

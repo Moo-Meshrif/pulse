@@ -4,24 +4,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/auth/presentation/cubit/reset_password_cubit.dart';
 
 import '../../../../helpers/pump_app.dart';
 
 void main() {
   late MockAuthDatasource auth;
-  late StreamController<Unit> recovery;
+  late StreamController<void> recovery;
 
   setUp(() {
     auth = MockAuthDatasource();
-    recovery = StreamController<Unit>.broadcast();
+    recovery = StreamController<void>.broadcast();
     when(() => auth.currentEmail).thenReturn('ada@example.com');
     when(() => auth.passwordRecovery).thenAnswer((_) => recovery.stream);
-    when(() => auth.updatePassword(any()))
-        .thenAnswer((_) async => const Right(unit));
+    when(() => auth.updatePassword(any())).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
-        .thenAnswer((_) async => const Right(unit));
+        .thenAnswer((_) async {});
     addTearDown(recovery.close);
   });
 
@@ -50,7 +48,7 @@ void main() {
       when(() => auth.currentEmail).thenReturn(null);
       final c = cubit();
       when(() => auth.currentEmail).thenReturn('ada@example.com');
-      recovery.add(unit);
+      recovery.add(null);
       await Future<void>.delayed(Duration.zero);
 
       expect(c.state.linkExpired, isFalse);
@@ -103,8 +101,7 @@ void main() {
   });
 
   test('failing to sign out the others still finishes, saying so', () async {
-    when(() => auth.signOut(others: true))
-        .thenAnswer((_) async => const Left(NetworkFailure()));
+    when(() => auth.signOut(others: true)).thenThrow(const NetworkFailure());
     final c = filled();
     await c.submit();
 
@@ -113,8 +110,7 @@ void main() {
   });
 
   test('a failed update keeps the form and reports the failure', () async {
-    when(() => auth.updatePassword(any()))
-        .thenAnswer((_) async => const Left(NetworkFailure()));
+    when(() => auth.updatePassword(any())).thenThrow(const NetworkFailure());
     final c = filled();
     await c.submit();
 

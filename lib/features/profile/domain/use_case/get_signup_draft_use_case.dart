@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/result.dart';
 import '../../data/repository/profile_repository.dart';
 import '../entity/profile_entity.dart';
 
@@ -12,5 +11,5 @@ class GetSignupDraftUseCase {
 
   final ProfileRepository _profiles;
 
-  Future<Result<ProfileEntity>> call() => _profiles.getProfile();
+  Future<ProfileEntity> call() => _profiles.getProfile();
 }

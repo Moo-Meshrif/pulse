@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/profile/data/enums/suggestion_reason.dart';
 import 'package:pulse/features/profile/data/enums/suggestion_tab.dart';
@@ -47,7 +45,7 @@ void main() {
       final result = await SupabaseFollowsDatasource(backend.client)
           .getSuggestedProfiles(SuggestionTab.suggested);
 
-      final profiles = result.getOrElse((_) => []);
+      final profiles = result;
       expect(profiles.single.fullName, 'Salma Kamal');
       expect(profiles.single.reason, SuggestionReason.mutual);
       expect(profiles.single.mutualCount, 12);
@@ -64,7 +62,7 @@ void main() {
       );
       final result = await SupabaseFollowsDatasource(backend.client)
           .getSuggestedProfiles(SuggestionTab.popular, limit: 5, offset: 10);
-      expect(result.getOrElse((_) => []), isEmpty);
+      expect(result, isEmpty);
       expect(jsonBody(backend.to('suggested_profiles').single), {
         'p_tab': 'popular',
         'p_limit': 5,
@@ -76,9 +74,7 @@ void main() {
   group('follows', () {
     test('follow inserts the pair or ignores a duplicate', () async {
       final backend = await signedIn((_) async => http.Response('', 201));
-      final result = await SupabaseFollowsDatasource(backend.client)
-          .follow('u2');
-      expect(result.isRight, isTrue);
+      await SupabaseFollowsDatasource(backend.client).follow('u2');
       final request = backend.to('/follows').single;
       expect(request.method, 'POST');
       expect(
@@ -90,9 +86,7 @@ void main() {
 
     test('unfollow deletes the pair', () async {
       final backend = await signedIn((_) async => http.Response('', 204));
-      final result = await SupabaseFollowsDatasource(backend.client)
-          .unfollow('u2');
-      expect(result.isRight, isTrue);
+      await SupabaseFollowsDatasource(backend.client).unfollow('u2');
       final request = backend.to('/follows').single;
       expect(request.method, 'DELETE');
       expect(request.url.queryParameters['follower_id'], 'eq.$uid');
@@ -103,7 +97,7 @@ void main() {
       final backend = await signedIn((_) async => BackendDouble.json(2));
       final result = await SupabaseFollowsDatasource(backend.client)
           .followAll(['a', 'b', 'c']);
-      expect(result, const Right<Failure, int>(2));
+      expect(result, 2);
       expect(jsonBody(backend.to('follow_many').single), {
         'p_ids': ['a', 'b', 'c'],
       });

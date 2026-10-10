@@ -2,8 +2,9 @@ import '../enums/auth_failure_reason.dart';
 import '../utils/equatable.dart';
 
 /// A `Failure` says what went wrong, never how to word it; the UI translates it. `sealed`, so that
-/// translation is an exhaustive `switch`.
-sealed class Failure extends Equatable {
+/// translation is an exhaustive `switch`. It is also an [Exception]: data code throws it and
+/// `BaseCubit.run` catches it.
+sealed class Failure extends Equatable implements Exception {
   const Failure();
 
   @override

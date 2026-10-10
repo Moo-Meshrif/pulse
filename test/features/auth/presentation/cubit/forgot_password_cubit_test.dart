@@ -3,9 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/error/result.dart';
 import 'package:pulse/core/services/launch_service.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:pulse/features/auth/presentation/cubit/forgot_password_state.dart';
@@ -26,8 +24,10 @@ void main() {
 
   ForgotPasswordCubit cubit() => ForgotPasswordCubit(auth, launcher);
 
-  void sendReturns(Result<Unit> result) =>
-      when(() => auth.sendPasswordReset(any())).thenAnswer((_) async => result);
+  void sendReturns([Failure? failure]) =>
+      when(() => auth.sendPasswordReset(any())).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
   const cooldown = Duration(seconds: 30);
 
@@ -58,7 +58,7 @@ void main() {
   testWidgets(
     'a sent link hands the trimmed email to the screen once and starts the cooldown',
     (tester) async {
-      sendReturns(const Right(unit));
+      sendReturns();
       final c = cubit()..emailChanged(' ada@example.com ');
       final sentTo = <String?>[];
       c.stream.listen((s) => sentTo.add(s.sentTo));
@@ -78,8 +78,7 @@ void main() {
 
   blocTest<ForgotPasswordCubit, ForgotPasswordState>(
     'a failed request keeps the email, reports the failure and starts no cooldown',
-    setUp: () =>
-        sendReturns(const Left(AuthFailure(AuthFailureReason.rateLimited))),
+    setUp: () => sendReturns(const AuthFailure(AuthFailureReason.rateLimited)),
     build: cubit,
     seed: () => const ForgotPasswordState(email: 'ada@example.com'),
     act: (c) => c.submit(),
@@ -102,7 +101,7 @@ void main() {
   group('the dialog', () {
     /// A cubit whose link was just sent.
     Future<ForgotPasswordCubit> sent(WidgetTester tester) async {
-      sendReturns(const Right(unit));
+      sendReturns();
       final c = cubit()..emailChanged('ada@example.com');
       await c.submit();
       await tester.pump();
@@ -154,7 +153,7 @@ void main() {
     ) async {
       final c = await sent(tester);
       await tester.pump(cooldown);
-      sendReturns(const Left(NetworkFailure()));
+      sendReturns(const NetworkFailure());
       final messages = <ResetLinkMessage?>[];
       c.stream.listen((s) => messages.add(s.message));
 

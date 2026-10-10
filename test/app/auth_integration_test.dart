@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
 import 'package:pulse/features/profile/data/datasource/follows_datasource.dart';
@@ -24,7 +23,7 @@ import '../helpers/pump_app.dart';
 void main() {
   late MockAuthDatasource auth;
   late MockProfileDatasource profiles;
-  late StreamController<Unit> recovery;
+  late StreamController<void> recovery;
 
   setUpAll(() {
     registerFallbackValue(const ProfileUpdateModel());
@@ -34,7 +33,7 @@ void main() {
   setUp(() {
     auth = MockAuthDatasource();
     profiles = MockProfileDatasource();
-    recovery = StreamController<Unit>.broadcast();
+    recovery = StreamController<void>.broadcast();
     when(() => auth.hasSession).thenReturn(false);
     when(() => auth.currentEmail).thenReturn(null);
     when(() => auth.passwordRecovery).thenAnswer((_) => recovery.stream);
@@ -72,9 +71,8 @@ void main() {
     testWidgets('a complete account opens Home', (tester) async {
       when(() => auth.hasSession).thenReturn(true);
       when(() => profiles.getProfile()).thenAnswer(
-        (_) async => const Right(
-          ProfileModel(id: 'u1', signupStep: SignupStep.complete),
-        ),
+        (_) async =>
+            const ProfileModel(id: 'u1', signupStep: SignupStep.complete),
       );
       await boot(tester);
       expect(find.text(AppRoutes.home), findsOneWidget);
@@ -86,7 +84,7 @@ void main() {
       when(() => auth.hasSession).thenReturn(true);
       when(() => profiles.getProfile()).thenAnswer(
         (_) async =>
-            const Right(ProfileModel(id: 'u1', signupStep: SignupStep.profile)),
+            const ProfileModel(id: 'u1', signupStep: SignupStep.profile),
       );
       await boot(tester);
 
@@ -101,7 +99,7 @@ void main() {
     ) async {
       await boot(tester);
       when(() => auth.currentEmail).thenReturn('ada@example.com');
-      recovery.add(unit);
+      recovery.add(null);
       await tester.pumpAndSettle();
 
       expect(find.text(l10nEn.resetTitle), findsOneWidget);
@@ -116,9 +114,9 @@ void main() {
       (tester) async {
         await boot(tester);
         when(() => auth.currentEmail).thenReturn('ada@example.com');
-        recovery.add(unit);
+        recovery.add(null);
         await tester.pumpAndSettle();
-        recovery.add(unit);
+        recovery.add(null);
         await tester.pumpAndSettle();
 
         expect(find.text(l10nEn.resetTitle), findsOneWidget);
@@ -132,13 +130,12 @@ void main() {
     testWidgets('update, Password updated, Sign in ends on Sign in', (
       tester,
     ) async {
-      when(() => auth.updatePassword(any()))
-          .thenAnswer((_) async => const Right(unit));
+      when(() => auth.updatePassword(any())).thenAnswer((_) async {});
       when(() => auth.signOut(others: any(named: 'others')))
-          .thenAnswer((_) async => const Right(unit));
+          .thenAnswer((_) async {});
       await boot(tester);
       when(() => auth.currentEmail).thenReturn('ada@example.com');
-      recovery.add(unit);
+      recovery.add(null);
       await tester.pumpAndSettle();
 
       await tester.enterText(field(0), 'Password1');
@@ -162,25 +159,23 @@ void main() {
         email: any(named: 'email'),
         password: any(named: 'password'),
       ),
-    ).thenAnswer((_) async => const Right(unit));
+    ).thenAnswer((_) async {});
     when(
       () => auth.verifySignUpCode(
         email: any(named: 'email'),
         code: any(named: 'code'),
       ),
-    ).thenAnswer((_) async => const Right(unit));
+    ).thenAnswer((_) async {});
     when(() => profiles.isUsernameAvailable(any()))
-        .thenAnswer((_) async => const Right(true));
+        .thenAnswer((_) async => true);
     when(() => profiles.updateProfile(any()))
-        .thenAnswer((_) async => const Right(ProfileModel(id: 'u1')));
+        .thenAnswer((_) async => const ProfileModel(id: 'u1'));
     await boot(tester);
     final interests = getIt<InterestsDatasource>();
     final follows = getIt<FollowsDatasource>();
-    when(() => interests.getInterests()).thenAnswer(
-      (_) async => const Right([InterestModel(id: 1, nameEn: 'Travel')]),
-    );
-    when(() => interests.saveInterests(any()))
-        .thenAnswer((_) async => const Right(unit));
+    when(() => interests.getInterests())
+        .thenAnswer((_) async => [InterestModel(id: 1, nameEn: 'Travel')]);
+    when(() => interests.saveInterests(any())).thenAnswer((_) async {});
     when(
       () => follows.getSuggestedProfiles(
         any(),
@@ -188,9 +183,7 @@ void main() {
         offset: any(named: 'offset'),
       ),
     ).thenAnswer(
-      (_) async => const Right([
-        SuggestedProfileModel(id: 'p1', fullName: 'Salma Kamal'),
-      ]),
+      (_) async => [SuggestedProfileModel(id: 'p1', fullName: 'Salma Kamal')],
     );
 
     // Sign in -> Create account -> Account.

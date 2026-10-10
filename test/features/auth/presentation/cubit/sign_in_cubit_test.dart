@@ -3,9 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/error/result.dart';
 import 'package:pulse/core/router/app_routes.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_cubit.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_state.dart';
@@ -27,12 +25,15 @@ void main() {
 
   SignInCubit cubit() => SignInCubit(auth, getSignupStep);
 
-  void signInReturns(Result<Unit> result) => when(
-    () => auth.signIn(
-      identifier: any(named: 'identifier'),
-      password: any(named: 'password'),
-    ),
-  ).thenAnswer((_) async => result);
+  void signInReturns([Failure? failure]) =>
+      when(
+        () => auth.signIn(
+          identifier: any(named: 'identifier'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async {
+        if (failure != null) throw failure;
+      });
 
   /// A cubit with both fields filled.
   SignInCubit filled([String identifier = 'ada@example.com']) => cubit()
@@ -71,9 +72,8 @@ void main() {
   blocTest<SignInCubit, SignInState>(
     'an email is sent as typed (trimmed) and a finished sign-up goes Home, clearing the stack',
     setUp: () {
-      signInReturns(const Right(unit));
-      when(() => getSignupStep())
-          .thenAnswer((_) async => const Right(SignupStep.complete));
+      signInReturns();
+      when(() => getSignupStep()).thenAnswer((_) async => SignupStep.complete);
     },
     build: () => filled('  ada@example.com '),
     act: (c) => c.submit(),
@@ -92,9 +92,8 @@ void main() {
   blocTest<SignInCubit, SignInState>(
     'a username takes the same path',
     setUp: () {
-      signInReturns(const Right(unit));
-      when(() => getSignupStep())
-          .thenAnswer((_) async => const Right(SignupStep.complete));
+      signInReturns();
+      when(() => getSignupStep()).thenAnswer((_) async => SignupStep.complete);
     },
     build: () => filled('ada_l'),
     act: (c) => c.submit(),
@@ -112,8 +111,8 @@ void main() {
     blocTest<SignInCubit, SignInState>(
       'a pending sign-up resumes at step ${step.number}',
       setUp: () {
-        signInReturns(const Right(unit));
-        when(() => getSignupStep()).thenAnswer((_) async => Right(step));
+        signInReturns();
+        when(() => getSignupStep()).thenAnswer((_) async => step);
       },
       build: filled,
       act: (c) => c.submit(),
@@ -131,9 +130,8 @@ void main() {
 
   blocTest<SignInCubit, SignInState>(
     'wrong credentials (or an unknown username) show the failure and re-enable Sign in',
-    setUp: () => signInReturns(
-      const Left(AuthFailure(AuthFailureReason.invalidCredentials)),
-    ),
+    setUp: () =>
+        signInReturns(const AuthFailure(AuthFailureReason.invalidCredentials)),
     build: filled,
     act: (c) => c.submit(),
     expect: () => [
@@ -159,7 +157,7 @@ void main() {
 
   blocTest<SignInCubit, SignInState>(
     'a lost connection is a failure the view words, not a route',
-    setUp: () => signInReturns(const Left(NetworkFailure())),
+    setUp: () => signInReturns(const NetworkFailure()),
     build: filled,
     act: (c) => c.submit(),
     expect: () => [
@@ -171,9 +169,8 @@ void main() {
   blocTest<SignInCubit, SignInState>(
     'signed in but the profile cannot be read: a failure, no route',
     setUp: () {
-      signInReturns(const Right(unit));
-      when(() => getSignupStep())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      signInReturns();
+      when(() => getSignupStep()).thenThrow(const NetworkFailure());
     },
     build: filled,
     act: (c) => c.submit(),
@@ -187,15 +184,12 @@ void main() {
     'an unverified account gets a new code and opens Verify email with the returned email',
     setUp: () {
       signInReturns(
-        const Left(
-          AuthFailure(
-            AuthFailureReason.emailNotConfirmed,
-            email: 'ada@example.com',
-          ),
+        const AuthFailure(
+          AuthFailureReason.emailNotConfirmed,
+          email: 'ada@example.com',
         ),
       );
-      when(() => auth.resendSignUpCode(any()))
-          .thenAnswer((_) async => const Right(unit));
+      when(() => auth.resendSignUpCode(any())).thenAnswer((_) async {});
     },
     build: () => filled('ada_l'),
     act: (c) => c.submit(),
@@ -223,7 +217,7 @@ void main() {
     testWidgets('disables Sign in and counts down, then enables it again', (
       tester,
     ) async {
-      signInReturns(const Left(throttle));
+      signInReturns(throttle);
       final c = filled();
       c.submit();
       await tester.pump();
@@ -246,7 +240,7 @@ void main() {
     testWidgets('typing during the countdown keeps the message and the lock', (
       tester,
     ) async {
-      signInReturns(const Left(throttle));
+      signInReturns(throttle);
       final c = filled();
       c.submit();
       await tester.pump();
@@ -258,7 +252,7 @@ void main() {
     });
 
     testWidgets('closing the cubit stops the timer', (tester) async {
-      signInReturns(const Left(throttle));
+      signInReturns(throttle);
       final c = filled();
       c.submit();
       await tester.pump();

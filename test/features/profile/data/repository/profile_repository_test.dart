@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/utils/either.dart';
 import 'package:pulse/features/profile/data/datasource/profile_local_datasource.dart';
 import 'package:pulse/features/profile/data/enums/gender.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
@@ -15,6 +14,8 @@ import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_update_entity.dart';
 
 import '../../../../helpers/pump_app.dart';
+
+import '../../../../helpers/failure_of.dart';
 
 class MockLocal extends Mock implements ProfileLocalDatasource {}
 
@@ -65,61 +66,49 @@ void main() {
     when(() => local.clear(any())).thenAnswer((_) async {});
   });
 
-  Failure? failureOf(Either<Failure, Object?> result) =>
-      result.fold((f) => f, (_) => null);
-
   group('getProfile', () {
     test(
       'returns the server profile as an entity and saves it locally',
       () async {
-        when(() => remote.getProfile())
-            .thenAnswer((_) async => const Right(server));
+        when(() => remote.getProfile()).thenAnswer((_) async => server);
 
         final result = await repository.getProfile();
 
-        expect(result, Right<Failure, ProfileEntity>(entityOf(server)));
+        expect(result, entityOf(server));
         verify(() => local.write(server)).called(1);
       },
     );
 
     test('a lost connection falls back to the saved copy', () async {
-      when(() => remote.getProfile())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => remote.getProfile()).thenThrow(const NetworkFailure());
       when(() => local.read('u1')).thenReturn(saved);
 
-      expect(
-        await repository.getProfile(),
-        Right<Failure, ProfileEntity>(entityOf(saved)),
-      );
+      expect(await repository.getProfile(), entityOf(saved));
     });
 
     test('a timeout falls back to the saved copy too', () async {
-      when(() => remote.getProfile())
-          .thenAnswer((_) async => const Left(TimeoutFailure()));
+      when(() => remote.getProfile()).thenThrow(const TimeoutFailure());
       when(() => local.read('u1')).thenReturn(saved);
 
-      expect((await repository.getProfile()).isRight, isTrue);
+      expect(await repository.getProfile(), entityOf(saved));
     });
 
     test('offline with nothing saved is the connection failure', () async {
-      when(() => remote.getProfile())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => remote.getProfile()).thenThrow(const NetworkFailure());
       when(() => local.read('u1')).thenReturn(null);
 
-      expect(failureOf(await repository.getProfile()), const NetworkFailure());
+      expect(await failureOf(repository.getProfile()), const NetworkFailure());
     });
 
     test(
       'any other failure is returned as it is, never hidden by the copy',
       () async {
-        when(() => remote.getProfile()).thenAnswer(
-          (_) async =>
-              const Left(AuthFailure(AuthFailureReason.sessionExpired)),
-        );
+        when(() => remote.getProfile())
+            .thenThrow(const AuthFailure(AuthFailureReason.sessionExpired));
         when(() => local.read('u1')).thenReturn(saved);
 
         expect(
-          failureOf(await repository.getProfile()),
+          await failureOf(repository.getProfile()),
           const AuthFailure(AuthFailureReason.sessionExpired),
         );
         verifyNever(() => local.read(any()));
@@ -127,11 +116,10 @@ void main() {
     );
 
     test('offline without a session has no copy to use', () async {
-      when(() => remote.getProfile())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => remote.getProfile()).thenThrow(const NetworkFailure());
       when(() => remote.currentUserId).thenReturn(null);
 
-      expect(failureOf(await repository.getProfile()), const NetworkFailure());
+      expect(await failureOf(repository.getProfile()), const NetworkFailure());
       verifyNever(() => local.read(any()));
     });
   });
@@ -144,14 +132,13 @@ void main() {
         bio: 'hi',
         signupStep: SignupStep.interests,
       );
-      when(() => remote.updateProfile(any()))
-          .thenAnswer((_) async => const Right(stored));
+      when(() => remote.updateProfile(any())).thenAnswer((_) async => stored);
 
       final result = await repository.updateProfile(
         const ProfileUpdateEntity(bio: 'hi', signupStep: SignupStep.interests),
       );
 
-      expect(result, Right<Failure, ProfileEntity>(entityOf(stored)));
+      expect(result, entityOf(stored));
       verify(
         () => remote.updateProfile(
           const ProfileUpdateModel(bio: 'hi', signupStep: SignupStep.interests),
@@ -162,13 +149,16 @@ void main() {
 
     test('a failed write saves nothing locally', () async {
       when(() => remote.updateProfile(any()))
-          .thenAnswer((_) async => const Left(ConflictFailure()));
+          .thenThrow(const ConflictFailure());
 
-      final result = await repository.updateProfile(
-        const ProfileUpdateEntity(username: 'taken'),
+      expect(
+        await failureOf(
+          repository.updateProfile(
+            const ProfileUpdateEntity(username: 'taken'),
+          ),
+        ),
+        const ConflictFailure(),
       );
-
-      expect(failureOf(result), const ConflictFailure());
       verifyNever(() => local.write(any()));
     });
   });
@@ -177,8 +167,7 @@ void main() {
     test(
       'clears the picture in the saved copy after the server removed it',
       () async {
-        when(() => remote.removeAvatar())
-            .thenAnswer((_) async => const Right(unit));
+        when(() => remote.removeAvatar()).thenAnswer((_) async {});
         when(() => local.read('u1')).thenReturn(
           const ProfileModel(
             id: 'u1',
@@ -187,7 +176,7 @@ void main() {
           ),
         );
 
-        expect((await repository.removeAvatar()).isRight, isTrue);
+        await repository.removeAvatar();
 
         final written =
             verify(() => local.write(captureAny())).captured.single
@@ -198,19 +187,17 @@ void main() {
     );
 
     test('a failed removal leaves the saved copy alone', () async {
-      when(() => remote.removeAvatar())
-          .thenAnswer((_) async => const Left(NetworkFailure()));
+      when(() => remote.removeAvatar()).thenThrow(const NetworkFailure());
 
       expect(
-        failureOf(await repository.removeAvatar()),
+        await failureOf(repository.removeAvatar()),
         const NetworkFailure(),
       );
       verifyNever(() => local.write(any()));
     });
 
     test('with no saved copy there is nothing to update', () async {
-      when(() => remote.removeAvatar())
-          .thenAnswer((_) async => const Right(unit));
+      when(() => remote.removeAvatar()).thenAnswer((_) async {});
       when(() => local.read('u1')).thenReturn(null);
 
       await repository.removeAvatar();
@@ -221,18 +208,14 @@ void main() {
   test('uploading and the username check go straight to the server', () async {
     when(
       () => remote.uploadAvatar(any(), contentType: any(named: 'contentType')),
-    ).thenAnswer((_) async => const Right('https://x/avatar?v=1'));
-    when(() => remote.isUsernameAvailable('dip'))
-        .thenAnswer((_) async => const Right(true));
+    ).thenAnswer((_) async => 'https://x/avatar?v=1');
+    when(() => remote.isUsernameAvailable('dip')).thenAnswer((_) async => true);
 
     expect(
       await repository.uploadAvatar(Uint8List(1), contentType: 'image/jpeg'),
-      const Right<Failure, String>('https://x/avatar?v=1'),
+      'https://x/avatar?v=1',
     );
-    expect(
-      await repository.isUsernameAvailable('dip'),
-      const Right<Failure, bool>(true),
-    );
+    expect(await repository.isUsernameAvailable('dip'), true);
     verifyNever(() => local.write(any()));
   });
 
@@ -263,25 +246,23 @@ void main() {
         avatarUrl: 'https://x/y',
         signupStep: SignupStep.profile,
       );
-      when(() => remote.getProfile()).thenAnswer((_) async => Right(full));
+      when(() => remote.getProfile()).thenAnswer((_) async => full);
 
       final result = await repository.getProfile();
 
       expect(
         result,
-        Right<Failure, ProfileEntity>(
-          ProfileEntity(
-            id: 'u1',
-            username: 'dip',
-            fullName: 'Dip Roy',
-            birthday: DateTime.utc(1999, 2, 3),
-            gender: Gender.male,
-            bio: 'hi',
-            city: 'Cairo',
-            phone: '+201234567',
-            avatarUrl: 'https://x/y',
-            signupStep: SignupStep.profile,
-          ),
+        ProfileEntity(
+          id: 'u1',
+          username: 'dip',
+          fullName: 'Dip Roy',
+          birthday: DateTime.utc(1999, 2, 3),
+          gender: Gender.male,
+          bio: 'hi',
+          city: 'Cairo',
+          phone: '+201234567',
+          avatarUrl: 'https://x/y',
+          signupStep: SignupStep.profile,
         ),
       );
     });
@@ -289,8 +270,7 @@ void main() {
     test(
       'an update entity is sent to the server as the matching update model',
       () async {
-        when(() => remote.updateProfile(any()))
-            .thenAnswer((_) async => const Right(server));
+        when(() => remote.updateProfile(any())).thenAnswer((_) async => server);
 
         await repository.updateProfile(
           const ProfileUpdateEntity(

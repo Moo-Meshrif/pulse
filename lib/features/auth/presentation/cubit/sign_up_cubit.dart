@@ -97,26 +97,25 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   /// Fills About you and Profile from the saved profile, so going back shows what was entered. Only
   /// empty fields are filled; a failure just leaves them empty.
   Future<void> _restoreDraft() async {
-    final result = await _getSignupDraft();
-    result.fold((_) => emit(state.copyWith(resuming: false)), (draft) {
-      emit(
-        state.copyWith(
-          resuming: false,
-          fullName: state.fullName.isEmpty
-              ? draft.fullName ?? ''
-              : state.fullName,
-          username: state.username.isEmpty
-              ? draft.username ?? ''
-              : state.username,
-          birthday: state.birthday ?? draft.birthday,
-          gender: state.gender ?? draft.gender,
-          bio: state.bio.isEmpty ? draft.bio ?? '' : state.bio,
-          city: state.city.isEmpty ? draft.city ?? '' : state.city,
-          phone: state.phone.isEmpty ? draft.phone ?? '' : state.phone,
-          avatarUrl: state.avatarUrl ?? draft.avatarUrl,
-        ),
-      );
-    });
+    await run(
+      _getSignupDraft.call,
+      onFailure: (_) => state.copyWith(resuming: false),
+      onSuccess: (draft) => state.copyWith(
+        resuming: false,
+        fullName: state.fullName.isEmpty
+            ? draft.fullName ?? ''
+            : state.fullName,
+        username: state.username.isEmpty
+            ? draft.username ?? ''
+            : state.username,
+        birthday: state.birthday ?? draft.birthday,
+        gender: state.gender ?? draft.gender,
+        bio: state.bio.isEmpty ? draft.bio ?? '' : state.bio,
+        city: state.city.isEmpty ? draft.city ?? '' : state.city,
+        phone: state.phone.isEmpty ? draft.phone ?? '' : state.phone,
+        avatarUrl: state.avatarUrl ?? draft.avatarUrl,
+      ),
+    );
   }
 
   void emailChanged(String value) => emit(
@@ -136,30 +135,25 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   void passwordLeft() => emit(state.copyWith(passwordTouched: true));
 
   Future<void> submitAccount() async {
-    if (!state.canSubmitAccount) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _auth.signUp(
-      email: state.email.trim(),
-      password: state.password,
-    );
-    await result.fold(
-      (failure) async {
+    await run(
+      prevent: !state.canSubmitAccount,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _auth.signUp(email: state.email.trim(), password: state.password),
+      onSuccess: (_) {
+        _startCooldown();
+        return state.copyWith(
+          step: verifyStep,
+          email: state.email.trim(),
+          code: '',
+          loading: false,
+        );
+      },
+      onFailure: (failure) async {
         if (failure case AuthFailure(reason: AuthFailureReason.emailTaken)) {
           await _resumeExistingAccount(failure);
           return;
         }
         emit(state.copyWith(loading: false, failure: failure));
-      },
-      (_) async {
-        emit(
-          state.copyWith(
-            step: verifyStep,
-            email: state.email.trim(),
-            code: '',
-            loading: false,
-          ),
-        );
-        _startCooldown();
       },
     );
   }
@@ -169,37 +163,39 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   /// outcome is the original [taken] failure.
   Future<void> _resumeExistingAccount(Failure taken) async {
     final email = state.email.trim();
-    final signedIn = await _auth.signIn(
-      identifier: email,
-      password: state.password,
-    );
-    await signedIn.fold(
-      (failure) async {
+    await run(
+      () => _auth.signIn(identifier: email, password: state.password),
+      onSuccess: (_) => _continueSignedIn(),
+      onFailure: (failure) async {
         if (failure case AuthFailure(
           reason: AuthFailureReason.emailNotConfirmed,
         )) {
           // Never verified: a fresh code, then the Verify email step.
-          await _auth.resendSignUpCode(email);
-          emit(state.copyWith(step: verifyStep, code: '', loading: false));
+          try {
+            await _auth.resendSignUpCode(email);
+          } on Failure {
+            // The Verify email step has "Resend code".
+          }
           _startCooldown();
+          return state.copyWith(step: verifyStep, code: '', loading: false);
+        }
+        return state.copyWith(loading: false, failure: taken);
+      },
+    );
+  }
+
+  Future<void> _continueSignedIn() async {
+    await run(
+      _getSignupStep.call,
+      onSuccess: (next) {
+        if (next == SignupStep.complete) {
+          _go(AppRoutes.home);
           return;
         }
-        emit(state.copyWith(loading: false, failure: taken));
+        emit(state.copyWith(loading: false));
+        open(step: next.number);
       },
-      (_) async {
-        final step = await _getSignupStep();
-        step.fold(
-          (failure) => emit(state.copyWith(loading: false, failure: failure)),
-          (next) {
-            if (next == SignupStep.complete) {
-              _go(AppRoutes.home);
-              return;
-            }
-            emit(state.copyWith(loading: false));
-            open(step: next.number);
-          },
-        );
-      },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
@@ -211,34 +207,33 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   );
 
   Future<void> verify() async {
-    if (!state.canVerify) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _auth.verifySignUpCode(
-      email: state.email,
-      code: state.code,
-    );
-    result.fold(
-      (failure) => emit(state.copyWith(loading: false, failure: failure)),
-      (_) {
+    await run(
+      prevent: !state.canVerify,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _auth.verifySignUpCode(email: state.email, code: state.code),
+      onSuccess: (_) {
         _countdown.cancel();
-        emit(
-          state.copyWith(step: aboutYouStep, loading: false, resendIn: null),
+        return state.copyWith(
+          step: aboutYouStep,
+          loading: false,
+          resendIn: null,
         );
       },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
   /// "Resend code"; ignored during the cooldown.
   Future<void> resend() async {
-    if (!state.canResend) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _auth.resendSignUpCode(state.email);
-    result.fold(
-      (failure) => emit(state.copyWith(loading: false, failure: failure)),
-      (_) {
+    await run(
+      prevent: !state.canResend,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _auth.resendSignUpCode(state.email),
+      onSuccess: (_) {
         emit(state.copyWith(loading: false, code: ''));
         _startCooldown();
       },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
@@ -274,17 +269,17 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       emit(state.copyWith(gender: state.gender == gender ? null : gender));
 
   Future<void> submitAbout() async {
-    if (!state.canSubmitAbout) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _saveAboutYou(
-      fullName: state.fullName,
-      username: state.username,
-      birthday: state.birthday!,
-      gender: state.gender,
-    );
-    result.fold(
-      (failure) => emit(state.copyWith(loading: false, failure: failure)),
-      (_) => emit(state.copyWith(step: profileStep, loading: false)),
+    await run(
+      prevent: !state.canSubmitAbout,
+      loading: state.copyWith(loading: true, failure: null),
+      () => _saveAboutYou(
+        fullName: state.fullName,
+        username: state.username,
+        birthday: state.birthday!,
+        gender: state.gender,
+      ),
+      onSuccess: (_) => state.copyWith(step: profileStep, loading: false),
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
@@ -334,18 +329,20 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     String? phone,
     bool removeAvatar = false,
   }) async {
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _saveProfileDetails(
-      photo: photo?.bytes,
-      photoContentType: photo?.contentType,
-      bio: bio,
-      city: city,
-      phone: phone,
-      removeAvatar: removeAvatar,
-    );
-    await result.fold(
-      (failure) async => emit(state.copyWith(loading: false, failure: failure)),
-      (_) => _loadInterests(),
+    await run(
+      loading: state.copyWith(loading: true, failure: null),
+      () => _saveProfileDetails(
+        photo: photo?.bytes,
+        photoContentType: photo?.contentType,
+        bio: bio,
+        city: city,
+        phone: phone,
+        removeAvatar: removeAvatar,
+      ),
+      onSuccess: (_) async {
+        await _loadInterests();
+      },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
@@ -382,17 +379,10 @@ class SignUpCubit extends BaseCubit<SignUpState> {
 
   /// Loads the topics; none to pick means the step is passed over (going forward) or back over (going back).
   Future<void> _loadInterests({bool forward = true}) async {
-    emit(state.copyWith(interestsStatus: LoadStatus.loading));
-    final result = await _getInterests();
-    await result.fold(
-      (_) async => emit(
-        state.copyWith(
-          step: interestsStep,
-          interestsStatus: LoadStatus.failed,
-          loading: false,
-        ),
-      ),
-      (interests) async {
+    await run(
+      loading: state.copyWith(interestsStatus: LoadStatus.loading),
+      _getInterests.call,
+      onSuccess: (interests) async {
         emit(
           state.copyWith(
             interestsStatus: LoadStatus.loaded,
@@ -408,15 +398,22 @@ class SignUpCubit extends BaseCubit<SignUpState> {
           emit(state.copyWith(step: profileStep));
         }
       },
+      onFailure: (_) => state.copyWith(
+        step: interestsStep,
+        interestsStatus: LoadStatus.failed,
+        loading: false,
+      ),
     );
   }
 
   Future<void> _continueFromInterests(List<int> ids) async {
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _saveInterests(ids);
-    await result.fold(
-      (failure) async => emit(state.copyWith(loading: false, failure: failure)),
-      (_) => _loadPeople(),
+    await run(
+      loading: state.copyWith(loading: true, failure: null),
+      () => _saveInterests(ids),
+      onSuccess: (_) async {
+        await _loadPeople();
+      },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
@@ -430,15 +427,18 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       ),
     );
     final results = await [
-      for (final tab in SuggestionTab.values) _getSuggestedProfiles(tab),
+      for (final tab in SuggestionTab.values) _tryPeople(tab),
     ].wait;
     final status = <SuggestionTab, LoadStatus>{};
     final people = <SuggestionTab, List<SuggestedProfileModel>>{};
     for (final (index, tab) in SuggestionTab.values.indexed) {
-      results[index].fold((_) => status[tab] = LoadStatus.failed, (list) {
+      final list = results[index];
+      if (list == null) {
+        status[tab] = LoadStatus.failed;
+      } else {
         status[tab] = LoadStatus.loaded;
         people[tab] = list;
-      });
+      }
     }
     final allEmpty =
         status.values.every((s) => s == LoadStatus.loaded) &&
@@ -457,6 +457,15 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     );
   }
 
+  /// One tab's people, or null when it could not be loaded (that tab shows its own retry).
+  Future<List<SuggestedProfileModel>?> _tryPeople(SuggestionTab tab) async {
+    try {
+      return await _getSuggestedProfiles(tab);
+    } on Failure {
+      return null;
+    }
+  }
+
   void tabSelected(FollowTab tab) {
     emit(state.copyWith(followTab: tab));
   }
@@ -465,23 +474,17 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   Future<void> retryPeople() async {
     final tab = state.followTab.source;
     if (tab == null) return;
-    emit(
-      state.copyWith(
+    await run(
+      loading: state.copyWith(
         peopleStatus: {...state.peopleStatus, tab: LoadStatus.loading},
       ),
-    );
-    final result = await _getSuggestedProfiles(tab);
-    result.fold(
-      (_) => emit(
-        state.copyWith(
-          peopleStatus: {...state.peopleStatus, tab: LoadStatus.failed},
-        ),
+      () => _getSuggestedProfiles(tab),
+      onSuccess: (list) => state.copyWith(
+        peopleStatus: {...state.peopleStatus, tab: LoadStatus.loaded},
+        people: {...state.people, tab: list},
       ),
-      (list) => emit(
-        state.copyWith(
-          peopleStatus: {...state.peopleStatus, tab: LoadStatus.loaded},
-          people: {...state.people, tab: list},
-        ),
+      onFailure: (_) => state.copyWith(
+        peopleStatus: {...state.peopleStatus, tab: LoadStatus.failed},
       ),
     );
   }
@@ -492,13 +495,18 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     if (!_followInFlight.add(id)) return;
     final following = !state.following.contains(id);
     _setLocalFollowing([id], following);
-    emit(state.copyWith(failure: null));
-    final result = await _setFollowing(id, following: following);
-    _followInFlight.remove(id);
-    result.fold((failure) {
-      _setLocalFollowing([id], !following);
-      emit(state.copyWith(failure: failure));
-    }, (_) {});
+    await run(
+      loading: state.copyWith(failure: null),
+      () => _setFollowing(id, following: following),
+      onSuccess: (_) {
+        _followInFlight.remove(id);
+      },
+      onFailure: (failure) {
+        _followInFlight.remove(id);
+        _setLocalFollowing([id], !following);
+        return state.copyWith(failure: failure);
+      },
+    );
   }
 
   /// "Follow all" on the visible tab.
@@ -512,12 +520,15 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     ];
     if (ids.isEmpty) return;
     _setLocalFollowing(ids, true);
-    emit(state.copyWith(failure: null));
-    final result = await _setFollowing.all(ids);
-    result.fold((failure) {
-      _setLocalFollowing(ids, false);
-      emit(state.copyWith(failure: failure));
-    }, (_) {});
+    await run(
+      loading: state.copyWith(failure: null),
+      () => _setFollowing.all(ids),
+      onSuccess: (_) => null,
+      onFailure: (failure) {
+        _setLocalFollowing(ids, false);
+        return state.copyWith(failure: failure);
+      },
+    );
   }
 
   void _setLocalFollowing(List<String> ids, bool following) {
@@ -530,12 +541,14 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   Future<void> finishFollow() => _finish();
 
   Future<void> _finish() async {
-    if (state.loading && state.step == followStep) return;
-    emit(state.copyWith(loading: true, failure: null));
-    final result = await _completeSignup();
-    result.fold(
-      (failure) => emit(state.copyWith(loading: false, failure: failure)),
-      (_) => _go(AppRoutes.home),
+    await run(
+      prevent: state.loading && state.step == followStep,
+      loading: state.copyWith(loading: true, failure: null),
+      _completeSignup.call,
+      onSuccess: (_) {
+        _go(AppRoutes.home);
+      },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
     );
   }
 
@@ -544,7 +557,11 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   Future<void> leave() async {
     emit(state.copyWith(loading: true));
     await _clearLocalProfile();
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } on Failure {
+      // Dropped on this device regardless.
+    }
     _go(AppRoutes.signIn);
   }
 
