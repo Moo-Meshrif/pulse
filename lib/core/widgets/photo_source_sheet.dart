@@ -4,6 +4,7 @@ import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import 'app_safe_area.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
 import '../enums/photo_choice.dart';
@@ -27,7 +28,8 @@ abstract final class PhotoSourceSheet {
           top: Radius.circular(AppRadius.bottomSheetTop),
         ),
       ),
-      builder: (context) => SafeArea(
+      builder: (context) => AppSafeArea(
+        bottomSpace: AppSpacing.s16,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             AppSpacing.formSide,

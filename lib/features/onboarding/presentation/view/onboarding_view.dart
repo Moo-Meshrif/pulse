@@ -81,8 +81,8 @@ class _OnboardingViewState extends State<OnboardingView> {
           child: Focus(
             autofocus: true,
             child: Scaffold(
-              body: SafeArea(
-                bottom: false,
+              body: AppSafeArea(
+                bottomSpace: OnboardingDimens.lastPageFooterPadding.bottom,
                 child: ContentWidth(
                   child: Column(
                     children: [

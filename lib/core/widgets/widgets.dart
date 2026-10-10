@@ -1,6 +1,7 @@
 // Barrel file: features import only this.
 export 'app_dialog_shell.dart';
 export 'app_loading_view.dart';
+export 'app_safe_area.dart';
 export 'app_scale_scope.dart';
 export 'app_spinner.dart';
 export 'app_svg_icon.dart';

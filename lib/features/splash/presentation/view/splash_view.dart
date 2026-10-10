@@ -17,7 +17,7 @@ class SplashView extends StatelessWidget {
   Widget build(BuildContext context) {
     final problem = state.problem;
     return Scaffold(
-      body: SafeArea(
+      body: AppSafeArea(
         child: ContentWidth(
           child: problem == null
               ? const SplashLoading()

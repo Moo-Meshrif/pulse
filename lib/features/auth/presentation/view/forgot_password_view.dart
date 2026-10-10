@@ -76,7 +76,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       listenWhen: _focusRequested,
       listener: _focusAndSelectEmail,
       child: Scaffold(
-        body: SafeArea(
+        body: AppSafeArea(
+          bottomSpace: AppSpacing.s24,
           child: ContentWidth(
             child: PinnedBottomCta(
               body: SingleChildScrollView(

@@ -73,7 +73,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: AppSafeArea(
+        bottomSpace: AppSpacing.s24,
         child: ContentWidth(
           child: Column(
             children: [

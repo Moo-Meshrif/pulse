@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
 import '../theme/app_dimens.dart';
+import 'app_safe_area.dart';
 
 /// The shared dialog route and card (docs/specs/auth/02-components.md C14). Content is up to the caller.
 class AppDialogShell extends StatelessWidget {
@@ -31,7 +32,7 @@ class AppDialogShell extends StatelessWidget {
     transitionDuration: DialogDimens.transition,
     pageBuilder: (context, _, _) => PopScope(
       canPop: dismissible,
-      child: SafeArea(child: Center(child: builder(context))),
+      child: AppSafeArea(child: Center(child: builder(context))),
     ),
     transitionBuilder: (context, animation, _, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOut);

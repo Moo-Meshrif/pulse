@@ -5,6 +5,7 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
+import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
@@ -31,7 +32,8 @@ class SignUpView extends StatelessWidget {
             if (!didPop) _handleSystemBack(context, step);
           },
           child: Scaffold(
-            body: SafeArea(
+            body: AppSafeArea(
+              bottomSpace: AppSpacing.s24,
               child: ContentWidth(
                 child: Column(
                   children: [

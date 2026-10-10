@@ -52,7 +52,8 @@ class _SignInViewState extends State<SignInView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      body: SafeArea(
+      body: AppSafeArea(
+        bottomSpace: AppSpacing.s24,
         child: ContentWidth(
           child: CustomScrollView(
             physics: const ClampingScrollPhysics(),
