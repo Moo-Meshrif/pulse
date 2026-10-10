@@ -604,6 +604,19 @@
       }
     }
   },
+  "requested": "تم الطلب",
+  "@requested": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "cancelRequestPerson": "إلغاء طلب متابعة {name}",
+  "@cancelRequestPerson": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "unfollowPerson": "إلغاء متابعة {name}",
   "@unfollowPerson": {
     "x-review": "Arabic draft: pending user approval",

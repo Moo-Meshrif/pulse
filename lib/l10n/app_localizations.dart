@@ -950,6 +950,18 @@ abstract class AppLocalizations {
   /// **'Following'**
   String get following;
 
+  /// Follow button once a follow request to a private profile is sent
+  ///
+  /// In en, this message translates to:
+  /// **'Requested'**
+  String get requested;
+
+  /// Requested button's screen-reader label
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel follow request to {name}'**
+  String cancelRequestPerson(String name);
+
   /// Follow button's screen-reader label
   ///
   /// In en, this message translates to:

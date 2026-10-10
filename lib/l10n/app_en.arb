@@ -564,6 +564,19 @@
   "@following": {
     "description": "Follow button once followed"
   },
+  "requested": "Requested",
+  "@requested": {
+    "description": "Follow button once a follow request to a private profile is sent"
+  },
+  "cancelRequestPerson": "Cancel follow request to {name}",
+  "@cancelRequestPerson": {
+    "description": "Requested button's screen-reader label",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followPerson": "Follow {name}",
   "@followPerson": {
     "description": "Follow button's screen-reader label",

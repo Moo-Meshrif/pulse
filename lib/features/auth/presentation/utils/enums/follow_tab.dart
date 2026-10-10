@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../profile/data/enums/suggestion_tab.dart';
+import '../../../../follow/data/enums/suggestion_tab.dart';
 
 /// The tabs of the Follow step. "From contacts" has no backend list yet ([source] is null).
 enum FollowTab {

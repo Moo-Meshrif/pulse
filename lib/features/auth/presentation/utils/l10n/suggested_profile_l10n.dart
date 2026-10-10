@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../profile/data/enums/suggestion_reason.dart';
-import '../../../../profile/data/model/suggested_profile_model.dart';
+import '../../../../follow/data/enums/suggestion_reason.dart';
+import '../../../../follow/data/model/suggested_profile_model.dart';
 
 extension SuggestedProfileL10n on SuggestedProfileModel {
   /// "{n} mutual friends" or "Lives in {city}"; null when neither is known (the line is then hidden).

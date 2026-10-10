@@ -347,3 +347,6 @@ Spec defaults accepted by the user: avatar color = stable hash of user id -> pal
 - Cubit logic with `bloc_test` + mocktail; views with `pumpApp` / `setUpView` for size, text scale and locale; assertions use generated l10n strings (`l10nEn` / `l10nAr`), not literals.
 - Screens are compared to `docs/specs/auth/screenshots/<screen>.png`; each phase ends by ticking its screens' acceptance checklists in the running app.
 - Real-backend checks (S1 sign-in, S4 OTP, S9 / S11 emailed link) are done only when their blockers (B1, B2, B4) are closed; until then those checks use mocked datasources.
+
+## Follow feature (follow requests)
+`lib/features/follow/` owns the follow toggle, "Follow all", suggestions and follow requests (migration `20261010120000_follow_requests.sql`): public profile = instant follow, private (`profiles.is_private`) = pending request the owner accepts or declines. The sign-up Follow step uses `ToggleFollowUseCase` and `FollowAllUseCase`. Deferred until Home exists: the Activity screen (with the "Follow requests" row and badge from `GetFollowRequestCountUseCase`), the Follow requests screen (`GetFollowRequestsUseCase`, `RespondToFollowRequestUseCase`, "Accept all"), and the private-account toggle.

@@ -11,10 +11,11 @@ import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/features/auth/presentation/utils/enums/follow_tab.dart';
 import 'package:pulse/features/auth/presentation/utils/enums/load_status.dart';
 import 'package:pulse/features/profile/data/enums/gender.dart';
-import 'package:pulse/features/profile/data/enums/suggestion_reason.dart';
-import 'package:pulse/features/profile/data/enums/suggestion_tab.dart';
+import 'package:pulse/features/follow/data/enums/follow_status.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_reason.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_tab.dart';
 import 'package:pulse/features/profile/data/model/interest_model.dart';
-import 'package:pulse/features/profile/data/model/suggested_profile_model.dart';
+import 'package:pulse/features/follow/data/model/suggested_profile_model.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
@@ -35,7 +36,8 @@ void main() {
   late MockGetInterestsUseCase getInterests;
   late MockSaveInterestsUseCase saveInterests;
   late MockGetSuggestedProfilesUseCase getPeople;
-  late MockSetFollowingUseCase setFollowing;
+  late MockToggleFollowUseCase toggleFollow;
+  late MockFollowAllUseCase followAll;
   late MockCompleteSignupUseCase complete;
   late MockClearLocalProfileUseCase clearLocal;
   late MockGetSignupStep getSignupStep;
@@ -67,7 +69,8 @@ void main() {
     getInterests = MockGetInterestsUseCase();
     saveInterests = MockSaveInterestsUseCase();
     getPeople = MockGetSuggestedProfilesUseCase();
-    setFollowing = MockSetFollowingUseCase();
+    toggleFollow = MockToggleFollowUseCase();
+    followAll = MockFollowAllUseCase();
     complete = MockCompleteSignupUseCase();
     clearLocal = MockClearLocalProfileUseCase();
     getSignupStep = MockGetSignupStep();
@@ -80,9 +83,12 @@ void main() {
         .thenAnswer((_) async => const [ada, bob]);
     when(() => getPeople(SuggestionTab.popular))
         .thenAnswer((_) async => const [bob]);
-    when(() => setFollowing(any(), following: any(named: 'following')))
-        .thenAnswer((_) async {});
-    when(() => setFollowing.all(any())).thenAnswer((_) async {});
+    when(() => toggleFollow(any(), follow: any(named: 'follow'))).thenAnswer(
+      (invocation) async => invocation.namedArguments[#follow] == true
+          ? FollowStatus.accepted
+          : FollowStatus.none,
+    );
+    when(() => followAll(any())).thenAnswer((_) async => 0);
     when(() => complete()).thenAnswer((_) async {});
     when(() => clearLocal()).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
@@ -97,7 +103,8 @@ void main() {
     getInterests,
     saveInterests,
     getPeople,
-    setFollowing,
+    toggleFollow,
+    followAll,
     complete,
     clearLocal,
     getSignupStep,
@@ -867,21 +874,36 @@ void main() {
     test('Follow shows Following at once, tapping again unfollows', () async {
       final c = await atFollow();
       await c.followToggled('u1');
-      expect(c.state.following, {'u1'});
-      verify(() => setFollowing('u1', following: true)).called(1);
+      expect(c.state.follows, {'u1': FollowStatus.accepted});
+      verify(() => toggleFollow('u1', follow: true)).called(1);
 
       await c.followToggled('u1');
-      expect(c.state.following, isEmpty);
-      verify(() => setFollowing('u1', following: false)).called(1);
+      expect(c.state.follows, isEmpty);
+      verify(() => toggleFollow('u1', follow: false)).called(1);
     });
 
+    test(
+      'a private profile shows Requested, tapping again cancels it',
+      () async {
+        when(() => toggleFollow('u2', follow: true))
+            .thenAnswer((_) async => FollowStatus.pending);
+        final c = await atFollow();
+        await c.followToggled('u2');
+        expect(c.state.follows, {'u2': FollowStatus.pending});
+
+        await c.followToggled('u2');
+        expect(c.state.follows, isEmpty);
+        verify(() => toggleFollow('u2', follow: false)).called(1);
+      },
+    );
+
     test('a failed follow puts the button back and reports it', () async {
-      when(() => setFollowing(any(), following: any(named: 'following')))
+      when(() => toggleFollow(any(), follow: any(named: 'follow')))
           .thenThrow(const NetworkFailure());
       final c = await atFollow();
       await c.followToggled('u1');
 
-      expect(c.state.following, isEmpty);
+      expect(c.state.follows, isEmpty);
       expect(c.state.toastFailure, const NetworkFailure());
     });
 
@@ -892,18 +914,18 @@ void main() {
         await c.followToggled('u1');
         await c.followAll();
 
-        verify(() => setFollowing.all(['u2'])).called(1);
-        expect(c.state.following, {'u1', 'u2'});
+        verify(() => followAll(['u2'])).called(1);
+        expect(c.state.follows.keys, {'u1', 'u2'});
       },
     );
 
     test('a failed Follow all undoes only its own follows', () async {
-      when(() => setFollowing.all(any())).thenThrow(const NetworkFailure());
+      when(() => followAll(any())).thenThrow(const NetworkFailure());
       final c = await atFollow();
       await c.followToggled('u1');
       await c.followAll();
 
-      expect(c.state.following, {'u1'});
+      expect(c.state.follows.keys, {'u1'});
       expect(c.state.toastFailure, const NetworkFailure());
     });
 

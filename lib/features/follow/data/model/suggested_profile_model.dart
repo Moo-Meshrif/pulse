@@ -12,6 +12,7 @@ class SuggestedProfileModel extends Equatable {
   final String? city;
   final SuggestionReason? reason;
   final int? mutualCount;
+  final bool? isPrivate;
 
   const SuggestedProfileModel({
     this.id,
@@ -21,6 +22,7 @@ class SuggestedProfileModel extends Equatable {
     this.city,
     this.reason,
     this.mutualCount,
+    this.isPrivate,
   });
 
   factory SuggestedProfileModel.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +34,7 @@ class SuggestedProfileModel extends Equatable {
         city: JsonMapper.string(json['city']),
         reason: SuggestionReason.fromJson(json['reason_kind']),
         mutualCount: JsonMapper.integer(json['mutual_count']),
+        isPrivate: JsonMapper.boolean(json['is_private']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,6 +45,7 @@ class SuggestedProfileModel extends Equatable {
     'city': city,
     'reason_kind': reason?.value,
     'mutual_count': mutualCount,
+    'is_private': isPrivate,
   };
 
   @override
@@ -53,5 +57,6 @@ class SuggestedProfileModel extends Equatable {
     city,
     reason,
     mutualCount,
+    isPrivate,
   ];
 }

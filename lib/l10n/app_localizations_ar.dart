@@ -478,6 +478,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get following => 'تتابعه';
 
   @override
+  String get requested => 'تم الطلب';
+
+  @override
+  String cancelRequestPerson(String name) {
+    return 'إلغاء طلب متابعة $name';
+  }
+
+  @override
   String followPerson(String name) {
     return 'تابع $name';
   }

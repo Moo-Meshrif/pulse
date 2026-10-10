@@ -7,14 +7,14 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
-import 'package:pulse/features/profile/data/datasource/follows_datasource.dart';
+import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
-import 'package:pulse/features/profile/data/enums/suggestion_tab.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_tab.dart';
 import 'package:pulse/features/profile/data/model/interest_model.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
 import 'package:pulse/features/profile/data/model/profile_update_model.dart';
-import 'package:pulse/features/profile/data/model/suggested_profile_model.dart';
+import 'package:pulse/features/follow/data/model/suggested_profile_model.dart';
 
 import '../helpers/pump_app.dart';
 

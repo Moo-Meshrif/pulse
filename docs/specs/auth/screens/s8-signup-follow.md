@@ -17,7 +17,7 @@ Data: RPC `suggested_profiles(p_tab)` (see `schema.sql`); the screenshot rows ar
 
 ## States
 - Tabs: Suggested (default, loaded on step 5), From contacts (empty state "Coming soon", no permission request) [user]; TODO: contacts permission + matching later, Popular (RPC `suggested_profiles('popular')`).
-- Follow -> "Following" (outline pill); tap again unfollows [estimated]. "Follow all" follows every visible row; label stays.
+- Follow -> "Following" (outline pill) for a public profile; a private profile (`is_private`) becomes "Requested" (same outline pill) until they accept. Tap again unfollows or cancels the request [estimated]. "Follow all" follows every visible row; label stays.
 - Loading (tab switch): 6 skeleton rows; error: message + Retry [estimated]; empty tab: message only [estimated].
 - Continue always enabled; caption is a hint only [user]. List scrolls under the pinned bar; scrollbar visible in screenshot (platform default).
 

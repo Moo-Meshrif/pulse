@@ -10,17 +10,19 @@ import '../../../../core/router/app_routes.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../profile/data/enums/gender.dart';
 import '../../../profile/data/enums/signup_step.dart';
-import '../../../profile/data/enums/suggestion_tab.dart';
-import '../../../profile/data/model/suggested_profile_model.dart';
+import '../../../follow/data/enums/suggestion_tab.dart';
+import '../../../follow/data/model/suggested_profile_model.dart';
 import '../../../profile/domain/use_case/clear_local_profile_use_case.dart';
 import '../../../profile/domain/use_case/complete_signup_use_case.dart';
 import '../../../profile/domain/use_case/get_interests_use_case.dart';
 import '../../../profile/domain/use_case/get_signup_draft_use_case.dart';
 import '../../../profile/domain/use_case/get_signup_step_use_case.dart';
-import '../../../profile/domain/use_case/get_suggested_profiles_use_case.dart';
+import '../../../follow/data/enums/follow_status.dart';
+import '../../../follow/domain/use_case/follow_all_use_case.dart';
+import '../../../follow/domain/use_case/get_suggested_profiles_use_case.dart';
+import '../../../follow/domain/use_case/toggle_follow_use_case.dart';
 import '../../../profile/domain/use_case/save_about_you_use_case.dart';
 import '../../../profile/domain/use_case/save_interests_use_case.dart';
-import '../../../profile/domain/use_case/set_following_use_case.dart';
 import '../../../profile/domain/use_case/save_profile_details_use_case.dart';
 import '../../data/datasource/auth_datasource.dart';
 import '../utils/countdown.dart';
@@ -40,7 +42,8 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     this._getInterests,
     this._saveInterests,
     this._getSuggestedProfiles,
-    this._setFollowing,
+    this._toggleFollow,
+    this._followAll,
     this._completeSignup,
     this._clearLocalProfile,
     this._getSignupStep,
@@ -63,7 +66,8 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   final GetInterestsUseCase _getInterests;
   final SaveInterestsUseCase _saveInterests;
   final GetSuggestedProfilesUseCase _getSuggestedProfiles;
-  final SetFollowingUseCase _setFollowing;
+  final ToggleFollowUseCase _toggleFollow;
+  final FollowAllUseCase _followAll;
 
   /// People whose follow / unfollow request is running (no UI: it only ignores repeat taps).
   final _followInFlight = <String>{};
@@ -489,21 +493,25 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     );
   }
 
-  /// Follow or unfollow right away; a failed request puts the button back and reports it. Taps on a
-  /// person whose request is still running are ignored, so they cannot race each other.
+  /// Follow or unfollow right away; a failed request puts the button back and reports it. A private
+  /// profile shows "Requested" (the backend's answer replaces the guess). Taps on a person whose request
+  /// is still running are ignored, so they cannot race each other.
   Future<void> followToggled(String id) async {
     if (!_followInFlight.add(id)) return;
-    final following = !state.following.contains(id);
-    _setLocalFollowing([id], following);
+    final before = state.follows[id];
+    final follow = before == null;
+    _setLocalFollows({id: follow ? _expectedStatus(id) : null});
     await run(
       loading: state.copyWith(failure: null),
-      () => _setFollowing(id, following: following),
-      onSuccess: (_) {
+      () => _toggleFollow(id, follow: follow),
+      onSuccess: (status) {
         _followInFlight.remove(id);
+        if (follow) _setLocalFollows({id: status});
+        return null;
       },
       onFailure: (failure) {
         _followInFlight.remove(id);
-        _setLocalFollowing([id], !following);
+        _setLocalFollows({id: before});
         return state.copyWith(failure: failure);
       },
     );
@@ -514,27 +522,42 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     final ids = [
       for (final person in state.visiblePeople)
         if (person.id != null &&
-            !state.following.contains(person.id) &&
+            !state.follows.containsKey(person.id) &&
             !_followInFlight.contains(person.id))
           person.id!,
     ];
     if (ids.isEmpty) return;
-    _setLocalFollowing(ids, true);
+    _setLocalFollows({for (final id in ids) id: _expectedStatus(id)});
     await run(
       loading: state.copyWith(failure: null),
-      () => _setFollowing.all(ids),
+      () => _followAll(ids),
       onSuccess: (_) => null,
       onFailure: (failure) {
-        _setLocalFollowing(ids, false);
+        _setLocalFollows({for (final id in ids) id: null});
         return state.copyWith(failure: failure);
       },
     );
   }
 
-  void _setLocalFollowing(List<String> ids, bool following) {
-    final set = {...state.following};
-    following ? set.addAll(ids) : set.removeAll(ids);
-    emit(state.copyWith(following: set));
+  /// What the backend will answer for [id]: a request for a private profile, else a follow.
+  FollowStatus _expectedStatus(String id) {
+    final person = [for (final list in state.people.values) ...list]
+        .where((person) => person.id == id)
+        .firstOrNull;
+    return person?.isPrivate == true
+        ? FollowStatus.pending
+        : FollowStatus.accepted;
+  }
+
+  /// Sets (or, for `null`, removes) the follow state of each person.
+  void _setLocalFollows(Map<String, FollowStatus?> changes) {
+    final follows = {...state.follows};
+    for (final MapEntry(:key, :value) in changes.entries) {
+      value == null || value == FollowStatus.none
+          ? follows.remove(key)
+          : follows[key] = value;
+    }
+    emit(state.copyWith(follows: follows));
   }
 
   /// "Continue" and "Skip" on Follow: sign-up is finished, on to Home.

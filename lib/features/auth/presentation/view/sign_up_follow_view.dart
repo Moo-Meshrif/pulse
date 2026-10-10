@@ -6,6 +6,7 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../follow/data/enums/follow_status.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
 import '../utils/enums/follow_tab.dart';
@@ -102,7 +103,7 @@ class SignUpFollowView extends StatelessWidget {
       before.followTab != state.followTab ||
       before.followStatus != state.followStatus ||
       before.visiblePeople != state.visiblePeople ||
-      before.following != state.following;
+      before.follows != state.follows;
 
   bool _canFollowAll(SignUpState state) =>
       state.followStatus == LoadStatus.loaded && state.visiblePeople.isNotEmpty;
@@ -192,7 +193,7 @@ class SignUpFollowView extends StatelessWidget {
             FollowRow(
               key: ValueKey(person.id),
               person: person,
-              following: state.following.contains(person.id),
+              status: state.follows[person.id] ?? FollowStatus.none,
               onToggle: () => cubit.followToggled(person.id!),
             ),
         ],

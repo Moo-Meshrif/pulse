@@ -11,7 +11,7 @@ import 'package:pulse/core/theme/app_theme.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/core/services/photo_picker_service.dart';
-import 'package:pulse/features/profile/data/datasource/follows_datasource.dart';
+import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
@@ -19,9 +19,10 @@ import 'package:pulse/features/profile/domain/use_case/clear_local_profile_use_c
 import 'package:pulse/features/profile/domain/use_case/get_signup_draft_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/complete_signup_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_interests_use_case.dart';
-import 'package:pulse/features/profile/domain/use_case/get_suggested_profiles_use_case.dart';
+import 'package:pulse/features/follow/domain/use_case/get_suggested_profiles_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/save_interests_use_case.dart';
-import 'package:pulse/features/profile/domain/use_case/set_following_use_case.dart';
+import 'package:pulse/features/follow/domain/use_case/follow_all_use_case.dart';
+import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/save_about_you_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_case.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +41,9 @@ class MockSaveInterestsUseCase extends Mock implements SaveInterestsUseCase {}
 class MockGetSuggestedProfilesUseCase extends Mock
     implements GetSuggestedProfilesUseCase {}
 
-class MockSetFollowingUseCase extends Mock implements SetFollowingUseCase {}
+class MockToggleFollowUseCase extends Mock implements ToggleFollowUseCase {}
+
+class MockFollowAllUseCase extends Mock implements FollowAllUseCase {}
 
 class MockCompleteSignupUseCase extends Mock implements CompleteSignupUseCase {}
 

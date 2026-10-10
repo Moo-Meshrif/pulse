@@ -27,12 +27,24 @@ import '../../features/auth/presentation/cubit/reset_password_cubit.dart'
     as _i476;
 import '../../features/auth/presentation/cubit/sign_in_cubit.dart' as _i329;
 import '../../features/auth/presentation/cubit/sign_up_cubit.dart' as _i102;
+import '../../features/follow/data/datasource/follows_datasource.dart'
+    as _i1001;
+import '../../features/follow/domain/use_case/follow_all_use_case.dart'
+    as _i740;
+import '../../features/follow/domain/use_case/get_follow_request_count_use_case.dart'
+    as _i608;
+import '../../features/follow/domain/use_case/get_follow_requests_use_case.dart'
+    as _i171;
+import '../../features/follow/domain/use_case/get_suggested_profiles_use_case.dart'
+    as _i250;
+import '../../features/follow/domain/use_case/respond_to_follow_request_use_case.dart'
+    as _i534;
+import '../../features/follow/domain/use_case/toggle_follow_use_case.dart'
+    as _i130;
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
     as _i834;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
     as _i807;
-import '../../features/profile/data/datasource/follows_datasource.dart'
-    as _i861;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
 import '../../features/profile/data/datasource/profile_datasource.dart'
@@ -51,16 +63,12 @@ import '../../features/profile/domain/use_case/get_signup_draft_use_case.dart'
     as _i199;
 import '../../features/profile/domain/use_case/get_signup_step_use_case.dart'
     as _i697;
-import '../../features/profile/domain/use_case/get_suggested_profiles_use_case.dart'
-    as _i433;
 import '../../features/profile/domain/use_case/save_about_you_use_case.dart'
     as _i357;
 import '../../features/profile/domain/use_case/save_interests_use_case.dart'
     as _i597;
 import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
     as _i255;
-import '../../features/profile/domain/use_case/set_following_use_case.dart'
-    as _i1018;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i125;
 import '../services/launch_service.dart' as _i1016;
 import '../services/local_storage_service.dart' as _i527;
@@ -95,9 +103,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i527.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i861.FollowsDatasource>(
-      () => _i861.SupabaseFollowsDatasource(gh<_i454.SupabaseClient>()),
-    );
     gh.factory<_i710.IsSignedInUseCase>(
       () => _i710.IsSignedInUseCase(gh<_i43.AuthDatasource>()),
     );
@@ -110,17 +115,32 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i1001.FollowsDatasource>(
+      () => _i1001.SupabaseFollowsDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.factory<_i740.FollowAllUseCase>(
+      () => _i740.FollowAllUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.factory<_i608.GetFollowRequestCountUseCase>(
+      () => _i608.GetFollowRequestCountUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.factory<_i171.GetFollowRequestsUseCase>(
+      () => _i171.GetFollowRequestsUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.factory<_i250.GetSuggestedProfilesUseCase>(
+      () => _i250.GetSuggestedProfilesUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.factory<_i534.RespondToFollowRequestUseCase>(
+      () => _i534.RespondToFollowRequestUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.factory<_i130.ToggleFollowUseCase>(
+      () => _i130.ToggleFollowUseCase(gh<_i1001.FollowsDatasource>()),
+    );
     gh.factory<_i104.ForgotPasswordCubit>(
       () => _i104.ForgotPasswordCubit(
         gh<_i43.AuthDatasource>(),
         gh<_i1016.LaunchService>(),
       ),
-    );
-    gh.factory<_i433.GetSuggestedProfilesUseCase>(
-      () => _i433.GetSuggestedProfilesUseCase(gh<_i861.FollowsDatasource>()),
-    );
-    gh.factory<_i1018.SetFollowingUseCase>(
-      () => _i1018.SetFollowingUseCase(gh<_i861.FollowsDatasource>()),
     );
     gh.factory<_i586.GetInterestsUseCase>(
       () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
@@ -178,8 +198,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i94.PhotoPickerService>(),
         gh<_i586.GetInterestsUseCase>(),
         gh<_i597.SaveInterestsUseCase>(),
-        gh<_i433.GetSuggestedProfilesUseCase>(),
-        gh<_i1018.SetFollowingUseCase>(),
+        gh<_i250.GetSuggestedProfilesUseCase>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        gh<_i740.FollowAllUseCase>(),
         gh<_i890.CompleteSignupUseCase>(),
         gh<_i428.ClearLocalProfileUseCase>(),
         gh<_i697.GetSignupStepUseCase>(),

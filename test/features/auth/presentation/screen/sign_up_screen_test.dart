@@ -12,10 +12,11 @@ import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/features/auth/presentation/widgets/follow_row.dart';
 import 'package:pulse/features/profile/data/enums/gender.dart';
-import 'package:pulse/features/profile/data/enums/suggestion_reason.dart';
-import 'package:pulse/features/profile/data/enums/suggestion_tab.dart';
+import 'package:pulse/features/follow/data/enums/follow_status.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_reason.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_tab.dart';
 import 'package:pulse/features/profile/data/model/interest_model.dart';
-import 'package:pulse/features/profile/data/model/suggested_profile_model.dart';
+import 'package:pulse/features/follow/data/model/suggested_profile_model.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_colors.dart';
@@ -59,7 +60,8 @@ void main() {
   late MockGetInterestsUseCase getInterests;
   late MockSaveInterestsUseCase saveInterests;
   late MockGetSuggestedProfilesUseCase getPeople;
-  late MockSetFollowingUseCase setFollowing;
+  late MockToggleFollowUseCase toggleFollow;
+  late MockFollowAllUseCase followAll;
   late MockCompleteSignupUseCase complete;
   late MockClearLocalProfileUseCase clearLocal;
   late MockGetSignupDraftUseCase getDraft;
@@ -96,7 +98,8 @@ void main() {
     getInterests = MockGetInterestsUseCase();
     saveInterests = MockSaveInterestsUseCase();
     getPeople = MockGetSuggestedProfilesUseCase();
-    setFollowing = MockSetFollowingUseCase();
+    toggleFollow = MockToggleFollowUseCase();
+    followAll = MockFollowAllUseCase();
     complete = MockCompleteSignupUseCase();
     clearLocal = MockClearLocalProfileUseCase();
     getDraft = MockGetSignupDraftUseCase();
@@ -107,9 +110,12 @@ void main() {
         .thenAnswer((_) async => const [ada, bob, nobody]);
     when(() => getPeople(SuggestionTab.popular))
         .thenAnswer((_) async => const [bob]);
-    when(() => setFollowing(any(), following: any(named: 'following')))
-        .thenAnswer((_) async {});
-    when(() => setFollowing.all(any())).thenAnswer((_) async {});
+    when(() => toggleFollow(any(), follow: any(named: 'follow'))).thenAnswer(
+      (invocation) async => invocation.namedArguments[#follow] == true
+          ? FollowStatus.accepted
+          : FollowStatus.none,
+    );
+    when(() => followAll(any())).thenAnswer((_) async => 0);
     when(() => complete()).thenAnswer((_) async {});
     when(() => clearLocal()).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
@@ -157,7 +163,8 @@ void main() {
         getInterests,
         saveInterests,
         getPeople,
-        setFollowing,
+        toggleFollow,
+        followAll,
         complete,
         clearLocal,
         MockGetSignupStepUseCase(),
@@ -914,12 +921,12 @@ void main() {
       await tester.pump();
 
       expect(find.text(l10nEn.following), findsOneWidget);
-      verify(() => setFollowing('u1', following: true)).called(1);
+      verify(() => toggleFollow('u1', follow: true)).called(1);
 
       await tester.tap(find.text(l10nEn.following));
       await tester.pump();
       expect(find.text(l10nEn.following), findsNothing);
-      verify(() => setFollowing('u1', following: false)).called(1);
+      verify(() => toggleFollow('u1', follow: false)).called(1);
     });
 
     testView('Follow all follows everybody listed', (tester) async {
@@ -928,7 +935,7 @@ void main() {
       await tester.pump();
 
       expect(find.text(l10nEn.following), findsNWidgets(3));
-      verify(() => setFollowing.all(['u1', 'u2', 'u3'])).called(1);
+      verify(() => followAll(['u1', 'u2', 'u3'])).called(1);
     });
 
     testView('Popular shows its list; From contacts says "Coming soon"', (

@@ -479,6 +479,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get following => 'Following';
 
   @override
+  String get requested => 'Requested';
+
+  @override
+  String cancelRequestPerson(String name) {
+    return 'Cancel follow request to $name';
+  }
+
+  @override
   String followPerson(String name) {
     return 'Follow $name';
   }

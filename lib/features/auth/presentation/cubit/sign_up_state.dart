@@ -5,9 +5,10 @@ import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/photo_picker_service.dart';
 import '../../../profile/data/enums/gender.dart';
-import '../../../profile/data/enums/suggestion_tab.dart';
+import '../../../follow/data/enums/follow_status.dart';
+import '../../../follow/data/enums/suggestion_tab.dart';
 import '../../../profile/data/model/interest_model.dart';
-import '../../../profile/data/model/suggested_profile_model.dart';
+import '../../../follow/data/model/suggested_profile_model.dart';
 import '../utils/birthday.dart';
 import '../utils/email_format.dart';
 import '../utils/enums/follow_tab.dart';
@@ -68,7 +69,7 @@ abstract class SignUpState with _$SignUpState {
     @Default(FollowTab.suggested) FollowTab followTab,
     @Default({}) Map<SuggestionTab, LoadStatus> peopleStatus,
     @Default({}) Map<SuggestionTab, List<SuggestedProfileModel>> people,
-    @Default({}) Set<String> following,
+    @Default({}) Map<String, FollowStatus> follows,
     @Default(false) bool loading,
 
     /// A resumed sign-up is loading what it entered before; the steps wait for it.

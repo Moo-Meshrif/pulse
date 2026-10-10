@@ -5,28 +5,30 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../profile/data/model/suggested_profile_model.dart';
+import '../../../follow/data/enums/follow_status.dart';
+import '../../../follow/data/model/suggested_profile_model.dart';
 import '../utils/l10n/suggested_profile_l10n.dart';
 import 'avatar_initials.dart';
 
-/// One person on the Follow step: avatar, name, meta line and the Follow / Following pill
+/// One person on the Follow step: avatar, name, meta line and the Follow / Requested / Following pill
 /// (docs/specs/auth/02-components.md C12).
 class FollowRow extends StatelessWidget {
   const FollowRow({
     super.key,
     required this.person,
-    required this.following,
+    required this.status,
     required this.onToggle,
   });
 
   final SuggestedProfileModel person;
-  final bool following;
+  final FollowStatus status;
   final VoidCallback onToggle;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final l10n = context.l10n;
+    final following = status != FollowStatus.none;
     final name = person.fullName ?? person.username ?? '';
     final meta = person.metaLine(context);
     return Padding(
@@ -60,9 +62,11 @@ class FollowRow extends StatelessWidget {
             button: true,
             toggled: following,
             excludeSemantics: true,
-            label: following
-                ? l10n.unfollowPerson(name)
-                : l10n.followPerson(name),
+            label: switch (status) {
+              FollowStatus.none => l10n.followPerson(name),
+              FollowStatus.pending => l10n.cancelRequestPerson(name),
+              FollowStatus.accepted => l10n.unfollowPerson(name),
+            },
             onTap: onToggle,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -91,7 +95,11 @@ class FollowRow extends StatelessWidget {
                         vertical: AppSpacing.s8,
                       ),
                       child: AppText(
-                        following ? l10n.following : l10n.follow,
+                        switch (status) {
+                          FollowStatus.none => l10n.follow,
+                          FollowStatus.pending => l10n.requested,
+                          FollowStatus.accepted => l10n.following,
+                        },
                         style: context.text.action,
                         color: following
                             ? colors.textPrimary
