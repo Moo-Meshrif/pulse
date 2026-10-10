@@ -27,10 +27,20 @@ abstract final class Guard {
         TimeoutException() => const TimeoutFailure(),
         FormatException() ||
         TypeError() => _reported(const ParseFailure(), error, stackTrace),
-        _ =>
-          backendFailure(error) ??
-              _reported(const UnexpectedFailure(), error, stackTrace),
+        _ => _fromBackend(error, stackTrace),
       };
+
+  /// A backend answer we have no specific case for (an unmapped auth code, a 5xx) is mapped to
+  /// [ServerFailure] but still reported, so it can get its own case later.
+  static Failure _fromBackend(Object error, StackTrace stackTrace) {
+    final failure = backendFailure(error);
+    if (failure == null) {
+      return _reported(const UnexpectedFailure(), error, stackTrace);
+    }
+    return failure is ServerFailure
+        ? _reported(failure, error, stackTrace)
+        : failure;
+  }
 
   /// Parse errors and unknown errors are bugs, not user conditions (the user only sees the generic
   /// message): report them (non-fatal). Handled failures (network, credentials, ...) are not logged.

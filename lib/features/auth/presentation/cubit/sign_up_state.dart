@@ -13,7 +13,7 @@ import '../utils/email_format.dart';
 import '../utils/enums/follow_tab.dart';
 import '../utils/enums/load_status.dart';
 import '../utils/password_policy.dart';
-import '../utils/phone_format.dart';
+import '../../../../core/utils/phone_format.dart';
 import '../utils/username_format.dart';
 import '../widgets/otp_field.dart';
 
@@ -48,6 +48,12 @@ abstract class SignUpState with _$SignUpState {
 
     /// Profile (step 4): everything is optional.
     PickedPhoto? photo,
+
+    /// The photo saved earlier, shown until a new one is picked.
+    String? avatarUrl,
+
+    /// The saved photo was removed here; deleting it waits for Continue.
+    @Default(false) bool avatarRemoved,
     @Default('') String bio,
     @Default('') String city,
     @Default('') String phone,
@@ -64,6 +70,9 @@ abstract class SignUpState with _$SignUpState {
     @Default({}) Map<SuggestionTab, List<SuggestedProfileModel>> people,
     @Default({}) Set<String> following,
     @Default(false) bool loading,
+
+    /// A resumed sign-up is loading what it entered before; the steps wait for it.
+    @Default(false) bool resuming,
 
     /// Why the last request failed; cleared when the user edits the field it belongs to.
     Failure? failure,

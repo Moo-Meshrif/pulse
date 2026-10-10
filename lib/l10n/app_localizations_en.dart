@@ -214,6 +214,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'We couldn\'t complete that right now. Please try again shortly.';
 
   @override
+  String get errorWeakPassword =>
+      'That password is too weak. Use a longer one with letters, numbers and symbols.';
+
+  @override
+  String get errorSamePassword =>
+      'Your new password must be different from the old one.';
+
+  @override
+  String get errorSessionExpired =>
+      'This link has expired. Request a new one and try again.';
+
+  @override
   String get errorGeneric => 'Something went wrong. Try again.';
 
   @override
@@ -390,7 +402,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneLabel => 'Phone number';
 
   @override
-  String get phoneHint => '+20 ••• ••• ••••';
+  String get phoneHint => '••• ••• ••••';
+
+  @override
+  String get photoSheetTitle => 'Profile photo';
+
+  @override
+  String get countryPickerTitle => 'Select country';
+
+  @override
+  String get countrySearchHint => 'Search country or code';
+
+  @override
+  String get countryNoResults => 'No country found';
 
   @override
   String get phoneHelper =>

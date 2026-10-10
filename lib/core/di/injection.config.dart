@@ -47,6 +47,8 @@ import '../../features/profile/domain/use_case/complete_signup_use_case.dart'
     as _i890;
 import '../../features/profile/domain/use_case/get_interests_use_case.dart'
     as _i586;
+import '../../features/profile/domain/use_case/get_signup_draft_use_case.dart'
+    as _i199;
 import '../../features/profile/domain/use_case/get_signup_step_use_case.dart'
     as _i697;
 import '../../features/profile/domain/use_case/get_suggested_profiles_use_case.dart'
@@ -150,6 +152,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i890.CompleteSignupUseCase>(
       () => _i890.CompleteSignupUseCase(gh<_i508.ProfileRepository>()),
     );
+    gh.factory<_i199.GetSignupDraftUseCase>(
+      () => _i199.GetSignupDraftUseCase(gh<_i508.ProfileRepository>()),
+    );
     gh.factory<_i697.GetSignupStepUseCase>(
       () => _i697.GetSignupStepUseCase(gh<_i508.ProfileRepository>()),
     );
@@ -178,6 +183,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i890.CompleteSignupUseCase>(),
         gh<_i428.ClearLocalProfileUseCase>(),
         gh<_i697.GetSignupStepUseCase>(),
+        gh<_i199.GetSignupDraftUseCase>(),
       ),
     );
     gh.factory<_i329.SignInCubit>(

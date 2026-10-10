@@ -374,6 +374,18 @@
   "@useDifferentEmail": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "errorWeakPassword": "كلمة المرور ضعيفة جدًا. استخدم كلمة أطول تحتوي على أحرف وأرقام ورموز.",
+  "@errorWeakPassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorSamePassword": "يجب أن تختلف كلمة المرور الجديدة عن القديمة.",
+  "@errorSamePassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorSessionExpired": "انتهت صلاحية هذا الرابط. اطلب رابطًا جديدًا وحاول مرة أخرى.",
+  "@errorSessionExpired": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "errorWrongCode": "رمز غير صحيح، حاول مرة أخرى",
   "@errorWrongCode": {
     "x-review": "Arabic draft: pending user approval"
@@ -482,8 +494,24 @@
   "@phoneLabel": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "phoneHint": "+20 ••• ••• ••••",
+  "phoneHint": "••• ••• ••••",
   "@phoneHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "photoSheetTitle": "صورة الملف الشخصي",
+  "@photoSheetTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "countryPickerTitle": "اختر الدولة",
+  "@countryPickerTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "countrySearchHint": "ابحث عن دولة أو رمز",
+  "@countrySearchHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "countryNoResults": "لم يتم العثور على دولة",
+  "@countryNoResults": {
     "x-review": "Arabic draft: pending user approval"
   },
   "phoneHelper": "يساعد أصدقاءك على إيجادك ويتيح لك استعادة حسابك. يبقى خاصًا.",

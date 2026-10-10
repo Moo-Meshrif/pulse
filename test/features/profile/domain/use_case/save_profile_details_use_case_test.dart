@@ -100,4 +100,36 @@ void main() {
     expect(result.fold((f) => f, (_) => null), const NetworkFailure());
     verifyNever(() => profiles.updateProfile(any()));
   });
+
+  test(
+    'removeAvatar deletes the saved photo before saving when none is picked',
+    () async {
+      when(() => profiles.removeAvatar())
+          .thenAnswer((_) async => const Right(unit));
+
+      final result = await useCase(removeAvatar: true);
+
+      expect(result.isRight, isTrue);
+      verifyInOrder([
+        () => profiles.removeAvatar(),
+        () => profiles.updateProfile(any()),
+      ]);
+    },
+  );
+
+  test('a new photo replaces the old one, so nothing is removed', () async {
+    await useCase(photo: photo, removeAvatar: true);
+
+    verifyNever(() => profiles.removeAvatar());
+  });
+
+  test('a failed removal stops the save', () async {
+    when(() => profiles.removeAvatar())
+        .thenAnswer((_) async => const Left(NetworkFailure()));
+
+    final result = await useCase(removeAvatar: true);
+
+    expect(result.isLeft, isTrue);
+    verifyNever(() => profiles.updateProfile(any()));
+  });
 }

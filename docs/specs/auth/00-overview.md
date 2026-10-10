@@ -32,7 +32,7 @@ S1 --"Create account"--> /register (S3)       S3 --"Sign in"--> S1
 S1 --Sign in ok--> /home (AppNavigator.resetTo)   unverified email --> S4 (verify step)
 S2 --back arrow / "Back to sign in"--> S1
 Email link (deep link) --> S11 --Update password--> S12 dialog --Sign in--> S1 (sign out recovery session, resetTo)   S11 --X--> S1
-S9 --Open email app--> mailto:   --Back to sign in--> S1 (resetTo)
+S9 --Open email app--> mail inbox (Android intent / iOS message://, mailto: fallback)   --Back to sign in--> S1 (resetTo)
 S9 --Resend link--> resend (cooldown)   --Change email--> close dialog, focus S2 email field [estimated]
 S3 -> S4 -> S5 -> S6 -> S7 -> S8 --Continue--> /home (resetTo)
 S6/S7/S8 Skip --> next step; S8 Skip --> /home. S6 Continue/Skip skips S7 when the interests list is empty; S7 Continue/Skip skips S8 (straight to /home) when Suggested and Popular are both empty
@@ -51,7 +51,7 @@ S10 (leave dialog) shows on any exit from steps 3-8, back arrow or system back [
   - `splash` shows the shared loading view (`AppLoadingView`, `02-components.md` C16) while it decides the first route; the Cubit method called from `BlocProvider.create` yields before its first emit.
 - S1, S2 are standalone screens, each with its own Cubit.
 - S3..S8 are the views of one `SignUpFlow` screen: one `SignUpCubit`, steps swapped without swipe, shared `StepTopBar` (progress animates; fills right to left in RTL) [user].
-- Resume: on app start read `profiles.signup_step` from Supabase (3..6 = next step, 0 = complete) [user, schema]; a value of 3 to 6 opens the flow at that step (at least step 3). The DB blocks leaving step 3 until full_name, username and birthday are set.
+- Resume: when a resumed flow opens at step 3 to 6 it reloads the saved profile and refills the earlier steps (see S6). On app start read `profiles.signup_step` from Supabase (3..6 = next step, 0 = complete) [user, schema]; a value of 3 to 6 opens the flow at that step (at least step 3). The DB blocks leaving step 3 until full_name, username and birthday are set.
 
 ## Files
 01-design-tokens.md, 02-components.md, screens/*, assets.md, open-questions.md, progress.md

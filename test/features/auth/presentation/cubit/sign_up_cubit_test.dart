@@ -19,6 +19,7 @@ import 'package:pulse/features/profile/data/model/interest_model.dart';
 import 'package:pulse/features/profile/data/model/suggested_profile_model.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
+import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_up_cubit.dart';
 
@@ -40,6 +41,7 @@ void main() {
   late MockCompleteSignupUseCase complete;
   late MockClearLocalProfileUseCase clearLocal;
   late MockGetSignupStep getSignupStep;
+  late MockGetSignupDraftUseCase getDraft;
 
   const interest1 = InterestModel(id: 1, nameEn: 'Travel');
   const interest2 = InterestModel(id: 2, nameEn: 'Food');
@@ -71,6 +73,9 @@ void main() {
     complete = MockCompleteSignupUseCase();
     clearLocal = MockClearLocalProfileUseCase();
     getSignupStep = MockGetSignupStep();
+    getDraft = MockGetSignupDraftUseCase();
+    when(() => getDraft())
+        .thenAnswer((_) async => const Right(ProfileEntity()));
     when(() => getInterests())
         .thenAnswer((_) async => const Right([interest1, interest2]));
     when(() => saveInterests(any())).thenAnswer((_) async => const Right(unit));
@@ -100,6 +105,7 @@ void main() {
     complete,
     clearLocal,
     getSignupStep,
+    getDraft,
   );
 
   void signUpReturns(Result<Unit> result) => when(
@@ -541,6 +547,7 @@ void main() {
         bio: any(named: 'bio'),
         city: any(named: 'city'),
         phone: any(named: 'phone'),
+        removeAvatar: any(named: 'removeAvatar'),
       ),
     ).thenAnswer((_) async => result);
 
@@ -548,6 +555,34 @@ void main() {
 
     test('Continue is enabled with nothing filled in', () {
       expect(atProfile().state.canSubmitProfile, isTrue);
+    });
+
+    test('a resumed sign-up brings back what was entered before', () async {
+      when(() => getDraft()).thenAnswer(
+        (_) async => Right(
+          ProfileEntity(
+            fullName: 'Ada Lovelace',
+            username: 'ada',
+            birthday: DateTime(1990, 5, 1),
+            bio: 'Hi',
+            city: 'Cairo',
+            phone: '+966 512345678',
+            avatarUrl: 'https://x/a.png',
+          ),
+        ),
+      );
+      final c = cubit()..open(step: SignUpCubit.profileStep);
+      expect(c.state.resuming, isTrue);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(c.state.resuming, isFalse);
+      expect(c.state.fullName, 'Ada Lovelace');
+      expect(c.state.username, 'ada');
+      expect(c.state.birthday, DateTime(1990, 5, 1));
+      expect(c.state.bio, 'Hi');
+      expect(c.state.city, 'Cairo');
+      expect(c.state.phone, '+966 512345678');
+      expect(c.state.avatarUrl, 'https://x/a.png');
     });
 
     test('a phone needs 7 to 15 digits once given, shown after it is left', () {
@@ -575,6 +610,31 @@ void main() {
       expect(c.state.photo, isNull);
     });
 
+    test('removing a restored photo deletes it when Continue saves', () async {
+      when(() => getDraft()).thenAnswer(
+        (_) async => const Right(ProfileEntity(avatarUrl: 'https://x/a.png')),
+      );
+      saveProfileReturns(const Right(unit));
+      final c = atProfile();
+      await Future<void>.delayed(Duration.zero);
+      expect(c.state.avatarUrl, 'https://x/a.png');
+      c.removePhoto();
+      expect(c.state.avatarUrl, isNull);
+      expect(c.state.avatarRemoved, isTrue);
+      await c.submitProfile();
+
+      verify(
+        () => saveProfile(
+          photo: null,
+          photoContentType: null,
+          bio: '',
+          city: '',
+          phone: '',
+          removeAvatar: true,
+        ),
+      ).called(1);
+    });
+
     test('a cancelled pick keeps the current photo', () async {
       when(() => photos.pick(PhotoSource.camera)).thenAnswer((_) async => null);
       final c = atProfile();
@@ -600,6 +660,7 @@ void main() {
           bio: 'Hi',
           city: 'Cairo',
           phone: '+20 100 123 4567',
+          removeAvatar: false,
         ),
       ).called(1);
     });
@@ -617,6 +678,7 @@ void main() {
           bio: null,
           city: null,
           phone: null,
+          removeAvatar: false,
         ),
       ).called(1);
     });

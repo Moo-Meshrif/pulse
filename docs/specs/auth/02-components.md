@@ -13,7 +13,7 @@ Title (`display`) + 8 gap + subtitle (`subtitle`, `textSecondary`). Optional lea
 Label above (`label` 13/600 `textPrimary`; required adds " *" in `danger`), `labelGap` 6, field, optional helper (`caption`, 6 top gap) or error (replaces helper, `danger`).
 Field: white fill, radius 14, 1px `border`, padding 15 v / 16 h, **no fixed height** [user]; hint 15 `textSecondary`; text 15 `textPrimary`. States: focus (`primary` 1.5), error (`danger` 1.5), disabled n/a.
 Variants: plain; password (trailing eye `ic_eye` / `ic_eye_off` 22, tap target 44, obscure toggle; Semantics "Show password"/"Hide password"); prefix "@" (username, textSecondary, forced LTR); multiline (bio: 3 lines, counter "n/150" `caption` at end of the label row); read-only tap field (birthday, opens platform date picker).
-Gap between fields `fieldGap` 14. Email/username/phone text forced LTR. Keyboard actions and autofill: email `next` + `AutofillHints.email`; sign-in password `done` (submits) + `password`; sign-up password `newPassword`; phone numeric.
+Gap between fields `fieldGap` 14. Email/username/phone text forced LTR. Keyboard actions and autofill: email `next` + `AutofillHints.email`; sign-in password `done` (submits) + `password`; sign-up password `newPassword`; phone numeric (autofill `telephoneNumberNational`, since the country code is separate). Optional `prefix` widget before the text (used by the phone field's country button; wins over `prefixText`).
 
 ## C4 OutlinePillButton / SoftPillButton / DangerPillButton
 Pill (full radius). Outline: white, 1px `border`, label 16/700 `textPrimary`, v-padding 15 [user]. Soft: fill `background`, no border, 48 high. Danger: fill `danger`, label white. Pressed: darken fill ~6% / ink. Loading/disabled follow `01-design-tokens.md`.
@@ -46,8 +46,14 @@ Pill with label 15/700; selected shows `ic_check` 16 first; used for gender (sin
 ## C12 AvatarInitials + FollowRow (S8)
 Avatar 48 circle with 2-letter initials. Row: avatar, 12 gap, Expanded column (name `name` 15/700, meta `bodySm` 14/400 `textSecondary`, 1 line each, ellipsis), Follow pill (primary, label 14/700 white, padding 20 h / 8 v). Following state = outline pill, label "Following" `textPrimary` 14/700. Row padding 12; rows live in one white card (radius 22, side margin 12, inner padding 12) with no dividers [seen].
 
-## C13 PhotoPickerAvatar (S6)
-88 circle (tokens above) + row text. Tap -> bottom sheet (radius 28 top, `scrim` backdrop) with "Take photo", "Choose from gallery", and "Remove photo" if set (`image_picker`) [user]. Picked image is shown `BoxFit.cover` in the circle (solid border replaces dashed, badge stays); upload to a Supabase Storage bucket on finish of step 4 [user].
+## C13 PhotoPickerAvatar + PhotoSourceSheet (S6) (shared, `lib/core/widgets/`)
+88 circle (tokens above) + row text. Tap -> `PhotoSourceSheet` (`image_picker`) [user]. Shows a saved picture (`avatarUrl`) until a new one is picked; a picked image is shown `BoxFit.cover` in the circle (solid border replaces dashed, badge stays); upload to a Supabase Storage bucket on finish of step 4 [user].
+Sheet (modern, 2026-10-10 [user]): radius 28 top, `scrim` backdrop, drag handle, title "Profile photo" (`name` style), then one card per choice (`surfaceMuted`, radius 12, min 44 high): a 56 round icon badge (`primarySoft` + `primary` icon; Remove photo uses `dangerSoft` + `danger`), then the label. Choices: "Take photo", "Choose from gallery", and "Remove photo" if a photo is set. Returns the `PhotoChoice` (enum in `lib/core/enums/`), null when dismissed.
+
+## C15 PhoneField + CountryCodeSheet (S6) (shared, `lib/core/widgets/`) [user, 2026-10-10]
+`PhoneField` = `AppTextField` with a country button as its prefix (flag, "+code" forced LTR, chevron; opens the sheet; disabled while read-only) and a digits-and-spaces number input. It owns the controller and the selected country (default Egypt); `initialPhone` and `onChanged` use the joined form "+code number" (empty while no number is typed), so the owner stores one string and validates it with `isValidPhone` (7-15 digits in all; `lib/core/utils/phone_format.dart`). A stored "+code ..." is split back into country and number by the longest dial code; for a shared code the main country wins (US for +1, Russia for +7).
+`CountryCodeSheet`: scrollable bottom sheet (75% height, drag handle, title, search field, keyboard-aware). Rows: flag, name in the app language, "+code" (LTR) at the end; the selected row is `primarySoft`. Search matches English name, localized name, ISO code or dial code; empty result shows "No country found".
+Data: the `country_picker` package (all geographic countries, A to Z, names in 40+ languages through `CountryLocalizations`, English fallback). `CountryNamesDelegate` (`lib/core/utils/`) is registered in `MaterialApp` instead of the package's delegate because that one loads a microtask late and delays the first frame.
 
 ## C14 AppDialogShell + ConfirmationDialog (S10, shell also used by S9)
 One shared component in `lib/core/widgets/` (used by 2+ features) [user]; reference sheet: `screenshots/confirmation-dialog-component.png` ("One component, six configurations").

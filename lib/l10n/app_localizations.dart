@@ -458,6 +458,24 @@ abstract class AppLocalizations {
   /// **'We couldn\'t complete that right now. Please try again shortly.'**
   String get errorServer;
 
+  /// Snackbar: the server rejected the new password as too weak
+  ///
+  /// In en, this message translates to:
+  /// **'That password is too weak. Use a longer one with letters, numbers and symbols.'**
+  String get errorWeakPassword;
+
+  /// Snackbar: the new password equals the current one
+  ///
+  /// In en, this message translates to:
+  /// **'Your new password must be different from the old one.'**
+  String get errorSamePassword;
+
+  /// Snackbar: the reset session is missing or expired
+  ///
+  /// In en, this message translates to:
+  /// **'This link has expired. Request a new one and try again.'**
+  String get errorSessionExpired;
+
   /// Snackbar when a request failed
   ///
   /// In en, this message translates to:
@@ -791,8 +809,32 @@ abstract class AppLocalizations {
   /// Phone field hint
   ///
   /// In en, this message translates to:
-  /// **'+20 ••• ••• ••••'**
+  /// **'••• ••• ••••'**
   String get phoneHint;
+
+  /// Photo sheet / country picker
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo'**
+  String get photoSheetTitle;
+
+  /// Photo sheet / country picker
+  ///
+  /// In en, this message translates to:
+  /// **'Select country'**
+  String get countryPickerTitle;
+
+  /// Photo sheet / country picker
+  ///
+  /// In en, this message translates to:
+  /// **'Search country or code'**
+  String get countrySearchHint;
+
+  /// Photo sheet / country picker
+  ///
+  /// In en, this message translates to:
+  /// **'No country found'**
+  String get countryNoResults;
 
   /// Phone field helper
   ///

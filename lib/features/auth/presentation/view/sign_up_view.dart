@@ -36,7 +36,14 @@ class SignUpView extends StatelessWidget {
                 child: Column(
                   children: [
                     _stepTopBar(context, step),
-                    Expanded(child: _stepContent(step)),
+                    Expanded(
+                      child: BlocSelector<SignUpCubit, SignUpState, bool>(
+                        selector: (state) => state.resuming,
+                        builder: (context, resuming) => resuming
+                            ? const AppLoadingView()
+                            : _stepContent(step),
+                      ),
+                    ),
                   ],
                 ),
               ),

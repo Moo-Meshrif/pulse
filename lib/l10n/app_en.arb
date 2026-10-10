@@ -211,6 +211,18 @@
   "@errorServer": {
     "description": "Snackbar: the server answered with an error"
   },
+  "errorWeakPassword": "That password is too weak. Use a longer one with letters, numbers and symbols.",
+  "@errorWeakPassword": {
+    "description": "Snackbar: the server rejected the new password as too weak"
+  },
+  "errorSamePassword": "Your new password must be different from the old one.",
+  "@errorSamePassword": {
+    "description": "Snackbar: the new password equals the current one"
+  },
+  "errorSessionExpired": "This link has expired. Request a new one and try again.",
+  "@errorSessionExpired": {
+    "description": "Snackbar: the reset session is missing or expired"
+  },
   "errorGeneric": "Something went wrong. Try again.",
   "@errorGeneric": {
     "description": "Snackbar when a request failed"
@@ -451,9 +463,25 @@
   "@phoneLabel": {
     "description": "Phone field label"
   },
-  "phoneHint": "+20 ••• ••• ••••",
+  "phoneHint": "••• ••• ••••",
   "@phoneHint": {
     "description": "Phone field hint"
+  },
+  "photoSheetTitle": "Profile photo",
+  "@photoSheetTitle": {
+    "description": "Photo sheet / country picker"
+  },
+  "countryPickerTitle": "Select country",
+  "@countryPickerTitle": {
+    "description": "Photo sheet / country picker"
+  },
+  "countrySearchHint": "Search country or code",
+  "@countrySearchHint": {
+    "description": "Photo sheet / country picker"
+  },
+  "countryNoResults": "No country found",
+  "@countryNoResults": {
+    "description": "Photo sheet / country picker"
   },
   "phoneHelper": "Helps friends find you and lets you recover your account. Kept private.",
   "@phoneHelper": {

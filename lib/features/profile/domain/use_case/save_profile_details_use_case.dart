@@ -9,7 +9,7 @@ import '../../data/repository/profile_repository.dart';
 import '../entity/profile_update_entity.dart';
 
 /// Sign-up step "Profile": uploads the photo if one was picked, saves the bio, city and phone that were
-/// filled in and moves the resume point to Interests. With nothing given (Skip) it only moves the
+/// filled in, deletes the saved photo when [removeAvatar] is set and no new one was picked, and moves the resume point to Interests. With nothing given (Skip) it only moves the
 /// resume point.
 @injectable
 class SaveProfileDetailsUseCase {
@@ -23,8 +23,13 @@ class SaveProfileDetailsUseCase {
     String? bio,
     String? city,
     String? phone,
+    bool removeAvatar = false,
   }) async {
     String? avatarUrl;
+    if (photo == null && removeAvatar) {
+      final removed = await _profiles.removeAvatar();
+      if (removed case Left(:final value)) return Left(value);
+    }
     if (photo != null) {
       final uploaded = await _profiles.uploadAvatar(
         photo,

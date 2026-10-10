@@ -2,13 +2,14 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_assets.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/l10n.dart';
-import '../../../../core/services/photo_picker_service.dart';
-import '../../../../core/theme/app_dimens.dart';
-import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/widgets/widgets.dart';
+import '../constants/app_assets.dart';
+import '../extensions/context_extensions.dart';
+import '../extensions/l10n.dart';
+import '../services/photo_picker_service.dart';
+import '../theme/app_dimens.dart';
+import '../theme/app_text_styles.dart';
+import 'app_svg_icon.dart';
+import 'app_text.dart';
 
 /// The profile photo picker (docs/specs/auth/02-components.md C13): an 88 circle (dashed with a camera
 /// while empty, the picture with a solid border once chosen) and a plus badge, next to a title and caption.
@@ -18,9 +19,13 @@ class PhotoPickerAvatar extends StatelessWidget {
     super.key,
     required this.photo,
     required this.onTap,
+    this.avatarUrl,
   });
 
   final PickedPhoto? photo;
+
+  /// A saved picture, shown while [photo] (a new pick) is null.
+  final String? avatarUrl;
   final VoidCallback onTap;
 
   @override
@@ -44,7 +49,7 @@ class PhotoPickerAvatar extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: [
                   Positioned.fill(
-                    child: photo == null
+                    child: photo == null && avatarUrl == null
                         ? CustomPaint(
                             painter: _DashedCirclePainter(
                               color: colors.border,
@@ -68,11 +73,19 @@ class PhotoPickerAvatar extends StatelessWidget {
                               ),
                             ),
                             child: ClipOval(
-                              child: Image.memory(
-                                photo!.bytes,
-                                fit: BoxFit.cover,
-                                cacheWidth: (size * 2).round(),
-                              ),
+                              child: photo != null
+                                  ? Image.memory(
+                                      photo!.bytes,
+                                      fit: BoxFit.cover,
+                                      cacheWidth: (size * 2).round(),
+                                    )
+                                  : Image.network(
+                                      avatarUrl!,
+                                      fit: BoxFit.cover,
+                                      cacheWidth: (size * 2).round(),
+                                      errorBuilder: (_, _, _) =>
+                                          const SizedBox.shrink(),
+                                    ),
                             ),
                           ),
                   ),

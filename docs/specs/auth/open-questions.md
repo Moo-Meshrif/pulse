@@ -36,3 +36,10 @@
 - Q26: S13 measurements are `[estimated]` from the screenshots (72 tile, 14 gap, wordmark 30, spinner 28 / stroke 3 with a grey track, 96 circle, 40 icon, title 26, button bottom 48) (Q8).
 - Q27 (DONE in Phase 3c, 2026-10-08; B12 outcome in the plan): username sign-in leaked emails (the RPC `get_email_for_username` was callable by `anon`). Decision [user]: sign-in moves to an Edge Function (`sign-in`): input validation, per-IP and per-identifier throttling (private table + `hit_rate_limit`), a generic 401 for unknown user / unknown email / wrong password, a 403 with the email only after a correct password, padded response times. The RPC becomes service-role only and leaves the app. S1 states added in Phase 4: "Too many attempts. Try again in {time}." with Sign in disabled until the countdown ends. Supersedes the "can enumerate usernames" note of Q17. Open: B12 (Auth's per-IP limit and the forwarded client IP).
 
+
+## Decisions from the 2026-10-10 review [user]
+- Q28 (resolved): Phone is international, not Egypt-only: country-code picker (C15) with all countries from `country_picker`; hint is a neutral "••• ••• ••••"; value stored as "+code number"; validation unchanged (7-15 digits).
+- Q29 (resolved): Photo sheet redesigned (C13); photo sheet, avatar, phone field, country sheet, `PhotoChoice`, `country_codes` and `phone_format` moved to shared core so other features can reuse them.
+- Q30 (resolved): a resumed sign-up reloads the saved profile and refills steps 3 and 4 (S6 "Resumed sign-up"); Remove photo on a saved photo deletes the server copy when Continue saves.
+- Q31 (resolved): "Open email app" opens the inbox (Android intent, iOS `message://`), `mailto:` only as fallback. Limit: on iOS only Apple Mail has a shared inbox scheme. TODO (optional): per-app support (e.g. `googlegmail://`) if wanted.
+- Q32 (TODO): Arabic strings added in this round (photoSheetTitle, countryPickerTitle, countrySearchHint, countryNoResults) are drafts tagged `x-review`.

@@ -74,7 +74,7 @@ void main() {
   });
 
   group('follows', () {
-    test('follow upserts the pair, so following twice is harmless', () async {
+    test('follow inserts the pair or ignores a duplicate', () async {
       final backend = await signedIn((_) async => http.Response('', 201));
       final result = await SupabaseFollowsDatasource(backend.client)
           .follow('u2');
@@ -83,7 +83,7 @@ void main() {
       expect(request.method, 'POST');
       expect(
         request.headers['prefer'],
-        contains('resolution=merge-duplicates'),
+        contains('resolution=ignore-duplicates'),
       );
       expect(jsonBody(request), {'follower_id': uid, 'following_id': 'u2'});
     });

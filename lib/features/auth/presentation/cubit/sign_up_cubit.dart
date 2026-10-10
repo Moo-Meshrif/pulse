@@ -15,6 +15,7 @@ import '../../../profile/data/model/suggested_profile_model.dart';
 import '../../../profile/domain/use_case/clear_local_profile_use_case.dart';
 import '../../../profile/domain/use_case/complete_signup_use_case.dart';
 import '../../../profile/domain/use_case/get_interests_use_case.dart';
+import '../../../profile/domain/use_case/get_signup_draft_use_case.dart';
 import '../../../profile/domain/use_case/get_signup_step_use_case.dart';
 import '../../../profile/domain/use_case/get_suggested_profiles_use_case.dart';
 import '../../../profile/domain/use_case/save_about_you_use_case.dart';
@@ -43,6 +44,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     this._completeSignup,
     this._clearLocalProfile,
     this._getSignupStep,
+    this._getSignupDraft,
   ) : super(const SignUpState());
 
   static const resendCooldown = Duration(seconds: 30);
@@ -62,9 +64,13 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   final SaveInterestsUseCase _saveInterests;
   final GetSuggestedProfilesUseCase _getSuggestedProfiles;
   final SetFollowingUseCase _setFollowing;
+
+  /// People whose follow / unfollow request is running (no UI: it only ignores repeat taps).
+  final _followInFlight = <String>{};
   final CompleteSignupUseCase _completeSignup;
   final ClearLocalProfileUseCase _clearLocalProfile;
   final GetSignupStepUseCase _getSignupStep;
+  final GetSignupDraftUseCase _getSignupDraft;
 
   final _countdown = Countdown();
 
@@ -79,10 +85,38 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       _startCooldown();
       return;
     }
-    emit(state.copyWith(step: clamped));
+    // A resumed sign-up (after Verify email) first brings back what was entered before.
+    final resume = clamped > verifyStep;
+    emit(state.copyWith(step: clamped, resuming: resume));
+    if (resume) unawaited(_restoreDraft());
     // A resumed sign-up loads what its step shows.
     if (clamped == interestsStep) unawaited(_loadInterests());
     if (clamped == followStep) unawaited(_loadPeople());
+  }
+
+  /// Fills About you and Profile from the saved profile, so going back shows what was entered. Only
+  /// empty fields are filled; a failure just leaves them empty.
+  Future<void> _restoreDraft() async {
+    final result = await _getSignupDraft();
+    result.fold((_) => emit(state.copyWith(resuming: false)), (draft) {
+      emit(
+        state.copyWith(
+          resuming: false,
+          fullName: state.fullName.isEmpty
+              ? draft.fullName ?? ''
+              : state.fullName,
+          username: state.username.isEmpty
+              ? draft.username ?? ''
+              : state.username,
+          birthday: state.birthday ?? draft.birthday,
+          gender: state.gender ?? draft.gender,
+          bio: state.bio.isEmpty ? draft.bio ?? '' : state.bio,
+          city: state.city.isEmpty ? draft.city ?? '' : state.city,
+          phone: state.phone.isEmpty ? draft.phone ?? '' : state.phone,
+          avatarUrl: state.avatarUrl ?? draft.avatarUrl,
+        ),
+      );
+    });
   }
 
   void emailChanged(String value) => emit(
@@ -139,31 +173,34 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       identifier: email,
       password: state.password,
     );
-    await signedIn.fold((failure) async {
-      if (failure case AuthFailure(
-        reason: AuthFailureReason.emailNotConfirmed,
-      )) {
-        // Never verified: a fresh code, then the Verify email step.
-        await _auth.resendSignUpCode(email);
-        emit(state.copyWith(step: verifyStep, code: '', loading: false));
-        _startCooldown();
-        return;
-      }
-      emit(state.copyWith(loading: false, failure: taken));
-    }, (_) async {
-      final step = await _getSignupStep();
-      step.fold(
-        (failure) => emit(state.copyWith(loading: false, failure: failure)),
-        (next) {
-          if (next == SignupStep.complete) {
-            _go(AppRoutes.home);
-            return;
-          }
-          emit(state.copyWith(loading: false));
-          open(step: next.number);
-        },
-      );
-    });
+    await signedIn.fold(
+      (failure) async {
+        if (failure case AuthFailure(
+          reason: AuthFailureReason.emailNotConfirmed,
+        )) {
+          // Never verified: a fresh code, then the Verify email step.
+          await _auth.resendSignUpCode(email);
+          emit(state.copyWith(step: verifyStep, code: '', loading: false));
+          _startCooldown();
+          return;
+        }
+        emit(state.copyWith(loading: false, failure: taken));
+      },
+      (_) async {
+        final step = await _getSignupStep();
+        step.fold(
+          (failure) => emit(state.copyWith(loading: false, failure: failure)),
+          (next) {
+            if (next == SignupStep.complete) {
+              _go(AppRoutes.home);
+              return;
+            }
+            emit(state.copyWith(loading: false));
+            open(step: next.number);
+          },
+        );
+      },
+    );
   }
 
   void codeChanged(String value) => emit(
@@ -257,7 +294,13 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     if (photo != null) emit(state.copyWith(photo: photo));
   }
 
-  void removePhoto() => emit(state.copyWith(photo: null));
+  void removePhoto() => emit(
+    state.copyWith(
+      photo: null,
+      avatarUrl: null,
+      avatarRemoved: state.avatarRemoved || state.avatarUrl != null,
+    ),
+  );
 
   void bioChanged(String value) => emit(state.copyWith(bio: value));
 
@@ -274,6 +317,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       bio: state.bio,
       city: state.city,
       phone: state.phone,
+      removeAvatar: state.avatarRemoved,
     );
   }
 
@@ -288,6 +332,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     String? bio,
     String? city,
     String? phone,
+    bool removeAvatar = false,
   }) async {
     emit(state.copyWith(loading: true, failure: null));
     final result = await _saveProfileDetails(
@@ -296,6 +341,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       bio: bio,
       city: city,
       phone: phone,
+      removeAvatar: removeAvatar,
     );
     await result.fold(
       (failure) async => emit(state.copyWith(loading: false, failure: failure)),
@@ -440,11 +486,15 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     );
   }
 
-  /// Follow or unfollow right away; a failed request puts the button back and reports it.
+  /// Follow or unfollow right away; a failed request puts the button back and reports it. Taps on a
+  /// person whose request is still running are ignored, so they cannot race each other.
   Future<void> followToggled(String id) async {
+    if (!_followInFlight.add(id)) return;
     final following = !state.following.contains(id);
     _setLocalFollowing([id], following);
+    emit(state.copyWith(failure: null));
     final result = await _setFollowing(id, following: following);
+    _followInFlight.remove(id);
     result.fold((failure) {
       _setLocalFollowing([id], !following);
       emit(state.copyWith(failure: failure));
@@ -455,11 +505,14 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   Future<void> followAll() async {
     final ids = [
       for (final person in state.visiblePeople)
-        if (person.id != null && !state.following.contains(person.id))
+        if (person.id != null &&
+            !state.following.contains(person.id) &&
+            !_followInFlight.contains(person.id))
           person.id!,
     ];
     if (ids.isEmpty) return;
     _setLocalFollowing(ids, true);
+    emit(state.copyWith(failure: null));
     final result = await _setFollowing.all(ids);
     result.fold((failure) {
       _setLocalFollowing(ids, false);

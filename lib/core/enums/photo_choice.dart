@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../../core/constants/app_assets.dart';
-import '../../../../../core/enums/photo_source.dart';
-import '../../../../../core/extensions/l10n.dart';
+import '../constants/app_assets.dart';
+import 'photo_source.dart';
+import '../extensions/l10n.dart';
 
 /// What the photo sheet offers.
 enum PhotoChoice {

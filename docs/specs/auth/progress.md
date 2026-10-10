@@ -14,5 +14,6 @@ Only TODO items remain in open-questions.md (Supabase schema, Terms/Privacy cont
 - S11: key icon added; rules/segments fill like S3 score; Update enabled when 3 rules met + confirm matches; checkbox default checked -> signOut(others); X -> sign out recovery + /sign-in; S12 = ConfirmationDialog.info, not dismissible, Sign in -> sign out recovery + /sign-in [user]
 - Reset flow = email link opens S11 (Supabase can't email a password) [user via screenshots]
 - Schema supplied and trimmed (`schema.sql`, not applied); `signup_step` replaces the estimated required-fields resume rule; S1 = Email or username; S10 copy = progress saved; S7/S8 skipped when their list is empty; S8 school line dropped [user]
+- 2026-10-10: international phone + country picker (C15), modern photo sheet (C13), resume refills earlier steps, Remove photo deletes on Continue, Open email app opens the inbox; specs S6, S9, C3, C13, C15, overview, assets and open-questions (Q28-Q32) updated [user]
 ## Next action
 Plan written: docs/plans/auth-plan.md (draft, awaiting approval).

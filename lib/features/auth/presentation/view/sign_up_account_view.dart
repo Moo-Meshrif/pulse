@@ -90,10 +90,8 @@ class _SignUpAccountViewState extends State<SignUpAccountView> {
                 SignUpState,
                 ({bool loading, bool invalid})
               >(
-                selector: (state) => (
-                  loading: state.loading,
-                  invalid: state.emailInvalidShown,
-                ),
+                selector: (state) =>
+                    (loading: state.loading, invalid: state.emailInvalidShown),
                 builder: (context, email) => AppTextField(
                   label: l10n.emailLabel,
                   required: true,

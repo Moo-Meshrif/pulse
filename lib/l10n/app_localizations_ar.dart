@@ -212,6 +212,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorServer => 'تعذّر إكمال طلبك حالياً. حاول مرة أخرى بعد قليل.';
 
   @override
+  String get errorWeakPassword =>
+      'كلمة المرور ضعيفة جدًا. استخدم كلمة أطول تحتوي على أحرف وأرقام ورموز.';
+
+  @override
+  String get errorSamePassword =>
+      'يجب أن تختلف كلمة المرور الجديدة عن القديمة.';
+
+  @override
+  String get errorSessionExpired =>
+      'انتهت صلاحية هذا الرابط. اطلب رابطًا جديدًا وحاول مرة أخرى.';
+
+  @override
   String get errorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
 
   @override
@@ -389,7 +401,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get phoneLabel => 'رقم الهاتف';
 
   @override
-  String get phoneHint => '+20 ••• ••• ••••';
+  String get phoneHint => '••• ••• ••••';
+
+  @override
+  String get photoSheetTitle => 'صورة الملف الشخصي';
+
+  @override
+  String get countryPickerTitle => 'اختر الدولة';
+
+  @override
+  String get countrySearchHint => 'ابحث عن دولة أو رمز';
+
+  @override
+  String get countryNoResults => 'لم يتم العثور على دولة';
 
   @override
   String get phoneHelper =>

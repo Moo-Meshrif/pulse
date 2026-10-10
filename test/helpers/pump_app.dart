@@ -1,3 +1,4 @@
+import 'package:pulse/core/utils/country_names_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/app/app.dart';
@@ -15,6 +16,7 @@ import 'package:pulse/features/profile/data/datasource/interests_datasource.dart
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
 import 'package:pulse/features/profile/domain/use_case/clear_local_profile_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/get_signup_draft_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/complete_signup_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_interests_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_suggested_profiles_use_case.dart';
@@ -44,6 +46,8 @@ class MockCompleteSignupUseCase extends Mock implements CompleteSignupUseCase {}
 
 class MockClearLocalProfileUseCase extends Mock
     implements ClearLocalProfileUseCase {}
+
+class MockGetSignupDraftUseCase extends Mock implements GetSignupDraftUseCase {}
 
 class MockPhotoPickerService extends Mock implements PhotoPickerService {}
 
@@ -107,7 +111,10 @@ extension PumpApp on WidgetTester {
           scrollBehavior: const AppScrollBehavior(),
           theme: AppTheme.light,
           locale: locale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: const [
+            ...AppLocalizations.localizationsDelegates,
+            CountryNamesDelegate(),
+          ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: widget,
         ),

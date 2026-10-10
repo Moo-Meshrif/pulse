@@ -1,3 +1,5 @@
+import 'package:pulse/core/utils/country_names_delegate.dart';
+
 import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
@@ -19,11 +21,11 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_colors.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/utils/either.dart';
+import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_up_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_up_screen.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
-import 'package:pulse/features/auth/presentation/widgets/photo_picker_avatar.dart';
 import 'package:pulse/features/auth/presentation/widgets/password_strength_meter.dart';
 import 'package:pulse/features/auth/presentation/widgets/terms_agreement_label.dart';
 import 'package:pulse/features/auth/presentation/widgets/step_top_bar.dart';
@@ -61,6 +63,7 @@ void main() {
   late MockSetFollowingUseCase setFollowing;
   late MockCompleteSignupUseCase complete;
   late MockClearLocalProfileUseCase clearLocal;
+  late MockGetSignupDraftUseCase getDraft;
 
   const travel = InterestModel(id: 1, nameEn: 'Travel', nameAr: 'سفر');
   const food = InterestModel(id: 2, nameEn: 'Food', nameAr: 'طعام');
@@ -97,6 +100,9 @@ void main() {
     setFollowing = MockSetFollowingUseCase();
     complete = MockCompleteSignupUseCase();
     clearLocal = MockClearLocalProfileUseCase();
+    getDraft = MockGetSignupDraftUseCase();
+    when(() => getDraft())
+        .thenAnswer((_) async => const Right(ProfileEntity()));
     when(() => getInterests())
         .thenAnswer((_) async => const Right([travel, food]));
     when(() => saveInterests(any())).thenAnswer((_) async => const Right(unit));
@@ -160,6 +166,7 @@ void main() {
         complete,
         clearLocal,
         MockGetSignupStepUseCase(),
+        getDraft,
       ),
     );
     addTearDown(getIt.reset);
@@ -176,7 +183,10 @@ void main() {
         builder: (context) => MaterialApp(
           theme: AppTheme.light,
           locale: locale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: const [
+            ...AppLocalizations.localizationsDelegates,
+            CountryNamesDelegate(),
+          ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: SignUpScreen(step: step, email: email),
           onGenerateRoute: (settings) => MaterialPageRoute<void>(
@@ -287,7 +297,10 @@ void main() {
       await tester.tap(find.text(l10nEn.continueButton));
       await tester.pumpAndSettle();
 
-      expect(find.text(l10nEn.errorEmailExists), findsOneWidget); // snackbar only
+      expect(
+        find.text(l10nEn.errorEmailExists),
+        findsOneWidget,
+      ); // snackbar only
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text(l10nEn.signUpTitle), findsOneWidget);
     });
@@ -584,7 +597,10 @@ void main() {
       await tester.tap(find.text(l10nEn.continueButton));
       await tester.pumpAndSettle();
 
-      expect(find.text(l10nEn.errorUsernameTaken), findsOneWidget); // snackbar only
+      expect(
+        find.text(l10nEn.errorUsernameTaken),
+        findsOneWidget,
+      ); // snackbar only
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text(l10nEn.aboutTitle), findsOneWidget);
     });
@@ -615,12 +631,50 @@ void main() {
       expect(find.text('150/150'), findsOneWidget);
     });
 
-    testView('the phone field keeps digits, spaces and + only', (tester) async {
+    testView('the phone field keeps digits and spaces only', (tester) async {
       await open(tester, step: 4);
-      await tester.enterText(field(2), '+20 abc 100');
+      await tester.enterText(field(2), '20 abc +100');
       await tester.pump();
 
-      expect(tester.widget<TextField>(field(2)).controller!.text, '+20  100');
+      expect(tester.widget<TextField>(field(2)).controller!.text, '20  100');
+    });
+
+    testView('the phone country code can be changed', (tester) async {
+      await open(tester, step: 4);
+      await tester.ensureVisible(field(2));
+      await tester.tap(find.text('+20'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).last, 'Saudi');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Saudi Arabia'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('+966'), findsOneWidget);
+      expect(find.text('+20'), findsNothing);
+    });
+
+    testView('the country list holds every country, searchable by name', (
+      tester,
+    ) async {
+      await open(tester, step: 4);
+      await tester.ensureVisible(field(2));
+      await tester.tap(find.text('+20'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).last, 'Iceland');
+      await tester.pumpAndSettle();
+
+      expect(find.text('+354'), findsOneWidget);
+    });
+
+    testView('the country list is searchable in Arabic', (tester) async {
+      await open(tester, step: 4, locale: const Locale('ar'));
+      await tester.ensureVisible(field(2));
+      await tester.tap(find.text('+20'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).last, 'آيسلندا');
+      await tester.pumpAndSettle();
+
+      expect(find.text('+354'), findsOneWidget);
     });
 
     testView('a short phone shows its error after the field is left', (

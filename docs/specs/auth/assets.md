@@ -29,4 +29,4 @@ None bundled. Avatars are initials on palette colors; profile photo is user-pick
 Sora, Noto Sans, Noto Sans Arabic (already in `assets/fonts/`).
 
 ## Packages the implementation will need (not yet in pubspec)
-supabase_flutter, pinput (user), image_picker (user), url_launcher (mailto, user). Dates use `showDatePicker`. Confirm versions at plan time.
+supabase_flutter, pinput (user), image_picker (user), url_launcher (mailto fallback, user), country_picker (all countries, dial codes and localized names; data only, our own sheet UI; user, 2026-10-10), android_intent_plus (open the Android mail inbox, 2026-10-10). Dates use `showDatePicker`. Confirm versions at plan time.

@@ -57,11 +57,12 @@ final class SupabaseFollowsDatasource implements FollowsDatasource {
 
   @override
   Future<Result<Unit>> follow(String userId) => Guard.run(() async {
-    // An upsert, so following twice is harmless.
+    // Insert-or-ignore, so following twice is harmless. Not a merging upsert: that needs the UPDATE
+    // privilege, which `follows` does not grant (it answers 42501).
     await _client.from('follows').upsert({
       'follower_id': _uid,
       'following_id': userId,
-    });
+    }, ignoreDuplicates: true);
     return unit;
   });
 

@@ -29,8 +29,13 @@ extension FailureL10n on Failure {
         l10n.errorRateLimited,
       AuthFailure(reason: AuthFailureReason.emailTaken) =>
         l10n.errorEmailExists,
-      AuthFailure(reason: AuthFailureReason.invalidCode) =>
-        l10n.errorWrongCode,
+      AuthFailure(reason: AuthFailureReason.invalidCode) => l10n.errorWrongCode,
+      AuthFailure(reason: AuthFailureReason.weakPassword) =>
+        l10n.errorWeakPassword,
+      AuthFailure(reason: AuthFailureReason.samePassword) =>
+        l10n.errorSamePassword,
+      AuthFailure(reason: AuthFailureReason.sessionExpired) =>
+        l10n.errorSessionExpired,
       ConflictFailure() => l10n.errorUsernameTaken,
       ServerFailure() => l10n.errorServer,
       _ => l10n.errorGeneric,

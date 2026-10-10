@@ -29,6 +29,7 @@ class AppTextField extends StatefulWidget {
     this.helperText,
     this.isPassword = false,
     this.prefixText,
+    this.prefix,
     this.forceLtr = false,
     this.readOnly = false,
     this.enabled = true,
@@ -61,6 +62,9 @@ class AppTextField extends StatefulWidget {
 
   /// Shown before the text, e.g. "@".
   final String? prefixText;
+
+  /// A widget before the text, e.g. the phone country code; wins over [prefixText].
+  final Widget? prefix;
   final bool forceLtr;
   final bool readOnly;
   final bool enabled;
@@ -129,7 +133,8 @@ class _AppTextFieldState extends State<AppTextField> {
           filled: true,
           fillColor: colors.surface,
           contentPadding: AuthDimens.inputPadding,
-          prefix: widget.prefixText == null
+          prefixIcon: widget.prefix,
+          prefix: widget.prefix != null || widget.prefixText == null
               ? null
               : AppText(
                   widget.prefixText!,

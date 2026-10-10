@@ -31,7 +31,7 @@ Default; resend cooldown 30 s: "Resend link in 0:30" disabled grey [estimated, m
 | linkResent | Link sent again | تم إرسال الرابط مرة أخرى |
 
 ## Behavior and navigation
-- Open email app: `url_launcher` with `mailto:` [user]; if it cannot launch, snackbar "No email app found" [estimated].
+- Open email app: opens the mail app on its **inbox**, not a new message [user, 2026-10-10]. Android: `android_intent_plus` with `MAIN` + `APP_EMAIL`. iOS: `message://` (Apple Mail inbox; no common scheme for other clients). Anything else, or a failure: `mailto:` via `url_launcher`. If nothing can launch, snackbar "No email app found" [estimated]. Lives in `LaunchService.openEmailApp`; iOS lists `message` in `LSApplicationQueriesSchemes`.
 - Resend link: `resetPasswordForEmail` again, 30 s cooldown [estimated, not answered].
 - Change email: close dialog and focus the S2 email field [estimated, not answered].
 - Back to sign in: `AppNavigator.resetTo('/sign-in')`.

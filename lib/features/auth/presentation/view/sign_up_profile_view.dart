@@ -8,10 +8,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../core/services/photo_picker_service.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
-import '../utils/enums/photo_choice.dart';
+import '../../../../core/enums/photo_choice.dart';
 import '../widgets/auth_header.dart';
-import '../widgets/photo_picker_avatar.dart';
-import '../widgets/photo_source_sheet.dart';
 
 /// Sign-up step 4, Profile (docs/specs/auth/screens/s6-signup-profile.md); everything is optional. The
 /// text controllers are local UI state, filled from the Cubit. Each field, the photo and the button
@@ -29,7 +27,6 @@ class SignUpProfileView extends StatefulWidget {
 class _SignUpProfileViewState extends State<SignUpProfileView> {
   late final _bio = TextEditingController(text: _cubit.state.bio);
   late final _city = TextEditingController(text: _cubit.state.city);
-  late final _phone = TextEditingController(text: _cubit.state.phone);
   final _phoneFocus = FocusNode();
 
   SignUpCubit get _cubit => context.read<SignUpCubit>();
@@ -46,7 +43,6 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
   void dispose() {
     _bio.dispose();
     _city.dispose();
-    _phone.dispose();
     _phoneFocus.dispose();
     super.dispose();
   }
@@ -54,7 +50,7 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
   Future<void> _choosePhoto() async {
     final choice = await PhotoSourceSheet.show(
       context,
-      hasPhoto: _cubit.state.photo != null,
+      hasPhoto: _cubit.state.photo != null || _cubit.state.avatarUrl != null,
     );
     if (choice == null) return;
     switch (choice) {
@@ -85,10 +81,17 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
               subtitle: l10n.profileSubtitle,
             ),
             SizedBox(height: AuthDimens.signUpTopGap),
-            BlocSelector<SignUpCubit, SignUpState, PickedPhoto?>(
-              selector: (state) => state.photo,
-              builder: (context, photo) =>
-                  PhotoPickerAvatar(photo: photo, onTap: _choosePhoto),
+            BlocSelector<
+              SignUpCubit,
+              SignUpState,
+              ({PickedPhoto? photo, String? url})
+            >(
+              selector: (state) => (photo: state.photo, url: state.avatarUrl),
+              builder: (context, avatar) => PhotoPickerAvatar(
+                photo: avatar.photo,
+                avatarUrl: avatar.url,
+                onTap: _choosePhoto,
+              ),
             ),
             SizedBox(height: AuthDimens.signUpTopGap),
             BlocSelector<SignUpCubit, SignUpState, bool>(
@@ -132,19 +135,11 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
             >(
               selector: (state) =>
                   (loading: state.loading, invalid: state.phoneInvalidShown),
-              builder: (context, phone) => AppTextField(
-                label: l10n.phoneLabel,
-                hint: l10n.phoneHint,
-                controller: _phone,
+              builder: (context, phone) => PhoneField(
+                initialPhone: _cubit.state.phone,
                 focusNode: _phoneFocus,
-                forceLtr: true,
                 readOnly: phone.loading,
-                keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.done,
-                autofillHints: const [AutofillHints.telephoneNumber],
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[\d\s+]')),
-                ],
                 helperText: l10n.phoneHelper,
                 errorText: phone.invalid ? l10n.errorPhone : null,
                 onChanged: _cubit.phoneChanged,

@@ -8,6 +8,7 @@ import '../features/auth/domain/use_case/watch_password_recovery_use_case.dart';
 import '../core/router/app_navigator.dart';
 import '../core/router/app_router.dart';
 import '../core/router/app_routes.dart';
+import '../core/utils/country_names_delegate.dart';
 import '../core/theme/app_scale.dart';
 import '../core/theme/app_scroll_behavior.dart';
 import '../core/theme/app_theme.dart';
@@ -64,7 +65,10 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       scrollBehavior: const AppScrollBehavior(),
       theme: AppTheme.light,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        CountryNamesDelegate(),
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       localeResolutionCallback: App._resolveLocale,
       initialRoute: AppRoutes.root,

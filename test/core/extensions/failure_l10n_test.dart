@@ -45,6 +45,19 @@ void main() {
     );
     expect(await words(tester, const NetworkFailure()), l10nEn.errorNetwork);
     expect(await words(tester, const TimeoutFailure()), l10nEn.errorNetwork);
-    expect(await words(tester, const ServerFailure()), l10nEn.errorGeneric);
+    expect(await words(tester, const ServerFailure()), l10nEn.errorServer);
+    expect(await words(tester, const UnexpectedFailure()), l10nEn.errorGeneric);
+    expect(
+      await words(tester, const AuthFailure(AuthFailureReason.weakPassword)),
+      l10nEn.errorWeakPassword,
+    );
+    expect(
+      await words(tester, const AuthFailure(AuthFailureReason.samePassword)),
+      l10nEn.errorSamePassword,
+    );
+    expect(
+      await words(tester, const AuthFailure(AuthFailureReason.sessionExpired)),
+      l10nEn.errorSessionExpired,
+    );
   });
 }
