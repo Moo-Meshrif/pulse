@@ -143,22 +143,38 @@ void main() {
     tester,
   ) async {
     when(() => isSignedIn()).thenReturn(true);
+
     var calls = 0;
     when(() => getSignupStep()).thenAnswer((_) async {
       if (++calls == 1) throw const NetworkFailure();
+
       await Future<void>.delayed(const Duration(seconds: 1));
       return SignupStep.complete;
     });
 
     await openSplash(tester);
-    await tester.tap(find.text(l10nEn.tryAgain));
-    await tester.pump(const Duration(milliseconds: 500));
 
+    await tester.tap(find.text(l10nEn.tryAgain));
+    await tester.pump();
+
+    // The retry button shows its loading indicator.
     expect(find.byType(PulseLineLoader), findsOneWidget);
-    expect(find.text(l10nEn.offlineTitle), findsNothing);
+
+    // The offline screen remains visible during retry.
+    expect(find.text(l10nEn.offlineTitle), findsOneWidget);
+
+    // Retry is disabled while loading.
+    final button = tester.widget<FilledButton>(
+      find.ancestor(
+        of: find.byType(PulseLineLoader),
+        matching: find.byType(FilledButton),
+      ),
+    );
+    expect(button.onPressed, isNull);
 
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
+
     expect(find.text('route: /home'), findsOneWidget);
     expect(calls, 2);
   });

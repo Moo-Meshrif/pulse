@@ -31,24 +31,19 @@ class SignUpView extends StatelessWidget {
           onPopInvokedWithResult: (didPop, _) {
             if (!didPop) _handleSystemBack(context, step);
           },
-          child: Scaffold(
-            body: AppSafeArea(
-              bottomSpace: AppSpacing.s24,
-              child: ContentWidth(
-                child: Column(
-                  children: [
-                    _stepTopBar(context, step),
-                    Expanded(
-                      child: BlocSelector<SignUpCubit, SignUpState, bool>(
-                        selector: (state) => state.resuming,
-                        builder: (context, resuming) => resuming
-                            ? const AppLoadingView()
-                            : _stepContent(step),
-                      ),
-                    ),
-                  ],
+          child: AppPage(
+            bottomSpace: AppSpacing.s24,
+            child: Column(
+              children: [
+                _stepTopBar(context, step),
+                Expanded(
+                  child: BlocSelector<SignUpCubit, SignUpState, bool>(
+                    selector: (state) => state.resuming,
+                    builder: (context, resuming) =>
+                        resuming ? const AppLoadingView() : _stepContent(step),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),

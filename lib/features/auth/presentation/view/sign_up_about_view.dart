@@ -77,117 +77,111 @@ class _SignUpAboutViewState extends State<SignUpAboutView> {
     return BlocListener<SignUpCubit, SignUpState>(
       listenWhen: _birthdayChanged,
       listener: _showBirthdayInField,
-      child: PinnedBottomCta(
-        body: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.fromLTRB(
-            AppSpacing.formSide,
-            AuthDimens.signUpTopGap,
-            AppSpacing.formSide,
-            AppSpacing.s24,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AuthHeader(title: l10n.aboutTitle, subtitle: l10n.aboutSubtitle),
-              SizedBox(height: AuthDimens.signUpTopGap),
-              BlocSelector<SignUpCubit, SignUpState, bool>(
-                selector: (state) => state.loading,
-                builder: (context, loading) => AppTextField(
-                  label: l10n.fullNameLabel,
-                  required: true,
-                  hint: l10n.fullNameHint,
-                  controller: _fullName,
-                  readOnly: loading,
-                  textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.name],
-                  onChanged: _cubit.fullNameChanged,
-                ),
-              ),
-              SizedBox(height: AppSpacing.fieldGap),
-              BlocSelector<
-                SignUpCubit,
-                SignUpState,
-                ({bool loading, bool invalid})
-              >(
-                selector: (state) => (
-                  loading: state.loading,
-                  invalid: state.usernameInvalidShown,
-                ),
-                builder: (context, username) => AppTextField(
-                  label: l10n.usernameLabel,
-                  required: true,
-                  hint: l10n.usernameHint,
-                  prefixText: '@',
-                  controller: _username,
-                  focusNode: _usernameFocus,
-                  forceLtr: true,
-                  readOnly: username.loading,
-                  textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.newUsername],
-                  helperText: l10n.usernameHelper,
-                  errorText: username.invalid ? l10n.usernameHelper : null,
-                  onChanged: _cubit.usernameChanged,
-                ),
-              ),
-              SizedBox(height: AppSpacing.fieldGap),
-              BlocSelector<
-                SignUpCubit,
-                SignUpState,
-                ({bool loading, bool underage})
-              >(
-                selector: (state) =>
-                    (loading: state.loading, underage: state.underage),
-                builder: (context, birthday) => AppTextField(
-                  label: l10n.birthdayLabel,
-                  required: true,
-                  hint: l10n.birthdayHint,
-                  controller: _birthday,
-                  forceLtr: true,
-                  readOnly: true,
-                  enabled: !birthday.loading,
-                  onTap: _pickBirthday,
-                  helperText: l10n.birthdayHelper,
-                  errorText: birthday.underage ? l10n.errorMinAge : null,
-                ),
-              ),
-              SizedBox(height: AppSpacing.fieldGap),
-              Text.rich(
-                TextSpan(
-                  style: context.text.label.copyWith(color: colors.textPrimary),
-                  children: [
-                    TextSpan(text: l10n.genderLabel),
-                    TextSpan(
-                      text: ' ${l10n.genderOptional}',
-                      style: TextStyle(
-                        color: colors.textSecondary,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: AppSpacing.s8),
-              BlocSelector<SignUpCubit, SignUpState, Gender?>(
-                selector: (state) => state.gender,
-                builder: (context, selected) => Wrap(
-                  spacing: AuthDimens.chipWrapSpacing,
-                  runSpacing: AuthDimens.chipWrapSpacing,
-                  children: [
-                    for (final gender in Gender.values)
-                      SelectableChip(
-                        label: gender.l10n(context),
-                        selected: selected == gender,
-                        height: AuthDimens.genderChipHeight,
-                        onTap: () => _cubit.genderToggled(gender),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.formSide,
+          AuthDimens.signUpTopGap,
+          AppSpacing.formSide,
+          AppSpacing.s24,
         ),
-        cta:
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AuthHeader(title: l10n.aboutTitle, subtitle: l10n.aboutSubtitle),
+            SizedBox(height: AuthDimens.signUpTopGap),
+            BlocSelector<SignUpCubit, SignUpState, bool>(
+              selector: (state) => state.loading,
+              builder: (context, loading) => AppTextField(
+                label: l10n.fullNameLabel,
+                required: true,
+                hint: l10n.fullNameHint,
+                controller: _fullName,
+                readOnly: loading,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.name],
+                onChanged: _cubit.fullNameChanged,
+              ),
+            ),
+            SizedBox(height: AppSpacing.fieldGap),
+            BlocSelector<
+              SignUpCubit,
+              SignUpState,
+              ({bool loading, bool invalid})
+            >(
+              selector: (state) =>
+                  (loading: state.loading, invalid: state.usernameInvalidShown),
+              builder: (context, username) => AppTextField(
+                label: l10n.usernameLabel,
+                required: true,
+                hint: l10n.usernameHint,
+                prefixText: '@',
+                controller: _username,
+                focusNode: _usernameFocus,
+                forceLtr: true,
+                readOnly: username.loading,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.newUsername],
+                helperText: l10n.usernameHelper,
+                errorText: username.invalid ? l10n.usernameHelper : null,
+                onChanged: _cubit.usernameChanged,
+              ),
+            ),
+            SizedBox(height: AppSpacing.fieldGap),
+            BlocSelector<
+              SignUpCubit,
+              SignUpState,
+              ({bool loading, bool underage})
+            >(
+              selector: (state) =>
+                  (loading: state.loading, underage: state.underage),
+              builder: (context, birthday) => AppTextField(
+                label: l10n.birthdayLabel,
+                required: true,
+                hint: l10n.birthdayHint,
+                controller: _birthday,
+                forceLtr: true,
+                readOnly: true,
+                enabled: !birthday.loading,
+                onTap: _pickBirthday,
+                helperText: l10n.birthdayHelper,
+                errorText: birthday.underage ? l10n.errorMinAge : null,
+              ),
+            ),
+            SizedBox(height: AppSpacing.fieldGap),
+            Text.rich(
+              TextSpan(
+                style: context.text.label.copyWith(color: colors.textPrimary),
+                children: [
+                  TextSpan(text: l10n.genderLabel),
+                  TextSpan(
+                    text: ' ${l10n.genderOptional}',
+                    style: TextStyle(
+                      color: colors.textSecondary,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: AppSpacing.s8),
+            BlocSelector<SignUpCubit, SignUpState, Gender?>(
+              selector: (state) => state.gender,
+              builder: (context, selected) => Wrap(
+                spacing: AuthDimens.chipWrapSpacing,
+                runSpacing: AuthDimens.chipWrapSpacing,
+                children: [
+                  for (final gender in Gender.values)
+                    SelectableChip(
+                      label: gender.l10n(context),
+                      selected: selected == gender,
+                      height: AuthDimens.genderChipHeight,
+                      onTap: () => _cubit.genderToggled(gender),
+                    ),
+                ],
+              ),
+            ),
+            SizedBox(height: AppSpacing.s24),
             BlocSelector<
               SignUpCubit,
               SignUpState,
@@ -202,6 +196,8 @@ class _SignUpAboutViewState extends State<SignUpAboutView> {
                 onPressed: button.canSubmit ? _cubit.submitAbout : null,
               ),
             ),
+          ],
+        ),
       ),
     );
   }

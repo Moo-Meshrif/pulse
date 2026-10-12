@@ -18,8 +18,11 @@ class SplashScreen extends StatelessWidget {
     child: BlocConsumer<SplashCubit, SplashState>(
       listenWhen: (_, state) => state.route != null,
       listener: (context, state) => AppNavigator.resetTo(context, state.route!),
-      builder: (context, state) =>
-          SplashView(state: state, onRetry: context.read<SplashCubit>().retry),
+      builder: (context, state) => SplashView(
+        state: state,
+        onRetry: context.read<SplashCubit>().retry,
+        isRetrying: state.isRetrying,
+      ),
     ),
   );
 }

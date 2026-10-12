@@ -24,40 +24,33 @@ class SignUpInterestsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final cubit = context.read<SignUpCubit>();
-    return PinnedBottomCta(
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          AppSpacing.formSide,
-          AuthDimens.signUpTopGap,
-          AppSpacing.formSide,
-          AppSpacing.s24,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AuthHeader(
-              title: l10n.interestsTitle,
-              subtitle: l10n.interestsSubtitle,
-            ),
-            SizedBox(height: AuthDimens.signUpTopGap),
-            BlocBuilder<SignUpCubit, SignUpState>(
-              buildWhen: _interestsChanged,
-              builder: (context, state) => switch (state.interestsStatus) {
-                LoadStatus.failed => _LoadError(
-                  message: l10n.interestsError,
-                  onRetry: cubit.retryInterests,
-                ),
-                LoadStatus.loaded => _chips(context, state),
-                _ => _skeletons(),
-              },
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.formSide,
+        AuthDimens.signUpTopGap,
+        AppSpacing.formSide,
+        AppSpacing.s24,
       ),
-      cta: Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
         children: [
+          AuthHeader(
+            title: l10n.interestsTitle,
+            subtitle: l10n.interestsSubtitle,
+          ),
+          SizedBox(height: AuthDimens.signUpTopGap),
+          BlocBuilder<SignUpCubit, SignUpState>(
+            buildWhen: _interestsChanged,
+            builder: (context, state) => switch (state.interestsStatus) {
+              LoadStatus.failed => _LoadError(
+                message: l10n.interestsError,
+                onRetry: cubit.retryInterests,
+              ),
+              LoadStatus.loaded => _chips(context, state),
+              _ => _skeletons(),
+            },
+          ),
+          SizedBox(height: AppSpacing.s24),
           BlocSelector<SignUpCubit, SignUpState, int>(
             selector: (state) => state.selectedInterests.length,
             builder: (context, selected) => _selectedCount(context, selected),

@@ -80,70 +80,65 @@ class _OnboardingViewState extends State<OnboardingView> {
           },
           child: Focus(
             autofocus: true,
-            child: Scaffold(
-              body: AppSafeArea(
-                bottomSpace: OnboardingDimens.lastPageFooterPadding.bottom,
-                child: ContentWidth(
-                  child: Column(
-                    children: [
-                      OnboardingTopBar(
-                        leading: index == 0
-                            ? OnboardingTopBarLeading.logo
-                            : OnboardingTopBarLeading.back,
-                        onBack: () => _goTo(index - 1),
-                        onSkip: index == onboardingPages.length - 1
-                            ? null
-                            : widget.onSkip,
-                      ),
-                      Expanded(
-                        child: PageView.builder(
-                          controller: _controller,
-                          itemCount: onboardingPages.length,
-                          onPageChanged: (page) => _index.value = page,
-                          itemBuilder: (context, page) {
-                            final data = onboardingPages[page];
-                            return CustomScrollView(
-                              physics: const ClampingScrollPhysics(),
-                              slivers: [
-                                SliverFillRemaining(
-                                  hasScrollBody: false,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      OnboardingPanel(
-                                        fill: data.fill(colors),
-                                        imageAsset: data.imageAsset(locale),
-                                      ),
-                                      OnboardingTextBlock(
-                                        title: data.title(l10n),
-                                        body: data.body(l10n),
-                                      ),
-                                      // Takes the free height, so the footer sits at the bottom on tall
-                                      // screens; with no free height it just follows the text and scrolls.
-                                      Expanded(
-                                        child: Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: OnboardingFooter(
-                                            index: page,
-                                            count: onboardingPages.length,
-                                            onNext: () => _goTo(page + 1),
-                                            onGetStarted: widget.onGetStarted,
-                                            onSignIn: widget.onSignIn,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+            child: AppPage(
+              bottomSpace: OnboardingDimens.lastPageFooterPadding.bottom,
+              child: Column(
+                children: [
+                  OnboardingTopBar(
+                    leading: index == 0
+                        ? OnboardingTopBarLeading.logo
+                        : OnboardingTopBarLeading.back,
+                    onBack: () => _goTo(index - 1),
+                    onSkip: index == onboardingPages.length - 1
+                        ? null
+                        : widget.onSkip,
                   ),
-                ),
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _controller,
+                      itemCount: onboardingPages.length,
+                      onPageChanged: (page) => _index.value = page,
+                      itemBuilder: (context, page) {
+                        final data = onboardingPages[page];
+                        return CustomScrollView(
+                          physics: const ClampingScrollPhysics(),
+                          slivers: [
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  OnboardingPanel(
+                                    fill: data.fill(colors),
+                                    imageAsset: data.imageAsset(locale),
+                                  ),
+                                  OnboardingTextBlock(
+                                    title: data.title(l10n),
+                                    body: data.body(l10n),
+                                  ),
+                                  // Takes the free height, so the footer sits at the bottom on tall
+                                  // screens; with no free height it just follows the text and scrolls.
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: OnboardingFooter(
+                                        index: page,
+                                        count: onboardingPages.length,
+                                        onNext: () => _goTo(page + 1),
+                                        onGetStarted: widget.onGetStarted,
+                                        onSignIn: widget.onSignIn,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -1,6 +1,7 @@
 // Barrel file: features import only this.
 export 'app_dialog_shell.dart';
 export 'app_loading_view.dart';
+export 'app_page.dart';
 export 'app_safe_area.dart';
 export 'app_scale_scope.dart';
 export 'app_svg_icon.dart';
@@ -16,6 +17,5 @@ export 'phone_field.dart';
 export 'photo_picker_avatar.dart';
 export 'photo_source_sheet.dart';
 export 'pill_button.dart';
-export 'pinned_bottom_cta.dart';
 export 'primary_button.dart';
 export 'selectable_chip.dart';

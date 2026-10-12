@@ -67,138 +67,124 @@ class _SignUpAccountViewState extends State<SignUpAccountView> {
     final l10n = context.l10n;
     final colors = context.appColors;
     final noteStyle = context.text.caption;
-    return PinnedBottomCta(
-      body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: EdgeInsets.fromLTRB(
-          AppSpacing.formSide,
-          AuthDimens.signUpTopGap,
-          AppSpacing.formSide,
-          AppSpacing.s24,
-        ),
-        child: AutofillGroup(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AuthHeader(
-                title: l10n.signUpTitle,
-                subtitle: l10n.signUpSubtitle,
-              ),
-              SizedBox(height: AuthDimens.signUpTopGap),
-              BlocSelector<
-                SignUpCubit,
-                SignUpState,
-                ({bool loading, bool invalid})
-              >(
-                selector: (state) =>
-                    (loading: state.loading, invalid: state.emailInvalidShown),
-                builder: (context, email) => AppTextField(
-                  label: l10n.emailLabel,
-                  required: true,
-                  hint: l10n.emailHint,
-                  controller: _email,
-                  focusNode: _emailFocus,
-                  forceLtr: true,
-                  readOnly: email.loading,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.email],
-                  errorText: email.invalid ? l10n.errorInvalidEmail : null,
-                  onChanged: _cubit.emailChanged,
-                  onSubmitted: (_) => _passwordFocus.requestFocus(),
-                ),
-              ),
-              SizedBox(height: AppSpacing.fieldGap),
-              BlocSelector<
-                SignUpCubit,
-                SignUpState,
-                ({bool loading, bool tooShort})
-              >(
-                selector: (state) => (
-                  loading: state.loading,
-                  tooShort: state.passwordShortShown,
-                ),
-                builder: (context, password) => AppTextField(
-                  label: l10n.passwordLabel,
-                  required: true,
-                  hint: l10n.passwordHintMin,
-                  controller: _password,
-                  focusNode: _passwordFocus,
-                  isPassword: true,
-                  readOnly: password.loading,
-                  textInputAction: TextInputAction.done,
-                  autofillHints: const [AutofillHints.newPassword],
-                  errorText: password.tooShort ? l10n.errorPasswordShort : null,
-                  onChanged: _cubit.passwordChanged,
-                  onSubmitted: (_) => _cubit.submitAccount(),
-                ),
-              ),
-              BlocSelector<SignUpCubit, SignUpState, String>(
-                selector: (state) => state.password,
-                builder: (context, password) => password.isEmpty
-                    ? const SizedBox.shrink()
-                    : Padding(
-                        padding: EdgeInsets.only(
-                          top: AuthDimens.signUpMeterGap,
-                        ),
-                        child: PasswordStrengthMeter(password: password),
-                      ),
-              ),
-              SizedBox(height: AuthDimens.signUpTermsGap),
-              BlocSelector<SignUpCubit, SignUpState, bool>(
-                selector: (state) => state.termsAccepted,
-                builder: (context, accepted) => LabeledCheckbox(
-                  checked: accepted,
-                  onChanged: _cubit.termsChanged,
-                  label: TermsAgreementLabel(onOpen: _openLegalDocument),
-                ),
-              ),
-              SizedBox(height: AuthDimens.signUpNoteGap),
-              Text.rich(
-                TextSpan(
-                  style: noteStyle.copyWith(color: colors.textSecondary),
-                  children: [
-                    TextSpan(
-                      text: '* ',
-                      style: TextStyle(color: colors.danger),
-                    ),
-                    TextSpan(text: l10n.required),
-                  ],
-                ),
-              ),
-              SizedBox(height: AuthDimens.signUpDividerGap),
-              OrDivider(text: l10n.orSignUpWith),
-              SizedBox(height: AuthDimens.signUpSocialGap),
-              const SocialButtonsRow(),
-            ],
-          ),
-        ),
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.formSide,
+        AuthDimens.signUpTopGap,
+        AppSpacing.formSide,
+        AppSpacing.s24,
       ),
-      cta: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BlocSelector<
-            SignUpCubit,
-            SignUpState,
-            ({bool loading, bool canSubmit})
-          >(
-            selector: (state) =>
-                (loading: state.loading, canSubmit: state.canSubmitAccount),
-            builder: (context, button) => PrimaryButton(
-              label: l10n.continueButton,
-              expand: true,
-              loading: button.loading,
-              onPressed: button.canSubmit ? _cubit.submitAccount : null,
+      child: AutofillGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AuthHeader(title: l10n.signUpTitle, subtitle: l10n.signUpSubtitle),
+            SizedBox(height: AuthDimens.signUpTopGap),
+            BlocSelector<
+              SignUpCubit,
+              SignUpState,
+              ({bool loading, bool invalid})
+            >(
+              selector: (state) =>
+                  (loading: state.loading, invalid: state.emailInvalidShown),
+              builder: (context, email) => AppTextField(
+                label: l10n.emailLabel,
+                required: true,
+                hint: l10n.emailHint,
+                controller: _email,
+                focusNode: _emailFocus,
+                forceLtr: true,
+                readOnly: email.loading,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.email],
+                errorText: email.invalid ? l10n.errorInvalidEmail : null,
+                onChanged: _cubit.emailChanged,
+                onSubmitted: (_) => _passwordFocus.requestFocus(),
+              ),
             ),
-          ),
-          SizedBox(height: AuthDimens.ctaLinkGap),
-          AuthSwitchLink(
-            prompt: l10n.alreadyOnPulse,
-            action: l10n.signIn,
-            onPressed: _openSignIn,
-          ),
-        ],
+            SizedBox(height: AppSpacing.fieldGap),
+            BlocSelector<
+              SignUpCubit,
+              SignUpState,
+              ({bool loading, bool tooShort})
+            >(
+              selector: (state) =>
+                  (loading: state.loading, tooShort: state.passwordShortShown),
+              builder: (context, password) => AppTextField(
+                label: l10n.passwordLabel,
+                required: true,
+                hint: l10n.passwordHintMin,
+                controller: _password,
+                focusNode: _passwordFocus,
+                isPassword: true,
+                readOnly: password.loading,
+                textInputAction: TextInputAction.done,
+                autofillHints: const [AutofillHints.newPassword],
+                errorText: password.tooShort ? l10n.errorPasswordShort : null,
+                onChanged: _cubit.passwordChanged,
+                onSubmitted: (_) => _cubit.submitAccount(),
+              ),
+            ),
+            BlocSelector<SignUpCubit, SignUpState, String>(
+              selector: (state) => state.password,
+              builder: (context, password) => password.isEmpty
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: EdgeInsets.only(top: AuthDimens.signUpMeterGap),
+                      child: PasswordStrengthMeter(password: password),
+                    ),
+            ),
+            SizedBox(height: AuthDimens.signUpTermsGap),
+            BlocSelector<SignUpCubit, SignUpState, bool>(
+              selector: (state) => state.termsAccepted,
+              builder: (context, accepted) => LabeledCheckbox(
+                checked: accepted,
+                onChanged: _cubit.termsChanged,
+                label: TermsAgreementLabel(onOpen: _openLegalDocument),
+              ),
+            ),
+            SizedBox(height: AuthDimens.signUpNoteGap),
+            Text.rich(
+              TextSpan(
+                style: noteStyle.copyWith(color: colors.textSecondary),
+                children: [
+                  TextSpan(
+                    text: '* ',
+                    style: TextStyle(color: colors.danger),
+                  ),
+                  TextSpan(text: l10n.required),
+                ],
+              ),
+            ),
+            SizedBox(height: AuthDimens.signUpDividerGap),
+            OrDivider(text: l10n.orSignUpWith),
+            SizedBox(height: AuthDimens.signUpSocialGap),
+            const SocialButtonsRow(),
+            SizedBox(height: AppSpacing.s24),
+            BlocSelector<
+              SignUpCubit,
+              SignUpState,
+              ({bool loading, bool canSubmit})
+            >(
+              selector: (state) =>
+                  (loading: state.loading, canSubmit: state.canSubmitAccount),
+              builder: (context, button) => PrimaryButton(
+                label: l10n.continueButton,
+                expand: true,
+                loading: button.loading,
+                onPressed: button.canSubmit ? _cubit.submitAccount : null,
+              ),
+            ),
+            SizedBox(height: AuthDimens.ctaLinkGap),
+            AuthSwitchLink(
+              prompt: l10n.alreadyOnPulse,
+              action: l10n.signIn,
+              onPressed: _openSignIn,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -64,92 +64,83 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return PinnedBottomCta(
-      body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: EdgeInsets.fromLTRB(
-          AppSpacing.formSide,
-          AuthDimens.signUpTopGap,
-          AppSpacing.formSide,
-          AppSpacing.s24,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AuthHeader(
-              title: l10n.profileTitle,
-              subtitle: l10n.profileSubtitle,
-            ),
-            SizedBox(height: AuthDimens.signUpTopGap),
-            BlocSelector<
-              SignUpCubit,
-              SignUpState,
-              ({PickedPhoto? photo, String? url})
-            >(
-              selector: (state) => (photo: state.photo, url: state.avatarUrl),
-              builder: (context, avatar) => PhotoPickerAvatar(
-                photo: avatar.photo,
-                avatarUrl: avatar.url,
-                onTap: _choosePhoto,
-              ),
-            ),
-            SizedBox(height: AuthDimens.signUpTopGap),
-            BlocSelector<SignUpCubit, SignUpState, bool>(
-              selector: (state) => state.loading,
-              builder: (context, loading) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppTextField(
-                    label: l10n.bioLabel,
-                    hint: l10n.bioHint,
-                    controller: _bio,
-                    readOnly: loading,
-                    minLines: 3,
-                    maxLines: 3,
-                    counterMax: SignUpProfileView.bioMax,
-                    keyboardType: TextInputType.multiline,
-                    onChanged: _cubit.bioChanged,
-                  ),
-                  SizedBox(height: AppSpacing.fieldGap),
-                  AppTextField(
-                    label: l10n.cityLabel,
-                    hint: l10n.cityHint,
-                    controller: _city,
-                    readOnly: loading,
-                    textInputAction: TextInputAction.next,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(
-                        SignUpProfileView.cityMax,
-                      ),
-                    ],
-                    onChanged: _cubit.cityChanged,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: AppSpacing.fieldGap),
-            BlocSelector<
-              SignUpCubit,
-              SignUpState,
-              ({bool loading, bool invalid})
-            >(
-              selector: (state) =>
-                  (loading: state.loading, invalid: state.phoneInvalidShown),
-              builder: (context, phone) => PhoneField(
-                initialPhone: _cubit.state.phone,
-                focusNode: _phoneFocus,
-                readOnly: phone.loading,
-                textInputAction: TextInputAction.done,
-                helperText: l10n.phoneHelper,
-                errorText: phone.invalid ? l10n.errorPhone : null,
-                onChanged: _cubit.phoneChanged,
-                onSubmitted: (_) => _cubit.submitProfile(),
-              ),
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.formSide,
+        AuthDimens.signUpTopGap,
+        AppSpacing.formSide,
+        AppSpacing.s24,
       ),
-      cta:
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AuthHeader(title: l10n.profileTitle, subtitle: l10n.profileSubtitle),
+          SizedBox(height: AuthDimens.signUpTopGap),
+          BlocSelector<
+            SignUpCubit,
+            SignUpState,
+            ({PickedPhoto? photo, String? url})
+          >(
+            selector: (state) => (photo: state.photo, url: state.avatarUrl),
+            builder: (context, avatar) => PhotoPickerAvatar(
+              photo: avatar.photo,
+              avatarUrl: avatar.url,
+              onTap: _choosePhoto,
+            ),
+          ),
+          SizedBox(height: AuthDimens.signUpTopGap),
+          BlocSelector<SignUpCubit, SignUpState, bool>(
+            selector: (state) => state.loading,
+            builder: (context, loading) => Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppTextField(
+                  label: l10n.bioLabel,
+                  hint: l10n.bioHint,
+                  controller: _bio,
+                  readOnly: loading,
+                  minLines: 3,
+                  maxLines: 3,
+                  counterMax: SignUpProfileView.bioMax,
+                  keyboardType: TextInputType.multiline,
+                  onChanged: _cubit.bioChanged,
+                ),
+                SizedBox(height: AppSpacing.fieldGap),
+                AppTextField(
+                  label: l10n.cityLabel,
+                  hint: l10n.cityHint,
+                  controller: _city,
+                  readOnly: loading,
+                  textInputAction: TextInputAction.next,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(SignUpProfileView.cityMax),
+                  ],
+                  onChanged: _cubit.cityChanged,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: AppSpacing.fieldGap),
+          BlocSelector<
+            SignUpCubit,
+            SignUpState,
+            ({bool loading, bool invalid})
+          >(
+            selector: (state) =>
+                (loading: state.loading, invalid: state.phoneInvalidShown),
+            builder: (context, phone) => PhoneField(
+              initialPhone: _cubit.state.phone,
+              focusNode: _phoneFocus,
+              readOnly: phone.loading,
+              textInputAction: TextInputAction.done,
+              helperText: l10n.phoneHelper,
+              errorText: phone.invalid ? l10n.errorPhone : null,
+              onChanged: _cubit.phoneChanged,
+              onSubmitted: (_) => _cubit.submitProfile(),
+            ),
+          ),
+          SizedBox(height: AppSpacing.s24),
           BlocSelector<
             SignUpCubit,
             SignUpState,
@@ -166,6 +157,8 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
               onPressed: button.canSubmit ? _cubit.submitProfile : null,
             ),
           ),
+        ],
+      ),
     );
   }
 }

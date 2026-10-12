@@ -50,42 +50,38 @@ class _SignUpVerifyViewState extends State<SignUpVerifyView> {
     return BlocListener<SignUpCubit, SignUpState>(
       listenWhen: _codeDiffersFromField,
       listener: _copyCodeToField,
-      child: PinnedBottomCta(
-        body: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.fromLTRB(
-            AppSpacing.formSide,
-            AuthDimens.signUpTopGap,
-            AppSpacing.formSide,
-            AppSpacing.s24,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AuthHeader(
-                leading: const Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: IconTile(icon: AppAssets.mail),
-                ),
-                title: l10n.verifyTitle,
-                subtitle: l10n.verifySubtitle(masked),
-                emphasis: masked,
-              ),
-              SizedBox(height: AuthDimens.otpTopGap),
-              BlocSelector<SignUpCubit, SignUpState, bool>(
-                selector: (state) => state.loading,
-                builder: (context, loading) => OtpField(
-                  controller: _code,
-                  enabled: !loading,
-                  onChanged: _cubit.codeChanged,
-                ),
-              ),
-              SizedBox(height: AuthDimens.resendTopGap),
-              const _ResendRow(),
-            ],
-          ),
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.formSide,
+          AuthDimens.signUpTopGap,
+          AppSpacing.formSide,
+          AppSpacing.s24,
         ),
-        cta:
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AuthHeader(
+              leading: const Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: IconTile(icon: AppAssets.mail),
+              ),
+              title: l10n.verifyTitle,
+              subtitle: l10n.verifySubtitle(masked),
+              emphasis: masked,
+            ),
+            SizedBox(height: AuthDimens.otpTopGap),
+            BlocSelector<SignUpCubit, SignUpState, bool>(
+              selector: (state) => state.loading,
+              builder: (context, loading) => OtpField(
+                controller: _code,
+                enabled: !loading,
+                onChanged: _cubit.codeChanged,
+              ),
+            ),
+            SizedBox(height: AuthDimens.resendTopGap),
+            const _ResendRow(),
+            SizedBox(height: AppSpacing.s24),
             BlocSelector<
               SignUpCubit,
               SignUpState,
@@ -111,6 +107,8 @@ class _SignUpVerifyViewState extends State<SignUpVerifyView> {
                 ],
               ),
             ),
+          ],
+        ),
       ),
     );
   }

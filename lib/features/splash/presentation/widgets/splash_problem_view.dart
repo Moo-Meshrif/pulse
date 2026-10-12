@@ -13,83 +13,93 @@ class SplashProblemView extends StatelessWidget {
     super.key,
     required this.problem,
     required this.onRetry,
+    required this.isRetrying,
   });
 
   final SplashProblem problem;
   final VoidCallback onRetry;
+  final bool isRetrying;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return PinnedBottomCta(
-      cta: PrimaryButton(
-        label: context.l10n.tryAgain,
-        onPressed: onRetry,
-        expand: true,
-      ),
-      body: CustomScrollView(
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: SplashDimens.headerTop),
-                  child: const LogoLockup(),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SplashDimens.bodySide,
-                        vertical: SplashDimens.circleToTitleGap,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: colors.primarySoft,
-                              shape: BoxShape.circle,
-                            ),
-                            child: SizedBox.square(
-                              dimension: SplashDimens.problemCircle,
-                              child: Center(
-                                child: AppSvgIcon(
-                                  problem.icon,
-                                  size: SplashDimens.problemIcon,
-                                  color: colors.primary,
-                                ),
+    return CustomScrollView(
+      physics: const ClampingScrollPhysics(),
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: SplashDimens.headerTop),
+                child: const LogoLockup(),
+              ),
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: SplashDimens.bodySide,
+                      vertical: SplashDimens.circleToTitleGap,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: colors.primarySoft,
+                            shape: BoxShape.circle,
+                          ),
+                          child: SizedBox.square(
+                            dimension: SplashDimens.problemCircle,
+                            child: Center(
+                              child: AppSvgIcon(
+                                problem.icon,
+                                size: SplashDimens.problemIcon,
+                                color: colors.primary,
                               ),
                             ),
                           ),
-                          SizedBox(height: SplashDimens.circleToTitleGap),
-                          Semantics(
-                            header: true,
-                            child: AppText(
-                              problem.title(context),
-                              style: context.text.messagesTitle,
-                              color: colors.textPrimary,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          SizedBox(height: SplashDimens.titleToBodyGap),
-                          AppText(
-                            problem.body(context),
-                            style: context.text.bodySm,
-                            color: colors.textSecondary,
+                        ),
+                        SizedBox(height: SplashDimens.circleToTitleGap),
+                        Semantics(
+                          header: true,
+                          child: AppText(
+                            problem.title(context),
+                            style: context.text.messagesTitle,
+                            color: colors.textPrimary,
                             textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: SplashDimens.titleToBodyGap),
+                        AppText(
+                          problem.body(context),
+                          style: context.text.bodySm,
+                          color: colors.textSecondary,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.formSide,
+                  AppSpacing.s12,
+                  AppSpacing.formSide,
+                  AppSpacing.s24,
+                ),
+                child: PrimaryButton(
+                  label: context.l10n.tryAgain,
+                  onPressed: onRetry,
+                  loading: isRetrying,
+                  expand: true,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

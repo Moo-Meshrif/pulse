@@ -13,8 +13,9 @@ void main() {
     SplashState state, {
     Locale locale = const Locale('en'),
     VoidCallback? onRetry,
+    bool isRetrying = false,
   }) => tester.pumpApp(
-    SplashView(state: state, onRetry: onRetry ?? () {}),
+    SplashView(state: state, onRetry: onRetry ?? () {}, isRetrying: isRetrying),
     locale: locale,
     settle: false,
   );
@@ -150,17 +151,17 @@ void main() {
           await pumpView(tester, SplashState.failed(problem));
 
           expect(tester.takeException(), isNull); // no overflow
-          // Every piece can be reached: scroll to the end of the body, the button stays pinned.
+          // Every piece can be reached: scroll to the end and the button is on screen.
           expect(find.byType(PrimaryButton), findsOneWidget);
-          final button = tester.getRect(find.byType(PrimaryButton));
-          expect(button.bottom, lessThanOrEqualTo(size.height));
           await tester.drag(
             find.byType(CustomScrollView),
             const Offset(0, -2000),
           );
           await tester.pump();
           expect(tester.takeException(), isNull);
-          expect(tester.getRect(find.byType(PrimaryButton)), button);
+          final button = tester.getRect(find.byType(PrimaryButton));
+          expect(button.top, greaterThanOrEqualTo(0));
+          expect(button.bottom, lessThanOrEqualTo(size.height));
         });
       }
     });

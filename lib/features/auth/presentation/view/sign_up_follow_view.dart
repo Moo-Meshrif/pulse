@@ -27,75 +27,76 @@ class SignUpFollowView extends StatelessWidget {
     final l10n = context.l10n;
     final colors = context.appColors;
     final cubit = context.read<SignUpCubit>();
-    return PinnedBottomCta(
-      showTopDivider: true,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          top: AuthDimens.signUpTopGap,
-          bottom: AppSpacing.s24,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.formSide),
-              child: AuthHeader(
-                title: l10n.followTitle,
-                subtitle: l10n.followSubtitle,
-              ),
-            ),
-            SizedBox(height: AuthDimens.followSectionGap),
-            BlocSelector<SignUpCubit, SignUpState, FollowTab>(
-              selector: (state) => state.followTab,
-              builder: (context, selected) => _tabs(context, selected),
-            ),
-            BlocBuilder<SignUpCubit, SignUpState>(
-              buildWhen: _listHeadingChanged,
-              builder: (context, state) => _listHeading(context, state),
-            ),
-            SizedBox(height: AppSpacing.s8),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.cardMargin),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colors.surface,
-                  borderRadius: BorderRadius.circular(AppRadius.card),
-                ),
-                child: BlocBuilder<SignUpCubit, SignUpState>(
-                  buildWhen: _peopleCardChanged,
-                  builder: (context, state) => _card(context, state),
-                ),
-              ),
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        top: AuthDimens.signUpTopGap,
+        bottom: AppSpacing.s24,
       ),
-      cta: Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
         children: [
-          BlocSelector<
-            SignUpCubit,
-            SignUpState,
-            ({bool loading, bool canFinish})
-          >(
-            selector: (state) => (
-              loading: state.loading && !state.skipping,
-              canFinish: state.canFinishFollow,
-            ),
-            builder: (context, button) => PrimaryButton(
-              label: l10n.continueButton,
-              expand: true,
-              loading: button.loading,
-              onPressed: button.canFinish ? cubit.finishFollow : null,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.formSide),
+            child: AuthHeader(
+              title: l10n.followTitle,
+              subtitle: l10n.followSubtitle,
             ),
           ),
+          SizedBox(height: AuthDimens.followSectionGap),
+          BlocSelector<SignUpCubit, SignUpState, FollowTab>(
+            selector: (state) => state.followTab,
+            builder: (context, selected) => _tabs(context, selected),
+          ),
+          BlocBuilder<SignUpCubit, SignUpState>(
+            buildWhen: _listHeadingChanged,
+            builder: (context, state) => _listHeading(context, state),
+          ),
           SizedBox(height: AppSpacing.s8),
-          AppText(
-            l10n.followHint,
-            style: context.text.caption,
-            color: colors.textSecondary,
-            textAlign: TextAlign.center,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.cardMargin),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+              ),
+              child: BlocBuilder<SignUpCubit, SignUpState>(
+                buildWhen: _peopleCardChanged,
+                builder: (context, state) => _card(context, state),
+              ),
+            ),
+          ),
+          SizedBox(height: AppSpacing.s24),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.formSide),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BlocSelector<
+                  SignUpCubit,
+                  SignUpState,
+                  ({bool loading, bool canFinish})
+                >(
+                  selector: (state) => (
+                    loading: state.loading && !state.skipping,
+                    canFinish: state.canFinishFollow,
+                  ),
+                  builder: (context, button) => PrimaryButton(
+                    label: l10n.continueButton,
+                    expand: true,
+                    loading: button.loading,
+                    onPressed: button.canFinish ? cubit.finishFollow : null,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.s8),
+                AppText(
+                  l10n.followHint,
+                  style: context.text.caption,
+                  color: colors.textSecondary,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -113,81 +113,73 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      body: AppSafeArea(
-        bottomSpace: AppSpacing.s24,
-        child: ContentWidth(
-          child: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSpacing.formSide,
-                  ),
-                  child: AutofillGroup(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: AuthDimens.signInTopGap),
-                        // Header, banner and the account: they change together when a session ended
-                        // and when "Not you?" is tapped.
-                        BlocBuilder<SignInCubit, SignInState>(
-                          buildWhen: _accountPartChanged,
-                          builder: (context, state) => _topPart(context, state),
-                        ),
-                        SizedBox(height: AppSpacing.fieldGap),
-                        _LoadingSelector(
-                          builder: (loading) => AppTextField(
-                            label: l10n.passwordLabel,
-                            hint: l10n.passwordHint,
-                            controller: _password,
-                            focusNode: _passwordFocus,
-                            // With the account named there is only the password left to type.
-                            autofocus: _cubit.state.account != null,
-                            isPassword: true,
-                            readOnly: loading,
-                            textInputAction: TextInputAction.done,
-                            autofillHints: const [AutofillHints.password],
-                            onChanged: context
-                                .read<SignInCubit>()
-                                .passwordChanged,
-                            onSubmitted: (_) => _cubit.submit(),
-                          ),
-                        ),
-                        SizedBox(height: AppSpacing.fieldGap),
-                        ForgotPasswordLink(onPressed: _openForgotPassword),
-                        SizedBox(height: AuthDimens.signInSectionGap),
-                        BlocBuilder<SignInCubit, SignInState>(
-                          buildWhen: _buttonStateChanged,
-                          builder: (context, state) => PrimaryButton(
-                            label: l10n.signInButton,
-                            expand: true,
-                            loading: state.loading,
-                            onPressed: state.canSubmit ? _cubit.submit : null,
-                          ),
-                        ),
-                        SizedBox(height: AuthDimens.signInSectionGap),
-                        OrDivider(text: l10n.orContinueWith),
-                        SizedBox(height: AuthDimens.signInSocialGap),
-                        const SocialButtonsRow(),
-                        const Spacer(),
-                        SizedBox(height: AppSpacing.s24),
-                        AuthSwitchLink(
-                          prompt: l10n.newToPulse,
-                          action: l10n.createAccount,
-                          onPressed: _openRegister,
-                        ),
-                        SizedBox(height: AuthDimens.signInFooterBottom),
-                      ],
+    return AppPage(
+      bottomSpace: AppSpacing.s24,
+      child: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.formSide),
+              child: AutofillGroup(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: AuthDimens.signInTopGap),
+                    // Header, banner and the account: they change together when a session ended
+                    // and when "Not you?" is tapped.
+                    BlocBuilder<SignInCubit, SignInState>(
+                      buildWhen: _accountPartChanged,
+                      builder: (context, state) => _topPart(context, state),
                     ),
-                  ),
+                    SizedBox(height: AppSpacing.fieldGap),
+                    _LoadingSelector(
+                      builder: (loading) => AppTextField(
+                        label: l10n.passwordLabel,
+                        hint: l10n.passwordHint,
+                        controller: _password,
+                        focusNode: _passwordFocus,
+                        // With the account named there is only the password left to type.
+                        autofocus: _cubit.state.account != null,
+                        isPassword: true,
+                        readOnly: loading,
+                        textInputAction: TextInputAction.done,
+                        autofillHints: const [AutofillHints.password],
+                        onChanged: context.read<SignInCubit>().passwordChanged,
+                        onSubmitted: (_) => _cubit.submit(),
+                      ),
+                    ),
+                    SizedBox(height: AppSpacing.fieldGap),
+                    ForgotPasswordLink(onPressed: _openForgotPassword),
+                    SizedBox(height: AuthDimens.signInSectionGap),
+                    BlocBuilder<SignInCubit, SignInState>(
+                      buildWhen: _buttonStateChanged,
+                      builder: (context, state) => PrimaryButton(
+                        label: l10n.signInButton,
+                        expand: true,
+                        loading: state.loading,
+                        onPressed: state.canSubmit ? _cubit.submit : null,
+                      ),
+                    ),
+                    SizedBox(height: AuthDimens.signInSectionGap),
+                    OrDivider(text: l10n.orContinueWith),
+                    SizedBox(height: AuthDimens.signInSocialGap),
+                    const SocialButtonsRow(),
+                    const Spacer(),
+                    SizedBox(height: AppSpacing.s24),
+                    AuthSwitchLink(
+                      prompt: l10n.newToPulse,
+                      action: l10n.createAccount,
+                      onPressed: _openRegister,
+                    ),
+                    SizedBox(height: AuthDimens.signInFooterBottom),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

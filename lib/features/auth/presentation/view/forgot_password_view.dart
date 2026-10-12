@@ -75,96 +75,89 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
     return BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
       listenWhen: _focusRequested,
       listener: _focusAndSelectEmail,
-      child: Scaffold(
-        body: AppSafeArea(
-          bottomSpace: AppSpacing.s24,
-          child: ContentWidth(
-            child: PinnedBottomCta(
-              body: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        top: AppSpacing.headerSide,
-                        start: AppSpacing.headerBackSide,
-                      ),
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: AuthBackButton(onPressed: _goBackToSignIn),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        AppSpacing.formSide,
-                        AuthDimens.forgotTileTopGap,
-                        AppSpacing.formSide,
-                        0,
-                      ),
-                      child: AutofillGroup(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            AuthHeader(
-                              leading: const Align(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: IconTile(icon: AppAssets.lock),
-                              ),
-                              title: l10n.forgotTitle,
-                              subtitle: l10n.forgotSubtitle,
-                            ),
-                            SizedBox(height: AuthDimens.headerToFormGap),
-                            BlocBuilder<
-                              ForgotPasswordCubit,
-                              ForgotPasswordState
-                            >(
-                              buildWhen: _emailFieldChanged,
-                              builder: (context, state) => AppTextField(
-                                label: l10n.emailLabel,
-                                hint: l10n.emailHint,
-                                controller: _email,
-                                focusNode: _emailFocus,
-                                forceLtr: true,
-                                readOnly: state.loading,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.done,
-                                autofillHints: const [AutofillHints.email],
-                                errorText: state.emailInvalidShown
-                                    ? l10n.errorInvalidEmail
-                                    : null,
-                                onChanged: _cubit.emailChanged,
-                                onSubmitted: (_) => _cubit.submit(),
-                              ),
-                            ),
-                            SizedBox(height: AuthDimens.formToButtonGap),
-                            BlocBuilder<
-                              ForgotPasswordCubit,
-                              ForgotPasswordState
-                            >(
-                              buildWhen: _submitButtonChanged,
-                              builder: (context, state) => PrimaryButton(
-                                label: l10n.sendResetLink,
-                                expand: true,
-                                loading: state.loading,
-                                onPressed: state.canSubmit
-                                    ? _cubit.submit
-                                    : null,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+      child: AppPage(
+        bottomSpace: AppSpacing.s24,
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.only(
+                  top: AppSpacing.headerSide,
+                  start: AppSpacing.headerBackSide,
+                ),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AuthBackButton(onPressed: _goBackToSignIn),
                 ),
               ),
-              cta: PillButton.outline(
-                label: l10n.backToSignIn,
-                onPressed: _goBackToSignIn,
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.formSide,
+                  AuthDimens.forgotTileTopGap,
+                  AppSpacing.formSide,
+                  0,
+                ),
+                child: AutofillGroup(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AuthHeader(
+                        leading: const Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: IconTile(icon: AppAssets.lock),
+                        ),
+                        title: l10n.forgotTitle,
+                        subtitle: l10n.forgotSubtitle,
+                      ),
+                      SizedBox(height: AuthDimens.headerToFormGap),
+                      BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+                        buildWhen: _emailFieldChanged,
+                        builder: (context, state) => AppTextField(
+                          label: l10n.emailLabel,
+                          hint: l10n.emailHint,
+                          controller: _email,
+                          focusNode: _emailFocus,
+                          forceLtr: true,
+                          readOnly: state.loading,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.done,
+                          autofillHints: const [AutofillHints.email],
+                          errorText: state.emailInvalidShown
+                              ? l10n.errorInvalidEmail
+                              : null,
+                          onChanged: _cubit.emailChanged,
+                          onSubmitted: (_) => _cubit.submit(),
+                        ),
+                      ),
+                      SizedBox(height: AuthDimens.formToButtonGap),
+                      BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+                        buildWhen: _submitButtonChanged,
+                        builder: (context, state) => PrimaryButton(
+                          label: l10n.sendResetLink,
+                          expand: true,
+                          loading: state.loading,
+                          onPressed: state.canSubmit ? _cubit.submit : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(
+                  AppSpacing.formSide,
+                  AppSpacing.s24,
+                  AppSpacing.formSide,
+                  AppSpacing.s24,
+                ),
+                child: PillButton.outline(
+                  label: l10n.backToSignIn,
+                  onPressed: _goBackToSignIn,
+                ),
+              ),
+            ],
           ),
         ),
       ),

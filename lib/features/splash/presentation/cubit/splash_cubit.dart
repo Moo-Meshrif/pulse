@@ -57,7 +57,7 @@ class SplashCubit extends BaseCubit<SplashState> {
   /// "Try again": back to loading, then decide again.
   Future<void> retry() {
     if (state.problem == null) return Future<void>.value();
-    emit(const SplashState.deciding());
+    emit(SplashState.retrying(state.problem!));
     return decide();
   }
 
