@@ -8,7 +8,8 @@ import '../../../../core/widgets/widgets.dart';
 import 'auth_back_button.dart';
 
 /// The top bar of sign-up steps 1-6 (docs/specs/auth/02-components.md C7). Progress fills from the start
-/// (right to left in RTL); [onSkip] adds a "Skip" button.
+/// (right to left in RTL); [showSkip] adds a "Skip" button, which ignores taps while [onSkip] is null
+/// (a request is running) instead of disappearing.
 class StepTopBar extends StatelessWidget {
   const StepTopBar({
     super.key,
@@ -16,7 +17,8 @@ class StepTopBar extends StatelessWidget {
     required this.isRequired,
     required this.onBack,
     this.onSkip,
-  });
+    bool? showSkip,
+  }) : showSkip = showSkip ?? onSkip != null;
 
   static const totalSteps = 6;
 
@@ -25,6 +27,7 @@ class StepTopBar extends StatelessWidget {
   final bool isRequired;
   final VoidCallback onBack;
   final VoidCallback? onSkip;
+  final bool showSkip;
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +60,18 @@ class StepTopBar extends StatelessWidget {
                             color: colors.textSecondary,
                           ),
                         ),
-                        AppText(
-                          isRequired
-                              ? context.l10n.required
-                              : context.l10n.optional,
-                          style: context.text.label,
-                          color: isRequired
-                              ? colors.primary
-                              : colors.textSecondary,
+                        Expanded(
+                          child: AppText(
+                            isRequired
+                                ? context.l10n.required
+                                : context.l10n.optional,
+                            style: context.text.label,
+                            color: isRequired
+                                ? colors.primary
+                                : colors.textSecondary,
+                            textAlign: TextAlign.end,
+                            maxLines: 1,
+                          ),
                         ),
                       ],
                     ),
@@ -97,7 +104,7 @@ class StepTopBar extends StatelessWidget {
               ),
             ),
           ),
-          if (onSkip != null)
+          if (showSkip)
             TextButton(
               onPressed: onSkip,
               style: TextButton.styleFrom(
@@ -107,6 +114,7 @@ class StepTopBar extends StatelessWidget {
                 ),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 foregroundColor: colors.textSecondary,
+                disabledForegroundColor: colors.textSecondary,
               ),
               child: AppText(
                 context.l10n.skip,

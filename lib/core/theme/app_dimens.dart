@@ -79,10 +79,32 @@ abstract final class DialogDimens {
   static const double enterScale = 0.96;
 }
 
-/// The loading indicator shown while a screen waits for its first data.
+/// The page loaders (core/widgets/app_loading_view.dart, the "Page loading" board). Line widths; the
+/// line's height follows its 184 x 88 frame.
 abstract final class LoadingDimens {
-  static double get size => AppScale.scale(32);
-  static const double stroke = 3; // unscaled: stroke
+  static double get pageWidth => AppScale.scale(100);
+  static double get refreshWidth => AppScale.scale(56);
+  static double get loadMoreWidth => AppScale.scale(44);
+  static double get refreshBand => AppScale.scale(64);
+  static double get loadMoreBand => AppScale.scale(72);
+  static double get labelGap => AppScale.scale(16);
+}
+
+/// The loading overlay (core/widgets/loading_overlay/): a frosted scrim and a heartbeat line (a Lottie
+/// animation that loops on its own, 1600 ms).
+abstract final class OverlayDimens {
+  static double get lineWidth => AppScale.scale(120);
+  static double get labelGap => AppScale.scale(18);
+  static double get progressGap => AppScale.scale(14);
+  static double get progressTrackWidth => AppScale.scale(140);
+  static double get progressTrackHeight => AppScale.scale(3);
+  static double get progressTrackRadius => AppScale.scale(2);
+  static double get percentGap => AppScale.scale(10);
+  static double get percentWidth => AppScale.scale(34);
+  static double get rise => AppScale.scale(8);
+  static const double blur = 20; // unscaled: blur sigma
+  static const Duration enter = Duration(milliseconds: 220);
+  static const Duration exit = Duration(milliseconds: 160);
 }
 
 /// The splash (docs/specs/auth/screens/s13-splash.md). All `[estimated]` from the screenshots (Q26).
@@ -90,10 +112,8 @@ abstract final class SplashDimens {
   static double get logoTile => AppScale.scale(72);
   static double get logoTileRadius => AppScale.scale(22);
   static double get logoToWordmarkGap => AppScale.scale(14);
-  static double get spinnerSize => AppScale.scale(28);
-  static const double spinnerStroke = 3; // unscaled: stroke
-  static double get spinnerBottom =>
-      AppScale.scale(38); // above the bottom safe area
+  static double get lineWidth => AppScale.scale(80);
+  static double get wordmarkToLineGap => AppScale.scale(36);
   static double get headerTop => AppScale.scale(24); // below the top safe area
   static double get problemCircle => AppScale.scale(96);
   static double get problemIcon => AppScale.scale(40);
@@ -107,8 +127,9 @@ abstract final class SplashDimens {
 abstract final class AuthButtonDimens {
   /// Primary button disabled fill: `primary` @ 40%.
   static const double disabledOpacity = 0.4;
-  static double get spinnerSize => AppScale.scale(20);
-  static const double spinnerStroke = 2; // unscaled: stroke
+
+  /// The heartbeat line in a loading button; its frame is 88/184 as tall, so it fits the 48 pill too.
+  static double get loaderWidth => AppScale.scale(72);
   static const double outlineBorderWidth = 1; // unscaled: hairline
   /// Outline pills have no fixed height: vertical padding 15 (+ 16/700 label).
   static double get outlineVerticalPadding => AppScale.scale(15);

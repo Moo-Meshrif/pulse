@@ -19,6 +19,25 @@ void main() {
     return null;
   }
 
+  group('offline check before the call', () {
+    tearDown(() => Guard.isOffline = null);
+
+    test('offline throws NetworkFailure without making the call', () async {
+      Guard.isOffline = () async => true;
+      var called = false;
+      await expectLater(
+        Guard.run(() async => called = true),
+        throwsA(const NetworkFailure()),
+      );
+      expect(called, isFalse);
+    });
+
+    test('online makes the call', () async {
+      Guard.isOffline = () async => false;
+      expect(await Guard.run(() async => 5), 5);
+    });
+  });
+
   test('a value comes back as it is', () async {
     expect(await Guard.run(() async => 5), 5);
   });

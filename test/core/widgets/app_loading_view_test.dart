@@ -8,25 +8,34 @@ import '../../helpers/pump_app.dart';
 void main() {
   const colors = AppColors.light;
 
-  Widget screen() => const Scaffold(body: AppLoadingView());
+  Widget screen([Widget view = const AppLoadingView()]) => Scaffold(body: view);
 
-  CircularProgressIndicator indicator(WidgetTester tester) =>
-      tester.widget<CircularProgressIndicator>(
-        find.byType(CircularProgressIndicator),
-      );
+  PulseLineLoader line(WidgetTester tester) =>
+      tester.widget<PulseLineLoader>(find.byType(PulseLineLoader));
 
-  testView('a primary spinner, 32 square with a 3 stroke, centered', (
-    tester,
-  ) async {
+  testView('first load: a primary line, 100 wide, centered', (tester) async {
     await tester.pumpApp(screen(), settle: false);
 
-    expect(indicator(tester).color, colors.primary);
-    expect(indicator(tester).strokeWidth, 3);
-    expect(tester.getSize(find.byType(AppSpinner)), const Size(32, 32));
-    final center = tester.getCenter(find.byType(AppSpinner));
+    expect(line(tester).color, colors.primary);
+    expect(tester.getSize(find.byType(PulseLineLoader)).width, 100);
+    final center = tester.getCenter(find.byType(PulseLineLoader));
     final body = tester.getCenter(find.byType(Scaffold));
     expect(center.dx, closeTo(body.dx, 0.5));
     expect(center.dy, closeTo(body.dy, 0.5));
+  });
+
+  testView('first load takes an optional label under the line', (tester) async {
+    await tester.pumpApp(
+      screen(const AppLoadingView(label: 'Loading your feed...')),
+      settle: false,
+    );
+
+    final label = find.text('Loading your feed...');
+    expect(label, findsOneWidget);
+    expect(
+      tester.getTopLeft(label).dy,
+      greaterThan(tester.getBottomLeft(find.byType(PulseLineLoader)).dy),
+    );
   });
 
   testView('it is announced as Loading, in English and Arabic', (tester) async {
@@ -45,25 +54,25 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testView('AppSpinner takes its size, stroke and color from its caller', (
-    tester,
-  ) async {
+  testView('inline: refresh is a 64 band with a 56 line', (tester) async {
     await tester.pumpApp(
-      const Scaffold(
-        body: Center(
-          child: AppSpinner(size: 20, strokeWidth: 2, color: Colors.white),
-        ),
-      ),
+      const Center(child: AppInlineLoading.refresh()),
       settle: false,
     );
-
-    expect(tester.getSize(find.byType(AppSpinner)), const Size(20, 20));
-    expect(indicator(tester).strokeWidth, 2);
-    expect(indicator(tester).color, Colors.white);
-    expect(indicator(tester).semanticsLabel, isNull);
+    expect(tester.getSize(find.byType(AppInlineLoading)).height, 64);
+    expect(tester.getSize(find.byType(PulseLineLoader)).width, 56);
   });
 
-  testView('PrimaryButton\'s loading state uses the same spinner', (
+  testView('inline: load more is a 72 band with a 44 line', (tester) async {
+    await tester.pumpApp(
+      const Center(child: AppInlineLoading.loadMore()),
+      settle: false,
+    );
+    expect(tester.getSize(find.byType(AppInlineLoading)).height, 72);
+    expect(tester.getSize(find.byType(PulseLineLoader)).width, 44);
+  });
+
+  testView('PrimaryButton loading shows the white heartbeat line', (
     tester,
   ) async {
     await tester.pumpApp(
@@ -77,8 +86,28 @@ void main() {
       settle: false,
     );
 
-    expect(find.byType(AppSpinner), findsOneWidget);
-    expect(tester.getSize(find.byType(AppSpinner)), const Size(20, 20));
-    expect(indicator(tester).color, colors.textOnPrimary);
+    expect(line(tester).color, colors.textOnPrimary);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testView('an outline PillButton in loading shows the primary line', (
+    tester,
+  ) async {
+    await tester.pumpApp(
+      Center(
+        child: PillButton.outline(
+          label: 'Cancel',
+          onPressed: () {},
+          loading: true,
+        ),
+      ),
+      settle: false,
+    );
+
+    expect(line(tester).color, colors.primary);
+    expect(
+      tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+      isNull,
+    );
   });
 }

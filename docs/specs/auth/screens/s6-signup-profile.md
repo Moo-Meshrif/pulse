@@ -15,7 +15,7 @@ PinnedBottomCta: PrimaryButton "Continue"
 ```
 
 ## States
-Continue always enabled (everything optional). Bio blocked at 150 with live counter. City max 60. Phone: international [user, 2026-10-10]. The country-code button (default Egypt +20) opens the shared country sheet (C15); the number is numeric, forced LTR, digits and spaces only. The stored value is "+code number" ("+966 512345678"); when a number is given, the whole value must have 7-15 digits else "Enter a valid phone number". No number = no phone. Photo set -> circle shows image, sheet gains "Remove photo".
+Everything is optional, but Continue is disabled until the step has data [user, 2026-10-11]: a photo (picked, saved or just removed) or a non-blank bio, city or phone, and a valid phone when one is given. "Skip" (top bar) is the way past an empty step; with data the user uses Continue. Skip with entries asks first (destructive confirmation "Skip this step?" / "What you entered on this step will be cleared and not saved.", buttons "Keep editing" and "Skip"); confirmed, the entries are cleared on the screen and on the server too (the saved photo file is deleted, then `bio`, `city`, `phone` and `avatar_url` are set to null) and the step is skipped. While Skip runs (it updates the step on the server) the loading overlay frosts the screen at once and stays until the response comes, with no delay and no minimum time; it fades in (220 ms, rising 8) and fades out (160 ms) as the next step appears (`runWithLoadingOverlay`: heartbeat line, no dialog, taps blocked, Skip keeps its label, Continue does not spin). Bio blocked at 150 with live counter. City max 60. Phone: international [user, 2026-10-10]. The country-code button (default Egypt +20) opens the shared country sheet (C15); the number is numeric, forced LTR, digits and spaces only. The stored value is "+code number" ("+966 512345678"); when a number is given, the whole value must have 7-15 digits else "Enter a valid phone number". No number = no phone. Photo set -> circle shows image, sheet gains "Remove photo".
 
 ## Strings
 | Key | en | ar [draft, x-review] |
@@ -49,6 +49,7 @@ Scrolls; CTA over keyboard; counter Semantics.
 ## Acceptance checklist
 - [ ] Dashed circle with camera + small green plus badge bottom-end
 - [ ] "Optional" grey and "Skip" grey bold at end
+- [ ] Continue is disabled while the step is empty, enabled by a photo, a bio, a city or a phone
 - [ ] Phone shows a country-code button; any country can be chosen
 - [ ] Photo sheet has a grabber, a title and icon cards
 - [ ] Bio box taller (3 lines) with counter at the label row end

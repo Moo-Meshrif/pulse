@@ -4,6 +4,7 @@ import '../extensions/context_extensions.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
 import 'app_text.dart';
+import 'loading_overlay/pulse_line_loader.dart';
 import '../enums/pill_button_variant.dart';
 
 /// A fully rounded secondary button (docs/specs/auth/02-components.md C4). Pick the look with a factory:
@@ -16,19 +17,23 @@ class PillButton extends StatelessWidget {
     required this.variant,
     this.expand = true,
     this.autofocus = false,
+    this.loading = false,
   });
 
+  /// [loading] swaps the label for the heartbeat line in `primary` and ignores taps.
   const PillButton.outline({
     Key? key,
     required String label,
     required VoidCallback? onPressed,
     bool expand = true,
+    bool loading = false,
   }) : this(
          key: key,
          label: label,
          onPressed: onPressed,
          variant: PillButtonVariant.outline,
          expand: expand,
+         loading: loading,
        );
 
   /// [autofocus] puts the focus on it when the dialog opens (the cancel action of a destructive dialog).
@@ -65,6 +70,7 @@ class PillButton extends StatelessWidget {
   final PillButtonVariant variant;
   final bool expand;
   final bool autofocus;
+  final bool loading;
 
   static const double _pressedDarken = 0.06;
 
@@ -79,7 +85,7 @@ class PillButton extends StatelessWidget {
       _pressedDarken,
     )!;
     return FilledButton(
-      onPressed: onPressed,
+      onPressed: loading ? null : onPressed,
       autofocus: autofocus,
       style: ButtonStyle(
         minimumSize: WidgetStatePropertyAll(
@@ -109,15 +115,23 @@ class PillButton extends StatelessWidget {
           (states) => states.contains(WidgetState.pressed) ? pressed : fill,
         ),
       ),
-      child: Opacity(
-        opacity: onPressed != null ? 1 : AuthButtonDimens.disabledOpacity,
-        child: AppText(
-          label,
-          style: context.text.button,
-          color: foreground,
-          textAlign: TextAlign.center,
-        ),
-      ),
+      child: loading
+          ? Semantics(
+              label: label,
+              child: PulseLineLoader(
+                color: context.appColors.primary,
+                width: AuthButtonDimens.loaderWidth,
+              ),
+            )
+          : Opacity(
+              opacity: onPressed != null ? 1 : AuthButtonDimens.disabledOpacity,
+              child: AppText(
+                label,
+                style: context.text.button,
+                color: foreground,
+                textAlign: TextAlign.center,
+              ),
+            ),
     );
   }
 }

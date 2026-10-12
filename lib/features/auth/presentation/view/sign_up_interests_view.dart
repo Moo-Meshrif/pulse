@@ -62,13 +62,20 @@ class SignUpInterestsView extends StatelessWidget {
             selector: (state) => state.selectedInterests.length,
             builder: (context, selected) => _selectedCount(context, selected),
           ),
-          BlocSelector<SignUpCubit, SignUpState, bool>(
-            selector: (state) => state.loading,
-            builder: (context, loading) => PrimaryButton(
+          BlocSelector<
+            SignUpCubit,
+            SignUpState,
+            ({bool loading, bool canSubmit})
+          >(
+            selector: (state) => (
+              loading: state.loading && !state.skipping,
+              canSubmit: state.canSubmitInterests,
+            ),
+            builder: (context, button) => PrimaryButton(
               label: l10n.continueButton,
               expand: true,
-              loading: loading,
-              onPressed: loading ? null : cubit.submitInterests,
+              loading: button.loading,
+              onPressed: button.canSubmit ? cubit.submitInterests : null,
             ),
           ),
         ],

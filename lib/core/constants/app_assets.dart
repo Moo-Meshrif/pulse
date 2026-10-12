@@ -3,6 +3,7 @@ import 'dart:ui';
 /// Asset paths in one place: widgets never write `'assets/…'` strings.
 abstract final class AppAssets {
   static const _icons = 'assets/icons';
+  static const _animations = 'assets/animations';
 
   static const arrowBack = '$_icons/ic_arrow_back.svg';
   static const arrowForward = '$_icons/ic_arrow_forward.svg';
@@ -10,6 +11,7 @@ abstract final class AppAssets {
   static const block = '$_icons/ic_block.svg';
   static const bookmark = '$_icons/ic_bookmark.svg';
   static const cloudAlert = '$_icons/ic_cloud_alert.svg';
+  static const pulseLine = '$_icons/ic_pulse_line.svg';
   static const camera = '$_icons/ic_camera.svg';
   static const chat = '$_icons/ic_chat.svg';
   static const chatFilled = '$_icons/ic_chat_filled.svg';
@@ -69,4 +71,8 @@ abstract final class AppAssets {
   static String onboarding1(Locale locale) => _onboardingImage(1, locale);
   static String onboarding2(Locale locale) => _onboardingImage(2, locale);
   static String onboarding3(Locale locale) => _onboardingImage(3, locale);
+
+  // Lottie animations: the loading overlay's heartbeat line, for light and dark backgrounds.
+  static const loaderLight = '$_animations/pulse_loader_light.json';
+  static const loaderDark = '$_animations/pulse_loader_dark.json';
 }

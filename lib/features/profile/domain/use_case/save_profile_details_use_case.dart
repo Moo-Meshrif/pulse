@@ -22,7 +22,19 @@ class SaveProfileDetailsUseCase {
     String? city,
     String? phone,
     bool removeAvatar = false,
+    bool discard = false,
   }) async {
+    if (discard) {
+      // Skip, confirmed: what this step saved earlier is erased too (the photo file, then the columns).
+      await _profiles.removeAvatar();
+      await _profiles.updateProfile(
+        const ProfileUpdateEntity(
+          clearDetails: true,
+          signupStep: SignupStep.interests,
+        ),
+      );
+      return;
+    }
     String? avatarUrl;
     if (photo == null && removeAvatar) {
       await _profiles.removeAvatar();

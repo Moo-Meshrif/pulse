@@ -301,6 +301,31 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     ),
   );
 
+  /// What "Skip" would throw away on this step: Profile entries and Interests picks. Follow is not
+  /// listed because each follow is saved the moment it is tapped.
+  bool get skipLosesData => switch (state.step) {
+    profileStep => state.hasProfileData,
+    interestsStep => state.selectedInterests.isNotEmpty,
+    _ => false,
+  };
+
+  /// "Skip" was confirmed on a step that had entries: empties them, so the step reads as untouched.
+  void clearStepData() => switch (state.step) {
+    profileStep => emit(
+      state.copyWith(
+        photo: null,
+        avatarUrl: null,
+        avatarRemoved: false,
+        bio: '',
+        city: '',
+        phone: '',
+        phoneTouched: false,
+      ),
+    ),
+    interestsStep => emit(state.copyWith(selectedInterests: const {})),
+    _ => null,
+  };
+
   void bioChanged(String value) => emit(state.copyWith(bio: value));
 
   void cityChanged(String value) => emit(state.copyWith(city: value));
@@ -321,9 +346,13 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   }
 
   /// "Skip" on Profile: saves nothing, only moves on.
-  Future<void> skipProfile() async {
+  ///
+  /// With [discard] (the user confirmed losing entries) the entries are cleared here and what the step
+  /// saved earlier is erased on the server too.
+  Future<void> skipProfile({bool discard = false}) async {
     if (state.loading) return;
-    await _saveProfile();
+    if (discard) clearStepData();
+    await _saveProfile(skipping: true, discard: discard);
   }
 
   Future<void> _saveProfile({
@@ -332,9 +361,11 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     String? city,
     String? phone,
     bool removeAvatar = false,
+    bool skipping = false,
+    bool discard = false,
   }) async {
     await run(
-      loading: state.copyWith(loading: true, failure: null),
+      loading: state.copyWith(loading: true, skipping: skipping, failure: null),
       () => _saveProfileDetails(
         photo: photo?.bytes,
         photoContentType: photo?.contentType,
@@ -342,6 +373,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
         city: city,
         phone: phone,
         removeAvatar: removeAvatar,
+        discard: discard,
       ),
       onSuccess: (_) async {
         await _loadInterests();
@@ -375,11 +407,18 @@ class SignUpCubit extends BaseCubit<SignUpState> {
 
   Future<void> retryInterests() => _loadInterests();
 
-  Future<void> submitInterests() =>
-      _continueFromInterests(state.selectedInterests.toList());
+  Future<void> submitInterests() async {
+    if (!state.canSubmitInterests) return;
+    await _continueFromInterests(state.selectedInterests.toList());
+  }
 
   /// "Skip" on Interests: saves nothing, only moves on.
-  Future<void> skipInterests() => _continueFromInterests(const []);
+  ///
+  /// With [discard] the picks are cleared and the topics saved earlier are erased on the server.
+  Future<void> skipInterests({bool discard = false}) {
+    if (discard) clearStepData();
+    return _continueFromInterests(const [], skipping: true, discard: discard);
+  }
 
   /// Loads the topics; none to pick means the step is passed over (going forward) or back over (going back).
   Future<void> _loadInterests({bool forward = true}) async {
@@ -410,10 +449,14 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     );
   }
 
-  Future<void> _continueFromInterests(List<int> ids) async {
+  Future<void> _continueFromInterests(
+    List<int> ids, {
+    bool skipping = false,
+    bool discard = false,
+  }) async {
     await run(
-      loading: state.copyWith(loading: true, failure: null),
-      () => _saveInterests(ids),
+      loading: state.copyWith(loading: true, skipping: skipping, failure: null),
+      () => _saveInterests(ids, discard: discard),
       onSuccess: (_) async {
         await _loadPeople();
       },
@@ -560,13 +603,20 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     emit(state.copyWith(follows: follows));
   }
 
-  /// "Continue" and "Skip" on Follow: sign-up is finished, on to Home.
+  /// "Continue" (once someone is followed) and "Skip" on Follow: sign-up is finished, on to Home.
   Future<void> finishFollow() => _finish();
 
-  Future<void> _finish() async {
+  /// "Skip" on Follow: the same ending, with the Skip button as the one that spins.
+  Future<void> skipFollow() => _finish(skipping: true);
+
+  Future<void> _finish({bool? skipping}) async {
     await run(
       prevent: state.loading && state.step == followStep,
-      loading: state.copyWith(loading: true, failure: null),
+      loading: state.copyWith(
+        loading: true,
+        skipping: skipping ?? state.skipping,
+        failure: null,
+      ),
       _completeSignup.call,
       onSuccess: (_) {
         _go(AppRoutes.home);

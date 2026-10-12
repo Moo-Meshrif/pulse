@@ -120,6 +120,31 @@ void main() {
     verifyNever(() => profiles.removeAvatar());
   });
 
+  test(
+    'a confirmed Skip removes the photo and empties bio, city and phone',
+    () async {
+      when(() => profiles.removeAvatar()).thenAnswer((_) async {});
+
+      await useCase(discard: true);
+
+      verifyInOrder([
+        () => profiles.removeAvatar(),
+        () => profiles.updateProfile(
+          const ProfileUpdateEntity(
+            clearDetails: true,
+            signupStep: SignupStep.interests,
+          ),
+        ),
+      ]);
+      verifyNever(
+        () => profiles.uploadAvatar(
+          any(),
+          contentType: any(named: 'contentType'),
+        ),
+      );
+    },
+  );
+
   test('a failed removal stops the save', () async {
     when(() => profiles.removeAvatar()).thenThrow(const NetworkFailure());
 

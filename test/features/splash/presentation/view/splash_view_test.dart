@@ -21,7 +21,7 @@ void main() {
 
   group('loading', () {
     testView(
-      'the 72 tile and its wordmark are centered, the spinner is at the bottom',
+      'the 72 tile and its wordmark are centered, the heartbeat line is under them',
       (tester) async {
         await pumpView(tester, const SplashState.deciding());
 
@@ -31,24 +31,27 @@ void main() {
         expect(tile.dx, 195);
         expect(wordmark.dx, 195);
         expect(wordmark.dy, greaterThan(tile.dy));
-        final spinner = tester.getCenter(
-          find.byType(CircularProgressIndicator),
-        );
-        expect(spinner.dx, 195);
-        expect(spinner.dy, greaterThan(700));
-        expect(
-          tester.getSize(find.byType(CircularProgressIndicator)),
-          const Size(28, 28),
-        );
-        final indicator = tester.widget<CircularProgressIndicator>(
-          find.byType(CircularProgressIndicator),
-        );
-        expect(indicator.backgroundColor, isNotNull); // the grey track
+
+        final line = tester.getCenter(find.byType(PulseLineLoader));
+        expect(line.dx, 195);
+        expect(line.dy, greaterThan(wordmark.dy));
+        expect(find.byType(CircularProgressIndicator), findsNothing);
         expect(find.byType(PrimaryButton), findsNothing);
       },
     );
 
-    testView('the spinner is announced as Loading', (tester) async {
+    testView('the tile and wordmark stay in the middle of the screen', (
+      tester,
+    ) async {
+      await pumpView(tester, const SplashState.deciding());
+      final tile = tester.getRect(find.byType(LogoTile));
+      final wordmark = tester.getRect(find.text('pulse'));
+      final group = tile.expandToInclude(wordmark);
+      // The middle of the screen between the notch (47) and the home indicator (34) insets.
+      expect(group.center.dy, closeTo((47 + 844 - 34) / 2, 1));
+    });
+
+    testView('it is announced as Loading', (tester) async {
       final handle = tester.ensureSemantics();
       await pumpView(tester, const SplashState.deciding());
       expect(find.bySemanticsLabel(l10nEn.loading), findsOneWidget);
@@ -62,10 +65,14 @@ void main() {
         final l10n = locale.languageCode == 'en' ? l10nEn : l10nAr;
         String title() => switch (problem) {
           SplashProblem.offline => l10n.offlineTitle,
+          SplashProblem.noInternet => l10n.noInternetTitle,
+          SplashProblem.weakConnection => l10n.weakConnectionTitle,
           SplashProblem.cantReach => l10n.cantReachTitle,
         };
         String body() => switch (problem) {
           SplashProblem.offline => l10n.offlineBody,
+          SplashProblem.noInternet => l10n.noInternetBody,
+          SplashProblem.weakConnection => l10n.weakConnectionBody,
           SplashProblem.cantReach => l10n.cantReachBody,
         };
 
@@ -120,6 +127,8 @@ void main() {
         await pumpView(tester, SplashState.failed(problem));
         final title = switch (problem) {
           SplashProblem.offline => l10nEn.offlineTitle,
+          SplashProblem.noInternet => l10nEn.noInternetTitle,
+          SplashProblem.weakConnection => l10nEn.weakConnectionTitle,
           SplashProblem.cantReach => l10nEn.cantReachTitle,
         };
         expect(

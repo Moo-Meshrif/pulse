@@ -137,6 +137,22 @@
   "@offlineBody": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "noInternetTitle": "لا يوجد إنترنت",
+  "@noInternetTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "noInternetBody": "أنت متصل بشبكة لكنها لا تتصل بالإنترنت.",
+  "@noInternetBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "weakConnectionTitle": "اتصال ضعيف",
+  "@weakConnectionTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "weakConnectionBody": "اتصالك بطيء جدًا. حاول مرة أخرى بعد قليل.",
+  "@weakConnectionBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "cantReachTitle": "تعذّر الوصول إلى Pulse",
   "@cantReachTitle": {
     "x-review": "Arabic draft: pending user approval"
@@ -662,6 +678,18 @@
   },
   "leaveBody": "تم حفظ تقدمك. يمكنك المتابعة من حيث توقفت في المرة القادمة التي تسجّل فيها الدخول.",
   "@leaveBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "skipStepTitle": "تخطي هذه الخطوة؟",
+  "@skipStepTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "skipStepBody": "سيتم مسح ما أدخلته في هذه الخطوة ولن يتم حفظه.",
+  "@skipStepBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "keepEditing": "متابعة التعديل",
+  "@keepEditing": {
     "x-review": "Arabic draft: pending user approval"
   },
   "keepGoing": "واصل",

@@ -80,6 +80,5 @@ Semantics: dialog role with title as label; actions >= 44 tall; focus starts on 
 ## C15 PinnedBottomCta
 Bottom area with side padding 24 and bottom padding ~24 [estimated] holding the CTA (+ caption/link). Scrolling content sits above; when the keyboard opens the CTA rises with it and content scrolls (`resizeToAvoidBottomInset`). S8's bottom area has a white-ish bar with top hairline `divider` [seen].
 
-## C16 AppSpinner / AppLoadingView (shared, `lib/core/widgets/`) [user: "make shared loading and show it"]
-`AppSpinner`: the app's one circular progress indicator (size, stroke and color from the caller; `PrimaryButton`'s loading state is a 20 dp white, stroke 2 `AppSpinner`). `AppLoadingView`: a `primary` spinner, 32 dp with a 3 stroke, centered in the screen body and announced as "Loading" (`loading` string, Arabic draft `x-review`). Shown by the splash while it resolves the first route and by any screen that waits for its first data [size and stroke estimated].
-
+## C16 AppLoadingView / AppInlineLoading (shared, `lib/core/widgets/`) [user: "Page loading" board]
+One loader everywhere: the heartbeat line (`PulseLineLoader`, Lottie light/dark). `AppLoadingView`: first load, 100 wide, optional label (14 `textSecondary`, 16 below). `AppInlineLoading.refresh()`: 56 line in a 64 band under the header; `.loadMore()`: 44 line in a 72 band above the nav. Announced as "Loading" (or the label). The blocking save is `runWithLoadingOverlay`; buttons show the line too (`PrimaryButton` white, `PillButton.outline(loading:)` `primary`, 72 wide). Stroke widths on the board (3, 2.6, 2.2, 2) are not applied: the Lottie file keeps its own stroke [estimated].

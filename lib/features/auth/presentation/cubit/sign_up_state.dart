@@ -72,6 +72,9 @@ abstract class SignUpState with _$SignUpState {
     @Default({}) Map<String, FollowStatus> follows,
     @Default(false) bool loading,
 
+    /// The running request was started by "Skip", so the Skip button spins, not Continue.
+    @Default(false) bool skipping,
+
     /// A resumed sign-up is loading what it entered before; the steps wait for it.
     @Default(false) bool resuming,
 
@@ -130,8 +133,25 @@ abstract class SignUpState with _$SignUpState {
   bool get phoneInvalidShown =>
       phoneTouched && phone.trim().isNotEmpty && !isValidPhone(phone.trim());
 
+  /// Something was entered or is saved: a photo (picked, saved or just removed), a bio, a city or a
+  /// phone. Continue waits for it; "Skip" is the way past an empty step.
+  bool get hasProfileData =>
+      photo != null ||
+      avatarUrl != null ||
+      avatarRemoved ||
+      bio.trim().isNotEmpty ||
+      city.trim().isNotEmpty ||
+      phone.trim().isNotEmpty;
+
   bool get canSubmitProfile =>
-      !loading && (phone.trim().isEmpty || isValidPhone(phone.trim()));
+      !loading &&
+      hasProfileData &&
+      (phone.trim().isEmpty || isValidPhone(phone.trim()));
+
+  bool get canSubmitInterests => !loading && selectedInterests.isNotEmpty;
+
+  /// At least one person followed (or requested); `follows` drops entries that are not followed.
+  bool get canFinishFollow => !loading && follows.isNotEmpty;
 
   LoadStatus get followStatus => followTab.source == null
       ? LoadStatus.loaded

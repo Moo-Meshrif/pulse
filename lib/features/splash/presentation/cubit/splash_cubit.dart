@@ -1,8 +1,10 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/enums/auth_failure_reason.dart';
+import '../../../../core/enums/connection_problem.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/router/app_routes.dart';
+import '../../../../core/services/connectivity_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../auth/domain/use_case/is_signed_in_use_case.dart';
 import '../../../profile/data/enums/signup_step.dart';
@@ -15,11 +17,15 @@ import 'splash_state.dart';
 /// expired session goes to Sign in and the stored session stays, so signing in again just works.
 @injectable
 class SplashCubit extends BaseCubit<SplashState> {
-  SplashCubit(this._isSignedIn, this._getSignupStep)
+  SplashCubit(this._isSignedIn, this._getSignupStep, this._connectivity)
     : super(const SplashState.deciding());
 
   final IsSignedInUseCase _isSignedIn;
   final GetSignupStepUseCase _getSignupStep;
+  final ConnectivityService _connectivity;
+
+  /// The most the start-up decision may take: a slower answer counts as a lost connection.
+  static const _decideWithin = Duration(seconds: 10);
 
   Future<void> decide() async {
     // Yield first, always: the screen calls this from `BlocProvider.create`, before its listener is
@@ -30,7 +36,7 @@ class SplashCubit extends BaseCubit<SplashState> {
       return;
     }
     await run(
-      _getSignupStep.call,
+      () => _getSignupStep().timeout(_decideWithin),
       onSuccess: (step) => SplashState.go(_routeFor(step)),
       onFailure: _failed,
     );
@@ -43,13 +49,24 @@ class SplashCubit extends BaseCubit<SplashState> {
     return decide();
   }
 
-  SplashState _failed(Failure failure) => switch (failure) {
-    AuthFailure(reason: AuthFailureReason.sessionExpired) =>
-      const SplashState.go(AppRoutes.signIn),
-    NetworkFailure() ||
-    TimeoutFailure() => const SplashState.failed(SplashProblem.offline),
-    _ => const SplashState.failed(SplashProblem.cantReach),
-  };
+  Future<SplashState> _failed(Failure failure) async {
+    switch (failure) {
+      case AuthFailure(reason: AuthFailureReason.sessionExpired):
+        return const SplashState.go(AppRoutes.signIn);
+      case NetworkFailure() || TimeoutFailure():
+        return SplashState.failed(await _connectionProblem(failure));
+      default:
+        return const SplashState.failed(SplashProblem.cantReach);
+    }
+  }
+
+  Future<SplashProblem> _connectionProblem(Failure failure) async =>
+      switch (await _connectivity.diagnose(failure)) {
+        ConnectionProblem.offline => SplashProblem.offline,
+        ConnectionProblem.noInternet => SplashProblem.noInternet,
+        ConnectionProblem.weak => SplashProblem.weakConnection,
+        ConnectionProblem.cantReach => SplashProblem.cantReach,
+      };
 
   String _routeFor(SignupStep step) => switch (step) {
     SignupStep.complete => AppRoutes.home,

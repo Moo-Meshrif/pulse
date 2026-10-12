@@ -29,6 +29,8 @@ class AppTextStyles {
     required this.caption,
     required this.badge,
     required this.action,
+    required this.overlayLabel,
+    required this.overlayPercent,
   });
 
   static const _sora = 'Sora';
@@ -58,6 +60,12 @@ class AppTextStyles {
 
   /// 14/700: compact actions (Follow, Follow all).
   final TextStyle action;
+
+  /// 17/600: the message under the loading overlay's line ("Saving...").
+  final TextStyle overlayLabel;
+
+  /// 13/600 with tabular figures: the progress percentage, so its digits do not jitter.
+  final TextStyle overlayPercent;
 
   static const latin = AppTextStyles._(
     logo: TextStyle(
@@ -186,6 +194,20 @@ class AppTextStyles {
       fontSize: 14,
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
+    ),
+    overlayLabel: TextStyle(
+      inherit: false,
+      fontFamily: _sora,
+      fontSize: 17,
+      fontWeight: FontWeight.w600,
+      letterSpacing: -0.2,
+    ),
+    overlayPercent: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      fontFeatures: [FontFeature.tabularFigures()],
     ),
   );
 
@@ -328,6 +350,20 @@ class AppTextStyles {
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
     ),
+    overlayLabel: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 17,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+    ),
+    overlayPercent: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      fontFeatures: [FontFeature.tabularFigures()],
+    ),
   );
 
   /// Every style with its size multiplied by [factor] (the responsive scale; see [AppScale]).
@@ -353,6 +389,8 @@ class AppTextStyles {
       caption: f(caption),
       badge: f(badge),
       action: f(action),
+      overlayLabel: f(overlayLabel),
+      overlayPercent: f(overlayPercent),
     );
   }
 

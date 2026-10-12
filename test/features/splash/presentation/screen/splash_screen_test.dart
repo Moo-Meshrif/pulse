@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/enums/connection_problem.dart';
+import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_theme.dart';
+import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/splash/presentation/widgets/splash_loading.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
@@ -19,18 +22,26 @@ class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
+class MockConnectivity extends Mock implements ConnectivityService {}
+
 /// The splash screen with the real cubit over mocked use cases, in an app whose every route just shows
 /// its own name.
 void main() {
+  setUpAll(() => registerFallbackValue(const NetworkFailure()));
+
   late MockIsSignedIn isSignedIn;
   late MockGetSignupStep getSignupStep;
+  late MockConnectivity connectivity;
 
   setUp(() async {
     isSignedIn = MockIsSignedIn();
     getSignupStep = MockGetSignupStep();
+    connectivity = MockConnectivity();
+    when(() => connectivity.diagnose(any()))
+        .thenAnswer((_) async => ConnectionProblem.offline);
     await getIt.reset();
     getIt.registerFactory<SplashCubit>(
-      () => SplashCubit(isSignedIn, getSignupStep),
+      () => SplashCubit(isSignedIn, getSignupStep, connectivity),
     );
     addTearDown(getIt.reset);
   });
@@ -131,7 +142,7 @@ void main() {
     await tester.tap(find.text(l10nEn.tryAgain));
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(PulseLineLoader), findsOneWidget);
     expect(find.text(l10nEn.offlineTitle), findsNothing);
 
     await tester.pump(const Duration(seconds: 1));
@@ -182,7 +193,7 @@ void main() {
 
       expect(find.byType(SplashScreen), findsOneWidget);
       expect(find.byType(SplashLoading), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(PulseLineLoader), findsOneWidget);
       expect(find.textContaining('route:'), findsNothing);
 
       await tester.pump(const Duration(seconds: 1));

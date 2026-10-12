@@ -47,6 +47,18 @@ void main() {
     verify(() => profiles.updateProfile(toFollow)).called(1);
   });
 
+  test(
+    'a confirmed Skip saves the empty list, erasing earlier topics',
+    () async {
+      await useCase(const [], discard: true);
+
+      verifyInOrder([
+        () => interests.saveInterests(const []),
+        () => profiles.updateProfile(toFollow),
+      ]);
+    },
+  );
+
   test('a failed save is returned and the resume point stays', () async {
     when(() => interests.saveInterests(any<List<int>>()))
         .thenThrow(const NetworkFailure());

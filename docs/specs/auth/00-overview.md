@@ -35,7 +35,7 @@ Email link (deep link) --> S11 --Update password--> S12 dialog --Sign in--> S1 (
 S9 --Open email app--> mail inbox (Android intent / iOS message://, mailto: fallback)   --Back to sign in--> S1 (resetTo)
 S9 --Resend link--> resend (cooldown)   --Change email--> close dialog, focus S2 email field [estimated]
 S3 -> S4 -> S5 -> S6 -> S7 -> S8 --Continue--> /home (resetTo)
-S6/S7/S8 Skip --> next step; S8 Skip --> /home. S6 Continue/Skip skips S7 when the interests list is empty; S7 Continue/Skip skips S8 (straight to /home) when Suggested and Popular are both empty
+S6/S7/S8 Continue is disabled until the step has data (S6 any entry or photo, S7 one topic, S8 one follow); Skip --> next step; S8 Skip --> /home. S6 Continue/Skip skips S7 when the interests list is empty; S7 Continue/Skip skips S8 (straight to /home) when Suggested and Popular are both empty
 Back: S3 leaves flow; S4 -> S3; S5 back = leave via S10 dialog (account verified, S4 not revisitable);
       S6 -> S5, S7 -> S6, S8 -> S7. System back identical to the arrow.
 S10 (leave dialog) shows on any exit from steps 3-8, back arrow or system back [user, Q1]. Reading used here: the back arrow on step 3 and the system back on steps 3-8 open S10; the back arrow on steps 4-8 still goes to the previous step [user, confirmed].

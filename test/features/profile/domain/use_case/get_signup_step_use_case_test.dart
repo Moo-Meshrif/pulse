@@ -18,7 +18,8 @@ void main() {
   });
 
   void profileIs(ProfileEntity profile) =>
-      when(() => profiles.getProfile()).thenAnswer((_) async => profile);
+      when(() => profiles.getProfile(savedOnlyWhenSignupDone: true))
+          .thenAnswer((_) async => profile);
 
   test('returns the step of the profile, and nothing else about it', () async {
     profileIs(
@@ -42,7 +43,14 @@ void main() {
   });
 
   test('a failure passes through', () async {
-    when(() => profiles.getProfile()).thenThrow(const NetworkFailure());
+    when(() => profiles.getProfile(savedOnlyWhenSignupDone: true))
+        .thenThrow(const NetworkFailure());
     expect(await failureOf(useCase()), const NetworkFailure());
+  });
+
+  test('asks for the saved copy only when it says sign-up is done', () async {
+    profileIs(const ProfileEntity(signupStep: SignupStep.complete));
+    await useCase();
+    verify(() => profiles.getProfile(savedOnlyWhenSignupDone: true)).called(1);
   });
 }

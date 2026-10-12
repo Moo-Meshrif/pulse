@@ -56,7 +56,7 @@ void main() {
         settle: false,
       );
       expect(find.text('Continue'), findsNothing);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(PulseLineLoader), findsOneWidget);
       expect(fill(tester, {WidgetState.disabled}), colors.primary);
       await tester.tap(find.byType(PrimaryButton), warnIfMissed: false);
       expect(taps, 0);

@@ -15,6 +15,9 @@ class ProfileUpdateEntity extends Equatable {
   final String? avatarUrl;
   final SignupStep? signupStep;
 
+  /// Empties bio, city, phone and the photo on the profile.
+  final bool clearDetails;
+
   const ProfileUpdateEntity({
     this.username,
     this.fullName,
@@ -25,6 +28,7 @@ class ProfileUpdateEntity extends Equatable {
     this.phone,
     this.avatarUrl,
     this.signupStep,
+    this.clearDetails = false,
   });
 
   @override
@@ -38,5 +42,6 @@ class ProfileUpdateEntity extends Equatable {
     phone,
     avatarUrl,
     signupStep,
+    clearDetails,
   ];
 }

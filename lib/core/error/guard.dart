@@ -8,9 +8,15 @@ import 'failures.dart';
 /// The only place that turns exceptions into [Failure]s. Static-only, no state: datasources and
 /// repositories call `Guard.run(...)`. Unknown errors are reported and become [UnexpectedFailure].
 abstract final class Guard {
-  /// Runs a call and returns its value, or throws the matching [Failure].
+  /// Set once at start-up (`main()`): says whether the device is offline, so [run] can fail with a
+  /// [NetworkFailure] at once instead of waiting for the request to time out. Null (tests) skips it.
+  static Future<bool> Function()? isOffline;
+
+  /// Runs a call and returns its value, or throws the matching [Failure]. Offline, it throws
+  /// [NetworkFailure] without making the call.
   static Future<T> run<T>(Future<T> Function() call) async {
     try {
+      if (await isOffline?.call() ?? false) throw const NetworkFailure();
       return await call();
     } catch (error, stackTrace) {
       throw toFailure(error, stackTrace);

@@ -308,6 +308,30 @@ abstract class AppLocalizations {
   /// **'Check your Wi-Fi or mobile data. We\'ll try again as soon as you\'re back online.'**
   String get offlineBody;
 
+  /// Splash: title when a network is on but the backend cannot be reached
+  ///
+  /// In en, this message translates to:
+  /// **'No internet'**
+  String get noInternetTitle;
+
+  /// Splash: body of the no-internet screen
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re connected to a network, but it has no internet.'**
+  String get noInternetBody;
+
+  /// Splash: title when the backend answers too slowly
+  ///
+  /// In en, this message translates to:
+  /// **'Weak connection'**
+  String get weakConnectionTitle;
+
+  /// Splash: body of the weak-connection screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your connection is too slow. Try again in a moment.'**
+  String get weakConnectionBody;
+
   /// Splash: title when the first request failed for another reason
   ///
   /// In en, this message translates to:
@@ -1015,6 +1039,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your progress is saved. You can pick up where you left off the next time you sign in.'**
   String get leaveBody;
+
+  /// Skip dialog on an optional sign-up step with entries: title
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this step?'**
+  String get skipStepTitle;
+
+  /// Skip dialog: body
+  ///
+  /// In en, this message translates to:
+  /// **'What you entered on this step will be cleared and not saved.'**
+  String get skipStepBody;
+
+  /// Skip dialog: stays on the step
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get keepEditing;
 
   /// Leave dialog: stays in sign-up
   ///

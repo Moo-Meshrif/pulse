@@ -1,5 +1,6 @@
 import 'package:pulse/core/utils/country_names_delegate.dart';
 
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/gestures.dart';
@@ -135,6 +136,7 @@ void main() {
         bio: any(named: 'bio'),
         city: any(named: 'city'),
         phone: any(named: 'phone'),
+        discard: any(named: 'discard'),
       ),
     ).thenAnswer((_) async {});
     when(() => photos.pick(any())).thenAnswer(
@@ -602,19 +604,24 @@ void main() {
   });
 
   group('Profile', () {
-    testView('shows the S6 content with Optional, Skip and Continue enabled', (
-      tester,
-    ) async {
-      await open(tester, step: 4);
+    testView(
+      'shows the S6 content with Optional and Skip; Continue waits for an entry',
+      (tester) async {
+        await open(tester, step: 4);
 
-      expect(find.text(l10nEn.profileTitle), findsOneWidget);
-      expect(find.text(l10nEn.optional), findsOneWidget);
-      expect(find.text(l10nEn.skip), findsOneWidget);
-      expect(find.text(l10nEn.addPhoto), findsWidgets);
-      expect(find.text('0/150'), findsOneWidget);
-      expect(find.text(l10nEn.phoneHelper), findsOneWidget);
-      expect(button(tester).onPressed, isNotNull);
-    });
+        expect(find.text(l10nEn.profileTitle), findsOneWidget);
+        expect(find.text(l10nEn.optional), findsOneWidget);
+        expect(find.text(l10nEn.skip), findsOneWidget);
+        expect(find.text(l10nEn.addPhoto), findsWidgets);
+        expect(find.text('0/150'), findsOneWidget);
+        expect(find.text(l10nEn.phoneHelper), findsOneWidget);
+        expect(button(tester).onPressed, isNull);
+
+        await tester.enterText(field(0), 'Hello');
+        await tester.pump();
+        expect(button(tester).onPressed, isNotNull);
+      },
+    );
 
     testView('the bio counter follows the text and stops at 150', (
       tester,
@@ -730,6 +737,87 @@ void main() {
       expect(find.text(l10nEn.stepOf(5)), findsWidgets);
     });
 
+    testView('Skip with entries asks first; Keep editing keeps them', (
+      tester,
+    ) async {
+      await open(tester, step: 4);
+      await tester.enterText(field(0), 'Hello');
+      await tester.pump();
+      await tester.tap(find.text(l10nEn.skip));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nEn.skipStepTitle), findsOneWidget);
+      expect(find.text(l10nEn.skipStepBody), findsOneWidget);
+      await tester.tap(find.text(l10nEn.keepEditing));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nEn.skipStepTitle), findsNothing);
+      expect(find.text(l10nEn.profileTitle), findsOneWidget);
+      expect(find.text('Hello'), findsOneWidget);
+      verifyNever(
+        () => saveProfile(
+          photo: any(named: 'photo'),
+          photoContentType: any(named: 'photoContentType'),
+          bio: any(named: 'bio'),
+          city: any(named: 'city'),
+          phone: any(named: 'phone'),
+        ),
+      );
+    });
+
+    testView('Skip with entries, once confirmed, clears them and moves on', (
+      tester,
+    ) async {
+      await open(tester, step: 4);
+      await tester.enterText(field(0), 'Hello');
+      await tester.pump();
+      await tester.tap(find.text(l10nEn.skip));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.skip).last);
+      await tester.pumpAndSettle();
+
+      verify(
+        () => saveProfile(
+          photo: null,
+          photoContentType: null,
+          bio: null,
+          city: null,
+          phone: null,
+          discard: true,
+        ),
+      ).called(1);
+      expect(find.text(l10nEn.stepOf(5)), findsWidgets);
+    });
+
+    testView('Skip frosts the screen until the response comes', (tester) async {
+      final saving = Completer<void>();
+      when(
+        () => saveProfile(
+          photo: any(named: 'photo'),
+          photoContentType: any(named: 'photoContentType'),
+          bio: any(named: 'bio'),
+          city: any(named: 'city'),
+          phone: any(named: 'phone'),
+        ),
+      ).thenAnswer((_) => saving.future);
+      await open(tester, step: 4);
+      expect(find.byType(LoadingOverlay), findsNothing);
+
+      await tester.tap(find.text(l10nEn.skip));
+      await tester.pump();
+      expect(find.byType(LoadingOverlay), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 5));
+      expect(find.byType(LoadingOverlay), findsOneWidget);
+      // Skip keeps its label and Continue is not the one spinning.
+      expect(find.text(l10nEn.skip), findsOneWidget);
+      expect(button(tester).loading, isFalse);
+
+      saving.complete();
+      await tester.pumpAndSettle();
+      expect(find.byType(LoadingOverlay), findsNothing);
+    });
+
     testView('Skip saves nothing and opens step 5', (tester) async {
       await open(tester, step: 4);
       await tester.tap(find.text(l10nEn.skip));
@@ -791,19 +879,40 @@ void main() {
   });
 
   group('Interests', () {
-    testView('shows the topics with Continue and no count at first', (
+    testView(
+      'shows the topics; Continue waits for a pick and there is no count at first',
+      (tester) async {
+        await open(tester, step: 5);
+
+        expect(find.text(l10nEn.interestsTitle), findsOneWidget);
+        expect(find.text(l10nEn.stepOf(5)), findsOneWidget);
+        expect(find.text(l10nEn.optional), findsOneWidget);
+        expect(find.text(l10nEn.skip), findsOneWidget);
+        expect(find.text('Travel'), findsOneWidget);
+        expect(find.text('Food'), findsOneWidget);
+        expect(find.textContaining('selected'), findsNothing);
+        expect(button(tester).onPressed, isNull);
+
+        await tester.tap(find.text('Travel'));
+        await tester.pump();
+        expect(button(tester).onPressed, isNotNull);
+      },
+    );
+
+    testView('Skip with a topic picked asks first and clears the pick', (
       tester,
     ) async {
       await open(tester, step: 5);
+      await tester.tap(find.text('Travel'));
+      await tester.pump();
+      await tester.tap(find.text(l10nEn.skip));
+      await tester.pumpAndSettle();
 
-      expect(find.text(l10nEn.interestsTitle), findsOneWidget);
-      expect(find.text(l10nEn.stepOf(5)), findsOneWidget);
-      expect(find.text(l10nEn.optional), findsOneWidget);
-      expect(find.text(l10nEn.skip), findsOneWidget);
-      expect(find.text('Travel'), findsOneWidget);
-      expect(find.text('Food'), findsOneWidget);
-      expect(find.textContaining('selected'), findsNothing);
-      expect(button(tester).onPressed, isNotNull);
+      expect(find.text(l10nEn.skipStepTitle), findsOneWidget);
+      await tester.tap(find.text(l10nEn.skip).last);
+      await tester.pumpAndSettle();
+
+      verify(() => saveInterests(const [], discard: true)).called(1);
     });
 
     testView('the count follows the picked topics and hides at 0', (
@@ -951,7 +1060,7 @@ void main() {
       expect(find.text(l10nEn.followAll), findsNothing);
     });
 
-    testView('an empty tab shows a message only; Continue stays enabled', (
+    testView('an empty tab shows a message only; Continue needs a follow', (
       tester,
     ) async {
       when(() => getPeople(SuggestionTab.popular))
@@ -960,7 +1069,7 @@ void main() {
       await selectTab(tester, l10nEn.tabPopular);
 
       expect(find.text(l10nEn.noSuggestions), findsOneWidget);
-      expect(button(tester).onPressed, isNotNull);
+      expect(button(tester).onPressed, isNull);
     });
 
     testView('a tab that failed shows Retry', (tester) async {
@@ -977,14 +1086,25 @@ void main() {
       expect(find.byType(FollowRow), findsOneWidget);
     });
 
-    testView('Continue finishes sign-up and goes Home', (tester) async {
-      await open(tester, step: 6);
-      await tester.tap(find.text(l10nEn.continueButton));
-      await tester.pumpAndSettle();
+    testView(
+      'Continue is off until someone is followed, then finishes sign-up',
+      (tester) async {
+        await open(tester, step: 6);
+        expect(button(tester).onPressed, isNull);
+        await tester.tap(
+          find.descendant(
+            of: find.widgetWithText(FollowRow, 'Ada Lovelace'),
+            matching: find.text(l10nEn.follow),
+          ),
+        );
+        await tester.pump();
+        await tester.tap(find.text(l10nEn.continueButton));
+        await tester.pumpAndSettle();
 
-      verify(() => complete()).called(1);
-      expect(find.text('route: ${AppRoutes.home}'), findsOneWidget);
-    });
+        verify(() => complete()).called(1);
+        expect(find.text('route: ${AppRoutes.home}'), findsOneWidget);
+      },
+    );
 
     testView('Skip finishes sign-up and goes Home', (tester) async {
       await open(tester, step: 6);

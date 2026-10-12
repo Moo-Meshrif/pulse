@@ -15,6 +15,9 @@ class ProfileUpdateModel extends Equatable {
   final String? avatarUrl;
   final SignupStep? signupStep;
 
+  /// Sets bio, city, phone and avatar_url to null (Skip with discard); fields given beside it win.
+  final bool clearDetails;
+
   const ProfileUpdateModel({
     this.username,
     this.fullName,
@@ -25,10 +28,17 @@ class ProfileUpdateModel extends Equatable {
     this.phone,
     this.avatarUrl,
     this.signupStep,
+    this.clearDetails = false,
   });
 
   /// Only the fields that are set. The birthday is a date (`YYYY-MM-DD`), not a timestamp.
   Map<String, dynamic> toJson() => {
+    if (clearDetails) ...{
+      'bio': null,
+      'city': null,
+      'phone': null,
+      'avatar_url': null,
+    },
     if (username != null) 'username': username,
     if (fullName != null) 'full_name': fullName,
     if (birthday != null) 'birthday': _dateOnly(birthday!),
@@ -56,5 +66,6 @@ class ProfileUpdateModel extends Equatable {
     phone,
     avatarUrl,
     signupStep,
+    clearDetails,
   ];
 }

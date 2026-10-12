@@ -7,6 +7,8 @@ import 'app/app.dart';
 import 'core/constants/app_config.dart';
 import 'core/di/injection.dart';
 import 'core/error/error_reporter.dart';
+import 'core/error/guard.dart';
+import 'core/services/connectivity_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,5 +38,6 @@ Future<void> main() async {
     publishableKey: AppConfig.supabasePublishableKey,
   );
   await configureDependencies();
+  Guard.isOffline = getIt<ConnectivityService>().isOffline;
   runApp(const App());
 }

@@ -74,13 +74,20 @@ class SignUpFollowView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          BlocSelector<SignUpCubit, SignUpState, bool>(
-            selector: (state) => state.loading,
-            builder: (context, loading) => PrimaryButton(
+          BlocSelector<
+            SignUpCubit,
+            SignUpState,
+            ({bool loading, bool canFinish})
+          >(
+            selector: (state) => (
+              loading: state.loading && !state.skipping,
+              canFinish: state.canFinishFollow,
+            ),
+            builder: (context, button) => PrimaryButton(
               label: l10n.continueButton,
               expand: true,
-              loading: loading,
-              onPressed: loading ? null : cubit.finishFollow,
+              loading: button.loading,
+              onPressed: button.canFinish ? cubit.finishFollow : null,
             ),
           ),
           SizedBox(height: AppSpacing.s8),
@@ -177,6 +184,7 @@ class SignUpFollowView extends StatelessWidget {
     final l10n = context.l10n;
     final cubit = context.read<SignUpCubit>();
     if (state.followTab == FollowTab.contacts) {
+      // TODO(auth-plan, out of scope for now): contacts matching (contact hashes, permission request).
       return _Message(text: l10n.comingSoon);
     }
     return switch (state.followStatus) {

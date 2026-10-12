@@ -106,6 +106,22 @@
   "@offlineBody": {
     "description": "Splash: body of the offline screen"
   },
+  "noInternetTitle": "No internet",
+  "@noInternetTitle": {
+    "description": "Splash: title when a network is on but the backend cannot be reached"
+  },
+  "noInternetBody": "You're connected to a network, but it has no internet.",
+  "@noInternetBody": {
+    "description": "Splash: body of the no-internet screen"
+  },
+  "weakConnectionTitle": "Weak connection",
+  "@weakConnectionTitle": {
+    "description": "Splash: title when the backend answers too slowly"
+  },
+  "weakConnectionBody": "Your connection is too slow. Try again in a moment.",
+  "@weakConnectionBody": {
+    "description": "Splash: body of the weak-connection screen"
+  },
   "cantReachTitle": "Can't reach Pulse",
   "@cantReachTitle": {
     "description": "Splash: title when the first request failed for another reason"
@@ -632,6 +648,18 @@
   "leaveBody": "Your progress is saved. You can pick up where you left off the next time you sign in.",
   "@leaveBody": {
     "description": "Leave dialog: body"
+  },
+  "skipStepTitle": "Skip this step?",
+  "@skipStepTitle": {
+    "description": "Skip dialog on an optional sign-up step with entries: title"
+  },
+  "skipStepBody": "What you entered on this step will be cleared and not saved.",
+  "@skipStepBody": {
+    "description": "Skip dialog: body"
+  },
+  "keepEditing": "Keep editing",
+  "@keepEditing": {
+    "description": "Skip dialog: stays on the step"
   },
   "keepGoing": "Keep going",
   "@keepGoing": {

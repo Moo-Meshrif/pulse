@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
+import 'package:pulse/core/enums/connection_problem.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
@@ -15,16 +19,24 @@ class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
+class MockConnectivity extends Mock implements ConnectivityService {}
+
 void main() {
+  setUpAll(() => registerFallbackValue(const NetworkFailure()));
+
   late MockIsSignedIn isSignedIn;
   late MockGetSignupStep getSignupStep;
+  late MockConnectivity connectivity;
 
   setUp(() {
     isSignedIn = MockIsSignedIn();
     getSignupStep = MockGetSignupStep();
+    connectivity = MockConnectivity();
+    when(() => connectivity.diagnose(any()))
+        .thenAnswer((_) async => ConnectionProblem.offline);
   });
 
-  SplashCubit cubit() => SplashCubit(isSignedIn, getSignupStep);
+  SplashCubit cubit() => SplashCubit(isSignedIn, getSignupStep, connectivity);
 
   void stepIs(SignupStep step) =>
       when(() => getSignupStep()).thenAnswer((_) async => step);
@@ -88,6 +100,60 @@ void main() {
       expect: () => [const SplashState.failed(SplashProblem.offline)],
     );
   }
+
+  group('showing the diagnosed connection problem', () {
+    const cases = {
+      ConnectionProblem.offline: SplashProblem.offline,
+      ConnectionProblem.noInternet: SplashProblem.noInternet,
+      ConnectionProblem.weak: SplashProblem.weakConnection,
+      ConnectionProblem.cantReach: SplashProblem.cantReach,
+    };
+    for (final MapEntry(key: diagnosis, value: problem) in cases.entries) {
+      for (final failure in <Failure>[
+        const NetworkFailure(),
+        const TimeoutFailure(),
+      ]) {
+        blocTest<SplashCubit, SplashState>(
+          '${failure.runtimeType} diagnosed as ${diagnosis.name} shows ${problem.name}',
+          setUp: () {
+            stepFails(failure);
+            when(() => connectivity.diagnose(failure))
+                .thenAnswer((_) async => diagnosis);
+          },
+          build: cubit,
+          act: (c) => c.decide(),
+          expect: () => [SplashState.failed(problem)],
+        );
+      }
+    }
+
+    blocTest<SplashCubit, SplashState>(
+      'a server failure is not diagnosed',
+      setUp: () => stepFails(const ServerFailure(statusCode: 500)),
+      build: cubit,
+      act: (c) => c.decide(),
+      expect: () => [const SplashState.failed(SplashProblem.cantReach)],
+      verify: (_) => verifyNever(() => connectivity.diagnose(any())),
+    );
+  });
+
+  testWidgets(
+    'a start-up request that never answers times out after 10 s, as offline',
+    (tester) async {
+      final never = Completer<SignupStep>();
+      when(() => isSignedIn()).thenReturn(true);
+      when(() => getSignupStep()).thenAnswer((_) => never.future);
+      final c = cubit();
+      unawaited(c.decide());
+
+      await tester.pump(const Duration(seconds: 9));
+      expect(c.state, const SplashState.deciding());
+      await tester.pump(const Duration(seconds: 2));
+      expect(c.state, const SplashState.failed(SplashProblem.offline));
+      // Not awaited: this test runs on a fake clock, so only a pump would finish the cancel.
+      unawaited(c.close());
+    },
+  );
 
   for (final failure in <Failure>[
     const ServerFailure(statusCode: 500),

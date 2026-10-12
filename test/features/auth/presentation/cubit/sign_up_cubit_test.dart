@@ -567,9 +567,22 @@ void main() {
 
     SignUpCubit atProfile() => cubit()..open(step: SignUpCubit.profileStep);
 
-    test('Continue is enabled with nothing filled in', () {
-      expect(atProfile().state.canSubmitProfile, isTrue);
-    });
+    test(
+      'Continue is disabled with nothing filled in, and enabled by any entry',
+      () {
+        final c = atProfile();
+        expect(c.state.canSubmitProfile, isFalse);
+        c.bioChanged('Hi');
+        expect(c.state.canSubmitProfile, isTrue);
+        c.bioChanged('   ');
+        expect(c.state.canSubmitProfile, isFalse);
+        c.cityChanged('Cairo');
+        expect(c.state.canSubmitProfile, isTrue);
+        c.cityChanged('');
+        c.phoneChanged('+20 100 123 4567');
+        expect(c.state.canSubmitProfile, isTrue);
+      },
+    );
 
     test('a resumed sign-up brings back what was entered before', () async {
       when(() => getDraft()).thenAnswer(
@@ -609,7 +622,7 @@ void main() {
       c.phoneChanged('1' * 16);
       expect(c.state.canSubmitProfile, isFalse);
       c.phoneChanged('');
-      expect(c.state.canSubmitProfile, isTrue);
+      expect(c.state.canSubmitProfile, isFalse);
     });
 
     test('a picked photo is kept and can be removed', () async {
@@ -695,9 +708,51 @@ void main() {
       ).called(1);
     });
 
+    test('Skip only loses data when something was entered, and clearing empties it', () {
+      final c = atProfile();
+      expect(c.skipLosesData, isFalse);
+      c
+        ..bioChanged('Hi')
+        ..cityChanged('Cairo')
+        ..phoneChanged('+20 100 123 4567');
+      expect(c.skipLosesData, isTrue);
+
+      c.clearStepData();
+      expect(c.state.bio, isEmpty);
+      expect(c.state.city, isEmpty);
+      expect(c.state.phone, isEmpty);
+      expect(c.state.photo, isNull);
+      expect(c.state.avatarRemoved, isFalse);
+      expect(c.skipLosesData, isFalse);
+      expect(c.state.canSubmitProfile, isFalse);
+    });
+
+    test('Skip marks its request as skipping, Continue does not', () async {
+      saveProfileReturns();
+      final skip = atProfile();
+      final skipSeen = <bool>[];
+      skip.stream.listen((s) {
+        if (s.loading) skipSeen.add(s.skipping);
+      });
+      await skip.skipProfile();
+      await Future<void>.delayed(Duration.zero);
+      expect(skipSeen, isNotEmpty);
+      expect(skipSeen.first, isTrue);
+
+      final next = atProfile()..bioChanged('Hi');
+      final nextSeen = <bool>[];
+      next.stream.listen((s) {
+        if (s.loading) nextSeen.add(s.skipping);
+      });
+      await next.submitProfile();
+      await Future<void>.delayed(Duration.zero);
+      expect(nextSeen, isNotEmpty);
+      expect(nextSeen.first, isFalse);
+    });
+
     test('a failed save stays on the step with the failure', () async {
       saveProfileReturns(const NetworkFailure());
-      final c = atProfile();
+      final c = atProfile()..bioChanged('Hi');
       await c.submitProfile();
 
       expect(c.state.step, SignUpCubit.profileStep);
@@ -795,6 +850,7 @@ void main() {
     test('a failed save stays on the step with the failure', () async {
       when(() => saveInterests(any())).thenThrow(const NetworkFailure());
       final c = await atInterests();
+      c.interestToggled(1);
       await c.submitInterests();
 
       expect(c.state.step, SignUpCubit.interestsStep);

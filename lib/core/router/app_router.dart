@@ -35,6 +35,7 @@ abstract final class AppRouter {
         settings,
         const LegalPlaceholderScreen(kind: LegalDocument.privacy),
       ),
+      // TODO(auth-plan): replace with the real Home screen once it is specced (sign-in and sign-up end here).
       AppRoutes.home => _page(
         settings,
         const PlaceholderScreen(route: AppRoutes.home),

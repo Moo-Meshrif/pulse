@@ -131,6 +131,18 @@ class AppLocalizationsAr extends AppLocalizations {
       'تحقق من شبكة Wi-Fi أو بيانات الجوال. سنحاول مرة أخرى فور عودة الاتصال.';
 
   @override
+  String get noInternetTitle => 'لا يوجد إنترنت';
+
+  @override
+  String get noInternetBody => 'أنت متصل بشبكة لكنها لا تتصل بالإنترنت.';
+
+  @override
+  String get weakConnectionTitle => 'اتصال ضعيف';
+
+  @override
+  String get weakConnectionBody => 'اتصالك بطيء جدًا. حاول مرة أخرى بعد قليل.';
+
+  @override
   String get cantReachTitle => 'تعذّر الوصول إلى Pulse';
 
   @override
@@ -529,6 +541,15 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get leaveBody =>
       'تم حفظ تقدمك. يمكنك المتابعة من حيث توقفت في المرة القادمة التي تسجّل فيها الدخول.';
+
+  @override
+  String get skipStepTitle => 'تخطي هذه الخطوة؟';
+
+  @override
+  String get skipStepBody => 'سيتم مسح ما أدخلته في هذه الخطوة ولن يتم حفظه.';
+
+  @override
+  String get keepEditing => 'متابعة التعديل';
 
   @override
   String get keepGoing => 'واصل';

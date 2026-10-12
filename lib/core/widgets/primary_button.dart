@@ -4,12 +4,12 @@ import '../extensions/context_extensions.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_text_styles.dart';
-import 'app_spinner.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
+import 'loading_overlay/pulse_line_loader.dart';
 
 /// The primary pill button (docs/specs/_theme, component 2.1). A null [onPressed] disables it; [loading]
-/// shows a spinner and ignores taps.
+/// shows the heartbeat line and ignores taps.
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
@@ -40,7 +40,7 @@ class PrimaryButton extends StatelessWidget {
   final bool expand;
   final double horizontalPadding;
 
-  /// Shows a spinner instead of the label and ignores taps; the fill stays `primary`.
+  /// Shows the heartbeat line instead of the label and ignores taps; the fill stays `primary`.
   final bool loading;
 
   /// 56 by default; dialogs and sheets use the 48 pill (`AuthButtonDimens.pillHeight`).
@@ -82,10 +82,9 @@ class PrimaryButton extends StatelessWidget {
       child: loading
           ? Semantics(
               label: label,
-              child: AppSpinner(
-                size: AuthButtonDimens.spinnerSize,
-                strokeWidth: AuthButtonDimens.spinnerStroke,
+              child: PulseLineLoader(
                 color: colors.textOnPrimary,
+                width: AuthButtonDimens.loaderWidth,
               ),
             )
           : Row(

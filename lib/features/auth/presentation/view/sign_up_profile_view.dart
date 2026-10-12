@@ -155,8 +155,10 @@ class _SignUpProfileViewState extends State<SignUpProfileView> {
             SignUpState,
             ({bool loading, bool canSubmit})
           >(
-            selector: (state) =>
-                (loading: state.loading, canSubmit: state.canSubmitProfile),
+            selector: (state) => (
+              loading: state.loading && !state.skipping,
+              canSubmit: state.canSubmitProfile,
+            ),
             builder: (context, button) => PrimaryButton(
               label: l10n.continueButton,
               expand: true,

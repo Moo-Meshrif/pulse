@@ -14,8 +14,9 @@ class SaveInterestsUseCase {
   final InterestsDatasource _interests;
   final ProfileRepository _profiles;
 
-  Future<void> call(List<int> interestIds) async {
-    if (interestIds.isNotEmpty) {
+  Future<void> call(List<int> interestIds, {bool discard = false}) async {
+    // [discard] (Skip, confirmed) saves the empty list, which erases the topics saved earlier.
+    if (interestIds.isNotEmpty || discard) {
       await _interests.saveInterests(interestIds);
     }
     await _profiles.updateProfile(

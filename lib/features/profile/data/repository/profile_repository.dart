@@ -6,6 +6,7 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entity/profile_entity.dart';
 import '../../domain/entity/profile_update_entity.dart';
 import '../datasource/profile_datasource.dart';
+import '../enums/signup_step.dart';
 import '../datasource/profile_local_datasource.dart';
 import '../model/profile_model.dart';
 import '../model/profile_update_model.dart';
@@ -15,7 +16,10 @@ import '../model/profile_update_model.dart';
 abstract interface class ProfileRepository {
   /// The profile from the server (and saved locally). Only when the connection fails does it return the
   /// saved copy, if there is one; any other failure (a revoked session) is returned as it is.
-  Future<ProfileEntity> getProfile();
+  ///
+  /// With [savedOnlyWhenSignupDone] the copy is used only if it says sign-up is finished: an unfinished
+  /// sign-up needs the network for every step left, so there the connection failure is returned.
+  Future<ProfileEntity> getProfile({bool savedOnlyWhenSignupDone = false});
 
   Future<bool> isUsernameAvailable(String username);
 
@@ -41,7 +45,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileLocalDatasource _local;
 
   @override
-  Future<ProfileEntity> getProfile() async {
+  Future<ProfileEntity> getProfile({
+    bool savedOnlyWhenSignupDone = false,
+  }) async {
     try {
       final profile = await _remote.getProfile();
       await _local.write(profile);
@@ -51,7 +57,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
       if (failure is NetworkFailure || failure is TimeoutFailure) {
         final userId = _remote.currentUserId;
         final saved = userId == null ? null : _local.read(userId);
-        if (saved != null) return _toEntity(saved);
+        final usable =
+            saved != null &&
+            (!savedOnlyWhenSignupDone ||
+                saved.signupStep == SignupStep.complete);
+        if (usable) return _toEntity(saved);
       }
       rethrow;
     }
@@ -111,5 +121,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
         phone: update.phone,
         avatarUrl: update.avatarUrl,
         signupStep: update.signupStep,
+        clearDetails: update.clearDetails,
       );
 }

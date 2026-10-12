@@ -86,6 +86,34 @@ void main() {
       expect(await repository.getProfile(), entityOf(saved));
     });
 
+    test(
+      'asked for finished sign-ups only, an unfinished saved copy is not used',
+      () async {
+        when(() => remote.getProfile()).thenThrow(const NetworkFailure());
+        when(() => local.read('u1')).thenReturn(saved);
+
+        expect(
+          await failureOf(repository.getProfile(savedOnlyWhenSignupDone: true)),
+          const NetworkFailure(),
+        );
+      },
+    );
+
+    test('asked for finished sign-ups only, a finished copy is used', () async {
+      const done = ProfileModel(
+        id: 'u1',
+        username: 'done',
+        signupStep: SignupStep.complete,
+      );
+      when(() => remote.getProfile()).thenThrow(const NetworkFailure());
+      when(() => local.read('u1')).thenReturn(done);
+
+      expect(
+        await repository.getProfile(savedOnlyWhenSignupDone: true),
+        entityOf(done),
+      );
+    });
+
     test('a timeout falls back to the saved copy too', () async {
       when(() => remote.getProfile()).thenThrow(const TimeoutFailure());
       when(() => local.read('u1')).thenReturn(saved);

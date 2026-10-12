@@ -131,6 +131,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check your Wi-Fi or mobile data. We\'ll try again as soon as you\'re back online.';
 
   @override
+  String get noInternetTitle => 'No internet';
+
+  @override
+  String get noInternetBody =>
+      'You\'re connected to a network, but it has no internet.';
+
+  @override
+  String get weakConnectionTitle => 'Weak connection';
+
+  @override
+  String get weakConnectionBody =>
+      'Your connection is too slow. Try again in a moment.';
+
+  @override
   String get cantReachTitle => 'Can\'t reach Pulse';
 
   @override
@@ -527,6 +541,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get leaveBody =>
       'Your progress is saved. You can pick up where you left off the next time you sign in.';
+
+  @override
+  String get skipStepTitle => 'Skip this step?';
+
+  @override
+  String get skipStepBody =>
+      'What you entered on this step will be cleared and not saved.';
+
+  @override
+  String get keepEditing => 'Keep editing';
 
   @override
   String get keepGoing => 'Keep going';

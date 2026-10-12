@@ -3,6 +3,9 @@ import 'package:injectable/injectable.dart';
 import '../../data/datasource/follows_datasource.dart';
 import '../../data/model/follow_request_model.dart';
 
+// TODO(auth-plan, follow feature): deferred until Home exists: the Activity screen ("Follow requests" row
+// and badge from `GetFollowRequestCountUseCase`), the Follow requests screen (this use case,
+// `RespondToFollowRequestUseCase`, "Accept all") and the private-account toggle.
 /// The follow requests waiting for the signed-in user.
 @injectable
 class GetFollowRequestsUseCase {

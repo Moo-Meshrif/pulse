@@ -227,9 +227,9 @@ void main() {
     await tester.tap(find.text(l10nEn.skip));
     await tester.pumpAndSettle();
 
-    // Follow -> Continue -> Home.
+    // Follow -> Skip (Continue needs a follow) -> Home.
     expect(find.text(l10nEn.followTitle), findsOneWidget);
-    await tester.tap(find.text(l10nEn.continueButton));
+    await tester.tap(find.text(l10nEn.skip));
     await tester.pumpAndSettle();
 
     expect(find.text(AppRoutes.home), findsOneWidget);

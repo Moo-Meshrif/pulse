@@ -6,7 +6,9 @@ Purpose / route: `/` after onboarding was seen. Decides the first route (Sign in
 | State | Shown when |
 |---|---|
 | Loading | Deciding the route (the session is read, the profile step is requested) |
-| Offline | Reading the profile failed with a lost connection or a timeout (`NetworkFailure`, `TimeoutFailure`) |
+| Offline | Reading the profile failed with a lost connection or a timeout (`NetworkFailure`, `TimeoutFailure`) and the device has no Wi-Fi and no mobile data |
+| No internet | Same failure, a Wi-Fi or mobile network is on, but the backend cannot be reached (no uplink, captive portal) [user, 2026-10-11] |
+| Weak connection | Same failure, the backend answers but slowly, or the start-up request took more than 10 s and timed out [user, 2026-10-11] |
 | Can't reach Pulse | Reading the profile failed for another reason (`ServerFailure`, `NotFoundFailure`, `ParseFailure`, `UnexpectedFailure`) |
 
 A revoked or expired session (`AuthFailure(sessionExpired)`) is not an error screen: it goes to Sign in. "Try again" runs the decision again and shows Loading. [estimated mapping, see Q25]
@@ -18,7 +20,7 @@ Scaffold (bg background) > SafeArea
 │   ├─ Logo tile 72 x 72, radius 22 (the logo file on `primary`, as `LogoTile` but 72)
 │   ├─ 14
 │   └─ wordmark "pulse" (Sora 30/700, `textPrimary`; the `display` style)
-└─ spinner, centered horizontally, bottom ~ 86 above the frame bottom (y ~ 758): 28 dp, stroke 3, `primary` arc on a `switchOff` track
+└─ heartbeat line (`PulseLineLoader`, the loading overlay's Lottie line), 140 wide, centered, 36 under the wordmark [user, 2026-10-11: replaces the bottom spinner of the screenshot]; the tile and wordmark stay centered in the screen (a spacer above them balances the line)
 ```
 
 ## Layout: Offline and Can't reach Pulse (same layout, different icon and copy)
@@ -39,6 +41,10 @@ Scaffold (bg background) > SafeArea
 |---|---|---|
 | offlineTitle | You're offline | أنت غير متصل بالإنترنت |
 | offlineBody | Check your Wi-Fi or mobile data. We'll try again as soon as you're back online. | تحقق من شبكة Wi-Fi أو بيانات الجوال. سنحاول مرة أخرى فور عودة الاتصال. |
+| noInternetTitle | No internet | لا يوجد إنترنت |
+| noInternetBody | You're connected to a network, but it has no internet. | أنت متصل بشبكة لكنها لا تتصل بالإنترنت. |
+| weakConnectionTitle | Weak connection | اتصال ضعيف |
+| weakConnectionBody | Your connection is too slow. Try again in a moment. | اتصالك بطيء جدًا. حاول مرة أخرى بعد قليل. |
 | cantReachTitle | Can't reach Pulse | تعذّر الوصول إلى Pulse |
 | cantReachBody | Something went wrong on our side. Your account is safe — please try again in a moment. | حدث خطأ من جانبنا. حسابك بأمان، يرجى المحاولة مرة أخرى بعد قليل. |
 | tryAgain | Try again | حاول مرة أخرى |
@@ -46,15 +52,16 @@ Scaffold (bg background) > SafeArea
 
 ## Behavior and navigation
 - Loading -> `resetTo` the route when decided (as today). Offline / Can't reach: stay on the screen; "Try again" returns to Loading and decides again. System back leaves the app (no stack below).
-- Offline: "We'll try again as soon as you're back online" means the splash retries by itself when the connection returns, besides the button [Q24].
+- A lost connection or timeout is told apart by checking the connection (`ConnectivityService.check`): no Wi-Fi/mobile data -> Offline; a network but the backend unreachable -> No internet; a slow answer (over 1.5 s to open a TLS connection to the backend), or a timeout with a good connection -> Weak connection; a network error with a good connection -> Can't reach Pulse. The start-up request times out after 10 s.
 - The offline and can't-reach screens never show a raw error text or a status code.
 
 ## Responsive / a11y
-Scrolls on small screens and large text; the button is pinned and rises with nothing (no keyboard). Header logo is decorative. Title is a header (Semantics); the spinner is announced "Loading". RTL: the layout is centered, so nothing mirrors; the logo mark never flips.
+Scrolls on small screens and large text; the button is pinned and rises with nothing (no keyboard). Header logo is decorative. Title is a header (Semantics); the line is announced "Loading". RTL: the layout is centered, so nothing mirrors; the logo mark never flips.
 
 ## Acceptance checklist
-- [ ] Loading: 72 logo tile with the wordmark below it, centered; a small primary spinner on a grey track at the bottom
+- [ ] Loading: 72 logo tile with the wordmark below it, centered; the heartbeat line under the wordmark (replaces the small spinner of the screenshot)
 - [ ] Offline: centered "pulse" header, 96 soft-green circle with the wifi-off icon, bold title, 2-line grey body, full-width green "Try again" pinned bottom
+- [ ] No internet and Weak connection: same layout with the cloud-alert icon and the short copy above
 - [ ] Can't reach Pulse: same layout with the cloud-alert icon and the 3-line body
 - [ ] "Try again" shows Loading again and re-runs the decision
 - [ ] RTL: same layout, Arabic copy

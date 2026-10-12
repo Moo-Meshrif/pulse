@@ -19,7 +19,7 @@ Data: RPC `suggested_profiles(p_tab)` (see `schema.sql`); the screenshot rows ar
 - Tabs: Suggested (default, loaded on step 5), From contacts (empty state "Coming soon", no permission request) [user]; TODO: contacts permission + matching later, Popular (RPC `suggested_profiles('popular')`).
 - Follow -> "Following" (outline pill) for a public profile; a private profile (`is_private`) becomes "Requested" (same outline pill) until they accept. Tap again unfollows or cancels the request [estimated]. "Follow all" follows every visible row; label stays.
 - Loading (tab switch): 6 skeleton rows; error: message + Retry [estimated]; empty tab: message only [estimated].
-- Continue always enabled; caption is a hint only [user]. List scrolls under the pinned bar; scrollbar visible in screenshot (platform default).
+- Continue is disabled until at least one person is followed or requested (any tab) [user, 2026-10-11]; "Skip" (top bar) is the way past without following anyone; it never asks (follows are saved the moment they are tapped, so nothing is lost) and shows the same loading overlay as S6 from the tap until the response comes. The caption is a hint only [user]. List scrolls under the pinned bar; scrollbar visible in screenshot (platform default).
 
 ## Strings
 | Key | en | ar [draft, x-review] |
@@ -49,4 +49,5 @@ Follow button Semantics "Follow {name}"; rows tap target >= 44; name/meta 1 line
 - [ ] Dark "Suggested" chip, others outline
 - [ ] White rounded card, 6 rows, avatar colors as in screenshot
 - [ ] Pinned bar with hairline, green Continue and grey caption
+- [ ] Continue is disabled until the first Follow, then enabled (also after an unfollow back to none: disabled again)
 - [ ] 6 of 6 segments green

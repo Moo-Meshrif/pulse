@@ -13,12 +13,14 @@ void main() {
     bool isRequired = true,
     VoidCallback? onBack,
     VoidCallback? onSkip,
+    bool? showSkip,
   }) => Scaffold(
     body: StepTopBar(
       step: step,
       isRequired: isRequired,
       onBack: onBack ?? () {},
       onSkip: onSkip,
+      showSkip: showSkip,
     ),
   );
 
@@ -58,6 +60,18 @@ void main() {
   testView('no Skip without onSkip', (tester) async {
     await tester.pumpApp(bar());
     expect(find.text(l10nEn.skip), findsNothing);
+  });
+
+  testView('Skip stays visible, same colour, and ignores taps while loading', (
+    tester,
+  ) async {
+    await tester.pumpApp(bar(step: 4, isRequired: false, showSkip: true));
+
+    expect(find.text(l10nEn.skip), findsOneWidget);
+    final text = tester.widget<Text>(find.text(l10nEn.skip));
+    expect(text.style!.color, colors.textSecondary);
+    final button = tester.widget<TextButton>(find.byType(TextButton));
+    expect(button.onPressed, isNull);
   });
 
   testView('6 segments: the first N primary, the rest grey; 4 high, 4 apart', (

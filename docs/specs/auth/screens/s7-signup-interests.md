@@ -26,7 +26,7 @@ Loading: chip skeletons (rounded pills, shimmer-free flat `segmentTrack`). Error
 | Travel, Photography, Food, Football, Fitness, Music, Tech, Movies & TV, Art & design, Books, Gaming, Fashion, Nature, Comedy | (as listed; fallback copy, normally from backend) | سفر، تصوير، طعام، كرة القدم، لياقة، موسيقى، تقنية، أفلام وتلفزيون، فن وتصميم، كتب، ألعاب، أزياء، طبيعة، كوميديا |
 
 ## Behavior and navigation
-Tap toggles. Continue -> save selected ids; Skip saves nothing. Either then loads the suggested and popular profiles; if both are empty, step 6 is skipped and the flow ends at `/home` (`signup_step` = 0), otherwise step 6 opens with the loaded list [user]. Back -> step 4. The list is loaded on the previous step, so S7 normally has no empty state; the error + Retry state stays for a failed load.
+Tap toggles. Continue is disabled until at least one topic is selected [user, 2026-10-11]; "Skip" (top bar) is the way past without picking; with topics picked it asks first (same "Skip this step?" confirmation as S6), and confirmed clears the picks and the topics saved earlier on the server (`set_user_interests` with an empty list). The same loading overlay as S6 shows from the tap until the response comes. Continue -> save selected ids; Skip saves nothing. Either then loads the suggested and popular profiles; if both are empty, step 6 is skipped and the flow ends at `/home` (`signup_step` = 0), otherwise step 6 opens with the loaded list [user]. Back -> step 4. The list is loaded on the previous step, so S7 normally has no empty state; the error + Retry state stays for a failed load.
 
 ## Data mapping
 Supabase `interests` (id, slug, name_en, name_ar, sort_order) [user, schema]; the 14 above are the seeded rows. Saved with RPC `set_user_interests(ids)`.
@@ -38,3 +38,4 @@ Wrap reflows; chips Semantics `selected`; labels never truncate (chip grows).
 - [ ] Selected chips green with white check + label; others white outline
 - [ ] 4 rows in screenshot widths: 3 / 4 / 3 / 3 / 1 chips
 - [ ] "2 selected" centered above Continue
+- [ ] Continue is disabled with no topic selected and enabled after the first pick
