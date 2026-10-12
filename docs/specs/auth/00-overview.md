@@ -18,6 +18,7 @@ Backend: **Supabase now, RESTful API later** [user]. Schema: `schema.sql` (trimm
 | S9 | Forgot password: link sent (dialog over S2) | screens/s9-forgot-password-sent-dialog.md | screenshots/s9-forgot-password-sent-dialog.png | dialog |
 | S10 | Leave sign-up (dialog over S6) | screens/s10-leave-signup-dialog.md | screenshots/s10-leave-signup-dialog.png | dialog |
 | S11 | Set a new password | screens/s11-set-new-password.md | screenshots/s11-set-new-password.png | `/reset-password` |
+| S14 | Sign in: signed out (S1 variant: banner + account card) | screens/s14-signin-signed-out.md | screenshots/s14-signin-session-*.png | `/sign-in?reason=expired\|revoked` |
 | S13 | Splash: loading, offline, can't reach | screens/s13-splash.md | screenshots/s13-splash-*.png | `/` (after onboarding) |
 | S12 | Password updated (dialog over S11) | screens/s12-password-updated-dialog.md | screenshots/s12-password-updated-dialog.png | dialog |
 
@@ -27,6 +28,7 @@ Also needed, not designed: TODO: `/terms` and `/privacy` in-app placeholder scre
 ```
 / (start) --no session--> /sign-in (S1)      --session + profile complete--> /home
                           --session + profile incomplete--> /register step 3 (S5) [user]
+S1 (+ `?reason=expired|revoked` = S14) <-- splash / any later session loss (resetTo)
 S1 --"Forgot password?"--> S2 --Send reset link--> S9 dialog (over S2)
 S1 --"Create account"--> /register (S3)       S3 --"Sign in"--> S1
 S1 --Sign in ok--> /home (AppNavigator.resetTo)   unverified email --> S4 (verify step)

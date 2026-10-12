@@ -599,6 +599,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get linkExpiredBody => 'اطلب رابطًا جديدًا لإعادة تعيين كلمة مرورك.';
 
   @override
+  String get linkExpiredSnackBar =>
+      'انتهت صلاحية هذا الرابط. اطلب رابطًا جديدًا لإعادة تعيين كلمة مرورك.';
+
+  @override
+  String get signedOutSubtitle => 'أدخل كلمة المرور للمتابعة.';
+
+  @override
+  String get signedOutTitle => 'تم تسجيل خروجك';
+
+  @override
+  String get signedOutExpiredBody =>
+      'انتهت جلستك. سجّل الدخول مجددًا لتكمل من حيث توقفت.';
+
+  @override
+  String get signedOutRevokedBody =>
+      'أُنهيت جلستك على جهاز آخر أو بعد تغيير كلمة المرور. سجّل الدخول مجددًا للمتابعة.';
+
+  @override
+  String get accountLabel => 'الحساب';
+
+  @override
+  String get notYou => 'لست أنت؟';
+
+  @override
   String get requestNewLink => 'طلب رابط جديد';
 
   @override

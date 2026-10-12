@@ -1,3 +1,6 @@
+// ignore_for_file: invalid_use_of_internal_member
+// The tests feed gotrue's own event stream, the way a deep link does inside supabase_flutter.
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -6,10 +9,28 @@ import 'package:pulse/core/constants/app_config.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
+import 'package:pulse/features/auth/data/datasource/password_recovery_tracker.dart';
+import 'package:pulse/features/auth/data/enums/recovery_signal.dart';
+import 'package:pulse/core/enums/signed_out_reason.dart';
+import 'package:pulse/core/services/local_storage_service.dart';
+import 'package:pulse/core/services/storage_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../helpers/backend_double.dart';
 
 void main() {
+  late SharedPrefsStorageService storage;
+  late PasswordRecoveryTracker tracker;
+
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    storage = SharedPrefsStorageService(await SharedPreferences.getInstance());
+    tracker = PasswordRecoveryTracker(storage);
+  });
+
+  tearDown(() => tracker.dispose());
+
   Future<Failure?> failureOf(Future<Object?> call) async {
     try {
       await call;
@@ -41,7 +62,7 @@ void main() {
 
     test('calls the sign-in function, then stores the session from its refresh token', () async {
       final backend = signInBackend();
-      final datasource = SupabaseAuthDatasource(backend.client);
+      final datasource = SupabaseAuthDatasource(backend.client, tracker);
 
       await datasource.signIn(identifier: ' dip.roy ', password: 'secret');
 
@@ -57,8 +78,10 @@ void main() {
 
     test('never calls the username RPC or a password grant', () async {
       final backend = signInBackend();
-      await SupabaseAuthDatasource(backend.client)
-          .signIn(identifier: 'dip.roy', password: 'secret');
+      await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signIn(identifier: 'dip.roy', password: 'secret');
 
       expect(backend.to('get_email_for_username'), isEmpty);
       expect(
@@ -79,7 +102,7 @@ void main() {
             'code': 'invalid_credentials',
           }, status: 401),
         );
-        final datasource = SupabaseAuthDatasource(backend.client);
+        final datasource = SupabaseAuthDatasource(backend.client, tracker);
 
         final result = datasource.signIn(identifier: 'nobody', password: 'x');
 
@@ -101,8 +124,10 @@ void main() {
             'email': 'dip@example.com',
           }, status: 403),
         );
-        final result = SupabaseAuthDatasource(backend.client)
-            .signIn(identifier: 'dip.roy', password: 'x');
+        final result = SupabaseAuthDatasource(
+          backend.client,
+          tracker,
+        ).signIn(identifier: 'dip.roy', password: 'x');
 
         final failure = (await failureOf(result))! as AuthFailure;
         expect(failure.reason, AuthFailureReason.emailNotConfirmed);
@@ -118,8 +143,10 @@ void main() {
           'retry_after': 897,
         }, status: 429),
       );
-      final result = SupabaseAuthDatasource(backend.client)
-          .signIn(identifier: 'dip.roy', password: 'x');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signIn(identifier: 'dip.roy', password: 'x');
 
       final failure = (await failureOf(result))! as AuthFailure;
       expect(failure.reason, AuthFailureReason.tooManyAttempts);
@@ -131,22 +158,28 @@ void main() {
       final backend = signInBackend(
         function: BackendDouble.json({'code': 'server_error'}, status: 500),
       );
-      final result = SupabaseAuthDatasource(backend.client)
-          .signIn(identifier: 'a@b.co', password: 'x');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signIn(identifier: 'a@b.co', password: 'x');
       expect(await failureOf(result), const ServerFailure(statusCode: 500));
     });
 
     test('an answer without a refresh token is a ParseFailure', () async {
       final backend = signInBackend(function: BackendDouble.json({'ok': true}));
-      final result = SupabaseAuthDatasource(backend.client)
-          .signIn(identifier: 'a@b.co', password: 'x');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signIn(identifier: 'a@b.co', password: 'x');
       expect(await failureOf(result), const ParseFailure());
     });
 
     test('offline is a NetworkFailure', () async {
       final backend = signInBackend(throwing: http.ClientException('offline'));
-      final result = SupabaseAuthDatasource(backend.client)
-          .signIn(identifier: 'a@b.co', password: 'x');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signIn(identifier: 'a@b.co', password: 'x');
       expect(await failureOf(result), const NetworkFailure());
     });
   });
@@ -169,8 +202,10 @@ void main() {
           ),
         ),
       );
-      await SupabaseAuthDatasource(backend.client)
-          .signUp(email: 'new@example.com', password: 'Passw0rd!');
+      await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signUp(email: 'new@example.com', password: 'Passw0rd!');
       expect(body(backend.to('/signup').single)['email'], 'new@example.com');
     });
 
@@ -181,8 +216,10 @@ void main() {
           (_) async =>
               BackendDouble.json(BackendDouble.userJson(identities: [])),
         );
-        final result = SupabaseAuthDatasource(backend.client)
-            .signUp(email: 'taken@example.com', password: 'Passw0rd!');
+        final result = SupabaseAuthDatasource(
+          backend.client,
+          tracker,
+        ).signUp(email: 'taken@example.com', password: 'Passw0rd!');
         expect(
           await failureOf(result),
           const AuthFailure(AuthFailureReason.emailTaken),
@@ -194,8 +231,10 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.authError(422, 'weak_password'),
       );
-      final result = SupabaseAuthDatasource(backend.client)
-          .signUp(email: 'a@b.co', password: '1');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signUp(email: 'a@b.co', password: '1');
       expect(
         await failureOf(result),
         const AuthFailure(AuthFailureReason.weakPassword),
@@ -208,8 +247,10 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.sessionResponse(),
       );
-      await SupabaseAuthDatasource(backend.client)
-          .verifySignUpCode(email: 'dip@example.com', code: '123456');
+      await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).verifySignUpCode(email: 'dip@example.com', code: '123456');
       expect(
         body(backend.to('/verify').single),
         containsPair('type', 'signup'),
@@ -224,8 +265,10 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.authError(403, 'otp_expired'),
       );
-      final result = SupabaseAuthDatasource(backend.client)
-          .verifySignUpCode(email: 'dip@example.com', code: '000000');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).verifySignUpCode(email: 'dip@example.com', code: '000000');
       expect(
         await failureOf(result),
         const AuthFailure(AuthFailureReason.invalidCode),
@@ -234,8 +277,10 @@ void main() {
 
     test('resend asks for a new signup code', () async {
       final backend = BackendDouble((_) async => BackendDouble.json({}));
-      await SupabaseAuthDatasource(backend.client)
-          .resendSignUpCode('dip@example.com');
+      await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).resendSignUpCode('dip@example.com');
       expect(
         body(backend.to('/resend').single),
         containsPair('type', 'signup'),
@@ -246,8 +291,10 @@ void main() {
       final backend = BackendDouble(
         (_) async => BackendDouble.authError(429, 'over_email_send_rate_limit'),
       );
-      final result = SupabaseAuthDatasource(backend.client)
-          .resendSignUpCode('a@b.co');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).resendSignUpCode('a@b.co');
       expect(
         await failureOf(result),
         const AuthFailure(AuthFailureReason.rateLimited),
@@ -256,14 +303,18 @@ void main() {
   });
 
   group('password reset', () {
+    BackendDouble resetBackend({required bool exists}) => BackendDouble(
+      (request) async => request.url.path.endsWith('/rpc/email_exists')
+          ? BackendDouble.json(exists)
+          : BackendDouble.json({}),
+    );
+
     test('the reset email links back to the app', () async {
-      final backend = BackendDouble(
-        (request) async => request.url.path.endsWith('/rpc/email_exists')
-            ? BackendDouble.json(true)
-            : BackendDouble.json({}),
-      );
-      await SupabaseAuthDatasource(backend.client)
-          .sendPasswordReset(' dip@example.com ');
+      final backend = resetBackend(exists: true);
+      await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).sendPasswordReset(' dip@example.com ');
       final request = backend.to('/recover').single;
       expect(
         request.url.queryParameters['redirect_to'],
@@ -273,22 +324,32 @@ void main() {
     });
 
     test('an email with no account is refused and nothing is sent', () async {
-      final backend = BackendDouble(
-        (request) async => request.url.path.endsWith('/rpc/email_exists')
-            ? BackendDouble.json(false)
-            : BackendDouble.json({}),
-      );
-      final result = SupabaseAuthDatasource(backend.client)
-          .sendPasswordReset('ghost@example.com');
+      final backend = resetBackend(exists: false);
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).sendPasswordReset('ghost@example.com');
       expect(
         await failureOf(result),
-        isA<AuthFailure>().having(
-          (f) => f.reason,
-          'reason',
-          AuthFailureReason.accountNotFound,
-        ),
+        const AuthFailure(AuthFailureReason.accountNotFound),
       );
       expect(backend.to('/recover'), isEmpty);
+    });
+
+    test('too many reset emails is rateLimited', () async {
+      final backend = BackendDouble(
+        (request) async => request.url.path.endsWith('/rpc/email_exists')
+            ? BackendDouble.json(true)
+            : BackendDouble.authError(429, 'over_email_send_rate_limit'),
+      );
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).sendPasswordReset('a@b.co');
+      expect(
+        await failureOf(result),
+        const AuthFailure(AuthFailureReason.rateLimited),
+      );
     });
 
     test('updatePassword puts the new password on the user', () async {
@@ -299,8 +360,10 @@ void main() {
         return BackendDouble.sessionResponse();
       });
       await backend.signIn();
-      await SupabaseAuthDatasource(backend.client)
-          .updatePassword('N3wPassw0rd');
+      await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).updatePassword('N3wPassw0rd');
       final request = backend.to('/user').single;
       expect(request.method, 'PUT');
       expect(body(request)['password'], 'N3wPassw0rd');
@@ -314,8 +377,10 @@ void main() {
         return BackendDouble.sessionResponse();
       });
       await backend.signIn();
-      final result = SupabaseAuthDatasource(backend.client)
-          .updatePassword('same');
+      final result = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).updatePassword('same');
       expect(
         await failureOf(result),
         const AuthFailure(AuthFailureReason.samePassword),
@@ -330,7 +395,7 @@ void main() {
         return BackendDouble.sessionResponse();
       });
       await backend.signIn();
-      final datasource = SupabaseAuthDatasource(backend.client);
+      final datasource = SupabaseAuthDatasource(backend.client, tracker);
 
       await datasource.signOut();
       expect(
@@ -350,7 +415,7 @@ void main() {
           return BackendDouble.sessionResponse();
         });
         await backend.signIn();
-        final datasource = SupabaseAuthDatasource(backend.client);
+        final datasource = SupabaseAuthDatasource(backend.client, tracker);
 
         await datasource.signOut(others: true);
         expect(
@@ -365,8 +430,308 @@ void main() {
   test('without a session there is no email', () {
     final datasource = SupabaseAuthDatasource(
       BackendDouble((_) async => BackendDouble.json({})).client,
+      tracker,
     );
     expect(datasource.hasSession, isFalse);
     expect(datasource.currentEmail, isNull);
+  });
+
+  group('recoveryActive', () {
+    BackendDouble backend() => BackendDouble((request) async {
+      if (request.url.path.endsWith('/logout')) return http.Response('', 204);
+      if (request.url.path.endsWith('/user')) {
+        return BackendDouble.json(BackendDouble.userJson());
+      }
+      return BackendDouble.sessionResponse();
+    });
+
+    test('needs a session, not just the pending flag', () async {
+      await storage.setValue<bool>(StorageKeys.recoveryPending, true);
+      expect(
+        SupabaseAuthDatasource(backend().client, tracker).recoveryActive,
+        isFalse,
+      );
+    });
+
+    test('a session without the flag is an ordinary session', () async {
+      final double = backend();
+      await double.signIn();
+      expect(
+        SupabaseAuthDatasource(double.client, tracker).recoveryActive,
+        isFalse,
+      );
+    });
+
+    test('is on with a session and the flag, and ends on sign-out', () async {
+      final double = backend();
+      await double.signIn();
+      await storage.setValue<bool>(StorageKeys.recoveryPending, true);
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      expect(datasource.recoveryActive, isTrue);
+
+      await datasource.signOut();
+      expect(datasource.recoveryActive, isFalse);
+      expect(storage.getValue<bool>(StorageKeys.recoveryPending), isNull);
+    });
+
+    test('ends when the new password is set', () async {
+      final double = backend();
+      await double.signIn();
+      await storage.setValue<bool>(StorageKeys.recoveryPending, true);
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+
+      await datasource.updatePassword('Password1');
+      expect(datasource.recoveryActive, isFalse);
+    });
+  });
+
+  group('recovery and session events', () {
+    BackendDouble backend() => BackendDouble((request) async {
+      if (request.url.path.endsWith('/logout')) return http.Response('', 204);
+      return BackendDouble.sessionResponse();
+    });
+
+    /// What gotrue does when the reset link is opened: emit `passwordRecovery`.
+    void openLink(BackendDouble double) =>
+        double.client.auth.notifyAllSubscribers(
+          AuthChangeEvent.passwordRecovery,
+          broadcast: false,
+        );
+
+    /// Lets the datasource's own subscription and the tracker's microtasks run.
+    Future<void> settle() => Future<void>.delayed(Duration.zero);
+
+    test('a link opened before anyone listens reaches the listeners that join first, once each', () async {
+      final double = backend();
+      await double.signIn();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      openLink(double);
+      await settle();
+
+      final first = <RecoverySignal>[];
+      final second = <RecoverySignal>[];
+      final a = datasource.recoverySignals.listen(first.add);
+      final b = datasource.recoverySignals.listen(second.add);
+      await settle();
+
+      // Both listeners were attached when it was delivered: one copy each, never two for the same one.
+      expect(first, [RecoverySignal.started]);
+      expect(second, [RecoverySignal.started]);
+      expect(datasource.recoveryActive, isTrue);
+      await a.cancel();
+      await b.cancel();
+      await datasource.dispose();
+    });
+
+    test(
+      'a link handled before the datasource existed is still seen',
+      () async {
+        final double = backend();
+        await double.signIn();
+        openLink(
+          double,
+        ); // gotrue replays this to the datasource's subscription
+        final datasource = SupabaseAuthDatasource(double.client, tracker);
+        await settle();
+
+        final signals = <RecoverySignal>[];
+        final sub = datasource.recoverySignals.listen(signals.add);
+        await settle();
+
+        expect(signals, [RecoverySignal.started]);
+        await sub.cancel();
+        await datasource.dispose();
+      },
+    );
+
+    test('two live listeners each get the event once', () async {
+      final double = backend();
+      await double.signIn();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final first = <RecoverySignal>[];
+      final second = <RecoverySignal>[];
+      final a = datasource.recoverySignals.listen(first.add);
+      final b = datasource.recoverySignals.listen(second.add);
+
+      openLink(double);
+      await settle();
+
+      expect(first, [RecoverySignal.started]);
+      expect(second, [RecoverySignal.started]);
+      await a.cancel();
+      await b.cancel();
+      await datasource.dispose();
+    });
+
+    test('an old link is not replayed to a listener that comes after it was delivered', () async {
+      final double = backend();
+      await double.signIn();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final early = datasource.recoverySignals.listen((_) {});
+      openLink(double);
+      await settle();
+      await early.cancel();
+
+      final late = <RecoverySignal>[];
+      final sub = datasource.recoverySignals.listen(late.add);
+      await settle();
+
+      expect(late, isEmpty);
+      await sub.cancel();
+      await datasource.dispose();
+    });
+
+    test('signing out drops a recovery that was never delivered', () async {
+      final double = backend();
+      await double.signIn();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      openLink(double);
+      await settle();
+      await datasource.signOut();
+
+      final signals = <RecoverySignal>[];
+      final sub = datasource.recoverySignals.listen(signals.add);
+      await settle();
+
+      expect(signals, isEmpty);
+      expect(datasource.recoveryActive, isFalse);
+      await sub.cancel();
+      await datasource.dispose();
+    });
+
+    test('an expired or refused link is linkFailed', () async {
+      final double = backend();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final signals = <RecoverySignal>[];
+      final sub = datasource.recoverySignals.listen(signals.add);
+
+      double.client.auth.notifyException(
+        AuthException('expired', statusCode: 'otp_expired'),
+      );
+      double.client.auth.notifyException(
+        AuthException('denied', code: 'access_denied'),
+      );
+      await settle();
+
+      expect(signals, [RecoverySignal.linkFailed, RecoverySignal.linkFailed]);
+      expect(datasource.recoveryActive, isFalse);
+      await sub.cancel();
+      await datasource.dispose();
+    });
+
+    test('other stream errors are not about the link', () async {
+      final double = backend();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final signals = <RecoverySignal>[];
+      final sub = datasource.recoverySignals.listen(signals.add);
+
+      double.client.auth.notifyException(
+        AuthRetryableFetchException(message: 'offline'),
+      );
+      double.client.auth.notifyException(StateError('boom'));
+      await settle();
+
+      expect(signals, isEmpty);
+      await sub.cancel();
+      await datasource.dispose();
+    });
+
+    test('a refused link that arrives before any listener is kept for the first one', () async {
+      final double = backend();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      double.client.auth.notifyException(
+        AuthException('expired', statusCode: 'otp_expired'),
+      );
+      await settle();
+
+      final signals = <RecoverySignal>[];
+      final sub = datasource.recoverySignals.listen(signals.add);
+      await settle();
+
+      expect(signals, [RecoverySignal.linkFailed]);
+      await sub.cancel();
+      await datasource.dispose();
+    });
+
+    test('signing in ends a pending recovery', () async {
+      final double = BackendDouble((request) async {
+        if (request.url.path.endsWith('/functions/v1/sign-in')) {
+          return BackendDouble.json({'refresh_token': 'refresh'});
+        }
+        return BackendDouble.sessionResponse();
+      });
+      await storage.setValue<bool>(StorageKeys.recoveryPending, true);
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+
+      await datasource.signIn(identifier: 'dip.roy', password: 'secret');
+
+      expect(storage.getValue<bool>(StorageKeys.recoveryPending), isNull);
+      expect(datasource.recoveryActive, isFalse);
+      await datasource.dispose();
+    });
+
+    test(
+      'a session lost by itself is reported as expired; an own sign-out is not',
+      () async {
+        final double = backend();
+        await double.signIn();
+        final datasource = SupabaseAuthDatasource(double.client, tracker);
+        final ended = <SignedOutReason>[];
+        final sub = datasource.sessionEnded.listen(ended.add);
+
+        await datasource.signOut(); // userInitiated
+        double.client.auth.notifyAllSubscribers(
+          AuthChangeEvent.signedOut,
+          broadcast: false,
+          signOutReason: SignOutReason.sessionExpired,
+        );
+        await settle();
+
+        expect(ended, [SignedOutReason.expired]);
+        await sub.cancel();
+        await datasource.dispose();
+      },
+    );
+
+    test(
+      'a session lost before the app shell listens still reaches it',
+      () async {
+        final double = backend();
+        await double.signIn();
+        final datasource = SupabaseAuthDatasource(double.client, tracker);
+        double.client.auth.notifyAllSubscribers(
+          AuthChangeEvent.signedOut,
+          broadcast: false,
+          signOutReason: SignOutReason.sessionExpired,
+        );
+        await settle();
+
+        final ended = <SignedOutReason>[];
+        final sub = datasource.sessionEnded.listen(ended.add);
+        await settle();
+
+        expect(ended, [SignedOutReason.expired]);
+        await sub.cancel();
+        await datasource.dispose();
+      },
+    );
+
+    test('dispose can be called twice', () async {
+      final datasource = SupabaseAuthDatasource(backend().client, tracker);
+      await datasource.dispose();
+      await datasource.dispose();
+    });
+
+    test('dispose stops the datasource from reacting to auth events', () async {
+      final double = backend();
+      await double.signIn();
+      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      await datasource.dispose();
+
+      openLink(double);
+      await settle();
+
+      expect(storage.getValue<bool>(StorageKeys.recoveryPending), isNull);
+    });
   });
 }

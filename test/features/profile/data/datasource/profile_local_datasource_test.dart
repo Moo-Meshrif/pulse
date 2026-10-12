@@ -74,6 +74,37 @@ void main() {
     await storage.setValue<String>(StorageKeys.profile('u1'), 'not json');
     expect(local.read('u1'), isNull);
   });
+
+  group('last account', () {
+    test('none until a profile is saved', () {
+      expect(local.readLast(), isNull);
+    });
+
+    test('the profile saved last is the last account', () async {
+      await local.write(profile);
+      await local.write(
+        const ProfileModel(id: 'u2', username: 'ada', fullName: 'Ada'),
+      );
+
+      expect(local.readLast()?.id, 'u2');
+      expect(local.read('u1')?.username, 'dip', reason: 'u1 stays saved');
+    });
+
+    test('clearing that user removes the copy and the pointer', () async {
+      await local.write(profile);
+      await local.clear('u1');
+
+      expect(local.readLast(), isNull);
+      expect(storage.containsKey(StorageKeys.lastAccount), isFalse);
+    });
+
+    test('clearing another user leaves the pointer', () async {
+      await local.write(profile);
+      await local.clear('u2');
+
+      expect(local.readLast()?.id, 'u1');
+    });
+  });
 }
 
 extension on ProfileModel {

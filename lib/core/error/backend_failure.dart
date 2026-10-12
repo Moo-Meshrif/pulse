@@ -42,10 +42,9 @@ Failure _auth(AuthException error) {
     'over_request_rate_limit' ||
     'over_sms_send_rate_limit' => AuthFailureReason.rateLimited,
     'session_not_found' ||
-    'session_expired' ||
     'refresh_token_not_found' ||
-    'refresh_token_already_used' ||
-    'bad_jwt' => AuthFailureReason.sessionExpired,
+    'refresh_token_already_used' => AuthFailureReason.sessionRevoked,
+    'session_expired' || 'bad_jwt' => AuthFailureReason.sessionExpired,
     _ => null,
   };
   if (reason != null) return AuthFailure(reason);

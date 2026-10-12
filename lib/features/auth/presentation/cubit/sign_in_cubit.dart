@@ -1,10 +1,13 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/enums/auth_failure_reason.dart';
+import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../profile/data/enums/signup_step.dart';
+import '../../../profile/domain/use_case/forget_last_account_use_case.dart';
+import '../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../profile/domain/use_case/get_signup_step_use_case.dart';
 import '../../data/datasource/auth_datasource.dart';
 import '../utils/countdown.dart';
@@ -14,12 +17,41 @@ import 'sign_in_state.dart';
 /// password and an unknown username give the same answer, so it never leaks which exist.
 @injectable
 class SignInCubit extends BaseCubit<SignInState> {
-  SignInCubit(this._auth, this._getSignupStep) : super(const SignInState());
+  SignInCubit(
+    this._auth,
+    this._getSignupStep,
+    this._getLastAccount,
+    this._forgetLastAccount,
+  ) : super(const SignInState());
 
   final AuthDatasource _auth;
   final GetSignupStepUseCase _getSignupStep;
+  final GetLastAccountUseCase _getLastAccount;
+  final ForgetLastAccountUseCase _forgetLastAccount;
 
   final _countdown = Countdown();
+
+  /// Opened because a session ended ([reason]): names the saved account, whose username is then the
+  /// identifier, so only the password is left to type (S14). Without a saved account the banner shows
+  /// over the normal form. No [reason] leaves a plain Sign in.
+  void start(SignedOutReason? reason) {
+    if (reason == null) return;
+    final account = _getLastAccount();
+    emit(
+      state.copyWith(
+        reason: reason,
+        account: account,
+        identifier: account?.username ?? state.identifier,
+      ),
+    );
+  }
+
+  /// "Not you?": forgets the saved account on this device and shows the normal form.
+  Future<void> forgetAccount() async {
+    if (state.loading || state.account == null) return;
+    await _forgetLastAccount();
+    emit(state.copyWith(reason: null, account: null, identifier: ''));
+  }
 
   // Typing clears a credentials error, but not the throttle message while its countdown runs.
   void identifierChanged(String value) => emit(

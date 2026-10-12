@@ -18,10 +18,16 @@ import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 import '../../app/app_module.dart' as _i431;
 import '../../features/auth/data/datasource/auth_datasource.dart' as _i43;
+import '../../features/auth/data/datasource/password_recovery_tracker.dart'
+    as _i236;
+import '../../features/auth/domain/use_case/is_recovery_pending_use_case.dart'
+    as _i730;
 import '../../features/auth/domain/use_case/is_signed_in_use_case.dart'
     as _i710;
 import '../../features/auth/domain/use_case/watch_password_recovery_use_case.dart'
     as _i121;
+import '../../features/auth/domain/use_case/watch_session_ended_use_case.dart'
+    as _i793;
 import '../../features/auth/presentation/cubit/forgot_password_cubit.dart'
     as _i104;
 import '../../features/auth/presentation/cubit/reset_password_cubit.dart'
@@ -58,8 +64,12 @@ import '../../features/profile/domain/use_case/clear_local_profile_use_case.dart
     as _i428;
 import '../../features/profile/domain/use_case/complete_signup_use_case.dart'
     as _i890;
+import '../../features/profile/domain/use_case/forget_last_account_use_case.dart'
+    as _i1067;
 import '../../features/profile/domain/use_case/get_interests_use_case.dart'
     as _i586;
+import '../../features/profile/domain/use_case/get_last_account_use_case.dart'
+    as _i727;
 import '../../features/profile/domain/use_case/get_signup_draft_use_case.dart'
     as _i199;
 import '../../features/profile/domain/use_case/get_signup_step_use_case.dart'
@@ -96,24 +106,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1016.LaunchService>(
       () => _i1016.UrlLauncherLaunchService(),
     );
-    gh.lazySingleton<_i43.AuthDatasource>(
-      () => _i43.SupabaseAuthDatasource(gh<_i454.SupabaseClient>()),
-    );
     gh.lazySingleton<_i152.InterestsDatasource>(
       () => _i152.SupabaseInterestsDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i527.LocalStorageService>(
       () => _i527.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
-    );
-    gh.factory<_i710.IsSignedInUseCase>(
-      () => _i710.IsSignedInUseCase(gh<_i43.AuthDatasource>()),
-    );
-    gh.factory<_i121.WatchPasswordRecoveryUseCase>(
-      () => _i121.WatchPasswordRecoveryUseCase(gh<_i43.AuthDatasource>()),
-    );
-    gh.factory<_i476.ResetPasswordCubit>(
-      () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
     );
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
@@ -142,14 +140,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i47.ConnectivityService>(
       () => _i47.PlusConnectivityService(gh<_i895.Connectivity>()),
     );
-    gh.factory<_i104.ForgotPasswordCubit>(
-      () => _i104.ForgotPasswordCubit(
-        gh<_i43.AuthDatasource>(),
-        gh<_i1016.LaunchService>(),
-      ),
-    );
     gh.factory<_i586.GetInterestsUseCase>(
       () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
+    );
+    gh.lazySingleton<_i236.PasswordRecoveryTracker>(
+      () => _i236.PasswordRecoveryTracker(gh<_i527.LocalStorageService>()),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i834.OnboardingDatasource>(
       () => _i834.OnboardingDatasource(gh<_i527.LocalStorageService>()),
@@ -159,6 +155,19 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i807.OnboardingCubit>(
       () => _i807.OnboardingCubit(gh<_i834.OnboardingDatasource>()),
+    );
+    gh.lazySingleton<_i43.AuthDatasource>(
+      () => _i43.SupabaseAuthDatasource(
+        gh<_i454.SupabaseClient>(),
+        gh<_i236.PasswordRecoveryTracker>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i104.ForgotPasswordCubit>(
+      () => _i104.ForgotPasswordCubit(
+        gh<_i43.AuthDatasource>(),
+        gh<_i1016.LaunchService>(),
+      ),
     );
     gh.lazySingleton<_i508.ProfileRepository>(
       () => _i508.ProfileRepositoryImpl(
@@ -178,6 +187,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i890.CompleteSignupUseCase>(
       () => _i890.CompleteSignupUseCase(gh<_i508.ProfileRepository>()),
     );
+    gh.factory<_i1067.ForgetLastAccountUseCase>(
+      () => _i1067.ForgetLastAccountUseCase(gh<_i508.ProfileRepository>()),
+    );
+    gh.factory<_i727.GetLastAccountUseCase>(
+      () => _i727.GetLastAccountUseCase(gh<_i508.ProfileRepository>()),
+    );
     gh.factory<_i199.GetSignupDraftUseCase>(
       () => _i199.GetSignupDraftUseCase(gh<_i508.ProfileRepository>()),
     );
@@ -189,6 +204,29 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i255.SaveProfileDetailsUseCase>(
       () => _i255.SaveProfileDetailsUseCase(gh<_i508.ProfileRepository>()),
+    );
+    gh.factory<_i329.SignInCubit>(
+      () => _i329.SignInCubit(
+        gh<_i43.AuthDatasource>(),
+        gh<_i697.GetSignupStepUseCase>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        gh<_i1067.ForgetLastAccountUseCase>(),
+      ),
+    );
+    gh.factory<_i730.IsRecoveryPendingUseCase>(
+      () => _i730.IsRecoveryPendingUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i710.IsSignedInUseCase>(
+      () => _i710.IsSignedInUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i121.WatchPasswordRecoveryUseCase>(
+      () => _i121.WatchPasswordRecoveryUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i793.WatchSessionEndedUseCase>(
+      () => _i793.WatchSessionEndedUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i476.ResetPasswordCubit>(
+      () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
     );
     gh.factory<_i102.SignUpCubit>(
       () => _i102.SignUpCubit(
@@ -207,15 +245,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i199.GetSignupDraftUseCase>(),
       ),
     );
-    gh.factory<_i329.SignInCubit>(
-      () => _i329.SignInCubit(
-        gh<_i43.AuthDatasource>(),
-        gh<_i697.GetSignupStepUseCase>(),
-      ),
-    );
     gh.factory<_i125.SplashCubit>(
       () => _i125.SplashCubit(
         gh<_i710.IsSignedInUseCase>(),
+        gh<_i730.IsRecoveryPendingUseCase>(),
         gh<_i697.GetSignupStepUseCase>(),
         gh<_i47.ConnectivityService>(),
       ),

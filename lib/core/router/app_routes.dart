@@ -1,8 +1,14 @@
+import '../enums/signed_out_reason.dart';
+
 abstract final class AppRoutes {
   /// Start route: resolved by the router to onboarding (first launch) or the splash screen, which picks Sign in, Home or a sign-up step.
   static const root = '/';
   static const onboarding = '/onboarding';
   static const signIn = '/sign-in';
+
+  /// Sign in after a session ended: names the saved account and says why (S14).
+  static String signInWith(SignedOutReason reason) =>
+      Uri(path: signIn, queryParameters: {'reason': reason.name}).toString();
 
   /// Registration step 1 (Account).
   static const register = '/register';

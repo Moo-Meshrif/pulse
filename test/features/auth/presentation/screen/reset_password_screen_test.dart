@@ -22,7 +22,8 @@ void main() {
   setUp(() async {
     auth = MockAuthDatasource();
     when(() => auth.currentEmail).thenReturn('ada.lovelace@example.com');
-    when(() => auth.passwordRecovery).thenAnswer((_) => const Stream.empty());
+    when(() => auth.recoveryActive).thenReturn(true);
+    when(() => auth.recoverySignals).thenAnswer((_) => const Stream.empty());
     when(() => auth.updatePassword(any())).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
         .thenAnswer((_) async {});
@@ -221,12 +222,13 @@ void main() {
       expect(find.text('route: ${AppRoutes.forgotPassword}'), findsOneWidget);
     });
 
-    testView('the X still goes to Sign in', (tester) async {
+    testView('the X signs nobody out', (tester) async {
       await open(tester);
       await tester.tap(find.bySemanticsLabel(l10nEn.close));
       await tester.pumpAndSettle();
 
-      expect(find.text('route: ${AppRoutes.signIn}'), findsOneWidget);
+      // (The test app's own '/' is this screen again; the cubit test covers the route.)
+      verifyNever(() => auth.signOut(others: any(named: 'others')));
     });
   });
 

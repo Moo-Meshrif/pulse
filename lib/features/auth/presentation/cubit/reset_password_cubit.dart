@@ -13,12 +13,17 @@ import 'reset_password_state.dart';
 @injectable
 class ResetPasswordCubit extends BaseCubit<ResetPasswordState> {
   ResetPasswordCubit(this._auth)
-    : super(ResetPasswordState(email: _auth.currentEmail)) {
+    : super(ResetPasswordState(email: _recoveryEmail(_auth))) {
     // The link can open this screen a moment before the recovery session exists.
-    _recovery = _auth.passwordRecovery.listen(
-      (_) => emit(state.copyWith(email: _auth.currentEmail)),
+    _recovery = _auth.recoverySignals.listen(
+      (_) => emit(state.copyWith(email: _recoveryEmail(_auth))),
     );
   }
+
+  /// Only a recovery session counts: an ordinary signed-in session (a refused link opened this screen
+  /// while the user was on Home) must not show the form.
+  static String? _recoveryEmail(AuthDatasource auth) =>
+      auth.recoveryActive ? auth.currentEmail : null;
 
   final AuthDatasource _auth;
 
@@ -61,8 +66,15 @@ class ResetPasswordCubit extends BaseCubit<ResetPasswordState> {
   }
 
   /// The X and the dialog's "Sign in": ends the recovery session and opens Sign in. The session is dropped
-  /// on this device even when the server cannot be reached.
+  /// on this device even when the server cannot be reached. With no recovery session (the link was
+  /// refused) the X signs nobody out: the start-up route sends a signed-in user home and the rest to
+  /// Sign in.
   Future<void> leave() async {
+    if (state.linkExpired) {
+      emit(state.copyWith(route: AppRoutes.root));
+      emit(state.copyWith(route: null));
+      return;
+    }
     emit(state.copyWith(loading: true));
     try {
       await _auth.signOut();

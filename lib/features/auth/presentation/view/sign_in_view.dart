@@ -8,10 +8,12 @@ import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/sign_in_cubit.dart';
 import '../cubit/sign_in_state.dart';
+import '../widgets/account_card.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_switch_link.dart';
 import '../widgets/forgot_password_link.dart';
 import '../widgets/or_divider.dart';
+import '../widgets/session_banner.dart';
 import '../widgets/social_buttons_row.dart';
 
 /// Sign in's UI (docs/specs/auth/screens/s1-signin.md). The text controllers are local UI state. Only
@@ -43,6 +45,66 @@ class _SignInViewState extends State<SignInView> {
   bool _buttonStateChanged(SignInState before, SignInState state) =>
       before.loading != state.loading || before.canSubmit != state.canSubmit;
 
+  bool _accountPartChanged(SignInState before, SignInState state) =>
+      before.reason != state.reason || before.account != state.account;
+
+  /// Logo, title, subtitle, then (after a session ended) the banner, then the saved account or, as in a
+  /// plain Sign in, the Email or username field.
+  Widget _topPart(BuildContext context, SignInState state) {
+    final l10n = context.l10n;
+    final account = state.account;
+    final reason = state.reason;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AuthHeader(
+          leading: const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: LogoTile(),
+          ),
+          title: l10n.signInTitle,
+          subtitle: account == null
+              ? l10n.signInSubtitle
+              : l10n.signedOutSubtitle,
+        ),
+        if (reason != null) ...[
+          SizedBox(height: AuthDimens.signedOutBannerGap),
+          SessionBanner(reason: reason),
+          SizedBox(height: AuthDimens.signedOutBannerGap),
+        ] else
+          SizedBox(height: AuthDimens.signInFormGap),
+        if (account != null)
+          _LoadingSelector(
+            builder: (loading) => AccountCard(
+              id: account.id,
+              fullName: account.fullName,
+              username: account.username,
+              avatarUrl: account.avatarUrl,
+              onNotYou: loading ? null : _cubit.forgetAccount,
+            ),
+          )
+        else
+          _LoadingSelector(
+            builder: (loading) => AppTextField(
+              label: l10n.identifierLabel,
+              hint: l10n.emailHint,
+              controller: _identifier,
+              forceLtr: true,
+              readOnly: loading,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [
+                AutofillHints.username,
+                AutofillHints.email,
+              ],
+              onChanged: _cubit.identifierChanged,
+              onSubmitted: (_) => _passwordFocus.requestFocus(),
+            ),
+          ),
+      ],
+    );
+  }
+
   void _openForgotPassword() =>
       AppNavigator.push(context, AppRoutes.forgotPassword);
 
@@ -69,33 +131,11 @@ class _SignInViewState extends State<SignInView> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: AuthDimens.signInTopGap),
-                        AuthHeader(
-                          leading: const Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: LogoTile(),
-                          ),
-                          title: l10n.signInTitle,
-                          subtitle: l10n.signInSubtitle,
-                        ),
-                        SizedBox(height: AuthDimens.signInFormGap),
-                        _LoadingSelector(
-                          builder: (loading) => AppTextField(
-                            label: l10n.identifierLabel,
-                            hint: l10n.emailHint,
-                            controller: _identifier,
-                            forceLtr: true,
-                            readOnly: loading,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            autofillHints: const [
-                              AutofillHints.username,
-                              AutofillHints.email,
-                            ],
-                            onChanged: context
-                                .read<SignInCubit>()
-                                .identifierChanged,
-                            onSubmitted: (_) => _passwordFocus.requestFocus(),
-                          ),
+                        // Header, banner and the account: they change together when a session ended
+                        // and when "Not you?" is tapped.
+                        BlocBuilder<SignInCubit, SignInState>(
+                          buildWhen: _accountPartChanged,
+                          builder: (context, state) => _topPart(context, state),
                         ),
                         SizedBox(height: AppSpacing.fieldGap),
                         _LoadingSelector(
@@ -104,6 +144,8 @@ class _SignInViewState extends State<SignInView> {
                             hint: l10n.passwordHint,
                             controller: _password,
                             focusNode: _passwordFocus,
+                            // With the account named there is only the password left to type.
+                            autofocus: _cubit.state.account != null,
                             isPassword: true,
                             readOnly: loading,
                             textInputAction: TextInputAction.done,

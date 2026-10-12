@@ -1148,6 +1148,48 @@ abstract class AppLocalizations {
   /// **'Request a new link to reset your password.'**
   String get linkExpiredBody;
 
+  /// Snackbar when an emailed reset link is opened but is no longer valid
+  ///
+  /// In en, this message translates to:
+  /// **'This link has expired. Request a new one to reset your password.'**
+  String get linkExpiredSnackBar;
+
+  /// Sign in subtitle after a session ended and the account is known
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to continue.'**
+  String get signedOutSubtitle;
+
+  /// Sign in banner title after a session ended
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve been signed out'**
+  String get signedOutTitle;
+
+  /// Sign in banner body when the session ran out
+  ///
+  /// In en, this message translates to:
+  /// **'Your session expired. Sign in again to pick up where you left off.'**
+  String get signedOutExpiredBody;
+
+  /// Sign in banner body when the session was ended elsewhere
+  ///
+  /// In en, this message translates to:
+  /// **'Your session was ended on another device or after a password change. Sign in again to keep going.'**
+  String get signedOutRevokedBody;
+
+  /// Sign in: label above the saved account card
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountLabel;
+
+  /// Sign in: forgets the saved account and shows the normal form
+  ///
+  /// In en, this message translates to:
+  /// **'Not you?'**
+  String get notYou;
+
   /// Set new password screen: opens Forgot password
   ///
   /// In en, this message translates to:

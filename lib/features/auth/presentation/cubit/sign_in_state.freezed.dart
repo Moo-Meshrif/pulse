@@ -19,7 +19,10 @@ mixin _$SignInState {
  Failure? get failure;/// Time left before another attempt is allowed (too many attempts); null when not throttled.
  Duration? get retryIn;/// One-shot: where the screen goes next. The Cubit clears it right after emitting it.
  String? get route;/// With [route]: replace the whole stack (signed in) rather than push (verify email).
- bool get clearStack;
+ bool get clearStack;/// Why the session ended, when Sign in was opened for that (S14); null for a plain Sign in.
+ SignedOutReason? get reason;/// The saved account named on the screen (its username is then [identifier]); null when none is known
+/// or after "Not you?".
+ LastAccountEntity? get account;
 /// Create a copy of SignInState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,20 +34,20 @@ $SignInStateCopyWith<SignInState> get copyWith => _$SignInStateCopyWithImpl<Sign
 @override
 bool operator ==(Object other) {
   final _this = this as SignInState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignInState&&(identical(other.identifier, _this.identifier) || other.identifier == _this.identifier)&&(identical(other.password, _this.password) || other.password == _this.password)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.failure, _this.failure) || other.failure == _this.failure)&&(identical(other.retryIn, _this.retryIn) || other.retryIn == _this.retryIn)&&(identical(other.route, _this.route) || other.route == _this.route)&&(identical(other.clearStack, _this.clearStack) || other.clearStack == _this.clearStack));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignInState&&(identical(other.identifier, _this.identifier) || other.identifier == _this.identifier)&&(identical(other.password, _this.password) || other.password == _this.password)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.failure, _this.failure) || other.failure == _this.failure)&&(identical(other.retryIn, _this.retryIn) || other.retryIn == _this.retryIn)&&(identical(other.route, _this.route) || other.route == _this.route)&&(identical(other.clearStack, _this.clearStack) || other.clearStack == _this.clearStack)&&(identical(other.reason, _this.reason) || other.reason == _this.reason)&&(identical(other.account, _this.account) || other.account == _this.account));
 }
 
 
 @override
 int get hashCode {
   final _this = this as SignInState;
-  return Object.hash(runtimeType,_this.identifier,_this.password,_this.loading,_this.failure,_this.retryIn,_this.route,_this.clearStack);
+  return Object.hash(runtimeType,_this.identifier,_this.password,_this.loading,_this.failure,_this.retryIn,_this.route,_this.clearStack,_this.reason,_this.account);
 }
 
 @override
 String toString() {
   final _this = this as SignInState;
-  return 'SignInState(identifier: ${_this.identifier}, password: ${_this.password}, loading: ${_this.loading}, failure: ${_this.failure}, retryIn: ${_this.retryIn}, route: ${_this.route}, clearStack: ${_this.clearStack})';
+  return 'SignInState(identifier: ${_this.identifier}, password: ${_this.password}, loading: ${_this.loading}, failure: ${_this.failure}, retryIn: ${_this.retryIn}, route: ${_this.route}, clearStack: ${_this.clearStack}, reason: ${_this.reason}, account: ${_this.account})';
 }
 
 
@@ -55,7 +58,7 @@ abstract mixin class $SignInStateCopyWith<$Res>  {
   factory $SignInStateCopyWith(SignInState value, $Res Function(SignInState) _then) = _$SignInStateCopyWithImpl;
 @useResult
 $Res call({
- String identifier, String password, bool loading, Failure? failure, Duration? retryIn, String? route, bool clearStack
+ String identifier, String password, bool loading, Failure? failure, Duration? retryIn, String? route, bool clearStack, SignedOutReason? reason, LastAccountEntity? account
 });
 
 
@@ -72,7 +75,7 @@ class _$SignInStateCopyWithImpl<$Res>
 
 /// Create a copy of SignInState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? identifier = null,Object? password = null,Object? loading = null,Object? failure = freezed,Object? retryIn = freezed,Object? route = freezed,Object? clearStack = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? identifier = null,Object? password = null,Object? loading = null,Object? failure = freezed,Object? retryIn = freezed,Object? route = freezed,Object? clearStack = null,Object? reason = freezed,Object? account = freezed,}) {
   return _then(SignInState(
 identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
@@ -81,7 +84,9 @@ as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nu
 as Failure?,retryIn: freezed == retryIn ? _self.retryIn : retryIn // ignore: cast_nullable_to_non_nullable
 as Duration?,route: freezed == route ? _self.route : route // ignore: cast_nullable_to_non_nullable
 as String?,clearStack: null == clearStack ? _self.clearStack : clearStack // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as SignedOutReason?,account: freezed == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
+as LastAccountEntity?,
   ));
 }
 
@@ -166,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String identifier,  String password,  bool loading,  Failure? failure,  Duration? retryIn,  String? route,  bool clearStack)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String identifier,  String password,  bool loading,  Failure? failure,  Duration? retryIn,  String? route,  bool clearStack,  SignedOutReason? reason,  LastAccountEntity? account)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SignInState() when $default != null:
-return $default(_that.identifier,_that.password,_that.loading,_that.failure,_that.retryIn,_that.route,_that.clearStack);case _:
+return $default(_that.identifier,_that.password,_that.loading,_that.failure,_that.retryIn,_that.route,_that.clearStack,_that.reason,_that.account);case _:
   return orElse();
 
 }
@@ -187,10 +192,10 @@ return $default(_that.identifier,_that.password,_that.loading,_that.failure,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String identifier,  String password,  bool loading,  Failure? failure,  Duration? retryIn,  String? route,  bool clearStack)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String identifier,  String password,  bool loading,  Failure? failure,  Duration? retryIn,  String? route,  bool clearStack,  SignedOutReason? reason,  LastAccountEntity? account)  $default,) {final _that = this;
 switch (_that) {
 case _SignInState():
-return $default(_that.identifier,_that.password,_that.loading,_that.failure,_that.retryIn,_that.route,_that.clearStack);case _:
+return $default(_that.identifier,_that.password,_that.loading,_that.failure,_that.retryIn,_that.route,_that.clearStack,_that.reason,_that.account);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +212,10 @@ return $default(_that.identifier,_that.password,_that.loading,_that.failure,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String identifier,  String password,  bool loading,  Failure? failure,  Duration? retryIn,  String? route,  bool clearStack)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String identifier,  String password,  bool loading,  Failure? failure,  Duration? retryIn,  String? route,  bool clearStack,  SignedOutReason? reason,  LastAccountEntity? account)?  $default,) {final _that = this;
 switch (_that) {
 case _SignInState() when $default != null:
-return $default(_that.identifier,_that.password,_that.loading,_that.failure,_that.retryIn,_that.route,_that.clearStack);case _:
+return $default(_that.identifier,_that.password,_that.loading,_that.failure,_that.retryIn,_that.route,_that.clearStack,_that.reason,_that.account);case _:
   return null;
 
 }
@@ -222,7 +227,7 @@ return $default(_that.identifier,_that.password,_that.loading,_that.failure,_tha
 
 
 class _SignInState extends SignInState {
-  const _SignInState({this.identifier = '', this.password = '', this.loading = false, this.failure, this.retryIn, this.route, this.clearStack = false}): super._();
+  const _SignInState({this.identifier = '', this.password = '', this.loading = false, this.failure, this.retryIn, this.route, this.clearStack = false, this.reason, this.account}): super._();
   
 
 @override@JsonKey() final  String identifier;
@@ -236,6 +241,11 @@ class _SignInState extends SignInState {
 @override final  String? route;
 /// With [route]: replace the whole stack (signed in) rather than push (verify email).
 @override@JsonKey() final  bool clearStack;
+/// Why the session ended, when Sign in was opened for that (S14); null for a plain Sign in.
+@override final  SignedOutReason? reason;
+/// The saved account named on the screen (its username is then [identifier]); null when none is known
+/// or after "Not you?".
+@override final  LastAccountEntity? account;
 
 /// Create a copy of SignInState
 /// with the given fields replaced by the non-null parameter values.
@@ -247,18 +257,18 @@ _$SignInStateCopyWith<_SignInState> get copyWith => __$SignInStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignInState&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.password, password) || other.password == password)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.retryIn, retryIn) || other.retryIn == retryIn)&&(identical(other.route, route) || other.route == route)&&(identical(other.clearStack, clearStack) || other.clearStack == clearStack));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignInState&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.password, password) || other.password == password)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.retryIn, retryIn) || other.retryIn == retryIn)&&(identical(other.route, route) || other.route == route)&&(identical(other.clearStack, clearStack) || other.clearStack == clearStack)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.account, account) || other.account == account));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,identifier,password,loading,failure,retryIn,route,clearStack);
+    return Object.hash(runtimeType,identifier,password,loading,failure,retryIn,route,clearStack,reason,account);
 }
 
 @override
 String toString() {
-    return 'SignInState(identifier: $identifier, password: $password, loading: $loading, failure: $failure, retryIn: $retryIn, route: $route, clearStack: $clearStack)';
+    return 'SignInState(identifier: $identifier, password: $password, loading: $loading, failure: $failure, retryIn: $retryIn, route: $route, clearStack: $clearStack, reason: $reason, account: $account)';
 }
 
 
@@ -269,7 +279,7 @@ abstract mixin class _$SignInStateCopyWith<$Res> implements $SignInStateCopyWith
   factory _$SignInStateCopyWith(_SignInState value, $Res Function(_SignInState) _then) = __$SignInStateCopyWithImpl;
 @override @useResult
 $Res call({
- String identifier, String password, bool loading, Failure? failure, Duration? retryIn, String? route, bool clearStack
+ String identifier, String password, bool loading, Failure? failure, Duration? retryIn, String? route, bool clearStack, SignedOutReason? reason, LastAccountEntity? account
 });
 
 
@@ -286,7 +296,7 @@ class __$SignInStateCopyWithImpl<$Res>
 
 /// Create a copy of SignInState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? identifier = null,Object? password = null,Object? loading = null,Object? failure = freezed,Object? retryIn = freezed,Object? route = freezed,Object? clearStack = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? identifier = null,Object? password = null,Object? loading = null,Object? failure = freezed,Object? retryIn = freezed,Object? route = freezed,Object? clearStack = null,Object? reason = freezed,Object? account = freezed,}) {
   return _then(_SignInState(
 identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
@@ -295,7 +305,9 @@ as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nu
 as Failure?,retryIn: freezed == retryIn ? _self.retryIn : retryIn // ignore: cast_nullable_to_non_nullable
 as Duration?,route: freezed == route ? _self.route : route // ignore: cast_nullable_to_non_nullable
 as String?,clearStack: null == clearStack ? _self.clearStack : clearStack // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as SignedOutReason?,account: freezed == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
+as LastAccountEntity?,
   ));
 }
 

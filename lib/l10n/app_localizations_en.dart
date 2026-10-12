@@ -600,6 +600,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkExpiredBody => 'Request a new link to reset your password.';
 
   @override
+  String get linkExpiredSnackBar =>
+      'This link has expired. Request a new one to reset your password.';
+
+  @override
+  String get signedOutSubtitle => 'Enter your password to continue.';
+
+  @override
+  String get signedOutTitle => 'You\'ve been signed out';
+
+  @override
+  String get signedOutExpiredBody =>
+      'Your session expired. Sign in again to pick up where you left off.';
+
+  @override
+  String get signedOutRevokedBody =>
+      'Your session was ended on another device or after a password change. Sign in again to keep going.';
+
+  @override
+  String get accountLabel => 'Account';
+
+  @override
+  String get notYou => 'Not you?';
+
+  @override
   String get requestNewLink => 'Request a new link';
 
   @override

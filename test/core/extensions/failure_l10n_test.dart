@@ -59,5 +59,9 @@ void main() {
       await words(tester, const AuthFailure(AuthFailureReason.sessionExpired)),
       l10nEn.errorSessionExpired,
     );
+    expect(
+      await words(tester, const AuthFailure(AuthFailureReason.sessionRevoked)),
+      l10nEn.errorSessionExpired,
+    );
   });
 }

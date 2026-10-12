@@ -82,3 +82,9 @@ Bottom area with side padding 24 and bottom padding ~24 [estimated] holding the 
 
 ## C16 AppLoadingView / AppInlineLoading (shared, `lib/core/widgets/`) [user: "Page loading" board]
 One loader everywhere: the heartbeat line (`PulseLineLoader`, Lottie light/dark). `AppLoadingView`: first load, 100 wide, optional label (14 `textSecondary`, 16 below). `AppInlineLoading.refresh()`: 56 line in a 64 band under the header; `.loadMore()`: 44 line in a 72 band above the nav. Announced as "Loading" (or the label). The blocking save is `runWithLoadingOverlay`; buttons show the line too (`PrimaryButton` white, `PillButton.outline(loading:)` `primary`, 72 wide). Stroke widths on the board (3, 2.6, 2.2, 2) are not applied: the Lottie file keeps its own stroke [estimated].
+
+## C17 SessionBanner (S14) (`features/auth/presentation/widgets/`)
+Full-width soft banner under the header: fill `primarySoft`, radius 14 [estimated], padding 14 [estimated]. Row: unlock icon 18 in `primary` (top aligned, 2 below the title's cap line [estimated]), 12 gap, column: title 14/700 `primary`, 2 gap, body 13/400 `textSecondary`-dark (reads as `textPrimary` at ~80% in the images [estimated]; confirm token). Icon: an open padlock, outline; `ic_unlock.svg` is not in `assets/icons` yet (see assets.md). Not dismissible, no action.
+
+## C18 AccountCard (S14) (`features/auth/presentation/widgets/`)
+Label "Account" (13/700 `textPrimary`) 8 above a card: `surface`, 1px `border`, radius 14, height 62, padding 13 start / 18 end [estimated]. Row: avatar 40 (C12 palette, 2-letter initials 15/700 white; photo `BoxFit.cover` when `avatarUrl`), 12 gap, Expanded column (full name 15/700 `textPrimary`, @username 12/400 `textSecondary`, 1 line each, ellipsis), then "Not you?" (14/700 `primary`, 44 tap target) at the end.

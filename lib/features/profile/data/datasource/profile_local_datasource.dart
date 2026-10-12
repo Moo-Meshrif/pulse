@@ -31,14 +31,25 @@ class ProfileLocalDatasource {
           ..remove('phone')
           ..remove('birthday'),
       );
+      await _storage.setValue<String>(StorageKeys.lastAccount, id);
     } catch (error, stackTrace) {
       ErrorReporter.report(error, stackTrace);
     }
   }
 
+  /// The copy of the user saved last: the account Sign in names after a session has ended.
+  ProfileModel? readLast() {
+    final id = _storage.getValue<String>(StorageKeys.lastAccount);
+    return id == null ? null : read(id);
+  }
+
+  /// Forgets the copy of [userId], and the last-account pointer when it points at that user.
   Future<void> clear(String userId) async {
     try {
       await _storage.remove(StorageKeys.profile(userId));
+      if (_storage.getValue<String>(StorageKeys.lastAccount) == userId) {
+        await _storage.remove(StorageKeys.lastAccount);
+      }
     } catch (error, stackTrace) {
       ErrorReporter.report(error, stackTrace);
     }

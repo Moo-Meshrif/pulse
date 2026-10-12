@@ -243,6 +243,15 @@ abstract final class AuthDimens {
   static double get signInSectionGap => AppScale.scale(24);
   static double get signInSocialGap => AppScale.scale(20);
   static double get signInFooterBottom => AppScale.scale(28);
+
+  // Sign in after a session ended (S14), all [estimated] from the screenshots
+  static double get signedOutBannerGap => AppScale.scale(28);
+  static double get signedOutBannerPadding => AppScale.scale(14);
+  static double get signedOutBannerIcon => AppScale.scale(18);
+  static double get signedOutBannerIconNudge => AppScale.scale(2);
+  static double get signedOutBannerTitleGap => AppScale.scale(2);
+  static double get accountAvatar => AppScale.scale(40);
+  static double get accountCardHeight => AppScale.scale(62);
   static const double linkTapHeight = 44; // tap target: fixed
 
   // Forgot password (S2): the lock tile ~24 under the back arrow [estimated], 32 above the field, 24

@@ -48,6 +48,8 @@
 	<array>
 		<string>mailto</string>
 		<string>message</string>
+		<string>googlegmail</string>
+		<string>ms-outlook</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Pulse uses the camera to take your profile photo.</string>

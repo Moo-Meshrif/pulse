@@ -36,6 +36,7 @@ abstract final class AppAssets {
   static const location = '$_icons/ic_location.svg';
   static const key = '$_icons/ic_key.svg';
   static const lock = '$_icons/ic_lock.svg';
+  static const unlock = '$_icons/ic_unlock.svg';
   static const logout = '$_icons/ic_logout.svg';
   static const mail = '$_icons/ic_mail.svg';
   static const moreHorizontal = '$_icons/ic_more_horizontal.svg';

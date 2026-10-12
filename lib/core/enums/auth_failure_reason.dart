@@ -31,6 +31,10 @@ enum AuthFailureReason {
   /// The server could not send the verification or reset email (mail provider problem).
   emailSendFailed,
 
-  /// No valid session (signed out, expired or revoked).
+  /// No valid session: it ran out (expired token, no session at all).
   sessionExpired,
+
+  /// The session was ended elsewhere: signed out on another device, or after a password change (its
+  /// refresh token no longer exists).
+  sessionRevoked,
 }

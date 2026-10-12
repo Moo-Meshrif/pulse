@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../enums/signed_out_reason.dart';
 import '../../features/auth/presentation/screen/forgot_password_screen.dart';
 import '../../features/auth/presentation/screen/legal_placeholder_screen.dart';
 import '../../features/auth/presentation/cubit/sign_up_cubit.dart';
@@ -23,7 +24,15 @@ abstract final class AppRouter {
     return switch (path) {
       AppRoutes.root => _root(settings),
       AppRoutes.onboarding => _page(settings, const OnboardingScreen()),
-      AppRoutes.signIn => _page(settings, const SignInScreen()),
+      AppRoutes.signIn => _page(
+        settings,
+        SignInScreen(
+          reason: SignedOutReason.fromParam(
+            Uri.parse(settings.name ?? AppRoutes.signIn)
+                .queryParameters['reason'],
+          ),
+        ),
+      ),
       AppRoutes.register => _register(settings),
       AppRoutes.forgotPassword => _page(settings, const ForgotPasswordScreen()),
       AppRoutes.resetPassword => _page(settings, const ResetPasswordScreen()),
@@ -36,6 +45,9 @@ abstract final class AppRouter {
         const LegalPlaceholderScreen(kind: LegalDocument.privacy),
       ),
       // TODO(auth-plan): replace with the real Home screen once it is specced (sign-in and sign-up end here).
+      // TODO(reset-link): when the control Cubit that holds all main pages exists, add the reset-link
+      // logic there the way the splash has it (`SplashCubit`: a pending password reset goes to
+      // `/reset-password`, never Home).
       AppRoutes.home => _page(
         settings,
         const PlaceholderScreen(route: AppRoutes.home),

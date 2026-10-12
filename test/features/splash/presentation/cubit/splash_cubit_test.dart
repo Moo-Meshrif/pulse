@@ -4,10 +4,12 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
+import 'package:pulse/core/enums/signed_out_reason.dart';
 import 'package:pulse/core/enums/connection_problem.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/connectivity_service.dart';
+import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
@@ -17,6 +19,8 @@ import 'package:pulse/features/splash/presentation/utils/enums/splash_problem.da
 
 class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
 
+class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
+
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
 class MockConnectivity extends Mock implements ConnectivityService {}
@@ -25,18 +29,22 @@ void main() {
   setUpAll(() => registerFallbackValue(const NetworkFailure()));
 
   late MockIsSignedIn isSignedIn;
+  late MockIsRecoveryPending isRecoveryPending;
   late MockGetSignupStep getSignupStep;
   late MockConnectivity connectivity;
 
   setUp(() {
     isSignedIn = MockIsSignedIn();
+    isRecoveryPending = MockIsRecoveryPending();
+    when(() => isRecoveryPending()).thenReturn(false);
     getSignupStep = MockGetSignupStep();
     connectivity = MockConnectivity();
     when(() => connectivity.diagnose(any()))
         .thenAnswer((_) async => ConnectionProblem.offline);
   });
 
-  SplashCubit cubit() => SplashCubit(isSignedIn, getSignupStep, connectivity);
+  SplashCubit cubit() =>
+      SplashCubit(isSignedIn, isRecoveryPending, getSignupStep, connectivity);
 
   void stepIs(SignupStep step) =>
       when(() => getSignupStep()).thenAnswer((_) async => step);
@@ -44,6 +52,18 @@ void main() {
   test('starts undecided', () {
     expect(cubit().state, const SplashState.deciding());
   });
+
+  blocTest<SplashCubit, SplashState>(
+    'an unfinished password reset resumes the reset screen, even with a session',
+    setUp: () {
+      when(() => isRecoveryPending()).thenReturn(true);
+      when(() => isSignedIn()).thenReturn(true);
+    },
+    build: cubit,
+    act: (c) => c.decide(),
+    expect: () => [const SplashState.go(AppRoutes.resetPassword)],
+    verify: (_) => verifyNever(() => getSignupStep()),
+  );
 
   blocTest<SplashCubit, SplashState>(
     'no session goes to Sign in without asking for the step',
@@ -172,11 +192,23 @@ void main() {
   }
 
   blocTest<SplashCubit, SplashState>(
-    'a revoked or expired session goes to Sign in, not to an error screen',
+    'an expired session goes to Sign in with the expired reason, not to an error screen',
     setUp: () => stepFails(const AuthFailure(AuthFailureReason.sessionExpired)),
     build: cubit,
     act: (c) => c.decide(),
-    expect: () => [const SplashState.go(AppRoutes.signIn)],
+    expect: () => [
+      SplashState.go(AppRoutes.signInWith(SignedOutReason.expired)),
+    ],
+  );
+
+  blocTest<SplashCubit, SplashState>(
+    'a revoked session goes to Sign in with the revoked reason',
+    setUp: () => stepFails(const AuthFailure(AuthFailureReason.sessionRevoked)),
+    build: cubit,
+    act: (c) => c.decide(),
+    expect: () => [
+      SplashState.go(AppRoutes.signInWith(SignedOutReason.revoked)),
+    ],
   );
 
   blocTest<SplashCubit, SplashState>(

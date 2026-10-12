@@ -726,6 +726,34 @@
   "@linkExpiredBody": {
     "description": "Set new password screen: body when the reset link is no longer valid"
   },
+  "linkExpiredSnackBar": "This link has expired. Request a new one to reset your password.",
+  "@linkExpiredSnackBar": {
+    "description": "Snackbar when an emailed reset link is opened but is no longer valid"
+  },
+  "signedOutSubtitle": "Enter your password to continue.",
+  "@signedOutSubtitle": {
+    "description": "Sign in subtitle after a session ended and the account is known"
+  },
+  "signedOutTitle": "You've been signed out",
+  "@signedOutTitle": {
+    "description": "Sign in banner title after a session ended"
+  },
+  "signedOutExpiredBody": "Your session expired. Sign in again to pick up where you left off.",
+  "@signedOutExpiredBody": {
+    "description": "Sign in banner body when the session ran out"
+  },
+  "signedOutRevokedBody": "Your session was ended on another device or after a password change. Sign in again to keep going.",
+  "@signedOutRevokedBody": {
+    "description": "Sign in banner body when the session was ended elsewhere"
+  },
+  "accountLabel": "Account",
+  "@accountLabel": {
+    "description": "Sign in: label above the saved account card"
+  },
+  "notYou": "Not you?",
+  "@notYou": {
+    "description": "Sign in: forgets the saved account and shows the normal form"
+  },
   "requestNewLink": "Request a new link",
   "@requestNewLink": {
     "description": "Set new password screen: opens Forgot password"

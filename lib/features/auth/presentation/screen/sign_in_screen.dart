@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/extensions/snack_bar_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../cubit/sign_in_cubit.dart';
@@ -11,11 +12,14 @@ import '../view/sign_in_view.dart';
 /// `/sign-in`: provides [SignInCubit], follows its destination (Home, a sign-up step, or the Verify
 /// email step) and shows its failures. The view only builds (docs/specs/auth/screens/s1-signin.md).
 class SignInScreen extends StatelessWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({super.key, this.reason});
+
+  /// Why the session ended when this opens after one (S14); null for a plain Sign in.
+  final SignedOutReason? reason;
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => getIt<SignInCubit>(),
+    create: (_) => getIt<SignInCubit>()..start(reason),
     child: BlocListener<SignInCubit, SignInState>(
       listenWhen: _hasRouteOrNewFailure,
       listener: _navigateOrShowFailure,

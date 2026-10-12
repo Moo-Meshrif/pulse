@@ -2,10 +2,12 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/enums/connection_problem.dart';
+import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/services/connectivity_service.dart';
 import '../../../../core/state/base_cubit.dart';
+import '../../../auth/domain/use_case/is_recovery_pending_use_case.dart';
 import '../../../auth/domain/use_case/is_signed_in_use_case.dart';
 import '../../../profile/data/enums/signup_step.dart';
 import '../../../profile/domain/use_case/get_signup_step_use_case.dart';
@@ -17,10 +19,15 @@ import 'splash_state.dart';
 /// expired session goes to Sign in and the stored session stays, so signing in again just works.
 @injectable
 class SplashCubit extends BaseCubit<SplashState> {
-  SplashCubit(this._isSignedIn, this._getSignupStep, this._connectivity)
-    : super(const SplashState.deciding());
+  SplashCubit(
+    this._isSignedIn,
+    this._isRecoveryPending,
+    this._getSignupStep,
+    this._connectivity,
+  ) : super(const SplashState.deciding());
 
   final IsSignedInUseCase _isSignedIn;
+  final IsRecoveryPendingUseCase _isRecoveryPending;
   final GetSignupStepUseCase _getSignupStep;
   final ConnectivityService _connectivity;
 
@@ -31,6 +38,11 @@ class SplashCubit extends BaseCubit<SplashState> {
     // Yield first, always: the screen calls this from `BlocProvider.create`, before its listener is
     // subscribed. Emitting synchronously (the no-session path has nothing to await) would be missed.
     await Future<void>.value();
+    // A reset that was started and not finished (the app was closed on its screen) resumes there.
+    if (_isRecoveryPending()) {
+      emit(const SplashState.go(AppRoutes.resetPassword));
+      return;
+    }
     if (!_isSignedIn()) {
       emit(const SplashState.go(AppRoutes.signIn));
       return;
@@ -52,7 +64,9 @@ class SplashCubit extends BaseCubit<SplashState> {
   Future<SplashState> _failed(Failure failure) async {
     switch (failure) {
       case AuthFailure(reason: AuthFailureReason.sessionExpired):
-        return const SplashState.go(AppRoutes.signIn);
+        return SplashState.go(AppRoutes.signInWith(SignedOutReason.expired));
+      case AuthFailure(reason: AuthFailureReason.sessionRevoked):
+        return SplashState.go(AppRoutes.signInWith(SignedOutReason.revoked));
       case NetworkFailure() || TimeoutFailure():
         return SplashState.failed(await _connectionProblem(failure));
       default:

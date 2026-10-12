@@ -37,7 +37,9 @@ void main() {
   setUp(() async {
     auth = MockAuthDatasource();
     when(() => auth.currentEmail).thenReturn('ada.lovelace@example.com');
-    when(() => auth.passwordRecovery).thenAnswer((_) => const Stream.empty());
+    when(() => auth.recoverySignals).thenAnswer((_) => const Stream.empty());
+    when(() => auth.recoveryActive).thenReturn(false);
+    when(() => auth.sessionEnded).thenAnswer((_) => const Stream.empty());
     final getDraft = MockGetSignupDraftUseCase();
     when(() => getDraft()).thenAnswer((_) async => const ProfileEntity());
     final getInterests = MockGetInterestsUseCase();
@@ -63,7 +65,14 @@ void main() {
     when(() => getStep()).thenAnswer((_) async => SignupStep.complete);
     await getIt.reset();
     getIt
-      ..registerFactory<SignInCubit>(() => SignInCubit(auth, getStep))
+      ..registerFactory<SignInCubit>(
+        () => SignInCubit(
+          auth,
+          getStep,
+          MockGetLastAccountUseCase(),
+          MockForgetLastAccountUseCase(),
+        ),
+      )
       ..registerFactory<ForgotPasswordCubit>(
         () => ForgotPasswordCubit(auth, _MockLaunchService()),
       )

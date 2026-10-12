@@ -15,6 +15,9 @@ abstract interface class LaunchService {
 /// [LaunchService] over `url_launcher`.
 @LazySingleton(as: LaunchService)
 final class UrlLauncherLaunchService implements LaunchService {
+  /// Gmail, Outlook, then Apple Mail. Each must also be listed in `LSApplicationQueriesSchemes`.
+  static const _iosMailSchemes = ['googlegmail', 'ms-outlook', 'message'];
+
   @override
   Future<bool> openEmailApp() async {
     if (!kIsWeb) {
@@ -32,8 +35,10 @@ final class UrlLauncherLaunchService implements LaunchService {
             break;
           }
         case TargetPlatform.iOS:
-          // Apple Mail's inbox; other mail apps have no shared scheme.
-          if (await _launch(Uri(scheme: 'message'))) return true;
+          // No shared inbox scheme exists, so try each known mail app; the first installed one opens.
+          for (final scheme in _iosMailSchemes) {
+            if (await _launch(Uri(scheme: scheme, host: ''))) return true;
+          }
         default:
           break;
       }

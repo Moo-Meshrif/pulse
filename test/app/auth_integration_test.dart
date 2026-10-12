@@ -6,6 +6,11 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/widgets/widgets.dart';
+import 'package:pulse/core/enums/auth_failure_reason.dart';
+import 'package:pulse/core/error/failures.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pulse/core/enums/signed_out_reason.dart';
+import 'package:pulse/features/auth/data/enums/recovery_signal.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
 import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
@@ -23,7 +28,8 @@ import '../helpers/pump_app.dart';
 void main() {
   late MockAuthDatasource auth;
   late MockProfileDatasource profiles;
-  late StreamController<void> recovery;
+  late StreamController<RecoverySignal> recovery;
+  late StreamController<SignedOutReason> ended;
 
   setUpAll(() {
     registerFallbackValue(const ProfileUpdateModel());
@@ -33,12 +39,16 @@ void main() {
   setUp(() {
     auth = MockAuthDatasource();
     profiles = MockProfileDatasource();
-    recovery = StreamController<void>.broadcast();
+    recovery = StreamController<RecoverySignal>.broadcast();
+    ended = StreamController<SignedOutReason>.broadcast();
     when(() => auth.hasSession).thenReturn(false);
     when(() => auth.currentEmail).thenReturn(null);
-    when(() => auth.passwordRecovery).thenAnswer((_) => recovery.stream);
+    when(() => auth.recoveryActive).thenReturn(false);
+    when(() => auth.recoverySignals).thenAnswer((_) => recovery.stream);
+    when(() => auth.sessionEnded).thenAnswer((_) => ended.stream);
     when(() => profiles.currentUserId).thenReturn('u1');
     addTearDown(recovery.close);
+    addTearDown(ended.close);
   });
 
   Future<void> boot(WidgetTester tester, {bool seen = true}) {
@@ -93,13 +103,143 @@ void main() {
     });
   });
 
+  group('a session that ended', () {
+    const saved = {
+      'profile_u1': '{"id":"u1","username":"nour.adel","full_name":"Nour Adel","signup_step":0}',
+      'last_account_id': 'u1',
+    };
+
+    Future<void> bootWithDeadSession(
+      WidgetTester tester,
+      AuthFailureReason reason, {
+      Map<String, Object> prefs = saved,
+    }) {
+      setUpView(tester);
+      when(() => auth.hasSession).thenReturn(true);
+      when(() => profiles.getProfile()).thenThrow(AuthFailure(reason));
+      return tester.bootApp(
+        prefs: {'onboarding_seen': true, ...prefs},
+        auth: auth,
+        profiles: profiles,
+      );
+    }
+
+    testWidgets('an expired session shows the banner and the saved account', (
+      tester,
+    ) async {
+      await bootWithDeadSession(tester, AuthFailureReason.sessionExpired);
+
+      expect(find.text(l10nEn.signedOutTitle), findsOneWidget);
+      expect(find.text(l10nEn.signedOutExpiredBody), findsOneWidget);
+      expect(find.text(l10nEn.signedOutSubtitle), findsOneWidget);
+      expect(find.text('Nour Adel'), findsOneWidget);
+      expect(find.text('@nour.adel'), findsOneWidget);
+      expect(find.text(l10nEn.identifierLabel), findsNothing);
+    });
+
+    testWidgets('a revoked session says it was ended elsewhere', (
+      tester,
+    ) async {
+      await bootWithDeadSession(tester, AuthFailureReason.sessionRevoked);
+
+      expect(find.text(l10nEn.signedOutRevokedBody), findsOneWidget);
+      expect(find.text(l10nEn.signedOutExpiredBody), findsNothing);
+    });
+
+    testWidgets(
+      'without a saved account the banner shows over the normal form',
+      (tester) async {
+        await bootWithDeadSession(
+          tester,
+          AuthFailureReason.sessionExpired,
+          prefs: const {},
+        );
+
+        expect(find.text(l10nEn.signedOutExpiredBody), findsOneWidget);
+        expect(find.text(l10nEn.identifierLabel), findsOneWidget);
+        expect(find.text(l10nEn.signInSubtitle), findsOneWidget);
+      },
+    );
+
+    testWidgets('"Not you?" forgets the account and shows the normal form', (
+      tester,
+    ) async {
+      await bootWithDeadSession(tester, AuthFailureReason.sessionExpired);
+
+      await tester.tap(find.text(l10nEn.notYou));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nEn.signedOutTitle), findsNothing);
+      expect(find.text('Nour Adel'), findsNothing);
+      expect(find.text(l10nEn.identifierLabel), findsOneWidget);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.containsKey('profile_u1'), isFalse);
+      expect(prefs.containsKey('last_account_id'), isFalse);
+    });
+
+    testWidgets(
+      'the session ending while on Home opens Sign in with the banner',
+      (tester) async {
+        when(() => auth.hasSession).thenReturn(true);
+        when(() => profiles.getProfile()).thenAnswer(
+          (_) async => const ProfileModel(
+            id: 'u1',
+            username: 'nour.adel',
+            fullName: 'Nour Adel',
+            signupStep: SignupStep.complete,
+          ),
+        );
+        await boot(tester);
+        expect(find.text(AppRoutes.home), findsOneWidget);
+
+        ended.add(SignedOutReason.expired);
+        await tester.pumpAndSettle();
+
+        expect(find.text(l10nEn.signedOutExpiredBody), findsOneWidget);
+        expect(find.text('Nour Adel'), findsOneWidget);
+        expect(
+          tester.state<NavigatorState>(find.byType(Navigator)).canPop(),
+          isFalse,
+        );
+      },
+    );
+
+    testWidgets('the session ending on Sign in changes nothing', (
+      tester,
+    ) async {
+      await boot(tester);
+      ended.add(SignedOutReason.expired);
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nEn.signedOutTitle), findsNothing);
+      expect(find.text(l10nEn.signInTitle), findsOneWidget);
+    });
+  });
+
   group('reset link', () {
+    testWidgets(
+      'a refused link shows a snackbar and leaves the screen as it is',
+      (tester) async {
+        await boot(tester);
+        final before = find.text(l10nEn.signInTitle);
+        expect(before, findsOneWidget);
+
+        recovery.add(RecoverySignal.linkFailed);
+        await tester.pumpAndSettle();
+
+        expect(find.text(l10nEn.linkExpiredSnackBar), findsOneWidget);
+        expect(find.text(l10nEn.resetTitle), findsNothing);
+        expect(before, findsOneWidget);
+      },
+    );
+
     testWidgets('the recovery event opens the reset screen on a clean stack', (
       tester,
     ) async {
       await boot(tester);
       when(() => auth.currentEmail).thenReturn('ada@example.com');
-      recovery.add(null);
+      when(() => auth.recoveryActive).thenReturn(true);
+      recovery.add(RecoverySignal.started);
       await tester.pumpAndSettle();
 
       expect(find.text(l10nEn.resetTitle), findsOneWidget);
@@ -114,9 +254,10 @@ void main() {
       (tester) async {
         await boot(tester);
         when(() => auth.currentEmail).thenReturn('ada@example.com');
-        recovery.add(null);
+        when(() => auth.recoveryActive).thenReturn(true);
+        recovery.add(RecoverySignal.started);
         await tester.pumpAndSettle();
-        recovery.add(null);
+        recovery.add(RecoverySignal.started);
         await tester.pumpAndSettle();
 
         expect(find.text(l10nEn.resetTitle), findsOneWidget);
@@ -135,7 +276,8 @@ void main() {
           .thenAnswer((_) async {});
       await boot(tester);
       when(() => auth.currentEmail).thenReturn('ada@example.com');
-      recovery.add(null);
+      when(() => auth.recoveryActive).thenReturn(true);
+      recovery.add(RecoverySignal.started);
       await tester.pumpAndSettle();
 
       await tester.enterText(field(0), 'Password1');

@@ -10,6 +10,7 @@ import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
 import 'package:pulse/features/profile/data/model/profile_update_model.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
+import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_update_entity.dart';
 
@@ -64,6 +65,60 @@ void main() {
     when(() => remote.currentUserId).thenReturn('u1');
     when(() => local.write(any())).thenAnswer((_) async {});
     when(() => local.clear(any())).thenAnswer((_) async {});
+  });
+
+  group('last account', () {
+    test('is built from the saved copy, with no session needed', () {
+      when(() => remote.currentUserId)
+          .thenThrow(const AuthFailure(AuthFailureReason.sessionExpired));
+      when(() => local.readLast()).thenReturn(
+        const ProfileModel(
+          id: 'u1',
+          username: 'nour.adel',
+          fullName: 'Nour Adel',
+          avatarUrl: 'https://x/a.png',
+          phone: '+20100',
+        ),
+      );
+
+      expect(
+        repository.lastAccount(),
+        const LastAccountEntity(
+          id: 'u1',
+          username: 'nour.adel',
+          fullName: 'Nour Adel',
+          avatarUrl: 'https://x/a.png',
+        ),
+      );
+    });
+
+    test('is null when nothing is saved or it has no username', () {
+      when(() => local.readLast()).thenReturn(null);
+      expect(repository.lastAccount(), isNull);
+
+      when(() => local.readLast()).thenReturn(const ProfileModel(id: 'u1'));
+      expect(repository.lastAccount(), isNull);
+    });
+
+    test(
+      'forgetting clears that user\'s copy, with no session needed',
+      () async {
+        when(() => remote.currentUserId)
+            .thenThrow(const AuthFailure(AuthFailureReason.sessionExpired));
+        when(() => local.readLast())
+            .thenReturn(const ProfileModel(id: 'u1', username: 'nour.adel'));
+
+        await repository.forgetLastAccount();
+
+        verify(() => local.clear('u1')).called(1);
+      },
+    );
+
+    test('forgetting with nothing saved does nothing', () async {
+      when(() => local.readLast()).thenReturn(null);
+      await repository.forgetLastAccount();
+      verifyNever(() => local.clear(any()));
+    });
   });
 
   group('getProfile', () {

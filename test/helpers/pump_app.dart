@@ -16,6 +16,8 @@ import 'package:pulse/features/profile/data/datasource/interests_datasource.dart
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
 import 'package:pulse/features/profile/domain/use_case/clear_local_profile_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/forget_last_account_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_draft_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/complete_signup_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_interests_use_case.dart';
@@ -53,6 +55,11 @@ class MockClearLocalProfileUseCase extends Mock
 class MockGetSignupDraftUseCase extends Mock implements GetSignupDraftUseCase {}
 
 class MockPhotoPickerService extends Mock implements PhotoPickerService {}
+
+class MockGetLastAccountUseCase extends Mock implements GetLastAccountUseCase {}
+
+class MockForgetLastAccountUseCase extends Mock
+    implements ForgetLastAccountUseCase {}
 
 class MockProfileDatasource extends Mock implements ProfileDatasource {}
 
@@ -144,8 +151,10 @@ extension PumpApp on WidgetTester {
     // The Supabase adapters need a Supabase session: tests get signed-out mocks unless they pass their own.
     final signedOut = MockAuthDatasource();
     when(() => signedOut.hasSession).thenReturn(false);
-    when(() => signedOut.passwordRecovery)
+    when(() => signedOut.recoverySignals)
         .thenAnswer((_) => const Stream.empty());
+    when(() => signedOut.recoveryActive).thenReturn(false);
+    when(() => signedOut.sessionEnded).thenAnswer((_) => const Stream.empty());
     await getIt.unregister<AuthDatasource>();
     await getIt.unregister<ProfileDatasource>();
     await getIt.unregister<InterestsDatasource>();

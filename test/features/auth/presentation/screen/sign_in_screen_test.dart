@@ -21,13 +21,21 @@ class _MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 void main() {
   late MockAuthDatasource auth;
   late _MockGetSignupStep getSignupStep;
+  late MockGetLastAccountUseCase getLastAccount;
+  late MockForgetLastAccountUseCase forgetLastAccount;
 
   setUp(() async {
     auth = MockAuthDatasource();
     getSignupStep = _MockGetSignupStep();
+    getLastAccount = MockGetLastAccountUseCase();
+    forgetLastAccount = MockForgetLastAccountUseCase();
+    when(() => getLastAccount()).thenReturn(null);
+    when(() => forgetLastAccount()).thenAnswer((_) async {});
     when(() => getSignupStep()).thenAnswer((_) async => SignupStep.complete);
     await getIt.reset();
-    getIt.registerFactory<SignInCubit>(() => SignInCubit(auth, getSignupStep));
+    getIt.registerFactory<SignInCubit>(
+      () => SignInCubit(auth, getSignupStep, getLastAccount, forgetLastAccount),
+    );
     addTearDown(getIt.reset);
   });
 

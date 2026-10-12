@@ -8,22 +8,37 @@ import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_cubit.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_state.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
+import 'package:pulse/core/enums/signed_out_reason.dart';
+import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
+import 'package:pulse/features/profile/domain/use_case/forget_last_account_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
 
 class MockAuth extends Mock implements AuthDatasource {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
+class MockGetLastAccount extends Mock implements GetLastAccountUseCase {}
+
+class MockForgetLastAccount extends Mock implements ForgetLastAccountUseCase {}
+
 void main() {
   late MockAuth auth;
   late MockGetSignupStep getSignupStep;
+  late MockGetLastAccount getLastAccount;
+  late MockForgetLastAccount forgetLastAccount;
 
   setUp(() {
     auth = MockAuth();
     getSignupStep = MockGetSignupStep();
+    getLastAccount = MockGetLastAccount();
+    forgetLastAccount = MockForgetLastAccount();
+    when(() => getLastAccount()).thenReturn(null);
+    when(() => forgetLastAccount()).thenAnswer((_) async {});
   });
 
-  SignInCubit cubit() => SignInCubit(auth, getSignupStep);
+  SignInCubit cubit() =>
+      SignInCubit(auth, getSignupStep, getLastAccount, forgetLastAccount);
 
   void signInReturns([Failure? failure]) =>
       when(
@@ -259,5 +274,77 @@ void main() {
       await c.close();
       // A leftover periodic timer would fail the test at teardown.
     });
+  });
+
+  group('after a session ended (S14)', () {
+    const account = LastAccountEntity(
+      id: 'u1',
+      username: 'nour.adel',
+      fullName: 'Nour Adel',
+    );
+
+    test('a plain Sign in ignores the account', () {
+      final c = cubit()..start(null);
+      expect(c.state.reason, isNull);
+      expect(c.state.account, isNull);
+      verifyNever(() => getLastAccount());
+    });
+
+    test('names the saved account and uses its username as the identifier', () {
+      when(() => getLastAccount()).thenReturn(account);
+      final c = cubit()..start(SignedOutReason.revoked);
+
+      expect(c.state.reason, SignedOutReason.revoked);
+      expect(c.state.account, account);
+      expect(c.state.identifier, 'nour.adel');
+      expect(c.state.canSubmit, isFalse, reason: 'the password is still empty');
+      c.passwordChanged('secret1');
+      expect(c.state.canSubmit, isTrue);
+    });
+
+    test('with no saved account the banner stays over the normal form', () {
+      final c = cubit()..start(SignedOutReason.expired);
+      expect(c.state.reason, SignedOutReason.expired);
+      expect(c.state.account, isNull);
+      expect(c.state.identifier, isEmpty);
+    });
+
+    test('signs in with the account\'s username', () async {
+      when(() => getLastAccount()).thenReturn(account);
+      signInReturns();
+      when(() => getSignupStep()).thenAnswer((_) async => SignupStep.complete);
+      final c = cubit()
+        ..start(SignedOutReason.expired)
+        ..passwordChanged('secret1');
+
+      await c.submit();
+
+      verify(() => auth.signIn(identifier: 'nour.adel', password: 'secret1'))
+          .called(1);
+    });
+
+    test('"Not you?" forgets the account and shows the normal form', () async {
+      when(() => getLastAccount()).thenReturn(account);
+      final c = cubit()
+        ..start(SignedOutReason.expired)
+        ..passwordChanged('secret1');
+
+      await c.forgetAccount();
+
+      verify(() => forgetLastAccount()).called(1);
+      expect(c.state.reason, isNull);
+      expect(c.state.account, isNull);
+      expect(c.state.identifier, isEmpty);
+      expect(c.state.password, 'secret1');
+    });
+
+    test(
+      '"Not you?" does nothing while signing in or without an account',
+      () async {
+        final c = cubit();
+        await c.forgetAccount();
+        verifyNever(() => forgetLastAccount());
+      },
+    );
   });
 }

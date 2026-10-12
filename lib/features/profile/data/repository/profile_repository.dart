@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
+import '../../domain/entity/last_account_entity.dart';
 import '../../domain/entity/profile_entity.dart';
 import '../../domain/entity/profile_update_entity.dart';
 import '../datasource/profile_datasource.dart';
@@ -35,6 +36,12 @@ abstract interface class ProfileRepository {
 
   /// Forgets the saved copy of the signed-in user's profile (call before signing out).
   Future<void> clearLocalProfile();
+
+  /// The account saved last, usable with no session (null when none is saved or it has no username).
+  LastAccountEntity? lastAccount();
+
+  /// Forgets the account [lastAccount] returns (the saved copy and the pointer), with no session needed.
+  Future<void> forgetLastAccount();
 }
 
 @LazySingleton(as: ProfileRepository)
@@ -94,6 +101,28 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<void> clearLocalProfile() async {
     final userId = _remote.currentUserId;
     if (userId != null) await _local.clear(userId);
+  }
+
+  @override
+  LastAccountEntity? lastAccount() {
+    final saved = _local.readLast();
+    final id = saved?.id;
+    final username = saved?.username;
+    if (saved == null || id == null || username == null || username.isEmpty) {
+      return null;
+    }
+    return LastAccountEntity(
+      id: id,
+      username: username,
+      fullName: saved.fullName,
+      avatarUrl: saved.avatarUrl,
+    );
+  }
+
+  @override
+  Future<void> forgetLastAccount() async {
+    final id = _local.readLast()?.id;
+    if (id != null) await _local.clear(id);
   }
 
   /// The app's concept of the profile; the wire model never builds it.

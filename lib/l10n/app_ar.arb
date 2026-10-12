@@ -757,6 +757,34 @@
   "@linkExpiredBody": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "linkExpiredSnackBar": "انتهت صلاحية هذا الرابط. اطلب رابطًا جديدًا لإعادة تعيين كلمة مرورك.",
+  "@linkExpiredSnackBar": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "signedOutSubtitle": "أدخل كلمة المرور للمتابعة.",
+  "@signedOutSubtitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "signedOutTitle": "تم تسجيل خروجك",
+  "@signedOutTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "signedOutExpiredBody": "انتهت جلستك. سجّل الدخول مجددًا لتكمل من حيث توقفت.",
+  "@signedOutExpiredBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "signedOutRevokedBody": "أُنهيت جلستك على جهاز آخر أو بعد تغيير كلمة المرور. سجّل الدخول مجددًا للمتابعة.",
+  "@signedOutRevokedBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "accountLabel": "الحساب",
+  "@accountLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notYou": "لست أنت؟",
+  "@notYou": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "requestNewLink": "طلب رابط جديد",
   "@requestNewLink": {
     "x-review": "Arabic draft: pending user approval"

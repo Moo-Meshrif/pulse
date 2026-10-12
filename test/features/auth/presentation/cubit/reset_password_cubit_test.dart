@@ -4,19 +4,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/features/auth/data/enums/recovery_signal.dart';
 import 'package:pulse/features/auth/presentation/cubit/reset_password_cubit.dart';
 
 import '../../../../helpers/pump_app.dart';
 
 void main() {
   late MockAuthDatasource auth;
-  late StreamController<void> recovery;
+  late StreamController<RecoverySignal> recovery;
 
   setUp(() {
     auth = MockAuthDatasource();
-    recovery = StreamController<void>.broadcast();
+    recovery = StreamController<RecoverySignal>.broadcast();
     when(() => auth.currentEmail).thenReturn('ada@example.com');
-    when(() => auth.passwordRecovery).thenAnswer((_) => recovery.stream);
+    when(() => auth.recoveryActive).thenReturn(true);
+    when(() => auth.recoverySignals).thenAnswer((_) => recovery.stream);
     when(() => auth.updatePassword(any())).thenAnswer((_) async {});
     when(() => auth.signOut(others: any(named: 'others')))
         .thenAnswer((_) async {});
@@ -38,17 +40,40 @@ void main() {
   });
 
   test('without a recovery session the link counts as expired', () {
+    when(() => auth.recoveryActive).thenReturn(false);
     when(() => auth.currentEmail).thenReturn(null);
     expect(cubit().state.linkExpired, isTrue);
   });
 
+  test('an ordinary signed-in session is not a recovery session', () {
+    when(() => auth.recoveryActive).thenReturn(false);
+    when(() => auth.currentEmail).thenReturn('ada@example.com');
+    expect(cubit().state.linkExpired, isTrue);
+    expect(cubit().state.email, isNull);
+  });
+
+  test(
+    'leaving an expired link signs nobody out and opens the start-up route',
+    () async {
+      when(() => auth.recoveryActive).thenReturn(false);
+      final c = cubit();
+      final routes = <String?>[];
+      c.stream.listen((s) => routes.add(s.route));
+
+      await c.leave();
+
+      expect(routes, contains(AppRoutes.root));
+      verifyNever(() => auth.signOut(others: any(named: 'others')));
+    },
+  );
+
   test(
     'a recovery event after opening turns the expired state into the form',
     () async {
-      when(() => auth.currentEmail).thenReturn(null);
+      when(() => auth.recoveryActive).thenReturn(false);
       final c = cubit();
-      when(() => auth.currentEmail).thenReturn('ada@example.com');
-      recovery.add(null);
+      when(() => auth.recoveryActive).thenReturn(true);
+      recovery.add(RecoverySignal.started);
       await Future<void>.delayed(Duration.zero);
 
       expect(c.state.linkExpired, isFalse);

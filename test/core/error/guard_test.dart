@@ -98,8 +98,11 @@ void main() {
       'same_password': AuthFailureReason.samePassword,
       'over_email_send_rate_limit': AuthFailureReason.rateLimited,
       'over_request_rate_limit': AuthFailureReason.rateLimited,
-      'session_not_found': AuthFailureReason.sessionExpired,
-      'refresh_token_not_found': AuthFailureReason.sessionExpired,
+      'session_expired': AuthFailureReason.sessionExpired,
+      'bad_jwt': AuthFailureReason.sessionExpired,
+      'session_not_found': AuthFailureReason.sessionRevoked,
+      'refresh_token_not_found': AuthFailureReason.sessionRevoked,
+      'refresh_token_already_used': AuthFailureReason.sessionRevoked,
     };
     cases.forEach((code, reason) {
       test('$code -> $reason', () async {

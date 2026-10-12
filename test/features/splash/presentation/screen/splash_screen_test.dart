@@ -10,6 +10,7 @@ import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/splash/presentation/widgets/splash_loading.dart';
 import 'package:pulse/l10n/app_localizations.dart';
+import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
@@ -19,6 +20,8 @@ import 'package:pulse/features/splash/presentation/screen/splash_screen.dart';
 import '../../../../helpers/pump_app.dart' show l10nEn;
 
 class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
+
+class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
@@ -35,13 +38,20 @@ void main() {
 
   setUp(() async {
     isSignedIn = MockIsSignedIn();
+    final isRecoveryPending = MockIsRecoveryPending();
+    when(() => isRecoveryPending()).thenReturn(false);
     getSignupStep = MockGetSignupStep();
     connectivity = MockConnectivity();
     when(() => connectivity.diagnose(any()))
         .thenAnswer((_) async => ConnectionProblem.offline);
     await getIt.reset();
     getIt.registerFactory<SplashCubit>(
-      () => SplashCubit(isSignedIn, getSignupStep, connectivity),
+      () => SplashCubit(
+        isSignedIn,
+        isRecoveryPending,
+        getSignupStep,
+        connectivity,
+      ),
     );
     addTearDown(getIt.reset);
   });
@@ -89,14 +99,16 @@ void main() {
     expect(find.text('route: /register?step=4'), findsOneWidget);
   });
 
-  testWidgets('an expired session goes to Sign in', (tester) async {
+  testWidgets('an expired session goes to Sign in with its reason', (
+    tester,
+  ) async {
     when(() => isSignedIn()).thenReturn(true);
     when(() => getSignupStep())
         .thenThrow(const AuthFailure(AuthFailureReason.sessionExpired));
 
     await openSplash(tester);
 
-    expect(find.text('route: /sign-in'), findsOneWidget);
+    expect(find.text('route: /sign-in?reason=expired'), findsOneWidget);
   });
 
   testWidgets(

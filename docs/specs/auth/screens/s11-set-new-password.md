@@ -71,3 +71,7 @@ Scrolls; eye toggle Semantics; rule rows announce "met / not met"; X Semantics "
 - [ ] "Update password" pinned bottom, dimmed until valid
 - [ ] Expired link: key tile, "This link has expired", "Request a new link" button to S2, no form
 - [ ] RTL: X moves to the right; dots/text mirror
+
+
+## Opening from another screen [user, 2026-10-12]
+The emailed link opens this screen from anywhere and replaces the whole stack. Unsaved sign-up input is lost; a signed-in user is signed out when the screen ends (X or S12) and goes to `/sign-in`. See open-questions Q37. A refused link does not open this screen: a snackbar (`linkExpiredSnackBar`) appears on the current screen. The expired state here is only for reaching `/reset-password` with no recovery session; its X signs nobody out and opens `/`. An unfinished reset reopens this screen at the next app start.

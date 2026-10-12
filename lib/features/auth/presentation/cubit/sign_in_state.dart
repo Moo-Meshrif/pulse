@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/error/failures.dart';
+import '../../../profile/domain/entity/last_account_entity.dart';
 
 part 'sign_in_state.freezed.dart';
 
@@ -26,6 +28,13 @@ abstract class SignInState with _$SignInState {
 
     /// With [route]: replace the whole stack (signed in) rather than push (verify email).
     @Default(false) bool clearStack,
+
+    /// Why the session ended, when Sign in was opened for that (S14); null for a plain Sign in.
+    SignedOutReason? reason,
+
+    /// The saved account named on the screen (its username is then [identifier]); null when none is known
+    /// or after "Not you?".
+    LastAccountEntity? account,
   }) = _SignInState;
 
   bool get throttled => retryIn != null;

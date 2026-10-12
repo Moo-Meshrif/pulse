@@ -34,7 +34,10 @@ extension FailureL10n on Failure {
         l10n.errorWeakPassword,
       AuthFailure(reason: AuthFailureReason.samePassword) =>
         l10n.errorSamePassword,
-      AuthFailure(reason: AuthFailureReason.sessionExpired) =>
+      AuthFailure(
+        reason: AuthFailureReason.sessionExpired ||
+            AuthFailureReason.sessionRevoked,
+      ) =>
         l10n.errorSessionExpired,
       ConflictFailure() => l10n.errorUsernameTaken,
       ServerFailure() => l10n.errorServer,
