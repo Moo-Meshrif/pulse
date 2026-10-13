@@ -671,4 +671,39 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offlinePageBody =>
       'Connect to Wi-Fi or mobile data. We\'ll reload as soon as you\'re back.';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navShorts => 'Shorts';
+
+  @override
+  String get navCreate => 'Create';
+
+  @override
+  String get navChat => 'Chat';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String navUnread(int count) {
+    return '$count unread';
+  }
+
+  @override
+  String get createTitle => 'Create';
+
+  @override
+  String get createPost => 'Post';
+
+  @override
+  String get createPostSub => 'Share photos, videos or text in your feed';
+
+  @override
+  String get createShort => 'Short';
+
+  @override
+  String get createShortSub => 'Record or upload a vertical video, up to 60s';
 }

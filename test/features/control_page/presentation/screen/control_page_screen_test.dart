@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/theme/app_theme.dart';
+import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
+import 'package:pulse/features/control_page/presentation/cubit/control_page_cubit.dart';
+import 'package:pulse/features/control_page/presentation/screen/control_page_screen.dart';
+import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
+import 'package:pulse/features/control_page/presentation/widgets/tab_placeholder.dart';
+import 'package:pulse/l10n/app_localizations.dart';
+
+import '../../../../helpers/pump_app.dart';
+
+class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
+
+void main() {
+  late MockIsRecoveryPending recovery;
+
+  setUp(() async {
+    await getIt.reset();
+    recovery = MockIsRecoveryPending();
+    when(() => recovery()).thenReturn(false);
+    getIt.registerFactory<ControlPageCubit>(() => ControlPageCubit(recovery));
+  });
+
+  tearDown(() => getIt.reset());
+
+  Future<void> pumpHome(WidgetTester tester) => tester.pumpWidget(
+    MaterialApp(
+      theme: AppTheme.light,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      initialRoute: AppRoutes.home,
+      onGenerateRoute: (settings) => MaterialPageRoute<void>(
+        settings: settings,
+        builder: (_) => settings.name == AppRoutes.resetPassword
+            ? const Text('reset screen')
+            : const ControlPageScreen(),
+      ),
+    ),
+  );
+
+  testWidgets('opens on Home with the nav bar and the Home placeholder', (
+    tester,
+  ) async {
+    await pumpHome(tester);
+    await tester.pumpAndSettle();
+    expect(find.byType(GlassNavBar), findsOneWidget);
+    expect(find.byType(TabPlaceholder), findsOneWidget);
+    expect(find.text(l10nEn.navHome), findsWidgets);
+    expect(find.text('reset screen'), findsNothing);
+  });
+
+  testWidgets('a reset that was started and not finished goes to the reset '
+      'screen, never stays on Home', (tester) async {
+    when(() => recovery()).thenReturn(true);
+    await pumpHome(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('reset screen'), findsOneWidget);
+    expect(find.byType(GlassNavBar), findsNothing);
+  });
+}

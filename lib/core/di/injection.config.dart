@@ -35,6 +35,8 @@ import '../../features/auth/presentation/cubit/reset_password_cubit.dart'
     as _i476;
 import '../../features/auth/presentation/cubit/sign_in_cubit.dart' as _i329;
 import '../../features/auth/presentation/cubit/sign_up_cubit.dart' as _i102;
+import '../../features/control_page/presentation/cubit/control_page_cubit.dart'
+    as _i318;
 import '../../features/follow/data/datasource/follows_datasource.dart'
     as _i1001;
 import '../../features/follow/domain/use_case/follow_all_use_case.dart'
@@ -284,6 +286,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i697.GetSignupStepUseCase>(),
         gh<_i47.ConnectivityService>(),
       ),
+    );
+    gh.factory<_i318.ControlPageCubit>(
+      () => _i318.ControlPageCubit(gh<_i730.IsRecoveryPendingUseCase>()),
     );
     gh.lazySingleton<_i358.RecoveryLinkHandler>(
       () => appModule.recoveryLinkHandler(

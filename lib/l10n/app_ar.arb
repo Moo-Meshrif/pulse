@@ -844,5 +844,49 @@
   "offlinePageBody": "اتصل بشبكة Wi-Fi أو بيانات الجوال. سنعيد التحميل فور عودتك.",
   "@offlinePageBody": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "navHome": "الرئيسية",
+  "@navHome": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "navShorts": "الفيديوهات القصيرة",
+  "@navShorts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "navCreate": "إنشاء",
+  "@navCreate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "navChat": "الدردشة",
+  "@navChat": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "navProfile": "الملف الشخصي",
+  "@navProfile": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "navUnread": "{count} غير مقروءة",
+  "@navUnread": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "createTitle": "إنشاء",
+  "@createTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "createPost": "منشور",
+  "@createPost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "createPostSub": "شارك صورًا أو فيديوهات أو نصًا في خلاصتك",
+  "@createPostSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "createShort": "فيديو قصير",
+  "@createShort": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "createShortSub": "سجّل أو ارفع فيديو عموديًا حتى 60 ثانية",
+  "@createShortSub": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

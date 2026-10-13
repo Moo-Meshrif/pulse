@@ -1,5 +1,6 @@
 // Barrel file: features import only this.
 export 'app_back_button.dart';
+export 'app_bottom_sheet.dart';
 export 'app_dialog_shell.dart';
 export 'app_empty/app_empty.dart';
 export 'app_html.dart';
@@ -18,6 +19,7 @@ export 'country_code_sheet.dart';
 export 'loading_overlay/loading_overlay.dart';
 export 'logo_lockup.dart';
 export 'logo_tile.dart';
+export 'nav_clearance.dart';
 export 'phone_field.dart';
 export 'photo_picker_avatar.dart';
 export 'photo_source_sheet.dart';

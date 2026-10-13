@@ -34,6 +34,11 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.glassFill,
     required this.glassBorder,
     required this.glassActive,
+    required this.glassActiveRing,
+    required this.glassFillFlat,
+    required this.glassHighlightTop,
+    required this.glassHighlightBottom,
+    required this.badgeRing,
     required this.avatarBackgrounds,
   });
 
@@ -70,6 +75,11 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color glassFill;
   final Color glassBorder;
   final Color glassActive;
+  final Color glassActiveRing;
+  final Color glassFillFlat;
+  final Color glassHighlightTop;
+  final Color glassHighlightBottom;
+  final Color badgeRing;
 
   /// White initials go on these backgrounds, rotated per user.
   final List<Color> avatarBackgrounds;
@@ -104,6 +114,17 @@ class AppColors extends ThemeExtension<AppColors> {
     glassFill: Color(0x8CFFFFFF), // #FFFFFF @ 55%
     glassBorder: Color(0xCCFFFFFF), // #FFFFFF @ 80%
     glassActive: Color(0xD9FFFFFF), // #FFFFFF @ 85%
+    glassActiveRing: Color(0x14161A19), // #161A19 @ 8%: hairline around the active tab bubble so its circle shows on any background
+    glassFillFlat: Color(0xEBFFFFFF), // #FFFFFF @ 92%: low-tier fallback, defined but not used (no device detection)
+    glassHighlightTop: Color(
+      0xF2FFFFFF,
+    ), // #FFFFFF @ 95%: inner top highlight of the nav bar
+    glassHighlightBottom: Color(
+      0x59FFFFFF,
+    ), // #FFFFFF @ 35%: inner bottom highlight of the nav bar
+    badgeRing: Color(
+      0xE6FFFFFF,
+    ), // #FFFFFF @ 90%: ring around the nav count badge
     avatarBackgrounds: [
       Color(0xFF7A4E3A),
       Color(0xFF3E5C76),
@@ -146,6 +167,11 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? glassFill,
     Color? glassBorder,
     Color? glassActive,
+    Color? glassActiveRing,
+    Color? glassFillFlat,
+    Color? glassHighlightTop,
+    Color? glassHighlightBottom,
+    Color? badgeRing,
     List<Color>? avatarBackgrounds,
   }) => AppColors(
     primary: primary ?? this.primary,
@@ -177,6 +203,11 @@ class AppColors extends ThemeExtension<AppColors> {
     glassFill: glassFill ?? this.glassFill,
     glassBorder: glassBorder ?? this.glassBorder,
     glassActive: glassActive ?? this.glassActive,
+    glassActiveRing: glassActiveRing ?? this.glassActiveRing,
+    glassFillFlat: glassFillFlat ?? this.glassFillFlat,
+    glassHighlightTop: glassHighlightTop ?? this.glassHighlightTop,
+    glassHighlightBottom: glassHighlightBottom ?? this.glassHighlightBottom,
+    badgeRing: badgeRing ?? this.badgeRing,
     avatarBackgrounds: avatarBackgrounds ?? this.avatarBackgrounds,
   );
 
@@ -213,6 +244,19 @@ class AppColors extends ThemeExtension<AppColors> {
       glassFill: Color.lerp(glassFill, other.glassFill, t)!,
       glassBorder: Color.lerp(glassBorder, other.glassBorder, t)!,
       glassActive: Color.lerp(glassActive, other.glassActive, t)!,
+      glassActiveRing: Color.lerp(glassActiveRing, other.glassActiveRing, t)!,
+      glassFillFlat: Color.lerp(glassFillFlat, other.glassFillFlat, t)!,
+      glassHighlightTop: Color.lerp(
+        glassHighlightTop,
+        other.glassHighlightTop,
+        t,
+      )!,
+      glassHighlightBottom: Color.lerp(
+        glassHighlightBottom,
+        other.glassHighlightBottom,
+        t,
+      )!,
+      badgeRing: Color.lerp(badgeRing, other.badgeRing, t)!,
       avatarBackgrounds: [
         for (var i = 0; i < avatarBackgrounds.length; i++)
           Color.lerp(avatarBackgrounds[i], other.avatarBackgrounds[i], t)!,

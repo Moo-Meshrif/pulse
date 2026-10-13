@@ -22,6 +22,7 @@ class AppTextStyles {
     required this.body,
     required this.subtitle,
     required this.bodySm,
+    required this.bodyXs,
     required this.name,
     required this.label,
     required this.section,
@@ -51,6 +52,9 @@ class AppTextStyles {
   final TextStyle body;
   final TextStyle subtitle;
   final TextStyle bodySm;
+
+  /// 13/400: row subtitles under a title (the Create sheet options).
+  final TextStyle bodyXs;
   final TextStyle name;
   final TextStyle label;
   final TextStyle section;
@@ -150,6 +154,12 @@ class AppTextStyles {
       fontSize: 14,
       fontWeight: FontWeight.w400,
       height: 1.45,
+    ),
+    bodyXs: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
     ),
     name: TextStyle(
       inherit: false,
@@ -301,6 +311,13 @@ class AppTextStyles {
       letterSpacing: 0,
       height: 1.55,
     ),
+    bodyXs: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0,
+    ),
     name: TextStyle(
       inherit: false,
       fontFamily: _arabic,
@@ -382,6 +399,7 @@ class AppTextStyles {
       body: f(body),
       subtitle: f(subtitle),
       bodySm: f(bodySm),
+      bodyXs: f(bodyXs),
       name: f(name),
       label: f(label),
       section: f(section),

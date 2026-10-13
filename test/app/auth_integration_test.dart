@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
-import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/widgets/widgets.dart';
+import 'package:pulse/features/control_page/presentation/screen/control_page_screen.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,7 +85,7 @@ void main() {
             const ProfileModel(id: 'u1', signupStep: SignupStep.complete),
       );
       await boot(tester);
-      expect(find.text(AppRoutes.home), findsOneWidget);
+      expect(find.byType(ControlPageScreen), findsOneWidget);
     });
 
     testWidgets('an unfinished sign-up resumes at its saved step', (
@@ -190,7 +190,7 @@ void main() {
           ),
         );
         await boot(tester);
-        expect(find.text(AppRoutes.home), findsOneWidget);
+        expect(find.byType(ControlPageScreen), findsOneWidget);
 
         ended.add(SignedOutReason.expired);
         await tester.pumpAndSettle();
@@ -374,7 +374,7 @@ void main() {
     await tester.tap(find.text(l10nEn.skip));
     await tester.pumpAndSettle();
 
-    expect(find.text(AppRoutes.home), findsOneWidget);
+    expect(find.byType(ControlPageScreen), findsOneWidget);
     verify(
       () => profiles.updateProfile(
         const ProfileUpdateModel(signupStep: SignupStep.complete),

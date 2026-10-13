@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 /// The one navigation helper: screens never call `Navigator.of(context)` directly.
 abstract final class AppNavigator {
+  /// Opens [route] on the nearest Navigator. [rootNavigator] opens it on the app's root Navigator instead:
+  /// from inside a tab of the main shell it then covers the shell and its nav bar (story viewer, create
+  /// flows) instead of opening inside the tab.
   static Future<T?> push<T extends Object?>(
     BuildContext context,
-    String route,
-  ) => Navigator.of(context).pushNamed<T>(route);
+    String route, {
+    bool rootNavigator = false,
+  }) => Navigator.of(context, rootNavigator: rootNavigator).pushNamed<T>(route);
 
   static Future<T?> replace<T extends Object?, R extends Object?>(
     BuildContext context,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/features/control_page/presentation/screen/control_page_screen.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/legal/data/model/legal_document_model.dart';
 import 'package:pulse/core/router/app_routes.dart';
@@ -122,10 +123,8 @@ void main() {
     },
   );
 
-  for (final route in [AppRoutes.home]) {
-    testWidgets('$route opens its placeholder', (tester) async {
-      await openRoute(tester, route);
-      expect(find.text(route), findsOneWidget);
-    });
-  }
+  testWidgets('${AppRoutes.home} opens the main shell', (tester) async {
+    await openRoute(tester, AppRoutes.home);
+    expect(find.byType(ControlPageScreen), findsOneWidget);
+  });
 }

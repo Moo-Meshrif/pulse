@@ -804,5 +804,54 @@
   "offlinePageBody": "Connect to Wi-Fi or mobile data. We'll reload as soon as you're back.",
   "@offlinePageBody": {
     "description": "Empty page: body when the connection is lost"
+  },
+  "navHome": "Home",
+  "@navHome": {
+    "description": "Bottom nav: Home tab (screen-reader label, the bar has no visible text)"
+  },
+  "navShorts": "Shorts",
+  "@navShorts": {
+    "description": "Bottom nav: Shorts tab (screen-reader label)"
+  },
+  "navCreate": "Create",
+  "@navCreate": {
+    "description": "Bottom nav: Create button (screen-reader label)"
+  },
+  "navChat": "Chat",
+  "@navChat": {
+    "description": "Bottom nav: Chat tab (screen-reader label)"
+  },
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "Bottom nav: Profile tab (screen-reader label)"
+  },
+  "navUnread": "{count} unread",
+  "@navUnread": {
+    "description": "Bottom nav: unread count announced on the Chat tab",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "createTitle": "Create",
+  "@createTitle": {
+    "description": "Create sheet: title"
+  },
+  "createPost": "Post",
+  "@createPost": {
+    "description": "Create sheet: Post option title"
+  },
+  "createPostSub": "Share photos, videos or text in your feed",
+  "@createPostSub": {
+    "description": "Create sheet: Post option description"
+  },
+  "createShort": "Short",
+  "@createShort": {
+    "description": "Create sheet: Short option title"
+  },
+  "createShortSub": "Record or upload a vertical video, up to 60s",
+  "@createShortSub": {
+    "description": "Create sheet: Short option description"
   }
 }

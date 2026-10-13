@@ -1279,6 +1279,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to Wi-Fi or mobile data. We\'ll reload as soon as you\'re back.'**
   String get offlinePageBody;
+
+  /// Bottom nav: Home tab (screen-reader label, the bar has no visible text)
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// Bottom nav: Shorts tab (screen-reader label)
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts'**
+  String get navShorts;
+
+  /// Bottom nav: Create button (screen-reader label)
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get navCreate;
+
+  /// Bottom nav: Chat tab (screen-reader label)
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get navChat;
+
+  /// Bottom nav: Profile tab (screen-reader label)
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get navProfile;
+
+  /// Bottom nav: unread count announced on the Chat tab
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unread'**
+  String navUnread(int count);
+
+  /// Create sheet: title
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createTitle;
+
+  /// Create sheet: Post option title
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get createPost;
+
+  /// Create sheet: Post option description
+  ///
+  /// In en, this message translates to:
+  /// **'Share photos, videos or text in your feed'**
+  String get createPostSub;
+
+  /// Create sheet: Short option title
+  ///
+  /// In en, this message translates to:
+  /// **'Short'**
+  String get createShort;
+
+  /// Create sheet: Short option description
+  ///
+  /// In en, this message translates to:
+  /// **'Record or upload a vertical video, up to 60s'**
+  String get createShortSub;
 }
 
 class _AppLocalizationsDelegate

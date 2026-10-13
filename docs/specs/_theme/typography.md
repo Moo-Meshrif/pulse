@@ -15,6 +15,7 @@ Fonts: **Sora** (headings, numbers, logo; weights 600, 700) and **Noto Sans** (e
 | body (list row titles, menu items) | Noto Sans | 15 | 500 | 0 | 1.5 |
 | subtitle (onboarding body, screen subtitles, intro text) | Noto Sans | 15 | 400 | 0 | 1.55 |
 | bodySm | Noto Sans | 14 | 400 | 0 | 1.45 |
+| bodyXs (row subtitles) | Noto Sans | 13 | 400 | 0 | - |
 | name | Noto Sans | 15 | 700 | 0 | - |
 | label | Noto Sans | 13 | 600 | 0 | - |
 | section (UPPERCASE) | Noto Sans | 13 | 700 | 0.4 | - |

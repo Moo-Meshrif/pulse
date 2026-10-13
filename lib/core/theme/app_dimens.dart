@@ -54,6 +54,31 @@ abstract final class AppShadows {
   /// Dialog card: 0 12 30 #161A19 @ 12%, the same shadow as the onboarding cards.
   static List<BoxShadow> get dialog => onboardingCards;
 
+  /// Floating nav bar: 0 12 32 #161A19 @ 16% (docs/specs/control-page/01-design-tokens.md).
+  static List<BoxShadow> get navBar => [
+    BoxShadow(
+      color: const Color(0x29161A19),
+      offset: Offset(0, AppScale.scale(12)),
+      blurRadius: AppScale.scale(32),
+    ),
+  ];
+
+  /// The circle behind the selected tab of the nav bar. No offset, so it is the same on every side. It has
+  /// to fade out within the 12 dp between the circle and the bar's edge ((68 - 44) / 2): a wider one is cut
+  /// off at the top and bottom and the circle reads as an oval.
+  static List<BoxShadow> get navActiveTab => [
+    BoxShadow(color: const Color(0x1F161A19), blurRadius: AppScale.scale(8)),
+  ];
+
+  /// Bottom sheet: 0 -10 40 #161A19 @ 18%.
+  static List<BoxShadow> get bottomSheet => [
+    BoxShadow(
+      color: const Color(0x2E161A19),
+      offset: Offset(0, -AppScale.scale(10)),
+      blurRadius: AppScale.scale(40),
+    ),
+  ];
+
   /// Soft glow under the primary action of an empty or failed page: 0 8 20 primary @ 28%.
   static List<BoxShadow> get primaryAction => [
     BoxShadow(
@@ -396,4 +421,78 @@ abstract final class OnboardingDimens {
   // Motion: dots and page slide.
   static const pageAnimationDuration = Duration(milliseconds: 250);
   static const pageAnimationCurve = Curves.easeInOut;
+}
+
+/// The floating glass nav bar of the main shell (docs/specs/control-page/01-design-tokens.md).
+/// Tap targets stay fixed; everything else scales.
+abstract final class NavDimens {
+  static double get sideInset => AppScale.scale(16);
+
+  /// Gap above the bottom system inset (add `MediaQuery.viewPadding.bottom`).
+  static double get bottomInset => AppScale.scale(18);
+  static double get height => AppScale.scale(68);
+  static double get radius => AppScale.scale(34);
+  static double get padding => AppScale.scale(6);
+  static const double itemHeight = 56; // tap target: fixed
+  static double get itemGap => AppScale.scale(4);
+  static double get bubble => AppScale.scale(44);
+  static double get icon => AppScale.scale(22);
+  static double get plusIcon => AppScale.scale(26);
+  static const double blurSigma = 22; // unscaled: blur sigma
+  static const double borderWidth = 1;
+  static const double highlightHeight = 1;
+
+  /// Bottom padding every tab's scroll view reserves: height 68 + bottom 18 + 18 (add the bottom inset).
+  static double get contentClearance => AppScale.scale(104);
+
+  // Count badge on the Chat item.
+  static double get badgeMin => AppScale.scale(18);
+  static double get badgeRadius => AppScale.scale(9);
+  static double get badgeBorder => AppScale.scale(2);
+  static double get badgeHorizontalPadding => AppScale.scale(4);
+  static double get badgeTop => AppScale.scale(9);
+
+  /// The badge starts this far past the item's centre (mirrored in RTL).
+  static double get badgeCenterOffset => AppScale.scale(3);
+  static const int badgeMax = 99;
+
+  /// A pressed item fades to this opacity (no ripple).
+  static const double pressedOpacity = 0.9;
+
+  // Motion.
+  static const bubbleDuration = Duration(milliseconds: 220);
+  static const bubbleCurve = Curves.easeOutCubic;
+  static const iconFadeDuration = Duration(milliseconds: 150);
+  static const hideDuration = Duration(milliseconds: 200);
+}
+
+/// The shared bottom-sheet shell and its option rows: the Create sheet, later the post options sheet
+/// (docs/specs/control-page/01-design-tokens.md > Create sheet).
+abstract final class BottomSheetDimens {
+  static double get topPadding => AppScale.scale(10);
+  static double get sidePadding => AppScale.scale(16);
+
+  /// Bottom padding; also the `bottomSpace` of the sheet's `AppSafeArea`.
+  static double get bottomPadding => AppScale.scale(34);
+  static double get grabberWidth => AppScale.scale(40);
+  static double get grabberHeight => AppScale.scale(5);
+  static double get grabberRadius => AppScale.scale(3);
+
+  /// Measured from the Create sheet screenshot (+-1 dp): grabber to title row, title row to content.
+  static double get grabberToTitleGap => AppScale.scale(12);
+  static double get titleToContentGap => AppScale.scale(12);
+  static const double closeButton = 44; // tap target: fixed
+  static double get closeIcon => AppScale.scale(18);
+
+  // Option rows.
+  static double get optionPadding => AppScale.scale(16);
+  static double get optionRadius => AppScale.scale(20);
+  static double get optionGap => AppScale.scale(10);
+  static double get optionContentGap => AppScale.scale(14);
+  static const double optionMinHeight = 56; // tap target: fixed
+  static double get optionTile => AppScale.scale(48);
+  static double get optionTileRadius => AppScale.scale(16);
+  static double get optionTileIcon => AppScale.scale(24);
+  static double get optionChevron => AppScale.scale(18);
+  static double get optionSubtitleGap => AppScale.scale(2);
 }
