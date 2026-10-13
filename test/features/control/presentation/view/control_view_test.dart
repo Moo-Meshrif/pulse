@@ -8,11 +8,11 @@ import 'package:pulse/core/theme/app_dimens.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
-import 'package:pulse/features/control_page/presentation/cubit/control_page_cubit.dart';
-import 'package:pulse/features/control_page/presentation/utils/enums/main_tab.dart';
-import 'package:pulse/features/control_page/presentation/view/control_page_view.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/nav_item.dart';
+import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
+import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
+import 'package:pulse/features/control/presentation/view/control_view.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
 
 import 'package:pulse/l10n/app_localizations.dart';
 
@@ -59,13 +59,13 @@ class _TestRootState extends State<_TestRoot> {
 }
 
 void main() {
-  late ControlPageCubit cubit;
+  late ControlCubit cubit;
   late List<String> platformCalls;
 
   setUp(() {
     final recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    cubit = ControlPageCubit(recovery);
+    cubit = ControlCubit(recovery);
     platformCalls = [];
   });
 
@@ -84,7 +84,7 @@ void main() {
     await tester.pumpApp(
       BlocProvider.value(
         value: cubit,
-        child: ControlPageView(rootBuilder: (context, tab) => _TestRoot(tab)),
+        child: ControlView(rootBuilder: (context, tab) => _TestRoot(tab)),
       ),
     );
   }
@@ -232,9 +232,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: BlocProvider.value(
             value: cubit,
-            child: ControlPageView(
-              rootBuilder: (context, tab) => _TestRoot(tab),
-            ),
+            child: ControlView(rootBuilder: (context, tab) => _TestRoot(tab)),
           ),
           onGenerateRoute: (settings) => MaterialPageRoute<void>(
             settings: settings,
@@ -313,7 +311,7 @@ void main() {
     await tester.pumpApp(
       BlocProvider.value(
         value: cubit,
-        child: ControlPageView(rootBuilder: (context, tab) => _TestRoot(tab)),
+        child: ControlView(rootBuilder: (context, tab) => _TestRoot(tab)),
       ),
       locale: const Locale('ar'),
     );

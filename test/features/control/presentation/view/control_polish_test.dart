@@ -6,12 +6,12 @@ import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/core/theme/app_dimens.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
-import 'package:pulse/features/control_page/presentation/cubit/control_page_cubit.dart';
-import 'package:pulse/features/control_page/presentation/view/control_page_view.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/nav_badge.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/nav_item.dart';
-import 'package:pulse/features/control_page/presentation/widgets/tab_placeholder.dart';
+import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
+import 'package:pulse/features/control/presentation/view/control_view.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_badge.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
+import 'package:pulse/features/control/presentation/widgets/tab_placeholder.dart';
 
 import '../../../../helpers/pump_app.dart';
 
@@ -20,12 +20,12 @@ class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 /// The shell on a phone frame with a notch and a gesture bar, in both languages, at large text, with
 /// reduced motion and on a wide window: the checks of the polish phase (docs/plans/control-page-plan.md).
 void main() {
-  late ControlPageCubit cubit;
+  late ControlCubit cubit;
 
   setUp(() {
     final recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    cubit = ControlPageCubit(recovery);
+    cubit = ControlCubit(recovery);
   });
 
   tearDown(() => cubit.close());
@@ -41,7 +41,7 @@ void main() {
         data: MediaQuery.of(context).copyWith(disableAnimations: reduceMotion),
         child: BlocProvider.value(
           value: cubit,
-          child: ControlPageView(
+          child: ControlView(
             rootBuilder: (context, tab) => TabPlaceholder(tab: tab),
           ),
         ),

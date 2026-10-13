@@ -5,10 +5,10 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
-import 'package:pulse/features/control_page/presentation/cubit/control_page_cubit.dart';
-import 'package:pulse/features/control_page/presentation/screen/control_page_screen.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
-import 'package:pulse/features/control_page/presentation/widgets/tab_placeholder.dart';
+import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
+import 'package:pulse/features/control/presentation/screen/control_screen.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
+import 'package:pulse/features/control/presentation/widgets/tab_placeholder.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 
 import '../../../../helpers/pump_app.dart';
@@ -22,7 +22,7 @@ void main() {
     await getIt.reset();
     recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    getIt.registerFactory<ControlPageCubit>(() => ControlPageCubit(recovery));
+    getIt.registerFactory<ControlCubit>(() => ControlCubit(recovery));
   });
 
   tearDown(() => getIt.reset());
@@ -37,7 +37,7 @@ void main() {
         settings: settings,
         builder: (_) => settings.name == AppRoutes.resetPassword
             ? const Text('reset screen')
-            : const ControlPageScreen(),
+            : const ControlScreen(),
       ),
     ),
   );

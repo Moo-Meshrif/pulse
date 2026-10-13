@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/features/control_page/presentation/screen/control_page_screen.dart';
+import 'package:pulse/features/control/presentation/screen/control_screen.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/legal/data/model/legal_document_model.dart';
 import 'package:pulse/core/router/app_routes.dart';
@@ -125,6 +125,6 @@ void main() {
 
   testWidgets('${AppRoutes.home} opens the main shell', (tester) async {
     await openRoute(tester, AppRoutes.home);
-    expect(find.byType(ControlPageScreen), findsOneWidget);
+    expect(find.byType(ControlScreen), findsOneWidget);
   });
 }

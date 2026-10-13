@@ -213,7 +213,7 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 **Verify:** run on a device; compare with panel 5.
 
 ### Phase 9: S4 upload and the temporary rail
-**Status:** [~] built and tested on doubles; not run with live data or a throttled network (needs B7). The rail lives in `control_page` (it calls story use cases), the title uses the Sora 17/700 camera-title style (the spec says 17/600)
+**Status:** [~] built and tested on doubles; not run with live data or a throttled network (needs B7). The rail lived in `control` (it calls story use cases), the title uses the Sora 17/700 camera-title style (the spec says 17/600)
 **Goal:** background upload with progress on the rail, and a way into stories before Home exists.
 **Depends on:** Phases 3, 8.
 **Spec refs:** `screens/s4-posting-rail.md`; `source-tokens.md` §1, §8 (upload ring 240 ms); `screenshots/stories-board-v2.png` panel 6; `open-questions.md` P2, P3.
