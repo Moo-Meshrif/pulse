@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,6 +23,10 @@ abstract class AppModule {
   /// container is built; tests that do not touch the backend never resolve this.
   @lazySingleton
   SupabaseClient get supabaseClient => Supabase.instance.client;
+
+  /// For the downloads and the streamed story upload (the Supabase SDK reports no upload progress).
+  @lazySingleton
+  http.Client get httpClient => http.Client();
 
   @lazySingleton
   Connectivity get connectivity => Connectivity();

@@ -7,6 +7,8 @@ One loader: `AppSpinner`; `PrimaryButton` loading reuses it. A wait the user sit
 l10n: gen-l10n `lib/l10n/app_en.arb` (template) + `app_ar.arb`, `context.l10n` (lib/core/extensions/l10n.dart); Arabic drafts tagged `x-review`; unsupported locale -> English.
 Safe area: wrap every screen body and bottom sheet in `AppSafeArea`, never a bare `SafeArea` or `bottom: false`. Pass `bottomSpace` = the bottom padding the content already has; the total bottom space is `max(system inset, bottomSpace)`, so Android navigation buttons never hide content and gesture-navigation devices get no extra gap.
 
+Report flow: `ReportSheet.show(context, copy: ReportCopy, onSubmit, tone)` in `lib/core/widgets/report_sheet/` (reasons, note, thanks); `ReportReason` enum in `lib/core/enums/`. `AppBottomSheet.show(tone: SheetTone.dark)` is the story-viewer surface. `context.showSnackBar(msg, actionLabel:, onAction:)` for Undo/Retry.
+
 Never: hard-coded colors/text styles, per-feature copies of shared widgets.
 Example: lib/features/auth/presentation/view/sign_in_view.dart
 Tokens added: `AppTextStyles.action` (14/700). Fixed (unscaled) layout values carry `// unscaled: <reason>`; `no_unscaled_literals_test` enforces scaled tokens.

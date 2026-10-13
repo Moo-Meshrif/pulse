@@ -12,4 +12,7 @@ abstract final class StorageKeys {
 
   // auth: a password reset was started on this device and not finished (the recovery session is open)
   static const recoveryPending = 'recovery_pending';
+
+  // story: the camera hint ("Tap for photo, hold for video") was shown and a story was captured
+  static const storyCameraHintSeen = 'story_camera_hint_seen';
 }

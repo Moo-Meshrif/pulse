@@ -8,6 +8,7 @@ import '../extensions/l10n.dart';
 import '../services/photo_picker_service.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import 'app_image.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
 
@@ -74,17 +75,13 @@ class PhotoPickerAvatar extends StatelessWidget {
                             ),
                             child: ClipOval(
                               child: photo != null
-                                  ? Image.memory(
+                                  ? AppImage.memory(
                                       photo!.bytes,
-                                      fit: BoxFit.cover,
                                       cacheWidth: (size * 2).round(),
                                     )
-                                  : Image.network(
+                                  : AppImage.network(
                                       avatarUrl!,
-                                      fit: BoxFit.cover,
                                       cacheWidth: (size * 2).round(),
-                                      errorBuilder: (_, _, _) =>
-                                          const SizedBox.shrink(),
                                     ),
                             ),
                           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pulse/core/enums/sheet_tone.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
+import 'package:pulse/core/theme/app_colors.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 
 import '../../helpers/pump_app.dart';
@@ -117,5 +119,84 @@ void main() {
     final box = tester.getRect(find.byType(AppBottomSheetShell));
     expect(box.width, lessThanOrEqualTo(AppBreakpoints.maxContentWidth));
     expect(box.center.dx, closeTo(800, 1));
+  });
+
+  testWidgets('the dark tone draws the story sheet surface', (tester) async {
+    await tester.pumpApp(
+      Builder(
+        builder: (context) => TextButton(
+          onPressed: () => AppBottomSheet.show<void>(
+            context,
+            tone: SheetTone.dark,
+            child: const SizedBox(height: 120, child: Text('content')),
+          ),
+          child: const Text('open'),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    final box = tester.widget<DecoratedBox>(
+      find
+          .descendant(
+            of: find.byType(AppBottomSheetShell),
+            matching: find.byType(DecoratedBox),
+          )
+          .first,
+    );
+    expect((box.decoration as BoxDecoration).color, AppColors.light.storySheet);
+  });
+
+  group('story motion (dark tone)', () {
+    Future<void> openDark(WidgetTester tester) async {
+      await tester.pumpApp(
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () => AppBottomSheet.show<void>(
+              context,
+              tone: SheetTone.dark,
+              child: const SizedBox(height: 120, child: Text('content')),
+            ),
+            child: const Text('open'),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+    }
+
+    testWidgets('slides in over 260 ms and out over 200 ms', (tester) async {
+      await openDark(tester);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 130));
+      final halfway = tester.getTopLeft(find.text('content')).dy;
+      await tester.pump(const Duration(milliseconds: 140));
+      final settled = tester.getTopLeft(find.text('content')).dy;
+      expect(halfway, greaterThan(settled)); // still moving at half time
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(tester.getTopLeft(find.text('content')).dy, settled); // done
+
+      Navigator.of(tester.element(find.text('content'))).pop();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 210));
+      expect(find.text('content'), findsNothing); // out within 200 ms
+    });
+
+    testWidgets('reduce motion: shown at once, gone at once', (tester) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await openDark(tester);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 20));
+      final top = tester.getTopLeft(find.text('content')).dy;
+      await tester.pump(const Duration(milliseconds: 20));
+      expect(tester.getTopLeft(find.text('content')).dy, top);
+      Navigator.of(tester.element(find.text('content'))).pop();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 20));
+      expect(find.text('content'), findsNothing);
+    });
   });
 }

@@ -706,4 +706,424 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createShortSub => 'Record or upload a vertical video, up to 60s';
+
+  @override
+  String get reportReasonSpam => 'Spam';
+
+  @override
+  String get reportReasonNudity => 'Nudity or sexual content';
+
+  @override
+  String get reportReasonHate => 'Hate speech or symbols';
+
+  @override
+  String get reportReasonBullying => 'Bullying or harassment';
+
+  @override
+  String get reportReasonViolence => 'Violence or dangerous acts';
+
+  @override
+  String get reportReasonFalseInfo => 'False information';
+
+  @override
+  String get reportReasonOther => 'Something else';
+
+  @override
+  String get reportElseTitle => 'Something else';
+
+  @override
+  String get reportElseBody =>
+      'Describe the problem in a few words. Your report is anonymous.';
+
+  @override
+  String get reportSend => 'Send report';
+
+  @override
+  String get reportSentTitle => 'Thanks for letting us know';
+
+  @override
+  String get reportDone => 'Done';
+
+  @override
+  String get storyReportTitle => 'Report story';
+
+  @override
+  String get storyReportBody =>
+      'Why are you reporting this story? Your report is anonymous.';
+
+  @override
+  String get storyReportSent => 'We\'ll review this story.';
+
+  @override
+  String get storyReportNotePlaceholder =>
+      'Tell us what\'s wrong with this story…';
+
+  @override
+  String reportNoteCounter(int count, int max) {
+    return '$count / $max';
+  }
+
+  @override
+  String get errorPermission =>
+      'Pulse doesn\'t have access. Allow it in Settings and try again.';
+
+  @override
+  String get storyReplyHint => 'Send a message…';
+
+  @override
+  String get storyYourStory => 'Your story';
+
+  @override
+  String storyViewers(int count) {
+    return '$count viewers';
+  }
+
+  @override
+  String get storyMore => 'More options';
+
+  @override
+  String get storyLike => 'Like';
+
+  @override
+  String get storyUnlike => 'Remove like';
+
+  @override
+  String get storySend => 'Send';
+
+  @override
+  String get storyReplySoon => 'Replies are coming soon.';
+
+  @override
+  String get storyAgeNow => 'now';
+
+  @override
+  String storyAgeMinutes(int count) {
+    return '${count}m';
+  }
+
+  @override
+  String storyAgeHours(int count) {
+    return '${count}h';
+  }
+
+  @override
+  String storyAgeDays(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get storyPaused => 'Paused';
+
+  @override
+  String storyMute(String username) {
+    return 'Mute @$username';
+  }
+
+  @override
+  String get storyMuteHint => 'Hide their stories from your rail';
+
+  @override
+  String storyMuted(String username) {
+    return '@$username\'s stories are hidden';
+  }
+
+  @override
+  String get storyGoToProfile => 'Go to profile';
+
+  @override
+  String get storySaveToDevice => 'Save to device';
+
+  @override
+  String get storySaved => 'Saved to your photos';
+
+  @override
+  String get storyWhoCanSee => 'Who can see this';
+
+  @override
+  String get storyAudienceFollowers => 'Followers';
+
+  @override
+  String get storyViewersItem => 'Viewers';
+
+  @override
+  String get storyViewersEmpty => 'No one has viewed this story yet';
+
+  @override
+  String get storyDelete => 'Delete story';
+
+  @override
+  String get storyDeleteTitle => 'Delete this story?';
+
+  @override
+  String storyDeleteBody(int count) {
+    return 'It will be removed for everyone, along with its $count views. You can\'t undo this.';
+  }
+
+  @override
+  String get storyDeleted => 'Story deleted';
+
+  @override
+  String get storyViewersLoadFailed => 'Couldn\'t load more viewers';
+
+  @override
+  String get permAllowTitle => 'Allow camera and microphone';
+
+  @override
+  String get permAllowBody =>
+      'To take photos and record stories and shorts with sound.';
+
+  @override
+  String get permAllowAccess => 'Allow access';
+
+  @override
+  String get permNotNow => 'Not now';
+
+  @override
+  String get permCamera => 'Camera';
+
+  @override
+  String get permMicrophone => 'Microphone';
+
+  @override
+  String get permNeeded => 'Needed';
+
+  @override
+  String get permOff => 'Off';
+
+  @override
+  String get permAllowed => 'Allowed';
+
+  @override
+  String get permCameraOffTitle => 'Camera access is off';
+
+  @override
+  String get permCameraOffBody =>
+      'Turn on Camera for Pulse in Settings to take photos and record videos.';
+
+  @override
+  String get permCameraRestrictedBody =>
+      'Camera access is restricted on this device, so Pulse can\'t use it.';
+
+  @override
+  String get permMicOffPill => 'Microphone off · videos will be silent';
+
+  @override
+  String get permFix => 'Fix';
+
+  @override
+  String get permUnavailableTitle => 'Camera isn\'t available';
+
+  @override
+  String get permUnavailableBody =>
+      'Another app may be using it. Close that app, then try again.';
+
+  @override
+  String get permOpenSettings => 'Open settings';
+
+  @override
+  String get permChooseGallery => 'Choose from gallery';
+
+  @override
+  String get permTryAgain => 'Try again';
+
+  @override
+  String get storyCameraTitle => 'Story';
+
+  @override
+  String get storyHint => 'Tap for photo, hold for video';
+
+  @override
+  String get storyShutter => 'Shutter';
+
+  @override
+  String get storyFlash => 'Flash';
+
+  @override
+  String get storyFlashOn => 'Flash on';
+
+  @override
+  String get storyFlipCamera => 'Flip camera';
+
+  @override
+  String get storyGallery => 'Choose from gallery';
+
+  @override
+  String storyRecordingTime(String time) {
+    return 'Recording, $time';
+  }
+
+  @override
+  String get storyVideoTooLong => 'Choose a video of 60 seconds or less';
+
+  @override
+  String get storyCaptureFailed => 'Couldn\'t capture. Try again.';
+
+  @override
+  String get storyShare => 'Share';
+
+  @override
+  String get storyYourStoryPill => 'Your story';
+
+  @override
+  String get storyToolText => 'Text';
+
+  @override
+  String get storyToolMute => 'Mute';
+
+  @override
+  String get storyToolUnmute => 'Unmute';
+
+  @override
+  String get storyTextHint => 'Type something…';
+
+  @override
+  String get storyTextDone => 'Done';
+
+  @override
+  String get storyRemoveSticker => 'Drag here to remove';
+
+  @override
+  String get storyDiscardTitle => 'Discard this story?';
+
+  @override
+  String get storyDiscardBody => 'Your photo or video won\'t be posted.';
+
+  @override
+  String get storyDiscard => 'Discard';
+
+  @override
+  String get storyKeepEditing => 'Keep editing';
+
+  @override
+  String get storyUploadBusy =>
+      'Your last story is still posting. Try again in a moment.';
+
+  @override
+  String get storyShareFailed => 'Couldn\'t share your story. Try again.';
+
+  @override
+  String storyStickerLimit(int max) {
+    return 'You can add up to $max stickers';
+  }
+
+  @override
+  String get storyRailTitle => 'Stories';
+
+  @override
+  String get storyPosting => 'Posting…';
+
+  @override
+  String get storyAddToStory => 'Add to your story';
+
+  @override
+  String get storyRailFailed => 'Couldn\'t load stories';
+
+  @override
+  String get storyPostFailed => 'Couldn\'t post your story';
+
+  @override
+  String get storyAudienceBody =>
+      'Changes apply to this story right away. People who already saw it keep it in their viewers list.';
+
+  @override
+  String get storyAudienceCloseFriends => 'Close friends';
+
+  @override
+  String get storyAudienceHideFrom => 'Hide story from';
+
+  @override
+  String storyAudiencePeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get storyAudienceEdit => 'Edit';
+
+  @override
+  String get storyAudienceDone => 'Done';
+
+  @override
+  String get storyAudienceSaveFailed => 'Couldn\'t save. Try again.';
+
+  @override
+  String get storyCloseFriendsTitle => 'Close friends';
+
+  @override
+  String get storyCloseFriendsHint =>
+      'Only you can see this list. People aren\'t told when you add or remove them.';
+
+  @override
+  String get storyHiddenTitle => 'Hide story from';
+
+  @override
+  String get storyHiddenHint =>
+      'These people won\'t see any of your stories. They aren\'t told.';
+
+  @override
+  String storyAudienceSelected(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get storyAudienceSearch => 'Search followers';
+
+  @override
+  String get storyAudienceTabSuggested => 'Suggested';
+
+  @override
+  String storyAudienceTabSelected(int count) {
+    return 'Selected · $count';
+  }
+
+  @override
+  String get storyAudienceEmpty => 'No followers found';
+
+  @override
+  String get storyAudienceLoadFailed => 'Couldn\'t load your followers';
+
+  @override
+  String storyAudienceSelectPerson(String name) {
+    return 'Select $name';
+  }
+
+  @override
+  String storyMoveToHiddenTitle(String name) {
+    return 'Hide your stories from $name?';
+  }
+
+  @override
+  String storyMoveToHiddenBody(String name) {
+    return '$name is in your Close friends. Hiding your stories from them takes them off that list.';
+  }
+
+  @override
+  String get storyMoveToHiddenConfirm => 'Hide';
+
+  @override
+  String storyMoveToCloseTitle(String name) {
+    return 'Add $name to Close friends?';
+  }
+
+  @override
+  String storyMoveToCloseBody(String name) {
+    return '$name is in Hide story from. Adding them to Close friends takes them off that list.';
+  }
+
+  @override
+  String get storyMoveToCloseConfirm => 'Add';
 }

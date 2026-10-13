@@ -52,7 +52,11 @@
 		<string>ms-outlook</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Pulse uses the camera to take your profile photo.</string>
+	<string>Pulse uses the camera to take photos and record videos for your stories and profile photo.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Pulse uses the microphone to record sound with your story videos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Pulse saves your stories to your photo library when you choose Save.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pulse uses your photos to set your profile picture.</string>
 	<key>LSRequiresIPhoneOS</key>

@@ -79,16 +79,25 @@ class AppEmptyPrimaryAction extends StatelessWidget {
 
 /// The text link under the primary action, e.g. "Go to Home".
 class AppEmptyLink extends StatelessWidget {
-  const AppEmptyLink({super.key, required this.label, required this.onPressed});
+  const AppEmptyLink({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.tone = AppEmptyTone.normal,
+  });
 
   final String label;
+  final AppEmptyTone tone;
 
   /// Null disables it (while a retry runs).
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final color = context.appColors.primary;
+    final colors = context.appColors;
+    final color = tone == AppEmptyTone.onDark
+        ? colors.storyOnDark
+        : colors.primary;
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(

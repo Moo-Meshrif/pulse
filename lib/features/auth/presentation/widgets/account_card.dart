@@ -59,11 +59,10 @@ class AccountCard extends StatelessWidget {
                 child: avatarUrl == null
                     ? initials
                     : ClipOval(
-                        child: Image.network(
+                        child: AppImage.network(
                           avatarUrl!,
-                          fit: BoxFit.cover,
                           cacheWidth: (size * 2).round(),
-                          errorBuilder: (_, _, _) => initials,
+                          errorBuilder: (_) => initials,
                         ),
                       ),
               ),

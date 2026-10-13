@@ -56,6 +56,26 @@ Dart: `Color(0xFF......)`. Dark values: `[unknown]` (light only for now).
 | glassHighlightBottom | #FFFFFF @ 35% (0x59FFFFFF) | Bottom bar inner bottom highlight (1 px) |
 | badgeRing | #FFFFFF @ 90% (0xE6FFFFFF) | Ring around the nav count badge |
 
+## Story (dark surfaces over media)
+Source: `docs/specs/story/source-tokens.md` §9. Fade `storyOnDark` / `storyBlack` with `StoryOpacity` (white or black alphas); reuse `danger`, `like`, `dangerSoft` (#FBE4E5, the viewers-sheet delete circle) and `textPrimary` (permission screen background).
+| Token | Value | Usage |
+|---|---|---|
+| storySheet | #1F2423 | Story options sheet, delete dialog |
+| storySheetRow | #2A302F | Row group on the sheet |
+| dangerOnDark | #FF7A7F | Danger icon and text on a dark surface |
+| storyWarning | #F2B45A | Amber: permission problem icon, "Off" label |
+| storySuccess | #5FD39A | Granted check (permissions) |
+| storyOnDark | #FFFFFF | White on media / dark surfaces |
+| storyBlack | #000000 | Viewer background, scrims, paused chip |
+| storyTrack | #FFFFFF @ 35% | Progress bar track |
+| storyShadeTop | #000000 @ 45% | Top shade start |
+| storyShadeBottom | #000000 @ 55% | Bottom shade end, delete scrim |
+| storyControl | #FFFFFF @ 18% | Round camera controls, grid, Your story pill |
+| storyTool | #000000 @ 35% | Edit tool circles |
+| storyCameraStart / storyCameraEnd | #1F2A2C / #3D4C4F | Camera background while starting |
+| storyMicPill | #1B201F @ 86% | Microphone-off pill |
+| storyFixText | #9ED3C9 | Fix chip text |
+
 ## Avatar backgrounds (white initials)
 #7A4E3A, #3E5C76, #2E6B63, #5E4B7A, #6B5B2E, #8A3B4E, #4F6B4A
 

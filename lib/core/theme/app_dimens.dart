@@ -79,6 +79,24 @@ abstract final class AppShadows {
     ),
   ];
 
+  /// Story sticker (location): 0 6 16 black @ 25%.
+  static List<BoxShadow> get sticker => [
+    BoxShadow(
+      color: const Color(0x40000000),
+      offset: Offset(0, AppScale.scale(6)),
+      blurRadius: AppScale.scale(16),
+    ),
+  ];
+
+  /// Story text overlay: 0 2 12 black @ 35%.
+  static List<BoxShadow> get textOverlay => [
+    BoxShadow(
+      color: const Color(0x59000000),
+      offset: Offset(0, AppScale.scale(2)),
+      blurRadius: AppScale.scale(12),
+    ),
+  ];
+
   /// Soft glow under the primary action of an empty or failed page: 0 8 20 primary @ 28%.
   static List<BoxShadow> get primaryAction => [
     BoxShadow(
@@ -495,4 +513,288 @@ abstract final class BottomSheetDimens {
   static double get optionTileIcon => AppScale.scale(24);
   static double get optionChevron => AppScale.scale(18);
   static double get optionSubtitleGap => AppScale.scale(2);
+}
+
+/// Story rail and viewer (docs/specs/story/source-tokens.md §1-§3). Tap targets stay fixed; the rest scales.
+abstract final class StoryDimens {
+  // Rail.
+  static double get railAvatar => AppScale.scale(64);
+  static double get railGap => AppScale.scale(14);
+  static double get railRing => AppScale.scale(2.5);
+  static double get railRingGap => AppScale.scale(3);
+  static double get railPhoto => AppScale.scale(52);
+  static double get railLabelGap => AppScale.scale(6);
+  static double get uploadRing => AppScale.scale(3);
+  static const double uploadPhotoOpacity = 0.7;
+  static double get plusBadge => AppScale.scale(20);
+  static double get plusBadgeBorder => AppScale.scale(2);
+  static double get plusIcon => AppScale.scale(24);
+  static double get emptyRingDash => AppScale.scale(2);
+  static EdgeInsets get railTitlePadding => EdgeInsets.fromLTRB(
+    AppScale.scale(16),
+    AppScale.scale(4),
+    AppScale.scale(16),
+    AppScale.scale(10),
+  );
+  static EdgeInsets get railRowPadding => EdgeInsets.fromLTRB(
+    AppScale.scale(16),
+    AppScale.scale(4),
+    AppScale.scale(16),
+    AppScale.scale(12),
+  );
+
+  // Progress bars and header.
+  static double get barTop => AppScale.scale(54);
+
+  /// The bars sit this far below the status bar (54 on the 46 dp inset of the design frame).
+  static double get barBelowInset => AppScale.scale(8);
+
+  /// The header starts this far below the top of the bars (66 - 54).
+  static double get headerBelowBars => AppScale.scale(12);
+  static double get barSide => AppScale.scale(10);
+  static double get barGap => AppScale.scale(4);
+  static double get barHeight => AppScale.scale(3);
+  static double get barRadius => AppScale.scale(2);
+  static double get headerTop => AppScale.scale(66);
+  static double get headerStart => AppScale.scale(12);
+  static double get headerEnd => AppScale.scale(6);
+  static double get headerHeight => AppScale.scale(48);
+  static double get headerGap => AppScale.scale(10);
+  static double get headerAvatar => AppScale.scale(36);
+  static double get headerAvatarRing => AppScale.scale(2);
+  static const double headerButton = 44; // tap target: fixed
+  static double get moreIcon => AppScale.scale(22);
+  static double get closeIcon => AppScale.scale(24);
+
+  /// The buffering line's width.
+  static double get loaderWidth => AppScale.scale(56);
+  static double get shadeTop => AppScale.scale(170);
+  static double get shadeBottom => AppScale.scale(200);
+
+  // Reply bar.
+  static double get replySide => AppScale.scale(12);
+  static double get replyBottom => AppScale.scale(30);
+  static double get replyGap => AppScale.scale(10);
+  static double get replyHeight => AppScale.scale(48);
+  static double get replyBorder => AppScale.scale(1.5);
+  static double get replyPadding => AppScale.scale(18);
+  static const double replyAction = 44; // tap target: fixed
+  static double get likeIcon => AppScale.scale(28);
+  static double get sendIcon => AppScale.scale(26);
+  static double get countIcon => AppScale.scale(18);
+
+  // Location sticker.
+  static double get stickerHeight => AppScale.scale(40);
+  static double get stickerRadius => AppScale.scale(12);
+  static double get stickerPadding => AppScale.scale(14);
+  static double get stickerGap => AppScale.scale(6);
+  static double get stickerPin => AppScale.scale(18);
+  static const double stickerRotationDegrees = -4;
+
+  // Viewers sheet (light).
+  static double get viewersHeight => AppScale.scale(430);
+  static const double viewersMaxFraction = 0.9;
+  static double get viewersHeaderIcon => AppScale.scale(22);
+  static double get viewersHeaderGap => AppScale.scale(8);
+  static const double viewersAction = 40; // tap target: fixed
+  static double get viewersActionIcon => AppScale.scale(20);
+  static double get viewerRowHeight => AppScale.scale(60);
+  static double get viewerRowGap => AppScale.scale(12);
+  static double get viewerAvatar => AppScale.scale(40);
+  static double get viewerLikedIcon => AppScale.scale(20);
+}
+
+/// Story camera and edit screens (source-tokens.md §4).
+abstract final class StoryCameraDimens {
+  static double get topBarTop => AppScale.scale(56);
+
+  /// 56 on the design frame, whose status inset is 46: this far below the status bar.
+  static double get topBarBelowInset => AppScale.scale(10);
+  static double get topBarSide => AppScale.scale(8);
+  static double get topBarHeight => AppScale.scale(48);
+  static const double roundControl = 48; // tap target: fixed
+  static double get closeIcon => AppScale.scale(26);
+  static double get controlIcon => AppScale.scale(24);
+
+  static double get shutter => AppScale.scale(80);
+  static double get shutterRing => AppScale.scale(5);
+  static double get shutterDot => AppScale.scale(64);
+  static double get recordRing => AppScale.scale(92);
+  static double get recordStop => AppScale.scale(40);
+  static double get recordStopRadius => AppScale.scale(12);
+  static double get bottomRowBottom => AppScale.scale(40);
+  static double get bottomRowSide => AppScale.scale(34);
+  static double get galleryThumb => AppScale.scale(44);
+  static double get galleryRadius => AppScale.scale(12);
+  static double get galleryBorder => AppScale.scale(2);
+  static double get hintBottom => AppScale.scale(150);
+  static double get timerHeight => AppScale.scale(30);
+  static double get timerPadding => AppScale.scale(12);
+  static double get timerDot => AppScale.scale(8);
+
+  // Edit tools and bottom actions.
+  static double get toolRight => AppScale.scale(12);
+  static double get toolTop => AppScale.scale(120);
+
+  /// 120 on the design frame (inset 46): this far below the status bar.
+  static double get toolBelowInset => AppScale.scale(74);
+
+  /// Gap between the delete zone and the action pills.
+  static double get deleteZoneAbove => AppScale.scale(16);
+  static double get toolGap => AppScale.scale(12);
+  static const double tool = 44; // tap target: fixed
+  static double get toolIcon => AppScale.scale(22);
+  static double get actionSide => AppScale.scale(12);
+  static double get actionBottom => AppScale.scale(30);
+  static double get actionGap => AppScale.scale(10);
+  static double get actionHeight => AppScale.scale(52);
+  static double get audienceAvatar => AppScale.scale(26);
+  static double get audienceAvatarRing => AppScale.scale(2);
+  static double get sharePill => AppScale.scale(120);
+  static double get shareChevron => AppScale.scale(18);
+  static double get deleteZone => AppScale.scale(48);
+  static const double deleteZoneHoverScale = 1.2;
+  static const double stickerMinScale = 0.5;
+  static const double stickerMaxScale = 3;
+}
+
+/// Story options sheets, delete dialog and paused chip (source-tokens.md §5-§6).
+abstract final class StorySheetDimens {
+  /// 128 on the design frame, whose status inset is 46: this far below the status bar.
+  static double get pausedChipBelowInset => AppScale.scale(82);
+  static double get pausedChipHeight => AppScale.scale(30);
+  static double get pausedChipPadding => AppScale.scale(12);
+  static double get pausedChipGap => AppScale.scale(6);
+  static double get pausedChipIcon => AppScale.scale(14);
+
+  static double get radius => AppScale.scale(28);
+  static EdgeInsets get padding => EdgeInsets.fromLTRB(
+    AppScale.scale(16),
+    AppScale.scale(10),
+    AppScale.scale(16),
+    AppScale.scale(34),
+  );
+
+  /// Bottom padding; also the `bottomSpace` of the sheet's `AppSafeArea`.
+  static double get bottomPadding => AppScale.scale(34);
+  static double get gap => AppScale.scale(12);
+  static double get titlePadding => AppScale.scale(4);
+  static double get groupRadius => AppScale.scale(18);
+  static const double separator = 1; // unscaled: hairline
+  static const double rowMinHeight = 56; // tap target: fixed
+  static double get rowPaddingV => AppScale.scale(8);
+  static double get rowPaddingH => AppScale.scale(16);
+  static double get rowGap => AppScale.scale(14);
+  static double get rowIcon => AppScale.scale(22);
+  static double get chevron => AppScale.scale(18);
+  static const double reasonRowHeight = 52; // tap target: fixed
+
+  // Delete dialog.
+  static double get dialogRadius => AppScale.scale(28);
+  static double get dialogMargin => AppScale.scale(32);
+  static EdgeInsets get dialogPadding => EdgeInsets.fromLTRB(
+    AppScale.scale(22),
+    AppScale.scale(26),
+    AppScale.scale(22),
+    AppScale.scale(18),
+  );
+  static double get dialogIcon => AppScale.scale(40);
+  static double get dialogTitleTop => AppScale.scale(14);
+  static double get dialogBodyTop => AppScale.scale(8);
+  static double get dialogDeleteTop => AppScale.scale(22);
+  static double get dialogDeleteHeight => AppScale.scale(52);
+  static const double dialogCancelHeight = 44; // tap target: fixed
+}
+
+/// Camera and microphone permission screens (source-tokens.md §7).
+abstract final class StoryPermissionDimens {
+  static double get sidePadding => AppScale.scale(36);
+  static double get bottomOffset => AppScale.scale(40);
+  static double get icon => AppScale.scale(72);
+  static double get pairIcon => AppScale.scale(56);
+  static double get pairGap => AppScale.scale(18);
+  static double get titleTop => AppScale.scale(24);
+  static double get bodyTop => AppScale.scale(10);
+  static double get bodyMaxWidth => AppScale.scale(300);
+  static double get buttonMaxWidth => AppScale.scale(300);
+  static double get buttonHeight => AppScale.scale(52);
+  static const double linkHeight = 44; // tap target: fixed
+  static double get cardMaxWidth => AppScale.scale(318);
+  static double get cardRadius => AppScale.scale(20);
+  static double get cardRow => AppScale.scale(56);
+  static double get tile => AppScale.scale(36);
+  static double get tileRadius => AppScale.scale(12);
+  static double get okCircle => AppScale.scale(28);
+  static double get micPillTop => AppScale.scale(116);
+
+  /// 116 on the design frame (inset 46): this far below the status bar.
+  static double get micPillBelowInset => AppScale.scale(70);
+  static double get micPillHeight => AppScale.scale(40);
+  static double get micPillIcon => AppScale.scale(18);
+  static double get fixChipHeight => AppScale.scale(28);
+}
+
+/// Alphas applied to `storyOnDark` (white) and `storyBlack` on story screens (source-tokens.md §2-§7).
+abstract final class StoryOpacity {
+  static const double replyBorder = 0.7;
+  static const double replyHint = 0.9;
+  static const double time = 0.8;
+  static const double link = 0.85;
+  static const double dialogBody = 0.72;
+  static const double helper = 0.7;
+  static const double subtitle = 0.6;
+  static const double chevron = 0.5;
+  static const double grabber = 0.25;
+  static const double separator = 0.08;
+  static const double secondaryFill = 0.14;
+  static const double cardFill = 0.07;
+  static const double tileFill = 0.1;
+  static const double fieldBorder = 0.25;
+  static const double recordTrack = 0.3;
+  static const double hint = 0.85;
+  static const double pausedChip = 0.45;
+
+  /// The header while a sheet holds the story ([estimated]: the board only says "faded").
+  static const double pausedHeader = 0.4;
+  static const double sheetScrim = 0.5;
+  static const double dialogScrim = 0.55;
+  static const double viewersDim = 0.35;
+
+  /// The delete circle of the viewers sheet: `dangerOnDark` over the dark sheet ([estimated] from the board).
+  static const double dangerTint = 0.18;
+}
+
+/// Story durations and limits (source-tokens.md §2.1, §8).
+abstract final class StoryTiming {
+  static const image = Duration(seconds: 5);
+  static const maxVideo = Duration(seconds: 60);
+  static const minVideo = Duration(seconds: 1);
+  static const markSeenAfter = Duration(seconds: 1);
+  static const bufferLoaderDelay = Duration(milliseconds: 400);
+  static const lifetime = Duration(hours: 24);
+}
+
+/// Story gestures (source-tokens.md §2.1).
+abstract final class StoryGestures {
+  /// The left share of the screen that goes to the previous story; the rest goes to the next one.
+  static const double previousZone = 1 / 3;
+  static const double closeDistance = 120; // unscaled: drag distance threshold
+  static const double closeVelocity = 700;
+  static const double closeScale = 0.9;
+}
+
+/// Story motion (source-tokens.md §8).
+abstract final class StoryMotion {
+  static const uiFade = Duration(milliseconds: 150);
+  static const heroOpen = Duration(milliseconds: 280);
+  static const personSwipe = Duration(milliseconds: 300);
+  static const dragSnapBack = Duration(milliseconds: 200);
+  static const sheetIn = Duration(milliseconds: 260);
+  static const sheetOut = Duration(milliseconds: 200);
+  static const likePop = Duration(milliseconds: 200);
+  static const likeRestScale = 1.0;
+  static const likePopScale = 1.25;
+  static const uploadRing = Duration(milliseconds: 240);
+  static const reducedMotionFade = Duration(milliseconds: 150);
+  static const curve = Curves.easeOutCubic;
 }

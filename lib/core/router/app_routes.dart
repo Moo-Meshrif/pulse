@@ -37,4 +37,20 @@ abstract final class AppRoutes {
   /// Full-screen create flows pushed over the shell (the Create sheet's Post and Short rows).
   static const createPost = '/create/post';
   static const createShort = '/create/short';
+
+  /// Story viewer for one person's stories (`/story/:authorId`).
+  static String storyOf(String authorId) => '$storyPrefix$authorId';
+  static const storyPrefix = '/story/';
+
+  /// A person's profile (`/profile/:userId`); a placeholder until the profile screens exist.
+  static String profileOf(String userId) => '$profilePrefix$userId';
+  static const profilePrefix = '/profile/';
+
+  /// The Close friends and Hide story from list screens (the Who can see this sheet opens them).
+  static const audienceCloseFriends = '/audience/close-friends';
+  static const audienceHidden = '/audience/hidden';
+
+  /// Story camera, then its edit and share screen; pushed over the shell.
+  static const createStory = '/create/story';
+  static const createStoryEdit = '/create/story/edit';
 }

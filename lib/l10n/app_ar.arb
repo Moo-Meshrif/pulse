@@ -888,5 +888,493 @@
   "createShortSub": "سجّل أو ارفع فيديو عموديًا حتى 60 ثانية",
   "@createShortSub": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonSpam": "محتوى مزعج",
+  "@reportReasonSpam": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonNudity": "عري أو محتوى جنسي",
+  "@reportReasonNudity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonHate": "خطاب كراهية أو رموز",
+  "@reportReasonHate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonBullying": "تنمر أو مضايقة",
+  "@reportReasonBullying": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonViolence": "عنف أو أفعال خطيرة",
+  "@reportReasonViolence": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonFalseInfo": "معلومات مضللة",
+  "@reportReasonFalseInfo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportReasonOther": "شيء آخر",
+  "@reportReasonOther": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportElseTitle": "شيء آخر",
+  "@reportElseTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportElseBody": "صف المشكلة في بضع كلمات. بلاغك مجهول.",
+  "@reportElseBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportSend": "إرسال البلاغ",
+  "@reportSend": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportSentTitle": "شكرًا لإبلاغنا",
+  "@reportSentTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportDone": "تم",
+  "@reportDone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyReportTitle": "الإبلاغ عن القصة",
+  "@storyReportTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyReportBody": "لماذا تبلغ عن هذه القصة؟ بلاغك مجهول.",
+  "@storyReportBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyReportSent": "سنراجع هذه القصة.",
+  "@storyReportSent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyReportNotePlaceholder": "أخبرنا بما يزعجك في هذه القصة…",
+  "@storyReportNotePlaceholder": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "reportNoteCounter": "{count} / {max}",
+  "@reportNoteCounter": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "errorPermission": "ليس لدى Pulse صلاحية الوصول. اسمح بها من الإعدادات ثم حاول مجددًا.",
+  "@errorPermission": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyReplyHint": "أرسل رسالة…",
+  "@storyReplyHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyYourStory": "قصتك",
+  "@storyYourStory": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyViewers": "{count} مشاهدين",
+  "@storyViewers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMore": "المزيد من الخيارات",
+  "@storyMore": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyLike": "إعجاب",
+  "@storyLike": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyUnlike": "إزالة الإعجاب",
+  "@storyUnlike": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storySend": "إرسال",
+  "@storySend": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyReplySoon": "الردود قريبًا.",
+  "@storyReplySoon": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAgeNow": "الآن",
+  "@storyAgeNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAgeMinutes": "{count}د",
+  "@storyAgeMinutes": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAgeHours": "{count}س",
+  "@storyAgeHours": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAgeDays": "{count}ي",
+  "@storyAgeDays": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "cancel": "إلغاء",
+  "@cancel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "delete": "حذف",
+  "@delete": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "undo": "تراجع",
+  "@undo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPaused": "متوقف مؤقتًا",
+  "@storyPaused": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMute": "كتم @{username}",
+  "@storyMute": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMuteHint": "إخفاء قصصه من شريط القصص",
+  "@storyMuteHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMuted": "تم إخفاء قصص @{username}",
+  "@storyMuted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyGoToProfile": "الذهاب إلى الملف الشخصي",
+  "@storyGoToProfile": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storySaveToDevice": "الحفظ على الجهاز",
+  "@storySaveToDevice": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storySaved": "تم الحفظ في الصور",
+  "@storySaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyWhoCanSee": "من يمكنه المشاهدة",
+  "@storyWhoCanSee": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceFollowers": "المتابعون",
+  "@storyAudienceFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyViewersItem": "المشاهدون",
+  "@storyViewersItem": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyViewersEmpty": "لم يشاهد أحد هذه القصة بعد",
+  "@storyViewersEmpty": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDelete": "حذف القصة",
+  "@storyDelete": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDeleteTitle": "حذف هذه القصة؟",
+  "@storyDeleteTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDeleteBody": "ستُحذف للجميع مع مشاهداتها البالغ عددها {count}. لا يمكن التراجع عن ذلك.",
+  "@storyDeleteBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDeleted": "تم حذف القصة",
+  "@storyDeleted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyViewersLoadFailed": "تعذّر تحميل المزيد من المشاهدين",
+  "@storyViewersLoadFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permAllowTitle": "اسمح بالوصول إلى الكاميرا والميكروفون",
+  "@permAllowTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permAllowBody": "لالتقاط الصور وتسجيل القصص والمقاطع القصيرة بالصوت.",
+  "@permAllowBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permAllowAccess": "السماح بالوصول",
+  "@permAllowAccess": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permNotNow": "ليس الآن",
+  "@permNotNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permCamera": "الكاميرا",
+  "@permCamera": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permMicrophone": "الميكروفون",
+  "@permMicrophone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permNeeded": "مطلوب",
+  "@permNeeded": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permOff": "متوقف",
+  "@permOff": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permAllowed": "مسموح",
+  "@permAllowed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permCameraOffTitle": "الوصول إلى الكاميرا متوقف",
+  "@permCameraOffTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permCameraOffBody": "فعّل الكاميرا لتطبيق Pulse من الإعدادات لالتقاط الصور وتسجيل الفيديو.",
+  "@permCameraOffBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permCameraRestrictedBody": "الوصول إلى الكاميرا مقيّد على هذا الجهاز، لذلك لا يستطيع Pulse استخدامها.",
+  "@permCameraRestrictedBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permMicOffPill": "الميكروفون متوقف · ستكون الفيديوهات بدون صوت",
+  "@permMicOffPill": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permFix": "إصلاح",
+  "@permFix": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permUnavailableTitle": "الكاميرا غير متاحة",
+  "@permUnavailableTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permUnavailableBody": "قد يستخدمها تطبيق آخر. أغلق ذلك التطبيق ثم حاول مرة أخرى.",
+  "@permUnavailableBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permOpenSettings": "فتح الإعدادات",
+  "@permOpenSettings": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permChooseGallery": "اختر من المعرض",
+  "@permChooseGallery": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "permTryAgain": "إعادة المحاولة",
+  "@permTryAgain": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyCameraTitle": "قصة",
+  "@storyCameraTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyHint": "اضغط لالتقاط صورة، واستمر للضغط لتسجيل فيديو",
+  "@storyHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyShutter": "زر الالتقاط",
+  "@storyShutter": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyFlash": "الفلاش",
+  "@storyFlash": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyFlashOn": "الفلاش يعمل",
+  "@storyFlashOn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyFlipCamera": "قلب الكاميرا",
+  "@storyFlipCamera": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyGallery": "اختر من المعرض",
+  "@storyGallery": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyRecordingTime": "جارٍ التسجيل، {time}",
+  "@storyRecordingTime": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyVideoTooLong": "اختر فيديو لا تزيد مدته عن 60 ثانية",
+  "@storyVideoTooLong": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyCaptureFailed": "تعذّر الالتقاط. حاول مرة أخرى.",
+  "@storyCaptureFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyShare": "مشاركة",
+  "@storyShare": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyYourStoryPill": "قصتك",
+  "@storyYourStoryPill": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyToolText": "نص",
+  "@storyToolText": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyToolMute": "كتم الصوت",
+  "@storyToolMute": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyToolUnmute": "تشغيل الصوت",
+  "@storyToolUnmute": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyTextHint": "اكتب شيئًا…",
+  "@storyTextHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyTextDone": "تم",
+  "@storyTextDone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyRemoveSticker": "اسحب هنا للحذف",
+  "@storyRemoveSticker": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDiscardTitle": "تجاهل هذه القصة؟",
+  "@storyDiscardTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDiscardBody": "لن يتم نشر صورتك أو الفيديو.",
+  "@storyDiscardBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyDiscard": "تجاهل",
+  "@storyDiscard": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyKeepEditing": "متابعة التعديل",
+  "@storyKeepEditing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyUploadBusy": "قصتك السابقة ما زالت قيد النشر. حاول بعد قليل.",
+  "@storyUploadBusy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyShareFailed": "تعذّرت مشاركة قصتك. حاول مرة أخرى.",
+  "@storyShareFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyStickerLimit": "يمكنك إضافة {max} ملصقًا كحد أقصى",
+  "@storyStickerLimit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyRailTitle": "القصص",
+  "@storyRailTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPosting": "جارٍ النشر…",
+  "@storyPosting": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAddToStory": "أضف إلى قصتك",
+  "@storyAddToStory": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyRailFailed": "تعذّر تحميل القصص",
+  "@storyRailFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPostFailed": "تعذّر نشر قصتك",
+  "@storyPostFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceBody": "تُطبَّق التغييرات على هذه القصة فورًا. من شاهدها بالفعل يبقى في قائمة المشاهدين.",
+  "@storyAudienceBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceCloseFriends": "الأصدقاء المقربون",
+  "@storyAudienceCloseFriends": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceHideFrom": "إخفاء القصة عن",
+  "@storyAudienceHideFrom": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudiencePeople": "{count, plural, =0{لا أحد} =1{شخص واحد} =2{شخصان} few{{count} أشخاص} many{{count} شخصًا} other{{count} شخص}}",
+  "@storyAudiencePeople": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceEdit": "تعديل",
+  "@storyAudienceEdit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceDone": "تم",
+  "@storyAudienceDone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceSaveFailed": "تعذّر الحفظ. حاول مرة أخرى.",
+  "@storyAudienceSaveFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyCloseFriendsTitle": "الأصدقاء المقربون",
+  "@storyCloseFriendsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyCloseFriendsHint": "أنت فقط من يرى هذه القائمة. لا يُبلَّغ الأشخاص عند إضافتهم أو إزالتهم.",
+  "@storyCloseFriendsHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyHiddenTitle": "إخفاء القصة عن",
+  "@storyHiddenTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyHiddenHint": "لن يرى هؤلاء أيًّا من قصصك. ولا يُبلَّغون بذلك.",
+  "@storyHiddenHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceSelected": "{count} محدد",
+  "@storyAudienceSelected": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceSearch": "ابحث في المتابعين",
+  "@storyAudienceSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceTabSuggested": "مقترح",
+  "@storyAudienceTabSuggested": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceTabSelected": "المحدد · {count}",
+  "@storyAudienceTabSelected": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceEmpty": "لا يوجد متابعون",
+  "@storyAudienceEmpty": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceLoadFailed": "تعذّر تحميل متابعيك",
+  "@storyAudienceLoadFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyAudienceSelectPerson": "تحديد {name}",
+  "@storyAudienceSelectPerson": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMoveToHiddenTitle": "إخفاء قصصك عن {name}؟",
+  "@storyMoveToHiddenTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMoveToHiddenBody": "{name} ضمن أصدقائك المقربين. إخفاء قصصك عنه يزيله من تلك القائمة.",
+  "@storyMoveToHiddenBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMoveToHiddenConfirm": "إخفاء",
+  "@storyMoveToHiddenConfirm": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMoveToCloseTitle": "إضافة {name} إلى الأصدقاء المقربين؟",
+  "@storyMoveToCloseTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMoveToCloseBody": "{name} ضمن قائمة إخفاء القصة عنهم. إضافته إلى الأصدقاء المقربين تزيله من تلك القائمة.",
+  "@storyMoveToCloseBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyMoveToCloseConfirm": "إضافة",
+  "@storyMoveToCloseConfirm": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

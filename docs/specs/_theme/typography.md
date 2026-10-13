@@ -22,3 +22,8 @@ Fonts: **Sora** (headings, numbers, logo; weights 600, 700) and **Noto Sans** (e
 | meta | Noto Sans | 13 | 600 | 0 | - |
 | caption | Noto Sans | 12 | 400 | 0 | - |
 | badge | Noto Sans | 10-11 | 700 | 0 | - |
+| overlayText (story text sticker; shadow `AppShadows.textOverlay`) | Sora | 30 | 700 | 0 | 1.2 (Arabic 1.3) |
+| cameraTitle | Sora | 17 | 700 | 0 | - |
+| stickerLabel (UPPERCASE) | Noto Sans | 15 | 800 (700 bundled) | 0 | - |
+| chipLabel (paused chip) | Noto Sans | 12 | 700 | 0 | - |
+| countLabel (viewer count, "Off") | Noto Sans | 13 | 700 | 0 | - |

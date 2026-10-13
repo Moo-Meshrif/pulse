@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../enums/sheet_tone.dart';
 import '../extensions/context_extensions.dart';
 import '../theme/app_dimens.dart';
 import 'app_safe_area.dart';
@@ -12,11 +13,23 @@ class AppDialogShell extends StatelessWidget {
     super.key,
     required this.semanticLabel,
     required this.child,
+    this.tone = SheetTone.light,
+    this.padding,
+    this.margin,
+    this.radius,
   });
 
   /// The dialog title, announced as the dialog's name.
   final String semanticLabel;
   final Widget child;
+
+  /// [SheetTone.dark] is the surface the story screens use over media.
+  final SheetTone tone;
+
+  /// Replace the shared card padding, side margin and corner radius (the story delete dialog).
+  final EdgeInsets? padding;
+  final double? margin;
+  final double? radius;
 
   /// Shows a dialog built by [builder] (normally an [AppDialogShell]). Barrier tap and Android back
   /// close it with no result unless [dismissible] is false.
@@ -24,13 +37,19 @@ class AppDialogShell extends StatelessWidget {
     BuildContext context, {
     required WidgetBuilder builder,
     bool dismissible = true,
+    SheetTone tone = SheetTone.light,
   }) => showGeneralDialog<T>(
     context: context,
     // Over the main shell's nav bar, not inside a tab.
     useRootNavigator: true,
     barrierDismissible: dismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-    barrierColor: context.appColors.scrim,
+    barrierColor: switch (tone) {
+      SheetTone.light => context.appColors.scrim,
+      SheetTone.dark => context.appColors.storyBlack.withValues(
+        alpha: StoryOpacity.dialogScrim,
+      ),
+    },
     transitionDuration: DialogDimens.transition,
     pageBuilder: (context, _, _) => PopScope(
       canPop: dismissible,
@@ -76,19 +95,23 @@ class AppDialogShell extends StatelessWidget {
       explicitChildNodes: true,
       label: semanticLabel,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: DialogDimens.margin),
+        padding: EdgeInsets.symmetric(
+          horizontal: margin ?? DialogDimens.margin,
+        ),
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: DialogDimens.maxWidth),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: context.appColors.surface,
-              borderRadius: BorderRadius.circular(AppRadius.dialog),
+              color: tone == SheetTone.dark
+                  ? context.appColors.storySheet
+                  : context.appColors.surface,
+              borderRadius: BorderRadius.circular(radius ?? AppRadius.dialog),
               boxShadow: AppShadows.dialog,
             ),
             child: SizedBox(
               width: double.infinity,
               child: SingleChildScrollView(
-                padding: DialogDimens.padding,
+                padding: padding ?? DialogDimens.padding,
                 child: child,
               ),
             ),

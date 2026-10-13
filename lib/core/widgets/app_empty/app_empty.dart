@@ -9,8 +9,8 @@ import '../app_text.dart';
 import 'app_empty_parts.dart';
 
 /// The color family of an `AppEmpty`: `normal` is the brand teal, `connection` the amber of connection
-/// problems.
-enum AppEmptyTone { normal, connection }
+/// problems, `onDark` white text for screens on a black background (story).
+enum AppEmptyTone { normal, connection, onDark }
 
 /// What an `AppEmpty` shows: caller-supplied copy, or one of the ready-made problems.
 enum AppEmptyPreset {
@@ -89,20 +89,22 @@ class AppEmpty extends StatefulWidget {
     this.loading = false,
   }) : _preset = AppEmptyPreset.custom;
 
-  /// Default failure. Primary retries; the link leaves to Home (omit [onGoHome] to hide it).
+  /// Default failure. Primary retries; the link leaves to Home (omit [onGoHome] to hide it, pass
+  /// [linkLabel] when it does something else, e.g. "Close").
   const AppEmpty.failed({
     super.key,
     required VoidCallback onRetry,
     VoidCallback? onGoHome,
+    String? linkLabel,
+    this.tone = AppEmptyTone.normal,
     this.loading = false,
   }) : icon = null,
        title = null,
        message = null,
        primaryLabel = null,
-       secondaryLabel = null,
+       secondaryLabel = linkLabel,
        onPrimary = onRetry,
        onSecondary = onGoHome,
-       tone = AppEmptyTone.normal,
        _preset = AppEmptyPreset.failed;
 
   /// A bad deep link, or a deleted post or profile. The primary action goes Home; omit [onGoHome] when
@@ -192,12 +194,13 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final onDark = widget.tone == AppEmptyTone.onDark;
     final preset = widget._preset;
     final copy = preset.copy(context, hasLink: widget.onSecondary != null);
     final title = copy?.title ?? widget.title!;
     final message = copy?.message ?? widget.message!;
     final primaryLabel = copy?.primaryLabel ?? widget.primaryLabel;
-    final secondaryLabel = copy?.secondaryLabel ?? widget.secondaryLabel;
+    final secondaryLabel = widget.secondaryLabel ?? copy?.secondaryLabel;
     final onPrimary = widget.onPrimary;
     final onSecondary = widget.onSecondary;
     final hasPrimary = primaryLabel != null && onPrimary != null;
@@ -210,9 +213,11 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
         children: [
           AppEmptyIcon(
             asset: preset.icon ?? widget.icon!,
-            color: widget.tone == AppEmptyTone.connection
-                ? colors.warningInk
-                : colors.primary,
+            color: switch (widget.tone) {
+              AppEmptyTone.connection => colors.warningInk,
+              AppEmptyTone.onDark => colors.storyOnDark,
+              AppEmptyTone.normal => colors.primary,
+            },
             float: _floatCurve,
           ),
           SizedBox(height: AppEmptyDimens.iconToTitleGap),
@@ -221,7 +226,7 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
             child: AppText(
               title,
               style: context.text.title,
-              color: colors.textPrimary,
+              color: onDark ? colors.storyOnDark : colors.textPrimary,
               textAlign: TextAlign.center,
             ),
           ),
@@ -231,7 +236,9 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
             child: AppText(
               message,
               style: context.text.subtitle,
-              color: colors.textSecondary,
+              color: onDark
+                  ? colors.storyOnDark.withValues(alpha: 0.7)
+                  : colors.textSecondary,
               textAlign: TextAlign.center,
             ),
           ),
@@ -248,6 +255,7 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
             AppEmptyLink(
               label: secondaryLabel,
               onPressed: widget.loading ? null : onSecondary,
+              tone: widget.tone,
             ),
         ],
       ),
