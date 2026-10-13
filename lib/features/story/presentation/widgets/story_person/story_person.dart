@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_flux/video_flux.dart';
 
 import '../../../../../core/router/app_navigator.dart';
+import '../../../../../core/utils/app_video_controller.dart';
 import '../../../data/enums/story_media_type.dart';
 import '../../../data/model/story_model.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
@@ -11,7 +12,6 @@ import '../../cubit/story_viewer_state.dart';
 import '../../utils/enums/story_pause_reason.dart';
 import '../../utils/story_picture.dart';
 import '../../utils/story_start_index.dart';
-import '../../../../../core/utils/app_video_controller.dart';
 import '../story_media/story_media.dart';
 import '../story_overlays_layer.dart';
 import '../story_shades.dart';

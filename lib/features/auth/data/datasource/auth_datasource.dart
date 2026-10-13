@@ -5,10 +5,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/app_config.dart';
 import '../../../../core/enums/auth_failure_reason.dart';
+import '../../../../core/enums/recovery_signal.dart';
 import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
-import '../../../../core/enums/recovery_signal.dart';
 import 'password_recovery_tracker.dart';
 
 /// Authentication, as an interface because the backend can change (Supabase now, Firebase or REST later).

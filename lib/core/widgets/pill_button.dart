@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../enums/pill_button_variant.dart';
 import '../extensions/context_extensions.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
 import 'app_text.dart';
 import 'loading_overlay/pulse_line_loader.dart';
-import '../enums/pill_button_variant.dart';
 
 /// A fully rounded secondary button (docs/specs/auth/02-components.md C4). Pick the look with a factory:
 /// [PillButton.outline], [PillButton.soft] or [PillButton.danger]. The primary button is `PrimaryButton`.

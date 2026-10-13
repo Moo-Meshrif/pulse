@@ -62,7 +62,7 @@ void main() {
 
     test('an unsupported type is a programming error', () async {
       expect(() => storage.getValue<_Mode>('k'), throwsArgumentError);
-      expect(() => storage.getValue('k'), throwsArgumentError);
+      expect(() => storage.getValue<dynamic>('k'), throwsArgumentError);
       await expectLater(storage.setValue('k', _Mode.dark), throwsArgumentError);
       expect(storage.containsKey('k'), isFalse);
     });

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -60,7 +61,8 @@ final class HttpStoryMediaUploader implements StoryMediaUploader {
       onBytes?.call(sent);
       return chunk;
     });
-    request.sink.addStream(body).whenComplete(request.sink.close);
+    // Runs while the request is sent below: the bytes flow in as the server takes them.
+    unawaited(request.sink.addStream(body).whenComplete(request.sink.close));
 
     final response = await http.Response.fromStream(await _http.send(request));
     if (response.statusCode < 200 || response.statusCode >= 300) {

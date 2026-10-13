@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +17,7 @@ import '../widgets/create_sheet/create_sheet.dart';
 import '../widgets/glass_nav_bar/glass_nav_bar.dart';
 import '../widgets/tab_navigator.dart';
 
-/// The main shell (docs/specs/control-page/screens/s0-glass-nav.md): the four tabs, each in its own
+/// The main shell (docs/specs/control/screens/s0-glass-nav.md): the four tabs, each in its own
 /// Navigator, and the floating glass nav bar over them. [rootBuilder] gives each tab's root page.
 ///
 /// The view owns what needs the tabs' Navigators: system back and a re-tap on the selected tab. Which tab
@@ -69,7 +71,9 @@ class _ControlViewState extends State<ControlView> {
   Future<void> _onCreate() async {
     final option = await CreateSheet.show(context);
     if (option == null || !mounted) return;
-    AppNavigator.push<void>(context, option.route, rootNavigator: true);
+    unawaited(
+      AppNavigator.push<void>(context, option.route, rootNavigator: true),
+    );
   }
 
   @override

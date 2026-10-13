@@ -7,8 +7,8 @@ import '../../domain/entity/last_account_entity.dart';
 import '../../domain/entity/profile_entity.dart';
 import '../../domain/entity/profile_update_entity.dart';
 import '../datasource/profile_datasource.dart';
-import '../enums/signup_step.dart';
 import '../datasource/profile_local_datasource.dart';
+import '../enums/signup_step.dart';
 import '../model/profile_model.dart';
 import '../model/profile_update_model.dart';
 

@@ -54,7 +54,7 @@ abstract final class AppShadows {
   /// Dialog card: 0 12 30 #161A19 @ 12%, the same shadow as the onboarding cards.
   static List<BoxShadow> get dialog => onboardingCards;
 
-  /// Floating nav bar: 0 12 32 #161A19 @ 16% (docs/specs/control-page/01-design-tokens.md).
+  /// Floating nav bar: 0 12 32 #161A19 @ 16% (docs/specs/control/01-design-tokens.md).
   static List<BoxShadow> get navBar => [
     BoxShadow(
       color: const Color(0x29161A19),
@@ -441,7 +441,7 @@ abstract final class OnboardingDimens {
   static const pageAnimationCurve = Curves.easeInOut;
 }
 
-/// The floating glass nav bar of the main shell (docs/specs/control-page/01-design-tokens.md).
+/// The floating glass nav bar of the main shell (docs/specs/control/01-design-tokens.md).
 /// Tap targets stay fixed; everything else scales.
 abstract final class NavDimens {
   static double get sideInset => AppScale.scale(16);
@@ -485,7 +485,7 @@ abstract final class NavDimens {
 }
 
 /// The shared bottom-sheet shell and its option rows: the Create sheet, later the post options sheet
-/// (docs/specs/control-page/01-design-tokens.md > Create sheet).
+/// (docs/specs/control/01-design-tokens.md > Create sheet).
 abstract final class BottomSheetDimens {
   static double get topPadding => AppScale.scale(10);
   static double get sidePadding => AppScale.scale(16);

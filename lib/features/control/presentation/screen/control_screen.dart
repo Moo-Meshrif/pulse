@@ -10,7 +10,7 @@ import '../view/control_view.dart';
 import '../widgets/tab_placeholder.dart';
 
 /// `/home`: the main shell, the screen every signed-in session lands on
-/// (docs/specs/control-page/screens/s0-glass-nav.md).
+/// (docs/specs/control/screens/s0-glass-nav.md).
 class ControlScreen extends StatelessWidget {
   const ControlScreen({super.key});
 

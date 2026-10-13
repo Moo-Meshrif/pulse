@@ -4,8 +4,8 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_dimens.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_scale.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../utils/enums/onboarding_top_bar_leading.dart';
 

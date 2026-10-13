@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../enums/photo_choice.dart';
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
 import '../theme/app_dimens.dart';
@@ -7,7 +8,6 @@ import '../theme/app_text_styles.dart';
 import 'app_safe_area.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
-import '../enums/photo_choice.dart';
 
 /// The bottom sheet behind the photo picker (docs/specs/auth/02-components.md C13): a grabber, a title,
 /// then Take photo, Choose from gallery and, when a photo is set, Remove photo as icon cards.

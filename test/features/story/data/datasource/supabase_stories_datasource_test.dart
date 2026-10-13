@@ -39,7 +39,8 @@ void main() {
     return backend;
   }
 
-  dynamic body(http.Request request) => jsonDecode(request.body);
+  Map<String, dynamic> body(http.Request request) =>
+      jsonDecode(request.body) as Map<String, dynamic>;
 
   Map<String, dynamic> storyRow(String id, {String? thumb}) => {
     'id': id,
@@ -448,13 +449,17 @@ void main() {
         thumbPath: 'user-1/stories/x_thumb.jpg',
       );
 
-      final sent = body(backend.to('/stories').single) as Map<String, dynamic>;
+      final sent = body(backend.to('/stories').single);
       expect(sent['type'], 'video');
       expect(sent['path'], 'user-1/stories/x.mp4');
       expect(sent['thumb_path'], 'user-1/stories/x_thumb.jpg');
       expect(sent['width'], 1080);
       expect(sent['duration_ms'], 9000);
-      expect((sent['overlays'] as List).single['text'], 'Hi');
+      expect(
+        ((sent['overlays'] as List<dynamic>).single
+            as Map<String, dynamic>)['text'],
+        'Hi',
+      );
       expect(sent.containsKey('author_id'), isFalse);
     },
   );

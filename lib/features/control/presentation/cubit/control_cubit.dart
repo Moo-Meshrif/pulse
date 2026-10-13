@@ -6,7 +6,7 @@ import '../../../auth/domain/use_case/is_recovery_pending_use_case.dart';
 import '../utils/enums/main_tab.dart';
 import 'control_state.dart';
 
-/// The main shell (docs/specs/control-page): which tab is selected and the Chat badge. Back and
+/// The main shell (docs/specs/control): which tab is selected and the Chat badge. Back and
 /// re-tap act on the tabs' Navigators, so they live in the view.
 @injectable
 class ControlCubit extends BaseCubit<ControlState> {

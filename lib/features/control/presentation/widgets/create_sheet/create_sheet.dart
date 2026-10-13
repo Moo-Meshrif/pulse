@@ -7,7 +7,7 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../utils/enums/create_option.dart';
 import 'create_option_row.dart';
 
-/// The sheet the nav bar's "+" opens (docs/specs/control-page/screens/s1-create-sheet.md): Post and Short.
+/// The sheet the nav bar's "+" opens (docs/specs/control/screens/s1-create-sheet.md): Post and Short.
 abstract final class CreateSheet {
   /// The option the user picked, or null when the sheet was dismissed.
   static Future<CreateOption?> show(BuildContext context) =>

@@ -14,9 +14,8 @@ import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/entity/profile_update_entity.dart';
 
-import '../../../../helpers/pump_app.dart';
-
 import '../../../../helpers/failure_of.dart';
+import '../../../../helpers/pump_app.dart';
 
 class MockLocal extends Mock implements ProfileLocalDatasource {}
 

@@ -14,7 +14,7 @@ import 'nav_bubble.dart';
 import 'nav_item.dart';
 import 'outside_shadow_painter.dart';
 
-/// The floating "liquid glass" bar of the main shell (docs/specs/control-page/screens/s0-glass-nav.md):
+/// The floating "liquid glass" bar of the main shell (docs/specs/control/screens/s0-glass-nav.md):
 /// Home, Shorts, Create, Chat, Profile, no visible labels. It only draws and reports taps; the shell owns
 /// the state and places the bar (bottom `NavDimens.bottomInset` + the system inset).
 ///

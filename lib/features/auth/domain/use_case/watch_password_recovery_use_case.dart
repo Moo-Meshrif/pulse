@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../data/datasource/auth_datasource.dart';
 import '../../../../core/enums/recovery_signal.dart';
+import '../../data/datasource/auth_datasource.dart';
 
 /// `auth`'s public signal that the app was opened from a password-recovery link, for the app shell to
 /// open the reset screen (also when the link was refused, so the screen can say so).

@@ -1,5 +1,5 @@
 # Plan: control-page
-Source specs: docs/specs/control-page/, docs/specs/_theme/ (and `docs/specs/home/source-tokens.md` section 1, the raw token source)
+Source specs: docs/specs/control/, docs/specs/_theme/ (and `docs/specs/home/source-tokens.md` section 1, the raw token source)
 Status: approved
 Mode: one-by-one
 Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers in `test/helpers/pump_app.dart`)
@@ -111,7 +111,7 @@ Existing markers this plan resolves: `TODO(reset-link)` and `TODO(auth-plan)` on
 - [x] Tests: active item shows the filled icon and bubble; Create never selected; badge hidden at 0, shows "4", "99+" at 100; semantics labels; RTL order; reduce motion has no animation.
 **Out of scope:** tab switching state, hiding, Navigators.
 **Done when:** S0 acceptance items 1-4 and 7 pass in a preview over scrolling content (placeholder list).
-**Verify:** widget tests; compare with the bar in `docs/specs/control-page/screenshots/ref-nav-on-home.png` (EN and AR).
+**Verify:** widget tests; compare with the bar in `docs/specs/control/screenshots/ref-nav-on-home.png` (EN and AR).
 
 ### Phase 4: Shell (tabs, state, back, re-tap, hiding, start-up)
 **Status:** [x]
@@ -148,7 +148,7 @@ Existing markers this plan resolves: `TODO(reset-link)` and `TODO(auth-plan)` on
 - [x] Tests: sheet shows both rows with the right strings; each row closes the sheet and pushes its route; scrim / X / back close; RTL chevrons mirror.
 **Out of scope:** the New post and New short screens.
 **Done when:** S1 acceptance checklist passes.
-**Verify:** compare with `docs/specs/control-page/screenshots/s1-create-sheet.png` (EN and AR); widget tests.
+**Verify:** compare with `docs/specs/control/screenshots/s1-create-sheet.png` (EN and AR); widget tests.
 
 ### Phase 6: Polish
 **Status:** [~] (all automated checks done; the real-device checks are left: blur performance, side-by-side screenshots in EN and AR)
@@ -168,6 +168,6 @@ Existing markers this plan resolves: `TODO(reset-link)` and `TODO(auth-plan)` on
 
 ## Verification
 - Every phase: `fvm flutter analyze` and `fvm flutter test` green; the phase's widget/cubit tests added.
-- Visual: `docs/specs/control-page/screenshots/ref-nav-on-home.png` (bar only) and `s1-create-sheet.png`, in EN and AR.
+- Visual: `docs/specs/control/screenshots/ref-nav-on-home.png` (bar only) and `s1-create-sheet.png`, in EN and AR.
 - Behavior: S0 and S1 acceptance checklists.
 - Markers: `grep -rn "TODO(control-page-plan"` matches the Code TODOs table (T1-T9).

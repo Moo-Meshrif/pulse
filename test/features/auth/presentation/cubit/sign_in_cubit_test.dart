@@ -1,14 +1,16 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
+import 'package:pulse/core/enums/signed_out_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_cubit.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_state.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
-import 'package:pulse/core/enums/signed_out_reason.dart';
 import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/forget_last_account_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
@@ -234,7 +236,7 @@ void main() {
     ) async {
       signInReturns(throttle);
       final c = filled();
-      c.submit();
+      unawaited(c.submit());
       await tester.pump();
 
       expect(c.state.failure, throttle);
@@ -257,7 +259,7 @@ void main() {
     ) async {
       signInReturns(throttle);
       final c = filled();
-      c.submit();
+      unawaited(c.submit());
       await tester.pump();
 
       c.passwordChanged('another');
@@ -269,7 +271,7 @@ void main() {
     testWidgets('closing the cubit stops the timer', (tester) async {
       signInReturns(throttle);
       final c = filled();
-      c.submit();
+      unawaited(c.submit());
       await tester.pump();
       await c.close();
       // A leftover periodic timer would fail the test at teardown.

@@ -18,8 +18,8 @@ import '../../cubit/story_audience_state.dart';
 import '../../utils/enums/story_audience_status.dart';
 import '../story_white_pill.dart';
 import 'audience_group.dart';
-import 'audience_sheet_states.dart';
 import 'audience_row.dart';
+import 'audience_sheet_states.dart';
 
 /// Who can see this (docs/specs/story/screenshots/stories-board-v3.png, panel 11): Followers, Close friends
 /// (with Edit) and Hide story from, on the dark story sheet. A choice is saved at once; Done only closes.

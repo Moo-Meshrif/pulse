@@ -1,5 +1,3 @@
-import 'package:pulse/core/utils/country_names_delegate.dart';
-
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -8,28 +6,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
-import 'package:pulse/core/enums/photo_source.dart';
-import 'package:pulse/core/services/photo_picker_service.dart';
-import 'package:pulse/core/router/app_routes.dart';
-import 'package:pulse/features/auth/presentation/widgets/follow_row.dart';
-import 'package:pulse/features/profile/data/enums/gender.dart';
-import 'package:pulse/features/follow/data/enums/follow_status.dart';
-import 'package:pulse/features/follow/data/enums/suggestion_reason.dart';
-import 'package:pulse/features/follow/data/enums/suggestion_tab.dart';
-import 'package:pulse/features/profile/data/model/interest_model.dart';
-import 'package:pulse/features/follow/data/model/suggested_profile_model.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
+import 'package:pulse/core/enums/photo_source.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/core/theme/app_colors.dart';
 import 'package:pulse/core/theme/app_theme.dart';
-import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
+import 'package:pulse/core/utils/country_names_delegate.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_up_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_up_screen.dart';
+import 'package:pulse/features/auth/presentation/widgets/follow_row.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
 import 'package:pulse/features/auth/presentation/widgets/password_strength_meter.dart';
-import 'package:pulse/features/auth/presentation/widgets/terms_agreement_label.dart';
 import 'package:pulse/features/auth/presentation/widgets/step_top_bar.dart';
+import 'package:pulse/features/auth/presentation/widgets/terms_agreement_label.dart';
+import 'package:pulse/features/follow/data/enums/follow_status.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_reason.dart';
+import 'package:pulse/features/follow/data/enums/suggestion_tab.dart';
+import 'package:pulse/features/follow/data/model/suggested_profile_model.dart';
+import 'package:pulse/features/profile/data/enums/gender.dart';
+import 'package:pulse/features/profile/data/model/interest_model.dart';
+import 'package:pulse/features/profile/domain/entity/profile_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 

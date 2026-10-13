@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_video_controller.dart';
 import '../../../data/enums/story_media_type.dart';
 import '../../../data/model/story_model.dart';
-import '../../../../../core/utils/app_video_controller.dart';
 import 'story_image_media.dart';
 import 'story_video_media.dart';
 

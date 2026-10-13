@@ -7,6 +7,7 @@ import 'package:http/testing.dart' as http_testing;
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/permission_access.dart';
+import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/camera_device.dart';
 import 'package:pulse/core/services/camera_permission_service.dart';
 import 'package:pulse/features/control/presentation/screen/control_screen.dart';
@@ -21,7 +22,6 @@ import 'package:pulse/features/story/data/repository/story_upload_repository.dar
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
 import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
-import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/features/story/presentation/screen/story_camera_screen.dart';
 import 'package:pulse/features/story/presentation/screen/story_edit_screen.dart';
 import 'package:pulse/features/story/presentation/screen/story_viewer_screen.dart';

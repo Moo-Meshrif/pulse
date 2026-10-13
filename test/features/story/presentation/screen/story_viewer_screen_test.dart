@@ -1,18 +1,19 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/di/injection.dart';
-import 'package:pulse/core/services/gallery_service.dart';
-import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
+import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart';
-import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
 import 'package:pulse/features/story/presentation/screen/story_viewer_screen.dart';
 import 'package:pulse/features/story/presentation/utils/story_page_route.dart';
 import 'package:pulse/features/story/presentation/view/story_viewer_view.dart';
@@ -92,14 +93,16 @@ void main() {
     setUpView(tester);
     var popped = false;
     await tester.pumpApp(const Scaffold(body: Text('home')), settle: false);
-    tester
-        .state<NavigatorState>(find.byType(Navigator))
-        .push<void>(
-          MaterialPageRoute<void>(
-            builder: (_) => const StoryViewerScreen(authorId: 'a'),
-          ),
-        )
-        .then((_) => popped = true);
+    unawaited(
+      tester
+          .state<NavigatorState>(find.byType(Navigator))
+          .push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const StoryViewerScreen(authorId: 'a'),
+            ),
+          )
+          .then((_) => popped = true),
+    );
     await tester.pump(); // starts the route transition
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.byType(StoryViewerView), findsOneWidget);

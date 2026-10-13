@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/enums/legal_document.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/enums/legal_document.dart';
 
 /// "I agree to the **Terms** and **Privacy Policy** *": the links are `primary`, bold and underlined and
 /// open [onOpen]; the asterisk is `danger` (docs/specs/auth/screens/s3-signup-account.md).

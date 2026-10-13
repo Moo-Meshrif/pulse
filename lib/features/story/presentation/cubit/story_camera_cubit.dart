@@ -7,12 +7,12 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/services/camera_device.dart';
 import '../../../../core/services/media_picker_service.dart';
 import '../../../../core/state/base_cubit.dart';
+import '../../../../core/theme/app_dimens.dart';
 import '../../data/datasource/story_camera_hint_datasource.dart';
 import '../../data/enums/story_media_type.dart';
 import '../../domain/entity/captured_story_media.dart';
 import '../utils/enums/story_camera_notice.dart';
 import '../utils/enums/story_camera_status.dart';
-import '../../../../core/theme/app_dimens.dart';
 import 'story_camera_state.dart';
 
 /// The story camera (docs/specs/story/screens/s2-create-camera.md): the lens and flash, a photo on tap,

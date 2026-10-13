@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/extensions/snack_bar_context.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/snack_bar_context.dart';
 import '../cubit/forgot_password_cubit.dart';
 import '../cubit/forgot_password_state.dart';
 import '../view/forgot_password_view.dart';

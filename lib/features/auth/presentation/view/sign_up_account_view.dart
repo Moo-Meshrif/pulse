@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/enums/legal_document.dart';
+import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
-import '../../../../core/enums/legal_document.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_switch_link.dart';
 import '../widgets/labeled_checkbox.dart';

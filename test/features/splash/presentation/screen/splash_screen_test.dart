@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/core/enums/connection_problem.dart';
-import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
+import 'package:pulse/core/enums/connection_problem.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/splash/presentation/widgets/splash_loading.dart';
-import 'package:pulse/l10n/app_localizations.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
 import 'package:pulse/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:pulse/features/splash/presentation/screen/splash_screen.dart';
+import 'package:pulse/features/splash/presentation/widgets/splash_loading.dart';
+import 'package:pulse/l10n/app_localizations.dart';
 
 import '../../../../helpers/pump_app.dart' show l10nEn;
 

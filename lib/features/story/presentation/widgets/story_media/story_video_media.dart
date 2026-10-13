@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../../core/utils/app_video_controller.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/story_model.dart';
-import '../../../../../core/utils/app_video_controller.dart';
 import '../../utils/story_picture.dart';
 import '../story_buffering_loader.dart';
 

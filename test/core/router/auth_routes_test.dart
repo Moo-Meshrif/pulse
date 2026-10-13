@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/features/control/presentation/screen/control_screen.dart';
-import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/features/legal/data/model/legal_document_model.dart';
-import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/enums/legal_document.dart';
+import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/features/control/presentation/screen/control_screen.dart';
+import 'package:pulse/features/legal/data/model/legal_document_model.dart';
 
 import '../../helpers/pump_app.dart';
 

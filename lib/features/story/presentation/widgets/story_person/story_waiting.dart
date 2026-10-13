@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/widgets/widgets.dart';
-import '../story_buffering_loader.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
+import '../story_buffering_loader.dart';
 import '../story_loading_top.dart';
 
 class StoryWaiting extends StatelessWidget {

@@ -5,9 +5,9 @@ import '../extensions/l10n.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_text_styles.dart';
+import '../utils/country_codes.dart';
 import 'app_text.dart';
 import 'app_text_field.dart';
-import '../utils/country_codes.dart';
 
 /// A searchable bottom sheet to pick the phone's country code.
 abstract final class CountryCodeSheet {

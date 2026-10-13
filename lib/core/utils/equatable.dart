@@ -30,7 +30,7 @@ bool _equals(Object? a, Object? b) {
   return a == b;
 }
 
-bool _all(List a, List b) {
+bool _all(List<Object?> a, List<Object?> b) {
   if (a.length != b.length) return false;
   for (var i = 0; i < a.length; i++) {
     if (!_equals(a[i], b[i])) return false;

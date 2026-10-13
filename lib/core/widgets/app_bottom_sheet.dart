@@ -11,7 +11,7 @@ import 'app_safe_area.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
 
-/// The shared bottom sheet (docs/specs/control-page/01-design-tokens.md > Create sheet): the Create sheet
+/// The shared bottom sheet (docs/specs/control/01-design-tokens.md > Create sheet): the Create sheet
 /// today, the post options sheet later. A white sheet with a grabber and an optional title row with a close
 /// button, over the `scrim`. Tapping the scrim, dragging down, the close button and system back dismiss it;
 /// on wide windows it stays at the shared max width, centered. [SheetTone.dark] is the surface the story
