@@ -26,6 +26,8 @@ class AppDialogShell extends StatelessWidget {
     bool dismissible = true,
   }) => showGeneralDialog<T>(
     context: context,
+    // Over the main shell's nav bar, not inside a tab.
+    useRootNavigator: true,
     barrierDismissible: dismissible,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: context.appColors.scrim,

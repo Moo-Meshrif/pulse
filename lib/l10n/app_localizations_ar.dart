@@ -670,4 +670,39 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get offlinePageBody =>
       'اتصل بشبكة Wi-Fi أو بيانات الجوال. سنعيد التحميل فور عودتك.';
+
+  @override
+  String get navHome => 'الرئيسية';
+
+  @override
+  String get navShorts => 'الفيديوهات القصيرة';
+
+  @override
+  String get navCreate => 'إنشاء';
+
+  @override
+  String get navChat => 'الدردشة';
+
+  @override
+  String get navProfile => 'الملف الشخصي';
+
+  @override
+  String navUnread(int count) {
+    return '$count غير مقروءة';
+  }
+
+  @override
+  String get createTitle => 'إنشاء';
+
+  @override
+  String get createPost => 'منشور';
+
+  @override
+  String get createPostSub => 'شارك صورًا أو فيديوهات أو نصًا في خلاصتك';
+
+  @override
+  String get createShort => 'فيديو قصير';
+
+  @override
+  String get createShortSub => 'سجّل أو ارفع فيديو عموديًا حتى 60 ثانية';
 }

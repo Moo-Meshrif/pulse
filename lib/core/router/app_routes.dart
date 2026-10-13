@@ -33,4 +33,8 @@ abstract final class AppRoutes {
   static const cookiePolicy = '/cookie-policy';
   static const openSourceLicenses = '/open-source-licenses';
   static const home = '/home';
+
+  /// Full-screen create flows pushed over the shell (the Create sheet's Post and Short rows).
+  static const createPost = '/create/post';
+  static const createShort = '/create/short';
 }

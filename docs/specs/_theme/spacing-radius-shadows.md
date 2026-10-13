@@ -27,9 +27,9 @@
 ## Shadows
 | Element | Shadow |
 |---|---|
-| Bottom bar | 0 12 32 #161A19 16% + inner top highlight white 95% |
-| Active tab circle | 0 3 10 #161A19 12% + inner top highlight white |
-| Bottom sheet | 0 -10 40 #161A19 18% |
+| Bottom bar | 0 12 32 #161A19 16% + inner top highlight white 95% (`AppShadows.navBar`) |
+| Active tab circle | 0 0 8 #161A19 12%, equal on all sides and fading out inside the 12 dp gap to the bar's edge (`AppShadows.navActiveTab`), white 85% fill, inner highlight and a 1 px #161A19 8% ring (the original 0 3 10 12% was replaced after the device check; being tested) |
+| Bottom sheet | 0 -10 40 #161A19 18% (`AppShadows.bottomSheet`) |
 | Onboarding cards | 0 12 30 #161A19 10-14% |
 | Selected segment | 0 1 3 #161A19 12% |
 

@@ -20,6 +20,8 @@ abstract final class AppAssets {
   static const chevronRight = '$_icons/ic_chevron_right.svg';
   static const close = '$_icons/ic_close.svg';
   static const comment = '$_icons/ic_comment.svg';
+  static const createPost = '$_icons/ic_create_post.svg';
+  static const createShort = '$_icons/ic_create_short.svg';
   static const document = '$_icons/ic_document.svg';
   static const edit = '$_icons/ic_edit.svg';
   static const eye = '$_icons/ic_eye.svg';

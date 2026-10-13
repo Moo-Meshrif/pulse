@@ -7,6 +7,7 @@ import '../../features/auth/presentation/cubit/sign_up_cubit.dart';
 import '../../features/auth/presentation/screen/reset_password_screen.dart';
 import '../../features/auth/presentation/screen/sign_in_screen.dart';
 import '../../features/auth/presentation/screen/sign_up_screen.dart';
+import '../../features/control_page/presentation/screen/control_page_screen.dart';
 import '../../features/legal/presentation/screen/legal_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
@@ -46,13 +47,18 @@ abstract final class AppRouter {
           document: LegalDocument.values.firstWhere((d) => d.route == path),
         ),
       ),
-      // TODO(auth-plan): replace with the real Home screen once it is specced (sign-in and sign-up end here).
-      // TODO(reset-link): when the control Cubit that holds all main pages exists, add the reset-link
-      // logic there the way the splash has it (`SplashCubit`: a pending password reset goes to
-      // `/reset-password`, never Home).
-      AppRoutes.home => _page(
+      // The main shell (tabs + nav bar); sign-in, sign-up and the splash end here.
+      AppRoutes.home => _page(settings, const ControlPageScreen()),
+      // TODO(control-page-plan T7): New post placeholder until the post feature's New post screen
+      // (docs/specs/post/screens/s1-new-post.md) is built.
+      AppRoutes.createPost => _page(
         settings,
-        const PlaceholderScreen(route: AppRoutes.home),
+        const PlaceholderScreen(route: AppRoutes.createPost),
+      ),
+      // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
+      AppRoutes.createShort => _page(
+        settings,
+        const PlaceholderScreen(route: AppRoutes.createShort),
       ),
       _ => _page(settings, const NotFoundScreen()),
     };

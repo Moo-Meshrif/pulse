@@ -50,6 +50,11 @@ Dart: `Color(0xFF......)`. Dark values: `[unknown]` (light only for now).
 | glassFill | #FFFFFF @ 55% (0x8CFFFFFF) | Bottom bar fill |
 | glassBorder | #FFFFFF @ 80% (0xCCFFFFFF) | Bottom bar border |
 | glassActive | #FFFFFF @ 85% (0xD9FFFFFF) | Active tab circle |
+| glassActiveRing | #161A19 @ 8% (0x14161A19) | 1 px hairline around the active tab circle, so it reads as a circle on any background (added after the device check; not in the original tokens) |
+| glassFillFlat | #FFFFFF @ 92% (0xEBFFFFFF) | Low-end fallback fill for the bottom bar (defined, not used: no device detection) |
+| glassHighlightTop | #FFFFFF @ 95% (0xF2FFFFFF) | Bottom bar inner top highlight (1 px) |
+| glassHighlightBottom | #FFFFFF @ 35% (0x59FFFFFF) | Bottom bar inner bottom highlight (1 px) |
+| badgeRing | #FFFFFF @ 90% (0xE6FFFFFF) | Ring around the nav count badge |
 
 ## Avatar backgrounds (white initials)
 #7A4E3A, #3E5C76, #2E6B63, #5E4B7A, #6B5B2E, #8A3B4E, #4F6B4A
