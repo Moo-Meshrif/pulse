@@ -7,7 +7,7 @@ import '../../features/auth/presentation/cubit/sign_up_cubit.dart';
 import '../../features/auth/presentation/screen/reset_password_screen.dart';
 import '../../features/auth/presentation/screen/sign_in_screen.dart';
 import '../../features/auth/presentation/screen/sign_up_screen.dart';
-import '../../features/control_page/presentation/screen/control_page_screen.dart';
+import '../../features/control/presentation/screen/control_screen.dart';
 import '../../features/legal/presentation/screen/legal_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -78,7 +78,7 @@ abstract final class AppRouter {
         ),
       ),
       // The main shell (tabs + nav bar); sign-in, sign-up and the splash end here.
-      AppRoutes.home => _page(settings, const ControlPageScreen()),
+      AppRoutes.home => _page(settings, const ControlScreen()),
       // TODO(control-page-plan T7): New post placeholder until the post feature's New post screen
       // (docs/specs/post/screens/s1-new-post.md) is built.
       AppRoutes.createPost => _page(

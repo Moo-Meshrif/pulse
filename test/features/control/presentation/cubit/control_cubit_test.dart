@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
-import 'package:pulse/features/control_page/presentation/cubit/control_page_cubit.dart';
-import 'package:pulse/features/control_page/presentation/cubit/control_page_state.dart';
-import 'package:pulse/features/control_page/presentation/utils/enums/main_tab.dart';
+import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
+import 'package:pulse/features/control/presentation/cubit/control_state.dart';
+import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
@@ -17,7 +17,7 @@ void main() {
     when(() => recovery()).thenReturn(false);
   });
 
-  ControlPageCubit build() => ControlPageCubit(recovery);
+  ControlCubit build() => ControlCubit(recovery);
 
   test('starts on Home with the hardcoded chat badge of 4', () {
     final cubit = build();
@@ -26,38 +26,36 @@ void main() {
     expect(cubit.state.redirect, isNull);
   });
 
-  blocTest<ControlPageCubit, ControlPageState>(
+  blocTest<ControlCubit, ControlState>(
     'select switches the tab',
     build: build,
     act: (cubit) => cubit.select(MainTab.chat),
-    expect: () => [
-      const ControlPageState(selected: MainTab.chat, chatUnread: 4),
-    ],
+    expect: () => [const ControlState(selected: MainTab.chat, chatUnread: 4)],
   );
 
-  blocTest<ControlPageCubit, ControlPageState>(
+  blocTest<ControlCubit, ControlState>(
     'selecting the selected tab emits nothing',
     build: build,
     act: (cubit) => cubit.select(MainTab.home),
-    expect: () => <ControlPageState>[],
+    expect: () => <ControlState>[],
   );
 
-  blocTest<ControlPageCubit, ControlPageState>(
+  blocTest<ControlCubit, ControlState>(
     'goHome returns to Home from another tab',
     build: build,
-    seed: () => const ControlPageState(selected: MainTab.profile),
+    seed: () => const ControlState(selected: MainTab.profile),
     act: (cubit) => cubit.goHome(),
-    expect: () => [const ControlPageState()],
+    expect: () => [const ControlState()],
   );
 
-  blocTest<ControlPageCubit, ControlPageState>(
+  blocTest<ControlCubit, ControlState>(
     'start with no reset pending emits nothing',
     build: build,
     act: (cubit) => cubit.start(),
-    expect: () => <ControlPageState>[],
+    expect: () => <ControlState>[],
   );
 
-  blocTest<ControlPageCubit, ControlPageState>(
+  blocTest<ControlCubit, ControlState>(
     'start with a reset pending redirects to the reset screen',
     build: () {
       when(() => recovery()).thenReturn(true);
@@ -65,7 +63,7 @@ void main() {
     },
     act: (cubit) => cubit.start(),
     expect: () => [
-      const ControlPageState(chatUnread: 4, redirect: AppRoutes.resetPassword),
+      const ControlState(chatUnread: 4, redirect: AppRoutes.resetPassword),
     ],
   );
 }

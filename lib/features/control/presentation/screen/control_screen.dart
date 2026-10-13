@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/router/app_navigator.dart';
-import '../cubit/control_page_cubit.dart';
-import '../cubit/control_page_state.dart';
+import '../cubit/control_cubit.dart';
+import '../cubit/control_state.dart';
 import '../utils/enums/main_tab.dart';
-import '../view/control_page_view.dart';
+import '../view/control_view.dart';
 import '../widgets/tab_placeholder.dart';
 
 /// `/home`: the main shell, the screen every signed-in session lands on
 /// (docs/specs/control-page/screens/s0-glass-nav.md).
-class ControlPageScreen extends StatelessWidget {
-  const ControlPageScreen({super.key});
+class ControlScreen extends StatelessWidget {
+  const ControlScreen({super.key});
 
   /// Each tab's root page. Features hand over their screens here as they get built.
   static Widget _root(BuildContext context, MainTab tab) => switch (tab) {
@@ -28,12 +28,12 @@ class ControlPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => getIt<ControlPageCubit>()..start(),
-    child: BlocListener<ControlPageCubit, ControlPageState>(
+    create: (_) => getIt<ControlCubit>()..start(),
+    child: BlocListener<ControlCubit, ControlState>(
       listenWhen: (_, state) => state.redirect != null,
       listener: (context, state) =>
           AppNavigator.resetTo(context, state.redirect!),
-      child: const ControlPageView(rootBuilder: _root),
+      child: const ControlView(rootBuilder: _root),
     ),
   );
 }

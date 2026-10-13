@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/constants/app_assets.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/control_page/presentation/utils/enums/main_tab.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
-import 'package:pulse/features/control_page/presentation/widgets/glass_nav_bar/nav_item.dart';
+import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
+import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
 
 import '../../../../helpers/pump_app.dart';
 

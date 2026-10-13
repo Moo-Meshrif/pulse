@@ -9,7 +9,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/permission_access.dart';
 import 'package:pulse/core/services/camera_device.dart';
 import 'package:pulse/core/services/camera_permission_service.dart';
-import 'package:pulse/features/control_page/presentation/screen/control_page_screen.dart';
+import 'package:pulse/features/control/presentation/screen/control_screen.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
@@ -167,7 +167,7 @@ void main() {
     );
     // Take the app down with the test: its timers must not outlive it.
     addTearDown(() => tester.pumpWidget(const SizedBox()));
-    expect(find.byType(ControlPageScreen), findsOneWidget);
+    expect(find.byType(ControlScreen), findsOneWidget);
   }
 
   Future<void> settle(WidgetTester tester) async {
@@ -226,7 +226,7 @@ void main() {
     await tester.tap(find.bySemanticsLabel(l10nEn.close));
     await settle(tester);
     expect(find.byType(StoryViewerScreen), findsNothing);
-    expect(find.byType(ControlPageScreen), findsOneWidget);
+    expect(find.byType(ControlScreen), findsOneWidget);
   });
 
   testWidgets('your own story opens the viewer and its viewers', (
@@ -264,7 +264,7 @@ void main() {
     await tester.tap(find.text(l10nEn.permNotNow));
     await settle(tester);
     expect(find.byType(StoryCameraScreen), findsNothing);
-    expect(find.byType(ControlPageScreen), findsOneWidget);
+    expect(find.byType(ControlScreen), findsOneWidget);
   });
 
   testWidgets('camera -> edit -> Share hands the story to the upload and goes '
@@ -287,6 +287,6 @@ void main() {
     expect(uploads.posted.single.type, StoryMediaType.image);
     expect(find.byType(StoryEditScreen), findsNothing);
     expect(find.byType(StoryCameraScreen), findsNothing);
-    expect(find.byType(ControlPageScreen), findsOneWidget);
+    expect(find.byType(ControlScreen), findsOneWidget);
   });
 }

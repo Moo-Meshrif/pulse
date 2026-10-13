@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/features/control_page/presentation/utils/enums/main_tab.dart';
-import 'package:pulse/features/control_page/presentation/utils/enums/shell_back_action.dart';
+import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
+import 'package:pulse/features/control/presentation/utils/enums/shell_back_action.dart';
 
 void main() {
   test('a page open inside the tab is closed first, on any tab', () {

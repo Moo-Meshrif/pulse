@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/control_page_cubit.dart';
-import '../cubit/control_page_state.dart';
+import '../cubit/control_cubit.dart';
+import '../cubit/control_state.dart';
 import '../utils/enums/main_tab.dart';
 import '../utils/enums/shell_back_action.dart';
 import '../utils/tab_handle.dart';
@@ -19,20 +19,20 @@ import '../widgets/tab_navigator.dart';
 /// Navigator, and the floating glass nav bar over them. [rootBuilder] gives each tab's root page.
 ///
 /// The view owns what needs the tabs' Navigators: system back and a re-tap on the selected tab. Which tab
-/// is selected lives in [ControlPageCubit].
-class ControlPageView extends StatefulWidget {
-  const ControlPageView({super.key, required this.rootBuilder});
+/// is selected lives in [ControlCubit].
+class ControlView extends StatefulWidget {
+  const ControlView({super.key, required this.rootBuilder});
 
   final Widget Function(BuildContext context, MainTab tab) rootBuilder;
 
   @override
-  State<ControlPageView> createState() => _ControlPageViewState();
+  State<ControlView> createState() => _ControlViewState();
 }
 
-class _ControlPageViewState extends State<ControlPageView> {
+class _ControlViewState extends State<ControlView> {
   final _handles = {for (final tab in MainTab.values) tab: TabHandle()};
 
-  ControlPageCubit get _cubit => context.read<ControlPageCubit>();
+  ControlCubit get _cubit => context.read<ControlCubit>();
 
   void _onBack() {
     final selected = _cubit.state.selected;
@@ -124,7 +124,7 @@ class _TabStackState extends State<_TabStack> {
 
   @override
   Widget build(BuildContext context) =>
-      BlocSelector<ControlPageCubit, ControlPageState, MainTab>(
+      BlocSelector<ControlCubit, ControlState, MainTab>(
         selector: (state) => state.selected,
         builder: (context, selected) {
           _opened.add(selected);
@@ -164,7 +164,7 @@ class _NavBar extends StatelessWidget {
         ignoring: hidden,
         child: ExcludeSemantics(
           excluding: hidden,
-          child: BlocBuilder<ControlPageCubit, ControlPageState>(
+          child: BlocBuilder<ControlCubit, ControlState>(
             buildWhen: (a, b) =>
                 a.selected != b.selected || a.chatUnread != b.chatUnread,
             builder: (context, state) => GlassNavBar(

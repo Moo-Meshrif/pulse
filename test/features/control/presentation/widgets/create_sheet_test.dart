@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/constants/app_assets.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/control_page/presentation/utils/enums/create_option.dart';
-import 'package:pulse/features/control_page/presentation/widgets/create_sheet/create_option_row.dart';
-import 'package:pulse/features/control_page/presentation/widgets/create_sheet/create_sheet.dart';
+import 'package:pulse/features/control/presentation/utils/enums/create_option.dart';
+import 'package:pulse/features/control/presentation/widgets/create_sheet/create_option_row.dart';
+import 'package:pulse/features/control/presentation/widgets/create_sheet/create_sheet.dart';
 
 import '../../../../helpers/pump_app.dart';
 
