@@ -15,6 +15,9 @@
   "signIn": "Sign in",
   "terms": "Terms",
   "privacyPolicy": "Privacy Policy",
+  "communityGuidelines": "Community guidelines",
+  "cookiePolicy": "Cookie policy",
+  "openSourceLicenses": "Open-source licenses",
   "comingSoon": "Coming soon",
   "onboardingPageIndicator": "Page {current} of {total}",
   "@onboardingPageIndicator": {

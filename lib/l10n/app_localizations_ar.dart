@@ -37,6 +37,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get privacyPolicy => 'سياسة الخصوصية';
 
   @override
+  String get communityGuidelines => 'إرشادات المجتمع';
+
+  @override
+  String get cookiePolicy => 'سياسة ملفات تعريف الارتباط';
+
+  @override
+  String get openSourceLicenses => 'تراخيص المصدر المفتوح';
+
+  @override
   String get comingSoon => 'قريبًا';
 
   @override

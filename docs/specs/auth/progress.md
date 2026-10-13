@@ -9,7 +9,7 @@ All interview answers live in the spec files (tagged [user]/[estimated]); latest
 - Leave = sign out then /sign-in [user]
 - CLAUDE.md pointer added [user]
 ## Open questions (pending)
-Only TODO items remain in open-questions.md (Supabase schema, Terms/Privacy content, reset-link screen, avatar color rule, estimated spacings, Arabic review).
+Only TODO items remain in open-questions.md (Supabase schema, Terms/Privacy content, reset-link screen, estimated spacings, Arabic review).
 - NEW: S11 set-new-password (key tile, X close, rules checklist, confirm field, 'Log out of all other devices' checkbox, Update password), S12 password-updated dialog; screenshots copied [user]
 - S11: key icon added; rules/segments fill like S3 score; Update enabled when 3 rules met + confirm matches; checkbox default checked -> signOut(others); X -> sign out recovery + /sign-in; S12 = ConfirmationDialog.info, not dismissible, Sign in -> sign out recovery + /sign-in [user]
 - Reset flow = email link opens S11 (Supabase can't email a password) [user via screenshots]

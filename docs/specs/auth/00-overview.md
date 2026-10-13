@@ -22,7 +22,7 @@ Backend: **Supabase now, RESTful API later** [user]. Schema: `schema.sql` (trimm
 | S13 | Splash: loading, offline, can't reach | screens/s13-splash.md | screenshots/s13-splash-*.png | `/` (after onboarding) |
 | S12 | Password updated (dialog over S11) | screens/s12-password-updated-dialog.md | screenshots/s12-password-updated-dialog.png | dialog |
 
-Also needed, not designed: TODO: `/terms` and `/privacy` in-app placeholder screens [user]; TODO: `/home` placeholder until specced [user]; TODO: Supabase recovery deep link: URL scheme + redirect URL configuration; Expired/invalid link state: specced in S11 [user, default accepted].
+Also needed, not designed: TODO: `/terms` and `/privacy` in-app screens showing backend HTML (Q45) [user]; TODO: `/home` placeholder until specced [user]; TODO: Supabase recovery deep link: URL scheme + redirect URL configuration; Expired/invalid link state: specced in S11 [user, default accepted].
 
 ## Navigation map
 ```

@@ -33,6 +33,18 @@
   "@privacyPolicy": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "communityGuidelines": "إرشادات المجتمع",
+  "@communityGuidelines": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "cookiePolicy": "سياسة ملفات تعريف الارتباط",
+  "@cookiePolicy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "openSourceLicenses": "تراخيص المصدر المفتوح",
+  "@openSourceLicenses": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "comingSoon": "قريبًا",
   "@comingSoon": {
     "x-review": "Arabic draft: pending user approval"

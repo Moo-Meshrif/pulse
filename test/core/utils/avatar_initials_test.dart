@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/features/auth/presentation/utils/avatar_initials.dart';
+import 'package:pulse/core/utils/avatar_initials.dart';
 
 void main() {
   group('initialsOf', () {

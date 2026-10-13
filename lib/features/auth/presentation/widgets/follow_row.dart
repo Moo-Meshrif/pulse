@@ -8,7 +8,6 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../follow/data/enums/follow_status.dart';
 import '../../../follow/data/model/suggested_profile_model.dart';
 import '../utils/l10n/suggested_profile_l10n.dart';
-import 'avatar_initials.dart';
 
 /// One person on the Follow step: avatar, name, meta line and the Follow / Requested / Following pill
 /// (docs/specs/auth/02-components.md C12).

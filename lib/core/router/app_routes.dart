@@ -29,5 +29,8 @@ abstract final class AppRoutes {
   static const resetPassword = '/reset-password';
   static const terms = '/terms';
   static const privacy = '/privacy';
+  static const communityGuidelines = '/community-guidelines';
+  static const cookiePolicy = '/cookie-policy';
+  static const openSourceLicenses = '/open-source-licenses';
   static const home = '/home';
 }

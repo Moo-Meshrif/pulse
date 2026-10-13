@@ -37,6 +37,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
+  String get communityGuidelines => 'Community guidelines';
+
+  @override
+  String get cookiePolicy => 'Cookie policy';
+
+  @override
+  String get openSourceLicenses => 'Open-source licenses';
+
+  @override
   String get comingSoon => 'Coming soon';
 
   @override

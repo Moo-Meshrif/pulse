@@ -49,6 +49,8 @@ import '../../features/follow/domain/use_case/respond_to_follow_request_use_case
     as _i534;
 import '../../features/follow/domain/use_case/toggle_follow_use_case.dart'
     as _i130;
+import '../../features/legal/data/datasource/legal_datasource.dart' as _i604;
+import '../../features/legal/presentation/cubit/legal_cubit.dart' as _i736;
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
     as _i834;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
@@ -120,6 +122,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i152.InterestsDatasource>(
       () => _i152.SupabaseInterestsDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i604.LegalDatasource>(
+      () => _i604.SupabaseLegalDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i527.LocalStorageService>(
       () => _i527.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
@@ -150,6 +155,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i47.ConnectivityService>(
       () => _i47.PlusConnectivityService(gh<_i895.Connectivity>()),
+    );
+    gh.factory<_i736.LegalCubit>(
+      () => _i736.LegalCubit(
+        gh<_i604.LegalDatasource>(),
+        gh<_i1016.LaunchService>(),
+      ),
     );
     gh.factory<_i586.GetInterestsUseCase>(
       () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),

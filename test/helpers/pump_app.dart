@@ -12,6 +12,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
+import 'package:pulse/features/legal/data/datasource/legal_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
@@ -66,6 +67,8 @@ class MockProfileDatasource extends Mock implements ProfileDatasource {}
 class MockProfileRepository extends Mock implements ProfileRepository {}
 
 class MockInterestsDatasource extends Mock implements InterestsDatasource {}
+
+class MockLegalDatasource extends Mock implements LegalDatasource {}
 
 class MockFollowsDatasource extends Mock implements FollowsDatasource {}
 
@@ -143,6 +146,7 @@ extension PumpApp on WidgetTester {
     Map<String, Object> prefs = const {},
     AuthDatasource? auth,
     ProfileDatasource? profiles,
+    LegalDatasource? legal,
   }) async {
     SharedPreferences.resetStatic();
     SharedPreferences.setMockInitialValues(prefs);
@@ -159,12 +163,14 @@ extension PumpApp on WidgetTester {
     await getIt.unregister<ProfileDatasource>();
     await getIt.unregister<InterestsDatasource>();
     await getIt.unregister<FollowsDatasource>();
+    await getIt.unregister<LegalDatasource>();
     getIt.registerSingleton<AuthDatasource>(auth ?? signedOut);
     getIt.registerSingleton<ProfileDatasource>(
       profiles ?? MockProfileDatasource(),
     );
     getIt.registerSingleton<InterestsDatasource>(MockInterestsDatasource());
     getIt.registerSingleton<FollowsDatasource>(MockFollowsDatasource());
+    getIt.registerSingleton<LegalDatasource>(legal ?? MockLegalDatasource());
     addTearDown(getIt.reset);
     await pumpWidget(App(key: UniqueKey()));
     await pumpAndSettle();

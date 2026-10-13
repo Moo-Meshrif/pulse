@@ -33,7 +33,7 @@ Everything else comes from `../_theme/` and `lib/core/theme/`. Token names below
 
 ## Reused as-is
 `display` (Sora 30/700, -0.6, 1.2) for every screen title [user]; `subtitle` (15/400, 1.55, `textSecondary`) under titles [user]; `label` 13/600 for field labels [estimated, check]; `PrimaryButton` (56 high, pill); form side padding 24; `fieldGap` 14; `labelGap` 6; avatar palette from `colors.md`.
-Avatar colors seen: SK #5E4B7A, OH #6B5B2E, LT #8A3B4E, MR #2E6B63, YF #7A4E3A, DN #4F6B4A [seen, match palette]; assignment rule unknown (see open-questions).
+Avatar colors seen: SK #5E4B7A, OH #6B5B2E, LT #8A3B4E, MR #2E6B63, YF #7A4E3A, DN #4F6B4A [seen, match palette]; assignment rule: stable hash of user id -> palette index (Q7, resolved) [user].
 
 ## Text scale hints
 Required asterisk: `danger`, same style as label. "(optional)" after Gender: label weight 400 `textSecondary` [seen]. Terms/Privacy links: 14/700 `primary`, underlined [user]. Helper text: `caption` 13/400 `textSecondary` [estimated].

@@ -10,6 +10,9 @@ abstract interface class LaunchService {
   /// Opens the device's mail app on its inbox (not a new message), falling back to a blank message
   /// when the device has no inbox entry point.
   Future<bool> openEmailApp();
+
+  /// Opens [uri] in the device's browser (or the app registered for its scheme, e.g. `mailto:`).
+  Future<bool> openUrl(Uri uri);
 }
 
 /// [LaunchService] over `url_launcher`.
@@ -46,9 +49,16 @@ final class UrlLauncherLaunchService implements LaunchService {
     return _launch(Uri(scheme: 'mailto'));
   }
 
-  Future<bool> _launch(Uri uri) async {
+  @override
+  Future<bool> openUrl(Uri uri) =>
+      _launch(uri, mode: LaunchMode.externalApplication);
+
+  Future<bool> _launch(
+    Uri uri, {
+    LaunchMode mode = LaunchMode.platformDefault,
+  }) async {
     try {
-      return await launchUrl(uri);
+      return await launchUrl(uri, mode: mode);
     } on Object {
       return false;
     }

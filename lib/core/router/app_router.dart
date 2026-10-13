@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../enums/legal_document.dart';
 import '../enums/signed_out_reason.dart';
 import '../../features/auth/presentation/screen/forgot_password_screen.dart';
-import '../../features/auth/presentation/screen/legal_placeholder_screen.dart';
 import '../../features/auth/presentation/cubit/sign_up_cubit.dart';
 import '../../features/auth/presentation/screen/reset_password_screen.dart';
 import '../../features/auth/presentation/screen/sign_in_screen.dart';
 import '../../features/auth/presentation/screen/sign_up_screen.dart';
-import '../../features/auth/presentation/utils/enums/legal_document.dart';
+import '../../features/legal/presentation/screen/legal_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
 import '../../features/onboarding/presentation/screen/onboarding_screen.dart';
@@ -36,13 +36,15 @@ abstract final class AppRouter {
       AppRoutes.register => _register(settings),
       AppRoutes.forgotPassword => _page(settings, const ForgotPasswordScreen()),
       AppRoutes.resetPassword => _page(settings, const ResetPasswordScreen()),
-      AppRoutes.terms => _page(
+      AppRoutes.terms ||
+      AppRoutes.privacy ||
+      AppRoutes.communityGuidelines ||
+      AppRoutes.cookiePolicy ||
+      AppRoutes.openSourceLicenses => _page(
         settings,
-        const LegalPlaceholderScreen(kind: LegalDocument.terms),
-      ),
-      AppRoutes.privacy => _page(
-        settings,
-        const LegalPlaceholderScreen(kind: LegalDocument.privacy),
+        LegalScreen(
+          document: LegalDocument.values.firstWhere((d) => d.route == path),
+        ),
       ),
       // TODO(auth-plan): replace with the real Home screen once it is specced (sign-in and sign-up end here).
       // TODO(reset-link): when the control Cubit that holds all main pages exists, add the reset-link

@@ -10,7 +10,7 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
-import '../utils/enums/legal_document.dart';
+import '../../../../core/enums/legal_document.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_switch_link.dart';
 import '../widgets/labeled_checkbox.dart';

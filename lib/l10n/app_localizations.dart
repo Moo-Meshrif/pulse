@@ -152,6 +152,24 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacyPolicy;
 
+  /// No description provided for @communityGuidelines.
+  ///
+  /// In en, this message translates to:
+  /// **'Community guidelines'**
+  String get communityGuidelines;
+
+  /// No description provided for @cookiePolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cookie policy'**
+  String get cookiePolicy;
+
+  /// No description provided for @openSourceLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get openSourceLicenses;
+
   /// No description provided for @comingSoon.
   ///
   /// In en, this message translates to:

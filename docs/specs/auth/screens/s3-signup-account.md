@@ -43,7 +43,7 @@ PinnedBottomCta: PrimaryButton "Continue" (expand) + ~12 gap + "Already on Pulse
 | errorEmailExists | An account with this email already exists | يوجد حساب بهذا البريد بالفعل |
 
 ## Behavior and navigation
-Continue -> Supabase `signUp(email, password)` -> step 2 (code emailed). Back arrow leaves the flow (no dialog). "Sign in" -> S1. TODO: Terms / Privacy -> `/terms`, `/privacy` placeholders [user]. Social -> "Coming soon".
+Continue -> Supabase `signUp(email, password)` -> step 2 (code emailed). Back arrow leaves the flow (no dialog). "Sign in" -> S1. TODO: Terms / Privacy -> `/terms`, `/privacy` (backend HTML, Q45) [user]. Social -> "Coming soon".
 
 ## Data mapping
 User input only. Strength computed locally.
