@@ -23,6 +23,7 @@ class SplashView extends StatelessWidget {
   Widget build(BuildContext context) {
     final problem = state.problem;
     return AppPage(
+      showTopBar: false,
       child: problem == null
           ? const SplashLoading()
           : SplashProblemView(

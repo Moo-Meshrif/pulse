@@ -776,5 +776,33 @@
   "close": "Close",
   "@close": {
     "description": "Screen-reader label of an X button"
+  },
+  "failedPageTitle": "Something went wrong",
+  "@failedPageTitle": {
+    "description": "Empty page: title of the generic failure"
+  },
+  "failedPageBody": "We couldn't load this page. It's not you — please try again.",
+  "@failedPageBody": {
+    "description": "Empty page: body of the generic failure"
+  },
+  "goToHome": "Go to Home",
+  "@goToHome": {
+    "description": "Empty page: link that leaves to the Home tab"
+  },
+  "notFoundPageTitle": "This page isn't available",
+  "@notFoundPageTitle": {
+    "description": "Empty page: title for a broken link or removed content"
+  },
+  "notFoundPageBody": "The link may be broken, or the content was removed.",
+  "@notFoundPageBody": {
+    "description": "Empty page: body for a broken link or removed content"
+  },
+  "offlinePageTitle": "You're offline",
+  "@offlinePageTitle": {
+    "description": "Empty page: title when the connection is lost"
+  },
+  "offlinePageBody": "Connect to Wi-Fi or mobile data. We'll reload as soon as you're back.",
+  "@offlinePageBody": {
+    "description": "Empty page: body when the connection is lost"
   }
 }

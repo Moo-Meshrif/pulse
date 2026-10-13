@@ -646,4 +646,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get close => 'إغلاق';
+
+  @override
+  String get failedPageTitle => 'حدث خطأ ما';
+
+  @override
+  String get failedPageBody =>
+      'تعذّر تحميل هذه الصفحة. المشكلة ليست منك، يُرجى المحاولة مرة أخرى.';
+
+  @override
+  String get goToHome => 'الذهاب إلى الرئيسية';
+
+  @override
+  String get notFoundPageTitle => 'هذه الصفحة غير متاحة';
+
+  @override
+  String get notFoundPageBody =>
+      'قد يكون الرابط معطّلاً، أو تمت إزالة المحتوى.';
+
+  @override
+  String get offlinePageTitle => 'أنت غير متصل بالإنترنت';
+
+  @override
+  String get offlinePageBody =>
+      'اتصل بشبكة Wi-Fi أو بيانات الجوال. سنعيد التحميل فور عودتك.';
 }

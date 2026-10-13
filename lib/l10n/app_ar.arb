@@ -816,5 +816,33 @@
   "close": "إغلاق",
   "@close": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "failedPageTitle": "حدث خطأ ما",
+  "@failedPageTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "failedPageBody": "تعذّر تحميل هذه الصفحة. المشكلة ليست منك، يُرجى المحاولة مرة أخرى.",
+  "@failedPageBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "goToHome": "الذهاب إلى الرئيسية",
+  "@goToHome": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notFoundPageTitle": "هذه الصفحة غير متاحة",
+  "@notFoundPageTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notFoundPageBody": "قد يكون الرابط معطّلاً، أو تمت إزالة المحتوى.",
+  "@notFoundPageBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "offlinePageTitle": "أنت غير متصل بالإنترنت",
+  "@offlinePageTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "offlinePageBody": "اتصل بشبكة Wi-Fi أو بيانات الجوال. سنعيد التحميل فور عودتك.",
+  "@offlinePageBody": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

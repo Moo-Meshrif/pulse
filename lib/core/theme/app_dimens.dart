@@ -53,6 +53,15 @@ abstract final class AppShadows {
 
   /// Dialog card: 0 12 30 #161A19 @ 12%, the same shadow as the onboarding cards.
   static List<BoxShadow> get dialog => onboardingCards;
+
+  /// Soft glow under the primary action of an empty or failed page: 0 8 20 primary @ 28%.
+  static List<BoxShadow> get primaryAction => [
+    BoxShadow(
+      color: const Color(0x472E6B63),
+      offset: Offset(0, AppScale.scale(8)),
+      blurRadius: AppScale.scale(20),
+    ),
+  ];
 }
 
 /// Shared dialog shell and its content (docs/specs/auth/01-design-tokens.md, 02-components.md C14).
@@ -88,6 +97,25 @@ abstract final class LoadingDimens {
   static double get refreshBand => AppScale.scale(64);
   static double get loadMoreBand => AppScale.scale(72);
   static double get labelGap => AppScale.scale(16);
+}
+
+/// The empty / failed page (core/widgets/app_empty/, the "Empty and failed" board).
+abstract final class AppEmptyDimens {
+  static double get icon => AppScale.scale(72);
+  static double get iconToTitleGap => AppScale.scale(24);
+  static double get titleToBodyGap => AppScale.scale(10);
+  static double get bodyToActionsGap => AppScale.scale(28);
+  static double get bodyMaxWidth => AppScale.scale(300);
+  static double get actionMaxWidth => AppScale.scale(280);
+  static double get primaryHeight => AppScale.scale(52);
+  static const double linkHeight = 44; // tap target: fixed
+  static double get side => AppScale.scale(32);
+  static double get rise => AppScale.scale(12);
+  static double get float => AppScale.scale(3);
+  static const Duration enter = Duration(milliseconds: 280);
+  static const Duration floatLoop = Duration(
+    milliseconds: 1600,
+  ); // one way; a full cycle is 3.2 s
 }
 
 /// The loading overlay (core/widgets/loading_overlay/): a frosted scrim and a heartbeat line (a Lottie

@@ -62,6 +62,24 @@ abstract final class AppAssets {
   static const volume = '$_icons/ic_volume.svg';
   static const logo = '$_icons/logo.svg';
 
+  // Large-size set (drawn for 72 px, stroke 1.4): empty, failed and permission pages. The `Thin` ones
+  // are the fine-stroke twins of the toolbar icons of the same name.
+  static const inbox = '$_icons/ic_inbox.svg';
+  static const listLines = '$_icons/ic_list_lines.svg';
+  static const alertCircle = '$_icons/ic_alert_circle.svg';
+  static const globeOff = '$_icons/ic_globe_off.svg';
+  static const chatBubble = '$_icons/ic_chat_bubble.svg';
+  static const userAdd = '$_icons/ic_user_add.svg';
+  static const magnifier = '$_icons/ic_magnifier.svg';
+  static const fileX = '$_icons/ic_file_x.svg';
+  static const wifiOffThin = '$_icons/ic_wifi_off_thin.svg';
+  static const wifiWeak = '$_icons/ic_wifi_weak.svg';
+  static const photo = '$_icons/ic_photo.svg';
+  static const cameraThin = '$_icons/ic_camera_thin.svg';
+  static const lockClosed = '$_icons/ic_lock_closed.svg';
+  static const cloudAlertThin = '$_icons/ic_cloud_alert_thin.svg';
+  static const cardX = '$_icons/ic_card_x.svg';
+
   // Onboarding illustrations: PNGs with the text baked in, one set per language.
   // Placeholder file names; the user will edit them (docs/specs/onboarding/assets.md).
   static const _onboarding = 'assets/images/onboarding';

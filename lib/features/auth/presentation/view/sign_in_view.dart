@@ -115,6 +115,7 @@ class _SignInViewState extends State<SignInView> {
     final l10n = context.l10n;
     return AppPage(
       bottomSpace: AppSpacing.s24,
+      showTopBar: false,
       child: CustomScrollView(
         physics: const ClampingScrollPhysics(),
         slivers: [

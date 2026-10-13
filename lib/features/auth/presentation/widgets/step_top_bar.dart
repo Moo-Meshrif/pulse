@@ -5,7 +5,6 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
-import 'auth_back_button.dart';
 
 /// The top bar of sign-up steps 1-6 (docs/specs/auth/02-components.md C7). Progress fills from the start
 /// (right to left in RTL); [showSkip] adds a "Skip" button, which ignores taps while [onSkip] is null
@@ -41,7 +40,7 @@ class StepTopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          AuthBackButton(onPressed: onBack),
+          AppBackButton(onPressed: onBack),
           Expanded(
             child: Semantics(
               container: true,

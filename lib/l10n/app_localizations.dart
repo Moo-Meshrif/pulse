@@ -1237,6 +1237,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// Empty page: title of the generic failure
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get failedPageTitle;
+
+  /// Empty page: body of the generic failure
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load this page. It\'s not you — please try again.'**
+  String get failedPageBody;
+
+  /// Empty page: link that leaves to the Home tab
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Home'**
+  String get goToHome;
+
+  /// Empty page: title for a broken link or removed content
+  ///
+  /// In en, this message translates to:
+  /// **'This page isn\'t available'**
+  String get notFoundPageTitle;
+
+  /// Empty page: body for a broken link or removed content
+  ///
+  /// In en, this message translates to:
+  /// **'The link may be broken, or the content was removed.'**
+  String get notFoundPageBody;
+
+  /// Empty page: title when the connection is lost
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get offlinePageTitle;
+
+  /// Empty page: body when the connection is lost
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to Wi-Fi or mobile data. We\'ll reload as soon as you\'re back.'**
+  String get offlinePageBody;
 }
 
 class _AppLocalizationsDelegate

@@ -26,6 +26,9 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.dangerSoft,
     required this.online,
     required this.warning,
+    required this.warningSoft,
+    required this.warningInk,
+    required this.warningText,
     required this.scrim,
     required this.videoChip,
     required this.glassFill,
@@ -57,6 +60,11 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color dangerSoft;
   final Color online;
   final Color warning;
+
+  /// Connection-problem tone (offline page): button fill, icon and label.
+  final Color warningSoft;
+  final Color warningInk;
+  final Color warningText;
   final Color scrim;
   final Color videoChip;
   final Color glassFill;
@@ -88,6 +96,9 @@ class AppColors extends ThemeExtension<AppColors> {
     dangerSoft: Color(0xFFFBE4E5),
     online: Color(0xFF2FA864),
     warning: Color(0xFFD98A1E),
+    warningSoft: Color(0xFFFDF0DC),
+    warningInk: Color(0xFFB26F12),
+    warningText: Color(0xFF8A560C),
     scrim: Color(0x66161A19), // #161A19 @ 40%
     videoChip: Color(0x73161A19), // #161A19 @ 45%
     glassFill: Color(0x8CFFFFFF), // #FFFFFF @ 55%
@@ -127,6 +138,9 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? dangerSoft,
     Color? online,
     Color? warning,
+    Color? warningSoft,
+    Color? warningInk,
+    Color? warningText,
     Color? scrim,
     Color? videoChip,
     Color? glassFill,
@@ -155,6 +169,9 @@ class AppColors extends ThemeExtension<AppColors> {
     dangerSoft: dangerSoft ?? this.dangerSoft,
     online: online ?? this.online,
     warning: warning ?? this.warning,
+    warningSoft: warningSoft ?? this.warningSoft,
+    warningInk: warningInk ?? this.warningInk,
+    warningText: warningText ?? this.warningText,
     scrim: scrim ?? this.scrim,
     videoChip: videoChip ?? this.videoChip,
     glassFill: glassFill ?? this.glassFill,
@@ -188,6 +205,9 @@ class AppColors extends ThemeExtension<AppColors> {
       dangerSoft: Color.lerp(dangerSoft, other.dangerSoft, t)!,
       online: Color.lerp(online, other.online, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
+      warningSoft: Color.lerp(warningSoft, other.warningSoft, t)!,
+      warningInk: Color.lerp(warningInk, other.warningInk, t)!,
+      warningText: Color.lerp(warningText, other.warningText, t)!,
       scrim: Color.lerp(scrim, other.scrim, t)!,
       videoChip: Color.lerp(videoChip, other.videoChip, t)!,
       glassFill: Color.lerp(glassFill, other.glassFill, t)!,

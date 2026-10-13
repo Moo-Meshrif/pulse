@@ -8,7 +8,6 @@ import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/forgot_password_cubit.dart';
 import '../cubit/forgot_password_state.dart';
-import '../widgets/auth_back_button.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/icon_tile.dart';
 
@@ -82,16 +81,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: AppSpacing.headerSide,
-                  start: AppSpacing.headerBackSide,
-                ),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: AuthBackButton(onPressed: _goBackToSignIn),
-                ),
-              ),
               Padding(
                 padding: EdgeInsets.fromLTRB(
                   AppSpacing.formSide,

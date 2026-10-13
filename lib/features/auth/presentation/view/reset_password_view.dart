@@ -14,7 +14,6 @@ import '../cubit/reset_password_state.dart';
 import '../utils/email_mask.dart';
 import '../utils/password_policy.dart';
 import '../utils/password_rule.dart';
-import '../widgets/auth_close_button.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/icon_tile.dart';
 import '../widgets/labeled_checkbox.dart';
@@ -71,34 +70,17 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       AppNavigator.push(context, AppRoutes.forgotPassword);
 
   @override
-  Widget build(BuildContext context) {
-    return AppPage(
-      bottomSpace: AppSpacing.s24,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsetsDirectional.only(
-              top: AppSpacing.headerSide,
-              start: AppSpacing.headerBackSide,
-            ),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: AuthCloseButton(onPressed: _cubit.leave),
-            ),
-          ),
-          // The recovery email (null: the link expired) is set when the screen opens.
-          Expanded(
-            child:
-                BlocSelector<ResetPasswordCubit, ResetPasswordState, String?>(
-                  selector: (state) => state.email,
-                  builder: (context, email) =>
-                      email == null ? _expired(context) : _form(context, email),
-                ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AppPage(
+    onBack: _cubit.leave,
+    isCloseButton: true,
+    bottomSpace: AppSpacing.s24,
+    // The recovery email (null: the link expired) is set when the screen opens.
+    child: BlocSelector<ResetPasswordCubit, ResetPasswordState, String?>(
+      selector: (state) => state.email,
+      builder: (context, email) =>
+          email == null ? _expired(context) : _form(context, email),
+    ),
+  );
 
   Widget _expired(BuildContext context) {
     final l10n = context.l10n;

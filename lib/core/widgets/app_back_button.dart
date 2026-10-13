@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_assets.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
-import '../../../../core/widgets/widgets.dart';
+import '../constants/app_assets.dart';
+import '../extensions/context_extensions.dart';
+import '../extensions/l10n.dart';
+import '../theme/app_dimens.dart';
+import 'app_svg_icon.dart';
 
-/// The back arrow of the auth screens: a 44 tap target around a 24 `textPrimary` arrow that mirrors in
+/// The back arrow of every screen: a 44 tap target around a 24 `textPrimary` arrow that mirrors in
 /// RTL, labelled "Back" (docs/specs/auth/02-components.md C7).
-class AuthBackButton extends StatelessWidget {
-  const AuthBackButton({super.key, required this.onPressed});
+class AppBackButton extends StatelessWidget {
+  const AppBackButton({super.key, required this.onPressed});
 
   final VoidCallback onPressed;
 

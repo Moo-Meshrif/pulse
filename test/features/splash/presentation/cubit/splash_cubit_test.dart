@@ -212,7 +212,7 @@ void main() {
   );
 
   blocTest<SplashCubit, SplashState>(
-    'Try again goes back to loading, then decides again (a recovered connection goes on)',
+    'Try again keeps the problem screen with a spinning button, then decides again (a recovered connection goes on)',
     setUp: () {
       when(() => isSignedIn()).thenReturn(true);
       var calls = 0;
@@ -228,7 +228,7 @@ void main() {
     },
     expect: () => [
       const SplashState.failed(SplashProblem.offline),
-      const SplashState.deciding(),
+      const SplashState.retrying(SplashProblem.offline),
       const SplashState.go(AppRoutes.home),
     ],
     verify: (_) => verify(() => getSignupStep()).called(2),
@@ -250,7 +250,7 @@ void main() {
     },
     expect: () => [
       const SplashState.failed(SplashProblem.offline),
-      const SplashState.deciding(),
+      const SplashState.retrying(SplashProblem.offline),
       const SplashState.failed(SplashProblem.cantReach),
     ],
   );
@@ -271,7 +271,7 @@ void main() {
     when(() => isSignedIn()).thenReturn(false);
 
     final retried = splash.retry();
-    expect(splash.state, const SplashState.deciding());
+    expect(splash.state, const SplashState.retrying(SplashProblem.offline));
     await retried;
     expect(splash.state, const SplashState.go(AppRoutes.signIn));
   });

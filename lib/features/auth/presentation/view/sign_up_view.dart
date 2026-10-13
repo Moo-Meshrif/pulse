@@ -32,6 +32,7 @@ class SignUpView extends StatelessWidget {
             if (!didPop) _handleSystemBack(context, step);
           },
           child: AppPage(
+            showTopBar: false,
             bottomSpace: AppSpacing.s24,
             child: Column(
               children: [

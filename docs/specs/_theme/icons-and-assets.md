@@ -7,6 +7,9 @@
 - Present: ic_arrow_back, ic_arrow_forward, ic_bell, ic_block, ic_bookmark, ic_camera, ic_chat(+_filled), ic_check, ic_chevron_down, ic_chevron_right, ic_close, ic_comment, ic_document, ic_edit, ic_eye, ic_eye_off, ic_flag, ic_globe, ic_heart(+_filled), ic_help, ic_home(+_filled), ic_image, ic_laptop, ic_location, ic_lock, ic_logout, ic_mail, ic_more_horizontal, ic_music, ic_phone, ic_play, ic_plus, ic_profile(+_filled), ic_search, ic_settings, ic_share, ic_shorts(+_filled), ic_smile, ic_tag_person, ic_upload, ic_verified, ic_video_camera, ic_volume, logo.svg.
 - `assets/icons/logo.svg`: 28x28 viewBox, square (no corner radius), #2E6B63 fill + white pulse line. Not registered in `pubspec.yaml` yet (`flutter: assets:` is empty).
 
+## Large-size icons
+- Same folder (`assets/icons/`), drawn for 72 px with stroke 1.4, for `AppEmpty` and permission or status screens: `ic_inbox`, `ic_list_lines`, `ic_alert_circle`, `ic_globe_off`, `ic_chat_bubble`, `ic_user_add`, `ic_magnifier`, `ic_file_x`, `ic_wifi_weak`, `ic_photo`, `ic_lock_closed`, `ic_card_x`. `ic_wifi_off_thin`, `ic_cloud_alert_thin` and `ic_camera_thin` are the fine-stroke twins of the 24 px icons. Named by shape, not by screen, so any feature reuses them.
+
 ## Fonts
 Sora, Noto Sans, Noto Sans Arabic (see typography.md). Bundled in `assets/fonts/` [user]; files not yet added to the repo.
 

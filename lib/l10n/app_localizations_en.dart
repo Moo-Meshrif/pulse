@@ -647,4 +647,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get failedPageTitle => 'Something went wrong';
+
+  @override
+  String get failedPageBody =>
+      'We couldn\'t load this page. It\'s not you — please try again.';
+
+  @override
+  String get goToHome => 'Go to Home';
+
+  @override
+  String get notFoundPageTitle => 'This page isn\'t available';
+
+  @override
+  String get notFoundPageBody =>
+      'The link may be broken, or the content was removed.';
+
+  @override
+  String get offlinePageTitle => 'You\'re offline';
+
+  @override
+  String get offlinePageBody =>
+      'Connect to Wi-Fi or mobile data. We\'ll reload as soon as you\'re back.';
 }

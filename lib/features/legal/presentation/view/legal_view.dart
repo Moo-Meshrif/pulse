@@ -21,13 +21,6 @@ class LegalView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppPage(
-    appBar: AppBar(
-      title: BlocSelector<LegalCubit, LegalState, String?>(
-        selector: (state) => state.document?.title,
-        builder: (context, title) =>
-            AppText(title ?? document.l10n(context), style: context.text.title),
-      ),
-    ),
     child: BlocBuilder<LegalCubit, LegalState>(
       builder: (context, state) {
         if (state.loading) return const AppLoadingView();

@@ -81,6 +81,7 @@ class _OnboardingViewState extends State<OnboardingView> {
           child: Focus(
             autofocus: true,
             child: AppPage(
+              showTopBar: false,
               bottomSpace: OnboardingDimens.lastPageFooterPadding.bottom,
               child: Column(
                 children: [
