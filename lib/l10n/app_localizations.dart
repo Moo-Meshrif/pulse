@@ -1345,6 +1345,738 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Record or upload a vertical video, up to 60s'**
   String get createShortSub;
+
+  /// Report reason
+  ///
+  /// In en, this message translates to:
+  /// **'Spam'**
+  String get reportReasonSpam;
+
+  /// Report reason
+  ///
+  /// In en, this message translates to:
+  /// **'Nudity or sexual content'**
+  String get reportReasonNudity;
+
+  /// Report reason
+  ///
+  /// In en, this message translates to:
+  /// **'Hate speech or symbols'**
+  String get reportReasonHate;
+
+  /// Report reason
+  ///
+  /// In en, this message translates to:
+  /// **'Bullying or harassment'**
+  String get reportReasonBullying;
+
+  /// Report reason
+  ///
+  /// In en, this message translates to:
+  /// **'Violence or dangerous acts'**
+  String get reportReasonViolence;
+
+  /// Report reason
+  ///
+  /// In en, this message translates to:
+  /// **'False information'**
+  String get reportReasonFalseInfo;
+
+  /// Report reason that opens the note step
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get reportReasonOther;
+
+  /// Report note step title
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get reportElseTitle;
+
+  /// Report note step body
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the problem in a few words. Your report is anonymous.'**
+  String get reportElseBody;
+
+  /// Report note step button
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get reportSend;
+
+  /// Report sent step title
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for letting us know'**
+  String get reportSentTitle;
+
+  /// Report sent step button
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get reportDone;
+
+  /// Story report sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Report story'**
+  String get storyReportTitle;
+
+  /// Story report sheet body
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you reporting this story? Your report is anonymous.'**
+  String get storyReportBody;
+
+  /// Story report sent body [estimated]
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll review this story.'**
+  String get storyReportSent;
+
+  /// Story report note field hint [estimated]
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what\'s wrong with this story…'**
+  String get storyReportNotePlaceholder;
+
+  /// Report note counter
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / {max}'**
+  String reportNoteCounter(int count, int max);
+
+  /// Snackbar when the device refused access (photo library)
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse doesn\'t have access. Allow it in Settings and try again.'**
+  String get errorPermission;
+
+  /// Story viewer reply field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message…'**
+  String get storyReplyHint;
+
+  /// Story viewer header name for your own story
+  ///
+  /// In en, this message translates to:
+  /// **'Your story'**
+  String get storyYourStory;
+
+  /// Story viewer: your story view count label
+  ///
+  /// In en, this message translates to:
+  /// **'{count} viewers'**
+  String storyViewers(int count);
+
+  /// Story viewer: more button label
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get storyMore;
+
+  /// Story viewer: like button label
+  ///
+  /// In en, this message translates to:
+  /// **'Like'**
+  String get storyLike;
+
+  /// Story viewer: liked button label
+  ///
+  /// In en, this message translates to:
+  /// **'Remove like'**
+  String get storyUnlike;
+
+  /// Story viewer: send button label
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get storySend;
+
+  /// Notice when Send is tapped in the story reply bar [estimated]
+  ///
+  /// In en, this message translates to:
+  /// **'Replies are coming soon.'**
+  String get storyReplySoon;
+
+  /// Story age under a minute
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get storyAgeNow;
+
+  /// Story age in minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m'**
+  String storyAgeMinutes(int count);
+
+  /// Story age in hours
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h'**
+  String storyAgeHours(int count);
+
+  /// Story age in days
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d'**
+  String storyAgeDays(int count);
+
+  /// Cancel button of a dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// Delete button of a dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// Notice action that reverses the last change
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// Story viewer: chip shown while a sheet or dialog is open
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get storyPaused;
+
+  /// Story options: mute a person's stories
+  ///
+  /// In en, this message translates to:
+  /// **'Mute @{username}'**
+  String storyMute(String username);
+
+  /// Story options: mute row subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Hide their stories from your rail'**
+  String get storyMuteHint;
+
+  /// Notice after muting a person's stories
+  ///
+  /// In en, this message translates to:
+  /// **'@{username}\'s stories are hidden'**
+  String storyMuted(String username);
+
+  /// Story options: open the author's profile
+  ///
+  /// In en, this message translates to:
+  /// **'Go to profile'**
+  String get storyGoToProfile;
+
+  /// Story options: save your story
+  ///
+  /// In en, this message translates to:
+  /// **'Save to device'**
+  String get storySaveToDevice;
+
+  /// Notice after saving a story to the device
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to your photos'**
+  String get storySaved;
+
+  /// Story options: audience row (read-only for now)
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see this'**
+  String get storyWhoCanSee;
+
+  /// Story audience: followers only
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get storyAudienceFollowers;
+
+  /// Story options: viewers row
+  ///
+  /// In en, this message translates to:
+  /// **'Viewers'**
+  String get storyViewersItem;
+
+  /// Viewers sheet: empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No one has viewed this story yet'**
+  String get storyViewersEmpty;
+
+  /// Story options: delete your story
+  ///
+  /// In en, this message translates to:
+  /// **'Delete story'**
+  String get storyDelete;
+
+  /// Delete story dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this story?'**
+  String get storyDeleteTitle;
+
+  /// Delete story dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed for everyone, along with its {count} views. You can\'t undo this.'**
+  String storyDeleteBody(int count);
+
+  /// Notice after deleting a story
+  ///
+  /// In en, this message translates to:
+  /// **'Story deleted'**
+  String get storyDeleted;
+
+  /// Viewers sheet: paging failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more viewers'**
+  String get storyViewersLoadFailed;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Allow camera and microphone'**
+  String get permAllowTitle;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'To take photos and record stories and shorts with sound.'**
+  String get permAllowBody;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access'**
+  String get permAllowAccess;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get permNotNow;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get permCamera;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get permMicrophone;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Needed'**
+  String get permNeeded;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get permOff;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get permAllowed;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is off'**
+  String get permCameraOffTitle;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Camera for Pulse in Settings to take photos and record videos.'**
+  String get permCameraOffBody;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is restricted on this device, so Pulse can\'t use it.'**
+  String get permCameraRestrictedBody;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone off · videos will be silent'**
+  String get permMicOffPill;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get permFix;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Camera isn\'t available'**
+  String get permUnavailableTitle;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Another app may be using it. Close that app, then try again.'**
+  String get permUnavailableBody;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get permOpenSettings;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get permChooseGallery;
+
+  /// Camera and microphone permission screens
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get permTryAgain;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Story'**
+  String get storyCameraTitle;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for photo, hold for video'**
+  String get storyHint;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Shutter'**
+  String get storyShutter;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Flash'**
+  String get storyFlash;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Flash on'**
+  String get storyFlashOn;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Flip camera'**
+  String get storyFlipCamera;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get storyGallery;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Recording, {time}'**
+  String storyRecordingTime(String time);
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a video of 60 seconds or less'**
+  String get storyVideoTooLong;
+
+  /// Story camera screen
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t capture. Try again.'**
+  String get storyCaptureFailed;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get storyShare;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your story'**
+  String get storyYourStoryPill;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get storyToolText;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get storyToolMute;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get storyToolUnmute;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Type something…'**
+  String get storyTextHint;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get storyTextDone;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Drag here to remove'**
+  String get storyRemoveSticker;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this story?'**
+  String get storyDiscardTitle;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your photo or video won\'t be posted.'**
+  String get storyDiscardBody;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get storyDiscard;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get storyKeepEditing;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your last story is still posting. Try again in a moment.'**
+  String get storyUploadBusy;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share your story. Try again.'**
+  String get storyShareFailed;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
+  /// **'You can add up to {max} stickers'**
+  String storyStickerLimit(int max);
+
+  /// Story rail on the Home tab
+  ///
+  /// In en, this message translates to:
+  /// **'Stories'**
+  String get storyRailTitle;
+
+  /// Story rail on the Home tab
+  ///
+  /// In en, this message translates to:
+  /// **'Posting…'**
+  String get storyPosting;
+
+  /// Story rail on the Home tab
+  ///
+  /// In en, this message translates to:
+  /// **'Add to your story'**
+  String get storyAddToStory;
+
+  /// Story rail on the Home tab
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load stories'**
+  String get storyRailFailed;
+
+  /// Story rail on the Home tab
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t post your story'**
+  String get storyPostFailed;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Changes apply to this story right away. People who already saw it keep it in their viewers list.'**
+  String get storyAudienceBody;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Close friends'**
+  String get storyAudienceCloseFriends;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Hide story from'**
+  String get storyAudienceHideFrom;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person} other{{count} people}}'**
+  String storyAudiencePeople(int count);
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get storyAudienceEdit;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get storyAudienceDone;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save. Try again.'**
+  String get storyAudienceSaveFailed;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Close friends'**
+  String get storyCloseFriendsTitle;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see this list. People aren\'t told when you add or remove them.'**
+  String get storyCloseFriendsHint;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Hide story from'**
+  String get storyHiddenTitle;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'These people won\'t see any of your stories. They aren\'t told.'**
+  String get storyHiddenHint;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String storyAudienceSelected(int count);
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Search followers'**
+  String get storyAudienceSearch;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested'**
+  String get storyAudienceTabSuggested;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Selected · {count}'**
+  String storyAudienceTabSelected(int count);
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'No followers found'**
+  String get storyAudienceEmpty;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your followers'**
+  String get storyAudienceLoadFailed;
+
+  /// Story audience: Who can see this and its lists
+  ///
+  /// In en, this message translates to:
+  /// **'Select {name}'**
+  String storyAudienceSelectPerson(String name);
+
+  /// Story audience: confirm moving a person between the two lists
+  ///
+  /// In en, this message translates to:
+  /// **'Hide your stories from {name}?'**
+  String storyMoveToHiddenTitle(String name);
+
+  /// Story audience: confirm moving a person between the two lists
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is in your Close friends. Hiding your stories from them takes them off that list.'**
+  String storyMoveToHiddenBody(String name);
+
+  /// Story audience: confirm moving a person between the two lists
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get storyMoveToHiddenConfirm;
+
+  /// Story audience: confirm moving a person between the two lists
+  ///
+  /// In en, this message translates to:
+  /// **'Add {name} to Close friends?'**
+  String storyMoveToCloseTitle(String name);
+
+  /// Story audience: confirm moving a person between the two lists
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is in Hide story from. Adding them to Close friends takes them off that list.'**
+  String storyMoveToCloseBody(String name);
+
+  /// Story audience: confirm moving a person between the two lists
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get storyMoveToCloseConfirm;
 }
 
 class _AppLocalizationsDelegate

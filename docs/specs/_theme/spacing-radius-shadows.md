@@ -32,6 +32,11 @@
 | Bottom sheet | 0 -10 40 #161A19 18% (`AppShadows.bottomSheet`) |
 | Onboarding cards | 0 12 30 #161A19 10-14% |
 | Selected segment | 0 1 3 #161A19 12% |
+| Story location sticker | 0 6 16 black 25% (`AppShadows.sticker`) |
+| Story text overlay | 0 2 12 black 35% (`AppShadows.textOverlay`) |
+
+## Story dimensions
+Scaled getters in `app_dimens.dart` (tap targets fixed): `StoryDimens` (rail, bars, header, reply bar, sticker, viewers sheet), `StoryCameraDimens` (camera, recording, edit tools, bottom actions), `StorySheetDimens` (options sheet, paused chip, delete dialog), `StoryPermissionDimens`. Alphas: `StoryOpacity`. Durations and limits: `StoryTiming`, `StoryMotion`; gesture thresholds: `StoryGestures`. Values: `docs/specs/story/source-tokens.md`.
 
 ## Breakpoints
 `[unknown]` (design is phone 390 wide only).

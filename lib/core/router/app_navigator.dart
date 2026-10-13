@@ -9,7 +9,11 @@ abstract final class AppNavigator {
     BuildContext context,
     String route, {
     bool rootNavigator = false,
-  }) => Navigator.of(context, rootNavigator: rootNavigator).pushNamed<T>(route);
+    Object? arguments,
+  }) => Navigator.of(
+    context,
+    rootNavigator: rootNavigator,
+  ).pushNamed<T>(route, arguments: arguments);
 
   static Future<T?> replace<T extends Object?, R extends Object?>(
     BuildContext context,
@@ -24,6 +28,11 @@ abstract final class AppNavigator {
 
   static void back<T extends Object?>(BuildContext context, [T? result]) =>
       Navigator.of(context).pop<T>(result);
+
+  /// Closes screens until the one named [route] shows (or the first one).
+  static void backTo(BuildContext context, String route) =>
+      Navigator.of(context)
+          .popUntil((r) => r.settings.name == route || r.isFirst);
 
   /// There is a screen below this one to go back to.
   static bool canBack(BuildContext context) => Navigator.of(context).canPop();

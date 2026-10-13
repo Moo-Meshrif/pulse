@@ -1,0 +1,1 @@
+enum StoryTapAction { previous, next }

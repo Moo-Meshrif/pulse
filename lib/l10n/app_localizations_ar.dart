@@ -705,4 +705,425 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get createShortSub => 'سجّل أو ارفع فيديو عموديًا حتى 60 ثانية';
+
+  @override
+  String get reportReasonSpam => 'محتوى مزعج';
+
+  @override
+  String get reportReasonNudity => 'عري أو محتوى جنسي';
+
+  @override
+  String get reportReasonHate => 'خطاب كراهية أو رموز';
+
+  @override
+  String get reportReasonBullying => 'تنمر أو مضايقة';
+
+  @override
+  String get reportReasonViolence => 'عنف أو أفعال خطيرة';
+
+  @override
+  String get reportReasonFalseInfo => 'معلومات مضللة';
+
+  @override
+  String get reportReasonOther => 'شيء آخر';
+
+  @override
+  String get reportElseTitle => 'شيء آخر';
+
+  @override
+  String get reportElseBody => 'صف المشكلة في بضع كلمات. بلاغك مجهول.';
+
+  @override
+  String get reportSend => 'إرسال البلاغ';
+
+  @override
+  String get reportSentTitle => 'شكرًا لإبلاغنا';
+
+  @override
+  String get reportDone => 'تم';
+
+  @override
+  String get storyReportTitle => 'الإبلاغ عن القصة';
+
+  @override
+  String get storyReportBody => 'لماذا تبلغ عن هذه القصة؟ بلاغك مجهول.';
+
+  @override
+  String get storyReportSent => 'سنراجع هذه القصة.';
+
+  @override
+  String get storyReportNotePlaceholder => 'أخبرنا بما يزعجك في هذه القصة…';
+
+  @override
+  String reportNoteCounter(int count, int max) {
+    return '$count / $max';
+  }
+
+  @override
+  String get errorPermission =>
+      'ليس لدى Pulse صلاحية الوصول. اسمح بها من الإعدادات ثم حاول مجددًا.';
+
+  @override
+  String get storyReplyHint => 'أرسل رسالة…';
+
+  @override
+  String get storyYourStory => 'قصتك';
+
+  @override
+  String storyViewers(int count) {
+    return '$count مشاهدين';
+  }
+
+  @override
+  String get storyMore => 'المزيد من الخيارات';
+
+  @override
+  String get storyLike => 'إعجاب';
+
+  @override
+  String get storyUnlike => 'إزالة الإعجاب';
+
+  @override
+  String get storySend => 'إرسال';
+
+  @override
+  String get storyReplySoon => 'الردود قريبًا.';
+
+  @override
+  String get storyAgeNow => 'الآن';
+
+  @override
+  String storyAgeMinutes(int count) {
+    return '$countد';
+  }
+
+  @override
+  String storyAgeHours(int count) {
+    return '$countس';
+  }
+
+  @override
+  String storyAgeDays(int count) {
+    return '$countي';
+  }
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get undo => 'تراجع';
+
+  @override
+  String get storyPaused => 'متوقف مؤقتًا';
+
+  @override
+  String storyMute(String username) {
+    return 'كتم @$username';
+  }
+
+  @override
+  String get storyMuteHint => 'إخفاء قصصه من شريط القصص';
+
+  @override
+  String storyMuted(String username) {
+    return 'تم إخفاء قصص @$username';
+  }
+
+  @override
+  String get storyGoToProfile => 'الذهاب إلى الملف الشخصي';
+
+  @override
+  String get storySaveToDevice => 'الحفظ على الجهاز';
+
+  @override
+  String get storySaved => 'تم الحفظ في الصور';
+
+  @override
+  String get storyWhoCanSee => 'من يمكنه المشاهدة';
+
+  @override
+  String get storyAudienceFollowers => 'المتابعون';
+
+  @override
+  String get storyViewersItem => 'المشاهدون';
+
+  @override
+  String get storyViewersEmpty => 'لم يشاهد أحد هذه القصة بعد';
+
+  @override
+  String get storyDelete => 'حذف القصة';
+
+  @override
+  String get storyDeleteTitle => 'حذف هذه القصة؟';
+
+  @override
+  String storyDeleteBody(int count) {
+    return 'ستُحذف للجميع مع مشاهداتها البالغ عددها $count. لا يمكن التراجع عن ذلك.';
+  }
+
+  @override
+  String get storyDeleted => 'تم حذف القصة';
+
+  @override
+  String get storyViewersLoadFailed => 'تعذّر تحميل المزيد من المشاهدين';
+
+  @override
+  String get permAllowTitle => 'اسمح بالوصول إلى الكاميرا والميكروفون';
+
+  @override
+  String get permAllowBody =>
+      'لالتقاط الصور وتسجيل القصص والمقاطع القصيرة بالصوت.';
+
+  @override
+  String get permAllowAccess => 'السماح بالوصول';
+
+  @override
+  String get permNotNow => 'ليس الآن';
+
+  @override
+  String get permCamera => 'الكاميرا';
+
+  @override
+  String get permMicrophone => 'الميكروفون';
+
+  @override
+  String get permNeeded => 'مطلوب';
+
+  @override
+  String get permOff => 'متوقف';
+
+  @override
+  String get permAllowed => 'مسموح';
+
+  @override
+  String get permCameraOffTitle => 'الوصول إلى الكاميرا متوقف';
+
+  @override
+  String get permCameraOffBody =>
+      'فعّل الكاميرا لتطبيق Pulse من الإعدادات لالتقاط الصور وتسجيل الفيديو.';
+
+  @override
+  String get permCameraRestrictedBody =>
+      'الوصول إلى الكاميرا مقيّد على هذا الجهاز، لذلك لا يستطيع Pulse استخدامها.';
+
+  @override
+  String get permMicOffPill => 'الميكروفون متوقف · ستكون الفيديوهات بدون صوت';
+
+  @override
+  String get permFix => 'إصلاح';
+
+  @override
+  String get permUnavailableTitle => 'الكاميرا غير متاحة';
+
+  @override
+  String get permUnavailableBody =>
+      'قد يستخدمها تطبيق آخر. أغلق ذلك التطبيق ثم حاول مرة أخرى.';
+
+  @override
+  String get permOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get permChooseGallery => 'اختر من المعرض';
+
+  @override
+  String get permTryAgain => 'إعادة المحاولة';
+
+  @override
+  String get storyCameraTitle => 'قصة';
+
+  @override
+  String get storyHint => 'اضغط لالتقاط صورة، واستمر للضغط لتسجيل فيديو';
+
+  @override
+  String get storyShutter => 'زر الالتقاط';
+
+  @override
+  String get storyFlash => 'الفلاش';
+
+  @override
+  String get storyFlashOn => 'الفلاش يعمل';
+
+  @override
+  String get storyFlipCamera => 'قلب الكاميرا';
+
+  @override
+  String get storyGallery => 'اختر من المعرض';
+
+  @override
+  String storyRecordingTime(String time) {
+    return 'جارٍ التسجيل، $time';
+  }
+
+  @override
+  String get storyVideoTooLong => 'اختر فيديو لا تزيد مدته عن 60 ثانية';
+
+  @override
+  String get storyCaptureFailed => 'تعذّر الالتقاط. حاول مرة أخرى.';
+
+  @override
+  String get storyShare => 'مشاركة';
+
+  @override
+  String get storyYourStoryPill => 'قصتك';
+
+  @override
+  String get storyToolText => 'نص';
+
+  @override
+  String get storyToolMute => 'كتم الصوت';
+
+  @override
+  String get storyToolUnmute => 'تشغيل الصوت';
+
+  @override
+  String get storyTextHint => 'اكتب شيئًا…';
+
+  @override
+  String get storyTextDone => 'تم';
+
+  @override
+  String get storyRemoveSticker => 'اسحب هنا للحذف';
+
+  @override
+  String get storyDiscardTitle => 'تجاهل هذه القصة؟';
+
+  @override
+  String get storyDiscardBody => 'لن يتم نشر صورتك أو الفيديو.';
+
+  @override
+  String get storyDiscard => 'تجاهل';
+
+  @override
+  String get storyKeepEditing => 'متابعة التعديل';
+
+  @override
+  String get storyUploadBusy =>
+      'قصتك السابقة ما زالت قيد النشر. حاول بعد قليل.';
+
+  @override
+  String get storyShareFailed => 'تعذّرت مشاركة قصتك. حاول مرة أخرى.';
+
+  @override
+  String storyStickerLimit(int max) {
+    return 'يمكنك إضافة $max ملصقًا كحد أقصى';
+  }
+
+  @override
+  String get storyRailTitle => 'القصص';
+
+  @override
+  String get storyPosting => 'جارٍ النشر…';
+
+  @override
+  String get storyAddToStory => 'أضف إلى قصتك';
+
+  @override
+  String get storyRailFailed => 'تعذّر تحميل القصص';
+
+  @override
+  String get storyPostFailed => 'تعذّر نشر قصتك';
+
+  @override
+  String get storyAudienceBody =>
+      'تُطبَّق التغييرات على هذه القصة فورًا. من شاهدها بالفعل يبقى في قائمة المشاهدين.';
+
+  @override
+  String get storyAudienceCloseFriends => 'الأصدقاء المقربون';
+
+  @override
+  String get storyAudienceHideFrom => 'إخفاء القصة عن';
+
+  @override
+  String storyAudiencePeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count شخص',
+      many: '$count شخصًا',
+      few: '$count أشخاص',
+      two: 'شخصان',
+      one: 'شخص واحد',
+      zero: 'لا أحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get storyAudienceEdit => 'تعديل';
+
+  @override
+  String get storyAudienceDone => 'تم';
+
+  @override
+  String get storyAudienceSaveFailed => 'تعذّر الحفظ. حاول مرة أخرى.';
+
+  @override
+  String get storyCloseFriendsTitle => 'الأصدقاء المقربون';
+
+  @override
+  String get storyCloseFriendsHint =>
+      'أنت فقط من يرى هذه القائمة. لا يُبلَّغ الأشخاص عند إضافتهم أو إزالتهم.';
+
+  @override
+  String get storyHiddenTitle => 'إخفاء القصة عن';
+
+  @override
+  String get storyHiddenHint =>
+      'لن يرى هؤلاء أيًّا من قصصك. ولا يُبلَّغون بذلك.';
+
+  @override
+  String storyAudienceSelected(int count) {
+    return '$count محدد';
+  }
+
+  @override
+  String get storyAudienceSearch => 'ابحث في المتابعين';
+
+  @override
+  String get storyAudienceTabSuggested => 'مقترح';
+
+  @override
+  String storyAudienceTabSelected(int count) {
+    return 'المحدد · $count';
+  }
+
+  @override
+  String get storyAudienceEmpty => 'لا يوجد متابعون';
+
+  @override
+  String get storyAudienceLoadFailed => 'تعذّر تحميل متابعيك';
+
+  @override
+  String storyAudienceSelectPerson(String name) {
+    return 'تحديد $name';
+  }
+
+  @override
+  String storyMoveToHiddenTitle(String name) {
+    return 'إخفاء قصصك عن $name؟';
+  }
+
+  @override
+  String storyMoveToHiddenBody(String name) {
+    return '$name ضمن أصدقائك المقربين. إخفاء قصصك عنه يزيله من تلك القائمة.';
+  }
+
+  @override
+  String get storyMoveToHiddenConfirm => 'إخفاء';
+
+  @override
+  String storyMoveToCloseTitle(String name) {
+    return 'إضافة $name إلى الأصدقاء المقربين؟';
+  }
+
+  @override
+  String storyMoveToCloseBody(String name) {
+    return '$name ضمن قائمة إخفاء القصة عنهم. إضافته إلى الأصدقاء المقربين تزيله من تلك القائمة.';
+  }
+
+  @override
+  String get storyMoveToCloseConfirm => 'إضافة';
 }

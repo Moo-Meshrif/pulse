@@ -40,6 +40,22 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.glassHighlightBottom,
     required this.badgeRing,
     required this.avatarBackgrounds,
+    required this.storySheet,
+    required this.storySheetRow,
+    required this.dangerOnDark,
+    required this.storyWarning,
+    required this.storySuccess,
+    required this.storyOnDark,
+    required this.storyBlack,
+    required this.storyTrack,
+    required this.storyShadeTop,
+    required this.storyShadeBottom,
+    required this.storyControl,
+    required this.storyTool,
+    required this.storyCameraStart,
+    required this.storyCameraEnd,
+    required this.storyMicPill,
+    required this.storyFixText,
   });
 
   final Color primary;
@@ -83,6 +99,54 @@ class AppColors extends ThemeExtension<AppColors> {
 
   /// White initials go on these backgrounds, rotated per user.
   final List<Color> avatarBackgrounds;
+
+  /// Story sheet and dialog surface (#1F2423).
+  final Color storySheet;
+
+  /// Row group on the story sheet (#2A302F).
+  final Color storySheetRow;
+
+  /// Danger icon and text on a dark surface (#FF7A7F).
+  final Color dangerOnDark;
+
+  /// Amber: problem icon, "Off" label (permissions) (#F2B45A).
+  final Color storyWarning;
+
+  /// Granted check (permissions) (#5FD39A).
+  final Color storySuccess;
+
+  /// White on media and dark surfaces; fade with StoryOpacity (#FFFFFF).
+  final Color storyOnDark;
+
+  /// Viewer background, scrims and shades; fade with StoryOpacity (#000000).
+  final Color storyBlack;
+
+  /// Progress bar track (#FFFFFF @ 35%).
+  final Color storyTrack;
+
+  /// Top shade start, paused chip (#000000 @ 45%).
+  final Color storyShadeTop;
+
+  /// Bottom shade end, delete scrim (#000000 @ 55%).
+  final Color storyShadeBottom;
+
+  /// Round camera controls, grid lines, Your story pill (#FFFFFF @ 18%).
+  final Color storyControl;
+
+  /// Edit tool circles, viewers dim (#000000 @ 35%).
+  final Color storyTool;
+
+  /// Camera background gradient start (#1F2A2C).
+  final Color storyCameraStart;
+
+  /// Camera background gradient end (#3D4C4F).
+  final Color storyCameraEnd;
+
+  /// Microphone-off pill (#1B201F @ 86%).
+  final Color storyMicPill;
+
+  /// Fix chip text (#9ED3C9).
+  final Color storyFixText;
 
   static const light = AppColors(
     primary: Color(0xFF2E6B63),
@@ -134,6 +198,22 @@ class AppColors extends ThemeExtension<AppColors> {
       Color(0xFF8A3B4E),
       Color(0xFF4F6B4A),
     ],
+    storySheet: Color(0xFF1F2423),
+    storySheetRow: Color(0xFF2A302F),
+    dangerOnDark: Color(0xFFFF7A7F),
+    storyWarning: Color(0xFFF2B45A),
+    storySuccess: Color(0xFF5FD39A),
+    storyOnDark: Color(0xFFFFFFFF),
+    storyBlack: Color(0xFF000000),
+    storyTrack: Color(0x59FFFFFF),
+    storyShadeTop: Color(0x73000000),
+    storyShadeBottom: Color(0x8C000000),
+    storyControl: Color(0x2EFFFFFF),
+    storyTool: Color(0x59000000),
+    storyCameraStart: Color(0xFF1F2A2C),
+    storyCameraEnd: Color(0xFF3D4C4F),
+    storyMicPill: Color(0xDB1B201F),
+    storyFixText: Color(0xFF9ED3C9),
   );
 
   @override
@@ -173,6 +253,22 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? glassHighlightBottom,
     Color? badgeRing,
     List<Color>? avatarBackgrounds,
+    Color? storySheet,
+    Color? storySheetRow,
+    Color? dangerOnDark,
+    Color? storyWarning,
+    Color? storySuccess,
+    Color? storyOnDark,
+    Color? storyBlack,
+    Color? storyTrack,
+    Color? storyShadeTop,
+    Color? storyShadeBottom,
+    Color? storyControl,
+    Color? storyTool,
+    Color? storyCameraStart,
+    Color? storyCameraEnd,
+    Color? storyMicPill,
+    Color? storyFixText,
   }) => AppColors(
     primary: primary ?? this.primary,
     primaryPressed: primaryPressed ?? this.primaryPressed,
@@ -209,6 +305,22 @@ class AppColors extends ThemeExtension<AppColors> {
     glassHighlightBottom: glassHighlightBottom ?? this.glassHighlightBottom,
     badgeRing: badgeRing ?? this.badgeRing,
     avatarBackgrounds: avatarBackgrounds ?? this.avatarBackgrounds,
+    storySheet: storySheet ?? this.storySheet,
+    storySheetRow: storySheetRow ?? this.storySheetRow,
+    dangerOnDark: dangerOnDark ?? this.dangerOnDark,
+    storyWarning: storyWarning ?? this.storyWarning,
+    storySuccess: storySuccess ?? this.storySuccess,
+    storyOnDark: storyOnDark ?? this.storyOnDark,
+    storyBlack: storyBlack ?? this.storyBlack,
+    storyTrack: storyTrack ?? this.storyTrack,
+    storyShadeTop: storyShadeTop ?? this.storyShadeTop,
+    storyShadeBottom: storyShadeBottom ?? this.storyShadeBottom,
+    storyControl: storyControl ?? this.storyControl,
+    storyTool: storyTool ?? this.storyTool,
+    storyCameraStart: storyCameraStart ?? this.storyCameraStart,
+    storyCameraEnd: storyCameraEnd ?? this.storyCameraEnd,
+    storyMicPill: storyMicPill ?? this.storyMicPill,
+    storyFixText: storyFixText ?? this.storyFixText,
   );
 
   @override
@@ -261,6 +373,30 @@ class AppColors extends ThemeExtension<AppColors> {
         for (var i = 0; i < avatarBackgrounds.length; i++)
           Color.lerp(avatarBackgrounds[i], other.avatarBackgrounds[i], t)!,
       ],
+      storySheet: Color.lerp(storySheet, other.storySheet, t)!,
+      storySheetRow: Color.lerp(storySheetRow, other.storySheetRow, t)!,
+      dangerOnDark: Color.lerp(dangerOnDark, other.dangerOnDark, t)!,
+      storyWarning: Color.lerp(storyWarning, other.storyWarning, t)!,
+      storySuccess: Color.lerp(storySuccess, other.storySuccess, t)!,
+      storyOnDark: Color.lerp(storyOnDark, other.storyOnDark, t)!,
+      storyBlack: Color.lerp(storyBlack, other.storyBlack, t)!,
+      storyTrack: Color.lerp(storyTrack, other.storyTrack, t)!,
+      storyShadeTop: Color.lerp(storyShadeTop, other.storyShadeTop, t)!,
+      storyShadeBottom: Color.lerp(
+        storyShadeBottom,
+        other.storyShadeBottom,
+        t,
+      )!,
+      storyControl: Color.lerp(storyControl, other.storyControl, t)!,
+      storyTool: Color.lerp(storyTool, other.storyTool, t)!,
+      storyCameraStart: Color.lerp(
+        storyCameraStart,
+        other.storyCameraStart,
+        t,
+      )!,
+      storyCameraEnd: Color.lerp(storyCameraEnd, other.storyCameraEnd, t)!,
+      storyMicPill: Color.lerp(storyMicPill, other.storyMicPill, t)!,
+      storyFixText: Color.lerp(storyFixText, other.storyFixText, t)!,
     );
   }
 }

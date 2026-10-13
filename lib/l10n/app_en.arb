@@ -853,5 +853,586 @@
   "createShortSub": "Record or upload a vertical video, up to 60s",
   "@createShortSub": {
     "description": "Create sheet: Short option description"
+  },
+  "reportReasonSpam": "Spam",
+  "@reportReasonSpam": {
+    "description": "Report reason"
+  },
+  "reportReasonNudity": "Nudity or sexual content",
+  "@reportReasonNudity": {
+    "description": "Report reason"
+  },
+  "reportReasonHate": "Hate speech or symbols",
+  "@reportReasonHate": {
+    "description": "Report reason"
+  },
+  "reportReasonBullying": "Bullying or harassment",
+  "@reportReasonBullying": {
+    "description": "Report reason"
+  },
+  "reportReasonViolence": "Violence or dangerous acts",
+  "@reportReasonViolence": {
+    "description": "Report reason"
+  },
+  "reportReasonFalseInfo": "False information",
+  "@reportReasonFalseInfo": {
+    "description": "Report reason"
+  },
+  "reportReasonOther": "Something else",
+  "@reportReasonOther": {
+    "description": "Report reason that opens the note step"
+  },
+  "reportElseTitle": "Something else",
+  "@reportElseTitle": {
+    "description": "Report note step title"
+  },
+  "reportElseBody": "Describe the problem in a few words. Your report is anonymous.",
+  "@reportElseBody": {
+    "description": "Report note step body"
+  },
+  "reportSend": "Send report",
+  "@reportSend": {
+    "description": "Report note step button"
+  },
+  "reportSentTitle": "Thanks for letting us know",
+  "@reportSentTitle": {
+    "description": "Report sent step title"
+  },
+  "reportDone": "Done",
+  "@reportDone": {
+    "description": "Report sent step button"
+  },
+  "storyReportTitle": "Report story",
+  "@storyReportTitle": {
+    "description": "Story report sheet title"
+  },
+  "storyReportBody": "Why are you reporting this story? Your report is anonymous.",
+  "@storyReportBody": {
+    "description": "Story report sheet body"
+  },
+  "storyReportSent": "We'll review this story.",
+  "@storyReportSent": {
+    "description": "Story report sent body [estimated]"
+  },
+  "storyReportNotePlaceholder": "Tell us what's wrong with this story…",
+  "@storyReportNotePlaceholder": {
+    "description": "Story report note field hint [estimated]"
+  },
+  "reportNoteCounter": "{count} / {max}",
+  "@reportNoteCounter": {
+    "description": "Report note counter",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "errorPermission": "Pulse doesn't have access. Allow it in Settings and try again.",
+  "@errorPermission": {
+    "description": "Snackbar when the device refused access (photo library)"
+  },
+  "storyReplyHint": "Send a message…",
+  "@storyReplyHint": {
+    "description": "Story viewer reply field hint"
+  },
+  "storyYourStory": "Your story",
+  "@storyYourStory": {
+    "description": "Story viewer header name for your own story"
+  },
+  "storyViewers": "{count} viewers",
+  "@storyViewers": {
+    "description": "Story viewer: your story view count label",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyMore": "More options",
+  "@storyMore": {
+    "description": "Story viewer: more button label"
+  },
+  "storyLike": "Like",
+  "@storyLike": {
+    "description": "Story viewer: like button label"
+  },
+  "storyUnlike": "Remove like",
+  "@storyUnlike": {
+    "description": "Story viewer: liked button label"
+  },
+  "storySend": "Send",
+  "@storySend": {
+    "description": "Story viewer: send button label"
+  },
+  "storyReplySoon": "Replies are coming soon.",
+  "@storyReplySoon": {
+    "description": "Notice when Send is tapped in the story reply bar [estimated]"
+  },
+  "storyAgeNow": "now",
+  "@storyAgeNow": {
+    "description": "Story age under a minute"
+  },
+  "storyAgeMinutes": "{count}m",
+  "@storyAgeMinutes": {
+    "description": "Story age in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyAgeHours": "{count}h",
+  "@storyAgeHours": {
+    "description": "Story age in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyAgeDays": "{count}d",
+  "@storyAgeDays": {
+    "description": "Story age in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button of a dialog"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button of a dialog"
+  },
+  "undo": "Undo",
+  "@undo": {
+    "description": "Notice action that reverses the last change"
+  },
+  "storyPaused": "Paused",
+  "@storyPaused": {
+    "description": "Story viewer: chip shown while a sheet or dialog is open"
+  },
+  "storyMute": "Mute @{username}",
+  "@storyMute": {
+    "description": "Story options: mute a person's stories",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "storyMuteHint": "Hide their stories from your rail",
+  "@storyMuteHint": {
+    "description": "Story options: mute row subtitle"
+  },
+  "storyMuted": "@{username}'s stories are hidden",
+  "@storyMuted": {
+    "description": "Notice after muting a person's stories",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "storyGoToProfile": "Go to profile",
+  "@storyGoToProfile": {
+    "description": "Story options: open the author's profile"
+  },
+  "storySaveToDevice": "Save to device",
+  "@storySaveToDevice": {
+    "description": "Story options: save your story"
+  },
+  "storySaved": "Saved to your photos",
+  "@storySaved": {
+    "description": "Notice after saving a story to the device"
+  },
+  "storyWhoCanSee": "Who can see this",
+  "@storyWhoCanSee": {
+    "description": "Story options: audience row (read-only for now)"
+  },
+  "storyAudienceFollowers": "Followers",
+  "@storyAudienceFollowers": {
+    "description": "Story audience: followers only"
+  },
+  "storyViewersItem": "Viewers",
+  "@storyViewersItem": {
+    "description": "Story options: viewers row"
+  },
+  "storyViewersEmpty": "No one has viewed this story yet",
+  "@storyViewersEmpty": {
+    "description": "Viewers sheet: empty state"
+  },
+  "storyDelete": "Delete story",
+  "@storyDelete": {
+    "description": "Story options: delete your story"
+  },
+  "storyDeleteTitle": "Delete this story?",
+  "@storyDeleteTitle": {
+    "description": "Delete story dialog title"
+  },
+  "storyDeleteBody": "It will be removed for everyone, along with its {count} views. You can't undo this.",
+  "@storyDeleteBody": {
+    "description": "Delete story dialog body",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyDeleted": "Story deleted",
+  "@storyDeleted": {
+    "description": "Notice after deleting a story"
+  },
+  "storyViewersLoadFailed": "Couldn't load more viewers",
+  "@storyViewersLoadFailed": {
+    "description": "Viewers sheet: paging failed"
+  },
+  "permAllowTitle": "Allow camera and microphone",
+  "@permAllowTitle": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permAllowBody": "To take photos and record stories and shorts with sound.",
+  "@permAllowBody": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permAllowAccess": "Allow access",
+  "@permAllowAccess": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permNotNow": "Not now",
+  "@permNotNow": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permCamera": "Camera",
+  "@permCamera": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permMicrophone": "Microphone",
+  "@permMicrophone": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permNeeded": "Needed",
+  "@permNeeded": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permOff": "Off",
+  "@permOff": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permAllowed": "Allowed",
+  "@permAllowed": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permCameraOffTitle": "Camera access is off",
+  "@permCameraOffTitle": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permCameraOffBody": "Turn on Camera for Pulse in Settings to take photos and record videos.",
+  "@permCameraOffBody": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permCameraRestrictedBody": "Camera access is restricted on this device, so Pulse can't use it.",
+  "@permCameraRestrictedBody": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permMicOffPill": "Microphone off · videos will be silent",
+  "@permMicOffPill": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permFix": "Fix",
+  "@permFix": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permUnavailableTitle": "Camera isn't available",
+  "@permUnavailableTitle": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permUnavailableBody": "Another app may be using it. Close that app, then try again.",
+  "@permUnavailableBody": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permOpenSettings": "Open settings",
+  "@permOpenSettings": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permChooseGallery": "Choose from gallery",
+  "@permChooseGallery": {
+    "description": "Camera and microphone permission screens"
+  },
+  "permTryAgain": "Try again",
+  "@permTryAgain": {
+    "description": "Camera and microphone permission screens"
+  },
+  "storyCameraTitle": "Story",
+  "@storyCameraTitle": {
+    "description": "Story camera screen"
+  },
+  "storyHint": "Tap for photo, hold for video",
+  "@storyHint": {
+    "description": "Story camera screen"
+  },
+  "storyShutter": "Shutter",
+  "@storyShutter": {
+    "description": "Story camera screen"
+  },
+  "storyFlash": "Flash",
+  "@storyFlash": {
+    "description": "Story camera screen"
+  },
+  "storyFlashOn": "Flash on",
+  "@storyFlashOn": {
+    "description": "Story camera screen"
+  },
+  "storyFlipCamera": "Flip camera",
+  "@storyFlipCamera": {
+    "description": "Story camera screen"
+  },
+  "storyGallery": "Choose from gallery",
+  "@storyGallery": {
+    "description": "Story camera screen"
+  },
+  "storyRecordingTime": "Recording, {time}",
+  "@storyRecordingTime": {
+    "description": "Story camera screen",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "storyVideoTooLong": "Choose a video of 60 seconds or less",
+  "@storyVideoTooLong": {
+    "description": "Story camera screen"
+  },
+  "storyCaptureFailed": "Couldn't capture. Try again.",
+  "@storyCaptureFailed": {
+    "description": "Story camera screen"
+  },
+  "storyShare": "Share",
+  "@storyShare": {
+    "description": "Story edit screen"
+  },
+  "storyYourStoryPill": "Your story",
+  "@storyYourStoryPill": {
+    "description": "Story edit screen"
+  },
+  "storyToolText": "Text",
+  "@storyToolText": {
+    "description": "Story edit screen"
+  },
+  "storyToolMute": "Mute",
+  "@storyToolMute": {
+    "description": "Story edit screen"
+  },
+  "storyToolUnmute": "Unmute",
+  "@storyToolUnmute": {
+    "description": "Story edit screen"
+  },
+  "storyTextHint": "Type something…",
+  "@storyTextHint": {
+    "description": "Story edit screen"
+  },
+  "storyTextDone": "Done",
+  "@storyTextDone": {
+    "description": "Story edit screen"
+  },
+  "storyRemoveSticker": "Drag here to remove",
+  "@storyRemoveSticker": {
+    "description": "Story edit screen"
+  },
+  "storyDiscardTitle": "Discard this story?",
+  "@storyDiscardTitle": {
+    "description": "Story edit screen"
+  },
+  "storyDiscardBody": "Your photo or video won't be posted.",
+  "@storyDiscardBody": {
+    "description": "Story edit screen"
+  },
+  "storyDiscard": "Discard",
+  "@storyDiscard": {
+    "description": "Story edit screen"
+  },
+  "storyKeepEditing": "Keep editing",
+  "@storyKeepEditing": {
+    "description": "Story edit screen"
+  },
+  "storyUploadBusy": "Your last story is still posting. Try again in a moment.",
+  "@storyUploadBusy": {
+    "description": "Story edit screen"
+  },
+  "storyShareFailed": "Couldn't share your story. Try again.",
+  "@storyShareFailed": {
+    "description": "Story edit screen"
+  },
+  "storyStickerLimit": "You can add up to {max} stickers",
+  "@storyStickerLimit": {
+    "description": "Story edit screen",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "storyRailTitle": "Stories",
+  "@storyRailTitle": {
+    "description": "Story rail on the Home tab"
+  },
+  "storyPosting": "Posting…",
+  "@storyPosting": {
+    "description": "Story rail on the Home tab"
+  },
+  "storyAddToStory": "Add to your story",
+  "@storyAddToStory": {
+    "description": "Story rail on the Home tab"
+  },
+  "storyRailFailed": "Couldn't load stories",
+  "@storyRailFailed": {
+    "description": "Story rail on the Home tab"
+  },
+  "storyPostFailed": "Couldn't post your story",
+  "@storyPostFailed": {
+    "description": "Story rail on the Home tab"
+  },
+  "storyAudienceBody": "Changes apply to this story right away. People who already saw it keep it in their viewers list.",
+  "@storyAudienceBody": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceCloseFriends": "Close friends",
+  "@storyAudienceCloseFriends": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceHideFrom": "Hide story from",
+  "@storyAudienceHideFrom": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudiencePeople": "{count, plural, =1{1 person} other{{count} people}}",
+  "@storyAudiencePeople": {
+    "description": "Story audience: Who can see this and its lists",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyAudienceEdit": "Edit",
+  "@storyAudienceEdit": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceDone": "Done",
+  "@storyAudienceDone": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceSaveFailed": "Couldn't save. Try again.",
+  "@storyAudienceSaveFailed": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyCloseFriendsTitle": "Close friends",
+  "@storyCloseFriendsTitle": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyCloseFriendsHint": "Only you can see this list. People aren't told when you add or remove them.",
+  "@storyCloseFriendsHint": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyHiddenTitle": "Hide story from",
+  "@storyHiddenTitle": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyHiddenHint": "These people won't see any of your stories. They aren't told.",
+  "@storyHiddenHint": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceSelected": "{count} selected",
+  "@storyAudienceSelected": {
+    "description": "Story audience: Who can see this and its lists",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyAudienceSearch": "Search followers",
+  "@storyAudienceSearch": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceTabSuggested": "Suggested",
+  "@storyAudienceTabSuggested": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceTabSelected": "Selected · {count}",
+  "@storyAudienceTabSelected": {
+    "description": "Story audience: Who can see this and its lists",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storyAudienceEmpty": "No followers found",
+  "@storyAudienceEmpty": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceLoadFailed": "Couldn't load your followers",
+  "@storyAudienceLoadFailed": {
+    "description": "Story audience: Who can see this and its lists"
+  },
+  "storyAudienceSelectPerson": "Select {name}",
+  "@storyAudienceSelectPerson": {
+    "description": "Story audience: Who can see this and its lists",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storyMoveToHiddenTitle": "Hide your stories from {name}?",
+  "@storyMoveToHiddenTitle": {
+    "description": "Story audience: confirm moving a person between the two lists",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storyMoveToHiddenBody": "{name} is in your Close friends. Hiding your stories from them takes them off that list.",
+  "@storyMoveToHiddenBody": {
+    "description": "Story audience: confirm moving a person between the two lists",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storyMoveToHiddenConfirm": "Hide",
+  "@storyMoveToHiddenConfirm": {
+    "description": "Story audience: confirm moving a person between the two lists"
+  },
+  "storyMoveToCloseTitle": "Add {name} to Close friends?",
+  "@storyMoveToCloseTitle": {
+    "description": "Story audience: confirm moving a person between the two lists",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storyMoveToCloseBody": "{name} is in Hide story from. Adding them to Close friends takes them off that list.",
+  "@storyMoveToCloseBody": {
+    "description": "Story audience: confirm moving a person between the two lists",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storyMoveToCloseConfirm": "Add",
+  "@storyMoveToCloseConfirm": {
+    "description": "Story audience: confirm moving a person between the two lists"
   }
 }

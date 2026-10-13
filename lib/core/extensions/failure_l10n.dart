@@ -41,6 +41,7 @@ extension FailureL10n on Failure {
         l10n.errorSessionExpired,
       ConflictFailure() => l10n.errorUsernameTaken,
       ServerFailure() => l10n.errorServer,
+      PermissionFailure() => l10n.errorPermission,
       _ => l10n.errorGeneric,
     };
   }

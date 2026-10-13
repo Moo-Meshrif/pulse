@@ -53,6 +53,16 @@ final class ConflictFailure extends Failure {
   const ConflictFailure();
 }
 
+/// The device refused something the app needs (the photo library). The user can allow it in Settings.
+final class PermissionFailure extends Failure {
+  const PermissionFailure();
+}
+
+/// The camera could not start or capture (in use by another app, none found, init failed).
+final class CameraFailure extends Failure {
+  const CameraFailure();
+}
+
 final class ParseFailure extends Failure {
   const ParseFailure();
 }

@@ -62,6 +62,20 @@ abstract final class AppAssets {
   static const wifiOff = '$_icons/ic_wifi_off.svg';
   static const warning = '$_icons/ic_warning.svg';
   static const volume = '$_icons/ic_volume.svg';
+  static const audience = '$_icons/ic_audience.svg';
+  static const cameraFlip = '$_icons/ic_camera_flip.svg';
+  static const cameraOff = '$_icons/ic_camera_off.svg';
+  static const download = '$_icons/ic_download.svg';
+  static const flash = '$_icons/ic_flash.svg';
+  static const link = '$_icons/ic_link.svg';
+  static const mic = '$_icons/ic_mic.svg';
+  static const pause = '$_icons/ic_pause.svg';
+  static const micOff = '$_icons/ic_mic_off.svg';
+  static const text = '$_icons/ic_text.svg';
+  static const user = '$_icons/ic_user.svg';
+  static const userMinus = '$_icons/ic_user_minus.svg';
+  static const star = '$_icons/ic_star.svg';
+  static const volumeOff = '$_icons/ic_volume_off.svg';
   static const logo = '$_icons/logo.svg';
 
   // Large-size set (drawn for 72 px, stroke 1.4): empty, failed and permission pages. The `Thin` ones

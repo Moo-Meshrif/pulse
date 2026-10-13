@@ -32,6 +32,11 @@ class AppTextStyles {
     required this.action,
     required this.overlayLabel,
     required this.overlayPercent,
+    required this.overlayText,
+    required this.cameraTitle,
+    required this.stickerLabel,
+    required this.chipLabel,
+    required this.countLabel,
   });
 
   static const _sora = 'Sora';
@@ -70,6 +75,21 @@ class AppTextStyles {
 
   /// 13/600 with tabular figures: the progress percentage, so its digits do not jitter.
   final TextStyle overlayPercent;
+
+  /// Story text sticker and overlay (30/700, shadow from `AppShadows.textOverlay`).
+  final TextStyle overlayText;
+
+  /// Camera top bar title.
+  final TextStyle cameraTitle;
+
+  /// Location sticker text, UPPERCASE (800 is not bundled: renders as 700).
+  final TextStyle stickerLabel;
+
+  /// Paused chip.
+  final TextStyle chipLabel;
+
+  /// Viewer count chip, "Off" label.
+  final TextStyle countLabel;
 
   static const latin = AppTextStyles._(
     logo: TextStyle(
@@ -218,6 +238,42 @@ class AppTextStyles {
       fontSize: 13,
       fontWeight: FontWeight.w600,
       fontFeatures: [FontFeature.tabularFigures()],
+    ),
+    overlayText: TextStyle(
+      inherit: false,
+      fontFamily: _sora,
+      fontSize: 30,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      height: 1.2,
+    ),
+    cameraTitle: TextStyle(
+      inherit: false,
+      fontFamily: _sora,
+      fontSize: 17,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
+    stickerLabel: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 15,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0,
+    ),
+    chipLabel: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 12,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
+    countLabel: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 13,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
     ),
   );
 
@@ -381,6 +437,42 @@ class AppTextStyles {
       fontWeight: FontWeight.w600,
       fontFeatures: [FontFeature.tabularFigures()],
     ),
+    overlayText: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 30,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      height: 1.3,
+    ),
+    cameraTitle: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 17,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
+    stickerLabel: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 15,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0,
+    ),
+    chipLabel: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 12,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
+    countLabel: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 13,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
   );
 
   /// Every style with its size multiplied by [factor] (the responsive scale; see [AppScale]).
@@ -409,6 +501,11 @@ class AppTextStyles {
       action: f(action),
       overlayLabel: f(overlayLabel),
       overlayPercent: f(overlayPercent),
+      overlayText: f(overlayText),
+      cameraTitle: f(cameraTitle),
+      stickerLabel: f(stickerLabel),
+      chipLabel: f(chipLabel),
+      countLabel: f(countLabel),
     );
   }
 
