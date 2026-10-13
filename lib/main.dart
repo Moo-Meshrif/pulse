@@ -9,6 +9,7 @@ import 'core/di/injection.dart';
 import 'core/error/error_reporter.dart';
 import 'core/error/guard.dart';
 import 'core/services/connectivity_service.dart';
+import 'core/services/session_events.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,8 @@ Future<void> main() async {
     publishableKey: AppConfig.supabasePublishableKey,
   );
   await configureDependencies();
+  // `Guard` is static, so DI cannot inject into it: its hooks are set here once the container is built.
   Guard.isOffline = getIt<ConnectivityService>().isOffline;
+  Guard.onSessionRevoked = getIt<SessionEvents>().revoked;
   runApp(const App());
 }

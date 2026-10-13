@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
+import 'package:flutter/widgets.dart' as _i718;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -81,10 +82,13 @@ import '../../features/profile/domain/use_case/save_interests_use_case.dart'
 import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
     as _i255;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i125;
+import '../router/recovery_link_handler.dart' as _i358;
+import '../router/session_guard.dart' as _i96;
 import '../services/connectivity_service.dart' as _i47;
 import '../services/launch_service.dart' as _i1016;
 import '../services/local_storage_service.dart' as _i527;
 import '../services/photo_picker_service.dart' as _i94;
+import '../services/session_events.dart' as _i815;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -100,6 +104,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i454.SupabaseClient>(() => appModule.supabaseClient);
     gh.lazySingleton<_i895.Connectivity>(() => appModule.connectivity);
+    gh.lazySingleton<_i718.GlobalKey<_i718.NavigatorState>>(
+      () => appModule.navigatorKey,
+    );
+    gh.lazySingleton<_i815.SessionEvents>(
+      () => _i815.SessionEvents(),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i94.PhotoPickerService>(
       () => _i94.ImagePickerPhotoPickerService(),
     );
@@ -205,6 +216,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i255.SaveProfileDetailsUseCase>(
       () => _i255.SaveProfileDetailsUseCase(gh<_i508.ProfileRepository>()),
     );
+    gh.factory<_i793.WatchSessionEndedUseCase>(
+      () => _i793.WatchSessionEndedUseCase(
+        gh<_i43.AuthDatasource>(),
+        gh<_i815.SessionEvents>(),
+      ),
+    );
     gh.factory<_i329.SignInCubit>(
       () => _i329.SignInCubit(
         gh<_i43.AuthDatasource>(),
@@ -212,6 +229,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i727.GetLastAccountUseCase>(),
         gh<_i1067.ForgetLastAccountUseCase>(),
       ),
+    );
+    gh.lazySingleton<_i96.SessionGuard>(
+      () => appModule.sessionGuard(
+        gh<_i718.GlobalKey<_i718.NavigatorState>>(),
+        gh<_i793.WatchSessionEndedUseCase>(),
+      ),
+      dispose: _i431.disposeSessionGuard,
     );
     gh.factory<_i730.IsRecoveryPendingUseCase>(
       () => _i730.IsRecoveryPendingUseCase(gh<_i43.AuthDatasource>()),
@@ -221,9 +245,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i121.WatchPasswordRecoveryUseCase>(
       () => _i121.WatchPasswordRecoveryUseCase(gh<_i43.AuthDatasource>()),
-    );
-    gh.factory<_i793.WatchSessionEndedUseCase>(
-      () => _i793.WatchSessionEndedUseCase(gh<_i43.AuthDatasource>()),
     );
     gh.factory<_i476.ResetPasswordCubit>(
       () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
@@ -252,6 +273,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i697.GetSignupStepUseCase>(),
         gh<_i47.ConnectivityService>(),
       ),
+    );
+    gh.lazySingleton<_i358.RecoveryLinkHandler>(
+      () => appModule.recoveryLinkHandler(
+        gh<_i718.GlobalKey<_i718.NavigatorState>>(),
+        gh<_i121.WatchPasswordRecoveryUseCase>(),
+      ),
+      dispose: _i431.disposeRecoveryLinkHandler,
     );
     return this;
   }

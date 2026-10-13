@@ -63,6 +63,8 @@ class SplashCubit extends BaseCubit<SplashState> {
 
   Future<SplashState> _failed(Failure failure) async {
     switch (failure) {
+      // A dead session is handled here, not by `SessionGuard`: the root route is in its `_keepsScreen`, so splash
+      // alone picks the sign-in route and the two never navigate at once.
       case AuthFailure(reason: AuthFailureReason.sessionExpired):
         return SplashState.go(AppRoutes.signInWith(SignedOutReason.expired));
       case AuthFailure(reason: AuthFailureReason.sessionRevoked):

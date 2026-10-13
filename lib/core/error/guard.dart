@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../enums/auth_failure_reason.dart';
 import 'backend_failure.dart';
 import 'error_reporter.dart';
 import 'exceptions.dart';
@@ -12,6 +13,10 @@ abstract final class Guard {
   /// [NetworkFailure] at once instead of waiting for the request to time out. Null (tests) skips it.
   static Future<bool> Function()? isOffline;
 
+  /// Set once at start-up (`main()`): told when a request fails because the session was revoked (ended
+  /// elsewhere), so the app can send the user to Sign in from any screen. Null (tests) skips it.
+  static void Function()? onSessionRevoked;
+
   /// Runs a call and returns its value, or throws the matching [Failure]. Offline, it throws
   /// [NetworkFailure] without making the call.
   static Future<T> run<T>(Future<T> Function() call) async {
@@ -19,7 +24,11 @@ abstract final class Guard {
       if (await isOffline?.call() ?? false) throw const NetworkFailure();
       return await call();
     } catch (error, stackTrace) {
-      throw toFailure(error, stackTrace);
+      final failure = toFailure(error, stackTrace);
+      if (failure case AuthFailure(reason: AuthFailureReason.sessionRevoked)) {
+        onSessionRevoked?.call();
+      }
+      throw failure;
     }
   }
 

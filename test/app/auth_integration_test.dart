@@ -10,7 +10,7 @@ import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pulse/core/enums/signed_out_reason.dart';
-import 'package:pulse/features/auth/data/enums/recovery_signal.dart';
+import 'package:pulse/core/enums/recovery_signal.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
 import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';

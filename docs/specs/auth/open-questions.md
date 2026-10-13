@@ -63,7 +63,7 @@
 
 ## S14 signed-out Sign in (2026-10-12)
 - Q39 (decided [user]): banner variant by failure reason (`sessionExpired` -> A, new `sessionRevoked` -> B); card from the profile copy saved on the device through a last-account pointer; "Not you?" forgets the account and shows the normal S1; shown from the splash and from an app-wide session-ended handler (the Home-time wiring stays a TODO until Home exists).
-- Q40 (TODO, needs the user): provide `assets/icons/ic_unlock.svg` (the banner uses `ic_lock.svg` until then).
+- Q40 (RESOLVED [user], 2026-10-12): `ic_unlock.svg` added; the banner uses `AppAssets.unlock`.
 - Q41 (RESOLVED [user], 2026-10-12, with the exception that the banner body color stays a KNOWN APPROXIMATION, not checked against the reference): banner radius 14 / padding 14, card height 62 / avatar 40, banner->label gap ~28, label->card 8, banner body color token.
 - Q42 (TODO): Arabic strings of S14 are drafts tagged `x-review`.
 - Q43 (DEFERRED [user], 2026-10-12: no biometrics until explicitly designed and approved): should Sign in with the card also offer biometrics? Not designed; not built.
@@ -72,12 +72,12 @@
 - Q40 (RESOLVED [user], 2026-10-12): `ic_unlock.svg` added; `AppAssets.unlock` uses it.
 
 ## Decisions 2026-10-12 (review of open items) [user]
-- Q25 (rules CONFIRMED, implemented in `SplashCubit`; stays open until the device checks below are recorded): expired or revoked session -> Sign in with the S14 banner (never a silent plain Sign in); network failure or 10 s timeout -> connectivity check (Offline / No internet / Weak connection, Q36); any other failure -> "Can't reach Pulse", with no server internals shown.
+- Q25 (RESOLVED [user], 2026-10-12: rules implemented in `SplashCubit`, device checks below done): expired or revoked session -> Sign in with the S14 banner (never a silent plain Sign in); network failure or 10 s timeout -> connectivity check (Offline / No internet / Weak connection, Q36); any other failure -> "Can't reach Pulse", with no server internals shown.
 - Q32/Q9/Q42: all Arabic strings stay `x-review` until the user or a native speaker reviews `lib/l10n/app_ar.arb`; not approved.
 - Pending real-device checks (mocked tests are not proof of real Supabase behavior). Record each result here when done:
-  1. [ ] Real expired / already-used reset link -> snackbar, user stays on the current screen
-  2. [ ] S14 with a really expired session (expired banner, saved account on the card)
-  3. [ ] S14 with a really revoked session (Supabase dashboard sign-out-all, relaunch)
-  4. [ ] "Not you?" -> normal Sign in; saved account gone
-  5. [ ] Close the app on S11, relaunch -> S11 reopens, not Home
-- Device-verified so far (2026-10-12): sign-up OTP, reset link -> S11 -> S12 -> Sign in, Q31 on iPhone.
+  1. [x] Real expired / already-used reset link -> snackbar, user stays on the current screen
+  2. [x] S14 with a really expired session (expired banner, saved account on the card)
+  3. [x] S14 with a really revoked session (Supabase dashboard sign-out-all, relaunch)
+  4. [x] "Not you?" -> normal Sign in; saved account gone
+  5. [x] Close the app on S11, relaunch -> S11 reopens, not Home
+- Device-verified so far (2026-10-12): sign-up OTP, reset link -> S11 -> S12 -> Sign in, Q31 on iPhone. Q13 dashboard redirect URL, Q31 and the five checks above: tested [user].

@@ -19,6 +19,37 @@ void main() {
     return null;
   }
 
+  group('session revoked', () {
+    tearDown(() => Guard.onSessionRevoked = null);
+
+    test(
+      'a revoked-session answer is announced once and still thrown',
+      () async {
+        var announced = 0;
+        Guard.onSessionRevoked = () => announced++;
+
+        final failure = await failureOf(
+          const AuthRejectedException(AuthFailureReason.sessionRevoked),
+        );
+
+        expect(failure, const AuthFailure(AuthFailureReason.sessionRevoked));
+        expect(announced, 1);
+      },
+    );
+
+    test('other failures are not announced', () async {
+      var announced = 0;
+      Guard.onSessionRevoked = () => announced++;
+
+      await failureOf(
+        const AuthRejectedException(AuthFailureReason.sessionExpired),
+      );
+      await failureOf(const SocketException('x'));
+
+      expect(announced, 0);
+    });
+  });
+
   group('offline check before the call', () {
     tearDown(() => Guard.isOffline = null);
 
