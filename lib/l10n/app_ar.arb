@@ -1812,5 +1812,33 @@
   "locationClearSearch": "مسح البحث",
   "@locationClearSearch": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "homeSearch": "بحث",
+  "@homeSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeActivity": "النشاط",
+  "@homeActivity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeEmptyTitle": "خلاصتك هادئة",
+  "@homeEmptyTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeEmptyBody": "تابع أشخاصًا لترى منشوراتهم هنا.",
+  "@homeEmptyBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeFindPeople": "ابحث عن أشخاص",
+  "@homeFindPeople": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeLoadMoreError": "تعذّر تحميل المزيد · أعد المحاولة",
+  "@homeLoadMoreError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeCaughtUp": "لقد اطلعت على كل شيء",
+  "@homeCaughtUp": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

@@ -1,0 +1,28 @@
+# Home: open questions
+
+| # | Question | Options | Status |
+|---|---|---|---|
+| Q1 | Post options sheet content ("···") | - | **answered**; moved to the post feature: `../post/screens/s2-post-options.md` [user] |
+| Q1a | S2 sub-questions | - | **answered** [user]: note step = panels 3b/3c (board v2); Undo notices 5 s; icons moved to Q3. Edit caption page = separate screen, deferred (Q6) |
+| Q2 | PulseLoader look (board 5.6), now only for pull-to-refresh and load-more; first load uses skeletonizer shimmer [user] | send screenshot / AppLoadingView | **answered** [user]: board `screenshots/page-loading.png`; Lottie files exist in `assets/animations/`; specced in C11, C14 and tokens > Loading |
+| Q3 | Icons to provide (24 viewBox, stroke ~1.8, #161A19): `ic_bookmark_filled`, `ic_link`, `ic_user_minus`, `ic_volume_off`, `ic_comment_off` | user supplies | **answered**: all five added to `assets/icons/` and verified present [user] |
+| Q4 | Empty-state icon (80 tile) | - | **answered**: `ic_inbox` [user] |
+| Q5 | Control page (MainShell + nav) spec | separate `/design-to-spec control-page`; source in `source-tokens.md` section 1 | **answered**: later, separate feature [user] |
+| Q6 | Specs for /search, /activity, create story, story viewer, comments, profile target | user will say which after home is finished | deferred [user] |
+| Q7 | Estimated values: counter chip, mute/duration chips, double-tap heart, error retry on media, "more/less" 14/600 | - | **answered**: all confirmed [user]; heart pop 0.6 → 1.1 → 1 (~200 ms) then fade 600 ms |
+| Q8 | Arabic copy and relative-time formats | review | `x-review` |
+| Q9 | Supabase migration | user supplied `20261012120000_home_feed.sql`, copied to `schema.sql` (not applied) [user] | **received**; gaps below |
+| Q9a | Schema vs spec gaps: (1) S2 needs `post_hides`, `mutes`, `reports`, `posts.comments_enabled` (+ update grant, comments insert policy, `home_feed`/`story_rail` filters) not in the file; (2) `story_rail` returns authors (name, avatar) but S1 rail shows topic labels ("Himalaya", "Cafés", "Street", "Nightlife") with illustrated thumbnails; (3) "Your story" is always shown with + but `story_rail` returns "me" only with an active story; (4) no story thumbnail field (stories have `thumb_path`/`path`); (5) no relative "time" issue (uses `created_at`) | decide each | **answered** [user]: (1) `schema-post-options.sql` written (spec-level, not applied: comments_enabled, post_hides, mutes, reports, RPCs hide_post / set_mute / report_post, filters in home_feed + story_rail); (2) rail items = people (followed authors with active stories); screenshot labels are mock data; label = username [user, updated]; (3) "Your story" = always dashed + tile first; own story shows as a normal item after it; tap + creates, tap own item opens it |
+| Q9a-4 | Rail image | - | **answered**: author's avatar [user] |
+| Q11 | Video engine | - | **decided** [user]: `video_flux` for home feed videos, stories and shorts; add to pubspec in the plan. Autoplay/visibility rules (>= 60%, one at a time, muted) stay as specced; confirm they map to its API in the plan |
+| Q12 | Order of work | - | **decided** [user]: spec the **control page** before planning home |
+| Q13 | New post screen | - | **moved** [user]: not part of home; own feature (post). Screenshot deleted from home specs; re-send when that feature is specced. Note for then: `create_post` has no params for visibility, comments_enabled, tags or feeling |
+| Q14 | Architecture | - | **decided** [user]: home consumes **use cases from the post and story features** (feed, like, save, hide, report, mute, delete / story rail), it owns no data layer of its own |
+| Q15 | Data layers of post and story | - | **specced** (short): `../post/00-data-layer.md`, `../story/00-data-layer.md`; all their open items answered: entities are public API of use cases, each feature signs its own media URLs, delete removes storage files best-effort, `avatar_url` is a full URL [user] |
+| Q16 | PulseLoader exists as `PulseLineLoader` in core | verify it matches board + stroke param in the plan | note (my earlier claim that it did not exist was wrong) |
+| Q10 | Source file says nav has "4 tabs" but lists 5 slots (Create is not a tab) | noted for control-page spec | info |
+| Q17 | Ownership [user]: PostCard + options sheet specced in the post feature but built as core shared widgets; open story viewer + create story = story feature screens/routes; rail UI stays in home (the user's second answer; the first option wording said StoryRail in story, I followed the explicit second answer) | confirm if wrong | decided |
+| Q18 | Rail title/labels [user]: "Trending" removed, title "Stories", labels = username (story board). `s1-home-feed.png` still shows the old title | - | decided |
+| Q19 | Consistency check against built post/story code (2026-10-14) | - | **applied** [user]: post widgets documented as public exports of `features/post/presentation` (supersedes core placement; Q12 of post); media signing via `SignPostMediaUrlsUseCase`; added `WatchStoryUploadUseCase` (Posting…/Retry tile), `WatchStoryRailChangesUseCase`, `StoryViewerArgs`, existing story routes; added `PostActionsCubit` (C15) with mute/follow/report/audience/comments use cases |
+| Q20 | Plan decisions (2026-10-14) | - | **decided** [user]: C13 dropped, Home mounts in the control shell; `/search`, `/activity`, comments = placeholder routes; "Find people" opens the `/search` placeholder; plan mode one phase at a time with tests |
+| Q21 | Device feedback (2026-10-15) | - | **applied** [user]: header top padding 20 -> 8; "Stories" title removed (rail and skeleton); empty / failed page centered on the whole screen |

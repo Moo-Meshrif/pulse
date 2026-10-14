@@ -16,6 +16,7 @@ import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_it
 
 import 'package:pulse/l10n/app_localizations.dart';
 
+import '../../../../helpers/feed_refresh_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
@@ -60,12 +61,14 @@ class _TestRootState extends State<_TestRoot> {
 
 void main() {
   late ControlCubit cubit;
+  late MockRequestFeedRefresh feedRefresh;
   late List<String> platformCalls;
 
   setUp(() {
     final recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    cubit = ControlCubit(recovery);
+    feedRefresh = MockRequestFeedRefresh();
+    cubit = ControlCubit(recovery, feedRefresh);
     platformCalls = [];
   });
 
@@ -188,6 +191,35 @@ void main() {
       await tester.tap(item('Home'));
       await tester.pumpAndSettle();
       expect(find.text('push home'), findsOneWidget);
+    });
+
+    testWidgets('at the root also asks the home feed to load again', (
+      tester,
+    ) async {
+      await pumpShell(tester);
+      await tester.tap(item('Home'));
+      await tester.pumpAndSettle();
+      verify(() => feedRefresh()).called(1);
+    });
+
+    testWidgets('going back to the root does not refresh the feed', (
+      tester,
+    ) async {
+      await pumpShell(tester);
+      await tester.tap(find.text('push home'));
+      await tester.pumpAndSettle();
+      await tester.tap(item('Home'));
+      await tester.pumpAndSettle();
+      verifyNever(() => feedRefresh());
+    });
+
+    testWidgets('another tab does not refresh the feed', (tester) async {
+      await pumpShell(tester);
+      await tester.tap(item('Shorts'));
+      await tester.pumpAndSettle();
+      await tester.tap(item('Shorts'));
+      await tester.pumpAndSettle();
+      verifyNever(() => feedRefresh());
     });
   });
 

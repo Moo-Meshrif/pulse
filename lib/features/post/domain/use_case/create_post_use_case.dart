@@ -7,18 +7,20 @@ import '../../../../core/services/video_thumbnail_service.dart';
 import '../../data/datasource/posts_datasource.dart';
 import '../../data/enums/media_type.dart';
 import '../../data/model/post_media_model.dart';
+import '../../data/repository/feed_refresh_repository.dart';
 import '../entity/new_post_entity.dart';
 import '../entity/new_post_media_entity.dart';
 
 /// Shares a post: uploads its files to `{uid}/{postId}/`, then inserts the post in one call. Files
 /// already there from an earlier attempt are not sent again, so Retry only uploads what is missing. If
-/// the insert fails the files are removed.
+/// the insert fails the files are removed. Once the post exists the home feed is asked to load again.
 @injectable
 class CreatePostUseCase {
-  CreatePostUseCase(this._posts, this._thumbnails);
+  CreatePostUseCase(this._posts, this._thumbnails, this._feedRefresh);
 
   final PostsDatasource _posts;
   final VideoThumbnailService _thumbnails;
+  final FeedRefreshRepository _feedRefresh;
 
   Future<void> call(NewPostEntity post) async {
     final folder = '${_posts.currentUserId}/${post.id}';
@@ -44,6 +46,7 @@ class CreatePostUseCase {
       ]);
       rethrow;
     }
+    _feedRefresh.request();
   }
 
   Future<PostMediaModel> _upload(

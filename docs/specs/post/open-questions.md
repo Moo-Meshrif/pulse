@@ -18,7 +18,7 @@
 | Q8 | Picker | - | **answered** [user: follow earlier features]: `image_picker` via the existing core `MediaPickerService` (story); extend it for multi-pick (up to 10), no `photo_manager`; camera capture reuses the story `camera` package/services only if the plan needs it |
 | Q9 | `CreatePostUseCase` + `NewPostEntity` | - | **done**: added to `00-data-layer.md` |
 | Q10 | Arabic review | review | `x-review` |
-| Q12 | Cross-feature widgets | - | **answered** [user]: no convention exception; shared widgets go in `lib/core/widgets/` (PostCard, options sheet as pure UI with `PostCardData` + callbacks) |
+| Q12 | Cross-feature widgets | - | **superseded** [user, 2026-10-14]: PostCard, options flow and their plain types stay in `features/post/presentation` as public exports (see `02-components.md`) |
 | Q13 | Where `PostActionsCubit` logic lives | - | **answered** [user]: a **datasource in `lib/core`** (name: `PostActionsDatasource`: like, save, hide, report, comments toggle, delete) plus **use cases in `lib/core`**; each feature (home now, profile/saved later) calls those use cases from its own small Cubit. Supersedes the 'feed use cases in post' split for these actions. Exact core folder set in the plan. **Superseded [user, 2026-10-14]**: post-only actions (like, save, hide, comments toggle, delete) live in `features/post`; report, change audience, mute and file cleanup are shared in `lib/shared/content` (see `00-data-layer.md` > Shared code update) |
 | Q-V1 | Privacy settings link | - | **answered** [user]: "Coming soon" + code TODO until Settings > Privacy is specced |
 | Q-V2 | Only me notice | - | **answered** [user]: "Only you can see this post" / "It's saved to your profile, hidden from everyone" |

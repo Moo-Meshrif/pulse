@@ -63,7 +63,6 @@ class NewPostScreen extends StatelessWidget {
     if (state.isShared) {
       final messenger = ScaffoldMessenger.of(context);
       final message = context.l10n.newPostShared;
-      // TODO(post-plan T5): Home does not exist yet, so its feed is not refreshed here.
       AppNavigator.back(context);
       messenger.showNotice(message);
       return;

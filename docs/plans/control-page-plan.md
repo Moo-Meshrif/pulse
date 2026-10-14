@@ -31,12 +31,12 @@ No phase is blocked.
 ## Code TODOs
 | Id | What is pending | Code it sits in | Phase |
 |---|---|---|---|
-| T1 | Home tab shows a placeholder until the home feature exists (home is built after story and post) | the Home tab root of the shell | 4 |
+| T1 | ~~Home tab shows a placeholder until the home feature exists~~ done 2026-10-14: the Home tab root is `HomeScreen`; marker removed | the Home tab root of the shell | 4 |
 | T2 | Shorts tab placeholder until the shorts feature is specced | the Shorts tab root | 4 |
 | T3 | Chat tab placeholder until the chat feature exists | the Chat tab root | 4 |
 | T4 | Profile tab placeholder until the profile screens are specced | the Profile tab root | 4 |
 | T5 | Chat unread badge hardcoded to 4; the chat feature must supply the real count | the shell state that feeds the badge | 4 |
-| T6 | Re-tap on the Home root must also refresh the feed; only scroll-to-top exists until the home feature lands | the re-tap handling of the shell | 4 |
+| T6 | ~~Re-tap on the Home root must also refresh the feed~~ done 2026-10-14: `ControlCubit.refreshHome()` calls post's `RequestFeedRefreshUseCase` after the scroll to top; marker removed | the re-tap handling of the shell | 4 |
 | T7 | `/create/post` shows a placeholder until the post feature's New post screen is built | the Post route | 5 |
 | T8 | `/create/short` shows a placeholder until the shorts feature exists | the Short route | 5 |
 | T9 | Flat low-tier fallback fill (#FFFFFF 92%) kept as a constant, not used: no device detection now | the nav bar's glass layer | 3 |

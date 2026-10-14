@@ -2731,6 +2731,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear search'**
   String get locationClearSearch;
+
+  /// Home header search button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get homeSearch;
+
+  /// Home header bell button (accessibility label)
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get homeActivity;
+
+  /// Home feed empty state title
+  ///
+  /// In en, this message translates to:
+  /// **'Your feed is quiet'**
+  String get homeEmptyTitle;
+
+  /// Home feed empty state body
+  ///
+  /// In en, this message translates to:
+  /// **'Follow people to see their posts here.'**
+  String get homeEmptyBody;
+
+  /// Home feed empty state button
+  ///
+  /// In en, this message translates to:
+  /// **'Find people'**
+  String get homeFindPeople;
+
+  /// Home feed footer when loading the next page failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get homeLoadMoreError;
+
+  /// Home feed footer at the end of the feed
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up'**
+  String get homeCaughtUp;
 }
 
 class _AppLocalizationsDelegate

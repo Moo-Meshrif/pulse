@@ -1,12 +1,17 @@
 PODS:
   - app_links (7.0.0):
     - Flutter
+  - blurhash_ffi (0.0.1):
+    - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - gal (1.0.0):
+    - Flutter
+    - FlutterMacOS
+  - geolocator_apple (1.2.0):
     - Flutter
     - FlutterMacOS
   - image_picker_ios (0.0.1):
@@ -28,6 +33,9 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - sqflite_darwin (0.0.4):
+    - Flutter
+    - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
   - video_player_avfoundation (0.0.1):
@@ -39,13 +47,16 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - blurhash_ffi (from `.symlinks/plugins/blurhash_ffi/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/darwin`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - gal (from `.symlinks/plugins/gal/darwin`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
@@ -57,6 +68,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
+  blurhash_ffi:
+    :path: ".symlinks/plugins/blurhash_ffi/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/darwin"
   connectivity_plus:
@@ -65,12 +78,16 @@ EXTERNAL SOURCES:
     :path: Flutter
   gal:
     :path: ".symlinks/plugins/gal/darwin"
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/darwin"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
@@ -80,18 +97,21 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: a754cbec3c255bd4bbb4d236ecc06f28cd9a7ce8
+  blurhash_ffi: 87aab623d744d4d6cd6057d285bd2258df904786
   camera_avfoundation: 968a9a5323c79a99c166ad9d7866bfd2047b5a9b
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   gal: baecd024ebfd13c441269ca7404792a7152fde89
+  geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   libwebp: af5937a13536ef73f3784d69cc342b98961acf33
   permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
   video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
 
-PODFILE CHECKSUM: 0ccba5919743191478592d4600fdfb96ac08e8c1
+PODFILE CHECKSUM: e383198865c3a3256e959ee77a238f1b81581428
 
 COCOAPODS: 1.16.2

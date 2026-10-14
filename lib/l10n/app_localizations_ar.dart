@@ -1513,4 +1513,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get locationClearSearch => 'مسح البحث';
+
+  @override
+  String get homeSearch => 'بحث';
+
+  @override
+  String get homeActivity => 'النشاط';
+
+  @override
+  String get homeEmptyTitle => 'خلاصتك هادئة';
+
+  @override
+  String get homeEmptyBody => 'تابع أشخاصًا لترى منشوراتهم هنا.';
+
+  @override
+  String get homeFindPeople => 'ابحث عن أشخاص';
+
+  @override
+  String get homeLoadMoreError => 'تعذّر تحميل المزيد · أعد المحاولة';
+
+  @override
+  String get homeCaughtUp => 'لقد اطلعت على كل شيء';
 }

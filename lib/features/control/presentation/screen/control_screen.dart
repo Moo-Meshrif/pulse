@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/router/app_navigator.dart';
+import '../../../home/presentation/screen/home_screen.dart';
 import '../cubit/control_cubit.dart';
 import '../cubit/control_state.dart';
 import '../utils/enums/main_tab.dart';
@@ -16,8 +17,7 @@ class ControlScreen extends StatelessWidget {
 
   /// Each tab's root page. Features hand over their screens here as they get built.
   static Widget _root(BuildContext context, MainTab tab) => switch (tab) {
-    // TODO(control-page-plan T1): Home tab placeholder until the home feature is built.
-    MainTab.home => const TabPlaceholder(tab: MainTab.home),
+    MainTab.home => const HomeScreen(),
     // TODO(control-page-plan T2): Shorts tab placeholder until the shorts feature is specced.
     MainTab.shorts => const TabPlaceholder(tab: MainTab.shorts),
     // TODO(control-page-plan T3): Chat tab placeholder until the chat feature exists.

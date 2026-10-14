@@ -7,7 +7,12 @@ import 'package:pulse/core/router/placeholder_screen.dart';
 import 'package:pulse/features/post/presentation/screen/new_post_screen.dart';
 
 void main() {
-  for (final route in [AppRoutes.createShort]) {
+  for (final route in [
+    AppRoutes.createShort,
+    AppRoutes.search,
+    AppRoutes.activity,
+    AppRoutes.commentsOf('p1'),
+  ]) {
     testWidgets('$route opens its placeholder', (tester) async {
       await tester.pumpWidget(
         MaterialApp(

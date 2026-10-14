@@ -55,6 +55,11 @@ abstract final class AppRouter {
       return _page(settings, PlaceholderScreen(route: path));
     }
 
+    if (path.startsWith(AppRoutes.postPrefix) &&
+        path.endsWith(AppRoutes.commentsSuffix)) {
+      return _page(settings, PlaceholderScreen(route: path));
+    }
+
     return switch (path) {
       AppRoutes.root => _root(settings),
       AppRoutes.onboarding => _page(settings, const OnboardingScreen()),
@@ -89,6 +94,8 @@ abstract final class AppRouter {
         AddLocationScreen(current: settings.arguments as String?),
       ),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
+      AppRoutes.search ||
+      AppRoutes.activity => _page(settings, PlaceholderScreen(route: path)),
       AppRoutes.createShort => _page(
         settings,
         const PlaceholderScreen(route: AppRoutes.createShort),

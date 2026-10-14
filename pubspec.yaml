@@ -57,6 +57,7 @@ dependencies:
   permission_handler: ^13.0.2
   pinput: ^6.0.2
   shared_preferences: ^2.5.6
+  skeletonizer: ^3.0.0
   supabase_flutter: ^2.18.0
   url_launcher: ^6.3.3
   video_flux: ^0.0.1

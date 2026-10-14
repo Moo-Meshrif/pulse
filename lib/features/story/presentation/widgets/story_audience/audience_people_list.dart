@@ -82,13 +82,9 @@ class AudiencePeopleList extends StatelessWidget {
             if (state.people.isEmpty) {
               return _Message(text: l10n.storyAudienceEmpty);
             }
-            return NotificationListener<ScrollNotification>(
-              onNotification: (n) {
-                if (n.metrics.extentAfter < StoryDimens.viewerRowHeight * 3) {
-                  cubit.loadMore();
-                }
-                return false;
-              },
+            return LoadMoreListener(
+              onLoadMore: cubit.loadMore,
+              triggerDistance: StoryDimens.viewerRowHeight * 3,
               child: ListView.builder(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,

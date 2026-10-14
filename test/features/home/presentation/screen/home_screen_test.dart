@@ -1,0 +1,675 @@
+import 'dart:async';
+
+import 'package:clock/clock.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/constants/app_assets.dart';
+import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/router/app_router.dart';
+import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/theme/app_breakpoints.dart';
+import 'package:pulse/core/widgets/widgets.dart';
+import 'package:pulse/features/activity/domain/use_case/get_unread_activity_count_use_case.dart';
+import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
+import 'package:pulse/features/home/presentation/cubit/bell_dot_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/feed_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
+import 'package:pulse/features/home/presentation/screen/home_screen.dart';
+import 'package:pulse/features/home/presentation/widgets/feed/feed_skeleton.dart';
+import 'package:pulse/features/home/presentation/widgets/home_header.dart';
+import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
+import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
+import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
+import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
+import 'package:pulse/features/post/presentation/widgets/post_card.dart';
+import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
+import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
+import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
+import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
+import 'package:pulse/features/story/domain/use_case/watch_story_rail_changes_use_case.dart';
+import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case.dart';
+
+import '../../../../helpers/content_mocks.dart';
+import '../../../../helpers/pump_app.dart';
+import '../../../post/post_fixtures.dart';
+
+class _GetFeed extends Mock implements GetHomeFeedUseCase {}
+
+class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
+
+class _CurrentUser extends Mock implements GetCurrentUserIdUseCase {}
+
+class _RequestCount extends Mock implements GetUnreadActivityCountUseCase {}
+
+class _Like extends Mock implements SetPostLikeUseCase {}
+
+class _Save extends Mock implements SetPostSaveUseCase {}
+
+class _Hide extends Mock implements HidePostUseCase {}
+
+class _Comments extends Mock implements SetCommentsEnabledUseCase {}
+
+class _Delete extends Mock implements DeletePostUseCase {}
+
+class _GetRail extends Mock implements GetStoryRailUseCase {}
+
+class _RailChanges extends Mock implements WatchStoryRailChangesUseCase {}
+
+class _UploadStatus extends Mock implements WatchStoryUploadUseCase {}
+
+class _RetryUpload extends Mock implements RetryStoryUploadUseCase {}
+
+class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
+
+class _Follow extends Mock implements ToggleFollowUseCase {}
+
+/// The empty and failed pages float forever; with reduced motion they hold still, so the test can settle.
+void reduceMotion(WidgetTester tester) {
+  tester.platformDispatcher.accessibilityFeaturesTestValue =
+      const FakeAccessibilityFeatures(disableAnimations: true);
+}
+
+Finder _icon(String asset) =>
+    find.byWidgetPredicate((w) => w is AppSvgIcon && w.asset == asset);
+
+void main() {
+  late _GetFeed getFeed;
+  late _RequestCount requestCount;
+  late _Like like;
+  late _Hide hide;
+  late _RetryUpload retryUpload;
+  late StreamController<StoryUploadStatus> uploads;
+  late StreamController<void> refreshRequests;
+
+  final now = DateTime(2026, 10, 14, 12);
+  final cursor = FeedCursorEntity(createdAt: DateTime(2026, 10, 13), id: 'p3');
+
+  PostEntity post(String id, {String caption = 'Hello'}) {
+    final base = testPost(id);
+    return PostEntity(
+      id: id,
+      authorId: base.authorId,
+      username: base.username,
+      fullName: 'Nour $id',
+      caption: caption,
+      likeCount: base.likeCount,
+      commentCount: base.commentCount,
+      commentsEnabled: true,
+      visibility: base.visibility,
+      createdAt: now.subtract(const Duration(hours: 2)),
+      likedByMe: false,
+      savedByMe: false,
+      media: const [],
+    );
+  }
+
+  setUpAll(() {
+    registerFallbackValue(cursor);
+    registerContentFallbacks();
+  });
+
+  setUp(() async {
+    await getIt.reset();
+    getFeed = _GetFeed();
+    requestCount = _RequestCount();
+    like = _Like();
+    hide = _Hide();
+    final getRail = _GetRail();
+    final railChanges = _RailChanges();
+    final uploadStatus = _UploadStatus();
+    when(getRail.call).thenAnswer((_) async => []);
+    when(railChanges.call).thenAnswer((_) => const Stream<void>.empty());
+    uploads = StreamController<StoryUploadStatus>.broadcast();
+    addTearDown(uploads.close);
+    retryUpload = _RetryUpload();
+    when(uploadStatus.call).thenAnswer((_) => uploads.stream);
+    refreshRequests = StreamController<void>.broadcast();
+    addTearDown(refreshRequests.close);
+    final refresh = _Refresh();
+    when(refresh.call).thenAnswer((_) => refreshRequests.stream);
+    final sign = _Sign();
+    final currentUser = _CurrentUser();
+    when(currentUser.call).thenReturn('me');
+    when(() => sign(any())).thenAnswer((_) async => {});
+    when(requestCount.call).thenAnswer((_) async => 0);
+    when(
+      () => getFeed(cursor: null),
+    ).thenAnswer((_) async => FeedPageEntity(posts: [post('p1'), post('p2')]));
+    when(() => like(any(), liked: any(named: 'liked')))
+        .thenAnswer((_) async => 11);
+    when(() => hide(any(), hidden: any(named: 'hidden')))
+        .thenAnswer((_) async {});
+    getIt
+      ..registerFactory(() => FeedCubit(getFeed, sign, refresh, currentUser))
+      ..registerFactory(
+        () => PostActionsCubit(
+          like,
+          _Save(),
+          hide,
+          _Comments(),
+          _Delete(),
+          MockReportContent(),
+          MockSetMute(),
+          _Follow(),
+        ),
+      )
+      ..registerFactory(() => BellDotCubit(requestCount, refresh))
+      ..registerFactory(
+        () => StoryRailCubit(
+          getRail,
+          railChanges,
+          uploadStatus,
+          retryUpload,
+          refresh,
+        ),
+      );
+    addTearDown(getIt.reset);
+  });
+
+  Future<void> show(
+    WidgetTester tester, {
+    Locale locale = const Locale('en'),
+    bool settle = true,
+  }) => withClock(
+    Clock.fixed(now),
+    () => tester.pumpApp(
+      const HomeScreen(),
+      locale: locale,
+      settle: settle,
+      onGenerateRoute: AppRouter.onGenerateRoute,
+    ),
+  );
+
+  group('content', () {
+    testView('shows the header and a card per post', (tester) async {
+      await show(tester);
+      expect(find.text('pulse'), findsOneWidget);
+      expect(find.byType(PostCard), findsNWidgets(2));
+      expect(find.text('Nour p1'), findsOneWidget);
+      expect(find.text('Nour p2'), findsOneWidget);
+      expect(find.byKey(bellDotKey), findsNothing);
+    });
+
+    testView('the bell shows its dot while anything waits in Activity', (
+      tester,
+    ) async {
+      when(requestCount.call).thenAnswer((_) async => 3);
+      await show(tester);
+      expect(find.byKey(bellDotKey), findsOneWidget);
+    });
+
+    testView('Search and the bell open their pages', (tester) async {
+      await show(tester);
+      await tester.tap(find.bySemanticsLabel(l10nEn.homeSearch));
+      await tester.pumpAndSettle();
+      expect(find.text(AppRoutes.search), findsOneWidget);
+
+      Navigator.of(tester.element(find.text(AppRoutes.search))).pop();
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel(l10nEn.homeActivity));
+      await tester.pumpAndSettle();
+      expect(find.text(AppRoutes.activity), findsOneWidget);
+    });
+
+    testView('the comment button opens that post\'s comments', (tester) async {
+      await show(tester);
+      await tester.tap(_icon(AppAssets.comment).first);
+      await tester.pumpAndSettle();
+      expect(find.text(AppRoutes.commentsOf('p1')), findsOneWidget);
+    });
+
+    testView('Share says it is coming soon', (tester) async {
+      await show(tester);
+      await tester.tap(_icon(AppAssets.share).first);
+      await tester.pump();
+      expect(find.text(l10nEn.comingSoon), findsOneWidget);
+    });
+  });
+
+  group('story posting', () {
+    testView('a failed post says so and Retry sends it again', (tester) async {
+      await show(tester);
+      uploads.add(const StoryUploadFailed(NetworkFailure()));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1)); // the notice slides in
+      expect(find.text(l10nEn.storyPostFailed), findsOneWidget);
+      await tester.tap(
+        find.descendant(
+          of: find.byType(SnackBar),
+          matching: find.text(l10nEn.retry),
+        ),
+      );
+      verify(retryUpload.call).called(1);
+    });
+  });
+
+  group('actions', () {
+    testView('Like shows at once and sends the like', (tester) async {
+      await show(tester);
+      await tester.tap(_icon(AppAssets.heart).first);
+      await tester.pumpAndSettle();
+      expect(_icon(AppAssets.heartFilled), findsOneWidget);
+      verify(() => like('p1', liked: true)).called(1);
+    });
+
+    testView('a like that fails is taken back with a notice', (tester) async {
+      when(() => like(any(), liked: any(named: 'liked')))
+          .thenAnswer((_) async => throw const NetworkFailure());
+      await show(tester);
+      await tester.tap(_icon(AppAssets.heart).first);
+      await tester.pump();
+      await tester.pump();
+      expect(_icon(AppAssets.heartFilled), findsNothing);
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testView(
+      'Not interested turns the card into the hidden row, Undo brings it back',
+      (tester) async {
+        await show(tester);
+        await tester.tap(_icon(AppAssets.moreHorizontal).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(l10nEn.postNotInterested));
+        await tester.pumpAndSettle();
+        expect(find.byType(HiddenPostRow), findsOneWidget);
+        expect(find.byType(PostCard), findsOneWidget);
+
+        await tester.tap(find.text(l10nEn.undo));
+        await tester.pumpAndSettle();
+        expect(find.byType(HiddenPostRow), findsNothing);
+        expect(find.byType(PostCard), findsNWidgets(2));
+        verify(() => hide('p1', hidden: false)).called(1);
+      },
+    );
+  });
+
+  group('paging', () {
+    testView('asks for the next page near the end, once', (tester) async {
+      when(() => getFeed(cursor: null)).thenAnswer(
+        (_) async => FeedPageEntity(
+          posts: [post('p1'), post('p2'), post('p3')],
+          nextCursor: cursor,
+        ),
+      );
+      when(() => getFeed(cursor: cursor))
+          .thenAnswer((_) async => FeedPageEntity(posts: [post('p4')]));
+      await show(tester);
+      verify(() => getFeed(cursor: cursor)).called(1);
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -2000));
+      await tester.pumpAndSettle();
+      verifyNever(() => getFeed(cursor: cursor)); // not asked again
+      expect(find.text('Nour p4', skipOffstage: false), findsOneWidget);
+    });
+
+    testView('pull to refresh loads the first page again', (tester) async {
+      await show(tester);
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, 400),
+        1000,
+      );
+      await tester.pumpAndSettle();
+      verify(() => getFeed(cursor: null)).called(2);
+      verify(requestCount.call).called(2);
+    });
+
+    testView('a refresh that fails keeps the posts and says so', (
+      tester,
+    ) async {
+      await show(tester);
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => throw const NetworkFailure());
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, 400),
+        1000,
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(PostCard), findsNWidgets(2));
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testView('a refresh forgets what was done to the old posts', (
+      tester,
+    ) async {
+      await show(tester);
+      await tester.tap(_icon(AppAssets.heart).first);
+      await tester.pumpAndSettle();
+      expect(_icon(AppAssets.heartFilled), findsOneWidget);
+
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, 400),
+        1000,
+      );
+      await tester.pumpAndSettle();
+      expect(_icon(AppAssets.heartFilled), findsNothing);
+    });
+  });
+
+  group('first load', () {
+    testView('shows the skeleton under the real header, then the posts', (
+      tester,
+    ) async {
+      final page = Completer<FeedPageEntity>();
+      when(() => getFeed(cursor: null)).thenAnswer((_) => page.future);
+      await show(tester, settle: false);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(FeedSkeleton), findsOneWidget);
+      expect(find.byType(PostCard), findsNothing);
+      expect(find.byType(StoryRail), findsNothing);
+      expect(find.text('pulse'), findsOneWidget);
+
+      page.complete(FeedPageEntity(posts: [post('p1')]));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(FeedSkeleton), findsNothing);
+      expect(find.byType(PostCard), findsOneWidget);
+      expect(find.byType(StoryRail), findsOneWidget);
+    });
+
+    testView('stands still when the system reduces motion', (tester) async {
+      reduceMotion(tester);
+      final page = Completer<FeedPageEntity>();
+      when(() => getFeed(cursor: null)).thenAnswer((_) => page.future);
+      await show(tester, settle: false);
+      // Settles only when nothing animates.
+      await tester.pumpAndSettle();
+      expect(find.byType(FeedSkeleton), findsOneWidget);
+    });
+
+    testView('a failure shows the page with Try again, which loads again', (
+      tester,
+    ) async {
+      reduceMotion(tester);
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => throw const ServerFailure());
+      await show(tester);
+      expect(find.text(l10nEn.failedPageTitle), findsOneWidget);
+      expect(find.text('pulse'), findsOneWidget);
+
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => FeedPageEntity(posts: [post('p1')]));
+      await tester.tap(find.text(l10nEn.tryAgain));
+      await tester.pumpAndSettle();
+      expect(find.byType(PostCard), findsOneWidget);
+      expect(find.text(l10nEn.failedPageTitle), findsNothing);
+    });
+
+    testView('no connection says so', (tester) async {
+      reduceMotion(tester);
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => throw const NetworkFailure());
+      await show(tester);
+      expect(find.text(l10nEn.offlinePageTitle), findsOneWidget);
+    });
+  });
+
+  group('empty feed', () {
+    setUp(() {
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => const FeedPageEntity(posts: []));
+    });
+
+    testView('says the feed is quiet, with the rail above', (tester) async {
+      reduceMotion(tester);
+      await show(tester);
+      expect(find.text(l10nEn.homeEmptyTitle), findsOneWidget);
+      expect(find.text(l10nEn.homeEmptyBody), findsOneWidget);
+      expect(find.text(l10nEn.storyYourStory), findsOneWidget);
+      expect(find.byType(PostCard), findsNothing);
+    });
+
+    testView('the page is centered on the whole screen, not under the rail', (
+      tester,
+    ) async {
+      reduceMotion(tester);
+      await show(tester);
+      final top = tester.getTopLeft(find.text(l10nEn.homeEmptyTitle)).dy;
+      final button = tester.getBottomLeft(find.text(l10nEn.homeFindPeople)).dy;
+      final center = (top + button) / 2;
+      // The safe area of the test frame runs from 47 to 844 - 34; the rail ends near 150.
+      expect(center, closeTo((47 + 810) / 2, 60));
+    });
+
+    testView('Find people opens search', (tester) async {
+      reduceMotion(tester);
+      await show(tester);
+      await tester.tap(find.text(l10nEn.homeFindPeople));
+      await tester.pumpAndSettle();
+      expect(find.text(AppRoutes.search), findsOneWidget);
+    });
+
+    testView('Arabic copy', (tester) async {
+      reduceMotion(tester);
+      await show(tester, locale: const Locale('ar'));
+      expect(find.text(l10nAr.homeEmptyTitle), findsOneWidget);
+      expect(find.text(l10nAr.homeFindPeople), findsOneWidget);
+    });
+  });
+
+  group('end of the feed', () {
+    testView('the last page ends with "all caught up"', (tester) async {
+      await show(tester);
+      expect(
+        find.text(l10nEn.homeCaughtUp, skipOffstage: false),
+        findsOneWidget,
+      );
+    });
+
+    testView('shows the loader while the next page comes', (tester) async {
+      final next = Completer<FeedPageEntity>();
+      when(() => getFeed(cursor: null)).thenAnswer(
+        (_) async => FeedPageEntity(
+          posts: [post('p1'), post('p2'), post('p3')],
+          nextCursor: cursor,
+        ),
+      );
+      when(() => getFeed(cursor: cursor)).thenAnswer((_) => next.future);
+      await show(tester, settle: false);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -2000));
+      await tester.pump();
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is AppInlineLoading,
+          skipOffstage: false,
+        ),
+        findsOneWidget,
+      );
+      expect(find.text(l10nEn.homeCaughtUp, skipOffstage: false), findsNothing);
+    });
+
+    testView('a failed next page can be retried', (tester) async {
+      when(() => getFeed(cursor: null)).thenAnswer(
+        (_) async => FeedPageEntity(
+          posts: [post('p1'), post('p2'), post('p3')],
+          nextCursor: cursor,
+        ),
+      );
+      when(() => getFeed(cursor: cursor))
+          .thenAnswer((_) async => throw const NetworkFailure());
+      await show(tester);
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -2000));
+      await tester.pumpAndSettle();
+      expect(find.text(l10nEn.homeLoadMoreError), findsOneWidget);
+
+      when(() => getFeed(cursor: cursor))
+          .thenAnswer((_) async => FeedPageEntity(posts: [post('p4')]));
+      await tester.tap(find.text(l10nEn.homeLoadMoreError));
+      await tester.pumpAndSettle();
+      expect(find.text(l10nEn.homeLoadMoreError), findsNothing);
+      expect(find.text('Nour p4', skipOffstage: false), findsOneWidget);
+    });
+  });
+
+  group('refresh requests', () {
+    testView('a request from the shell or a shared post loads the feed again', (
+      tester,
+    ) async {
+      await show(tester);
+      when(() => getFeed(cursor: null)).thenAnswer(
+        (_) async => FeedPageEntity(posts: [post('p9'), post('p1')]),
+      );
+      refreshRequests.add(null);
+      await tester.pumpAndSettle();
+      expect(find.text('Nour p9'), findsOneWidget);
+      verify(requestCount.call).called(2);
+    });
+  });
+
+  group('refreshing', () {
+    testView('shows the loader under the header while the posts stay', (
+      tester,
+    ) async {
+      await show(tester);
+      final again = Completer<FeedPageEntity>();
+      when(() => getFeed(cursor: null)).thenAnswer((_) => again.future);
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, 400),
+        1000,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(AppInlineLoading), findsOneWidget);
+      expect(find.byType(PostCard), findsNWidgets(2));
+
+      again.complete(FeedPageEntity(posts: [post('p9')]));
+      await tester.pumpAndSettle();
+      expect(find.byType(AppInlineLoading), findsNothing);
+      expect(find.text('Nour p9'), findsOneWidget);
+    });
+  });
+
+  group('Arabic', () {
+    testView('the header mirrors and the cards show', (tester) async {
+      await show(tester, locale: const Locale('ar'));
+      final logo = tester.getTopLeft(find.byType(LogoTile));
+      final search = tester.getTopLeft(
+        find.bySemanticsLabel(l10nAr.homeSearch),
+      );
+      expect(logo.dx, greaterThan(search.dx));
+      expect(find.byType(PostCard), findsNWidgets(2));
+    });
+
+    testWidgets('survives 1.5x text on a narrow phone', (tester) async {
+      setUpView(tester, size: const Size(320, 640), textScale: 1.5);
+      await show(tester, locale: const Locale('ar'));
+      expect(tester.takeException(), isNull);
+      expect(find.byType(PostCard), findsWidgets);
+    });
+  });
+  testWidgets('the skeleton and the empty page survive 1.5x text in Arabic', (
+    tester,
+  ) async {
+    setUpView(tester, size: const Size(320, 640), textScale: 1.5);
+    reduceMotion(tester);
+    final page = Completer<FeedPageEntity>();
+    when(() => getFeed(cursor: null)).thenAnswer((_) => page.future);
+    await show(tester, locale: const Locale('ar'), settle: false);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(FeedSkeleton), findsOneWidget);
+
+    page.complete(const FeedPageEntity(posts: []));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text(l10nAr.homeEmptyTitle), findsOneWidget);
+  });
+
+  group('polish', () {
+    for (final locale in [const Locale('en'), const Locale('ar')]) {
+      testWidgets(
+        '${locale.languageCode}: 320 dp at 2x text does not overflow',
+        (tester) async {
+          setUpView(tester, size: const Size(320, 640), textScale: 2);
+          reduceMotion(tester);
+          when(() => getFeed(cursor: null)).thenAnswer(
+            (_) async => FeedPageEntity(
+              posts: [
+                post(
+                  'p1',
+                  caption:
+                      'A caption that is long enough to wrap onto '
+                          'several lines at a large text size ' *
+                      3,
+                ),
+                post('p2'),
+              ],
+            ),
+          );
+          await show(tester, locale: locale);
+          expect(tester.takeException(), isNull);
+          expect(find.byType(PostCard), findsWidgets);
+          await tester.drag(
+            find.byType(CustomScrollView),
+            const Offset(0, -3000),
+          );
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
+    testWidgets('a wide window keeps the feed at the content width, centered', (
+      tester,
+    ) async {
+      setUpView(tester, size: const Size(1200, 900));
+      await show(tester);
+      final card = tester.getRect(find.byType(PostCard).first);
+      expect(card.width, lessThan(AppBreakpoints.maxContentWidth));
+      expect(card.center.dx, closeTo(600, 1));
+    });
+
+    testView('the last card scrolls clear of the nav bar', (tester) async {
+      const nav = 138.0;
+      await withClock(
+        Clock.fixed(now),
+        () => tester.pumpApp(
+          const NavClearance(bottom: nav, child: HomeScreen()),
+          onGenerateRoute: AppRouter.onGenerateRoute,
+        ),
+      );
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -3000));
+      await tester.pumpAndSettle();
+      final last = tester.getRect(find.byType(PostCard).last);
+      expect(last.bottom, lessThanOrEqualTo(844 - nav));
+    });
+
+    testView('the header buttons are at least 44 square and labelled', (
+      tester,
+    ) async {
+      await show(tester);
+      for (final label in [l10nEn.homeSearch, l10nEn.homeActivity]) {
+        final size = tester.getSize(find.bySemanticsLabel(label));
+        expect(size.width, greaterThanOrEqualTo(44));
+        expect(size.height, greaterThanOrEqualTo(44));
+      }
+    });
+
+    testView('the action bar mirrors in Arabic: Save at the left', (
+      tester,
+    ) async {
+      await show(tester, locale: const Locale('ar'));
+      final save = tester.getCenter(_icon(AppAssets.bookmark).first);
+      final like = tester.getCenter(_icon(AppAssets.heart).first);
+      expect(save.dx, lessThan(like.dx));
+    });
+  });
+}

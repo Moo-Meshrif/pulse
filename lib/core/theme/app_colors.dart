@@ -40,6 +40,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.glassHighlightTop,
     required this.glassHighlightBottom,
     required this.badgeRing,
+    required this.skeletonBase,
+    required this.skeletonHighlight,
     required this.avatarBackgrounds,
     required this.storySheet,
     required this.storySheetRow,
@@ -100,6 +102,10 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color glassHighlightTop;
   final Color glassHighlightBottom;
   final Color badgeRing;
+
+  /// Shimmer skeleton (Home first load): block and highlight (docs/specs/home/01-design-tokens.md > Loading).
+  final Color skeletonBase;
+  final Color skeletonHighlight;
 
   /// White initials go on these backgrounds, rotated per user.
   final List<Color> avatarBackgrounds;
@@ -194,6 +200,8 @@ class AppColors extends ThemeExtension<AppColors> {
     badgeRing: Color(
       0xE6FFFFFF,
     ), // #FFFFFF @ 90%: ring around the nav count badge
+    skeletonBase: Color(0xFFE6E9E7),
+    skeletonHighlight: Color(0xFFF1F3F2),
     avatarBackgrounds: [
       Color(0xFF7A4E3A),
       Color(0xFF3E5C76),
@@ -258,6 +266,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? glassHighlightTop,
     Color? glassHighlightBottom,
     Color? badgeRing,
+    Color? skeletonBase,
+    Color? skeletonHighlight,
     List<Color>? avatarBackgrounds,
     Color? storySheet,
     Color? storySheetRow,
@@ -311,6 +321,8 @@ class AppColors extends ThemeExtension<AppColors> {
     glassHighlightTop: glassHighlightTop ?? this.glassHighlightTop,
     glassHighlightBottom: glassHighlightBottom ?? this.glassHighlightBottom,
     badgeRing: badgeRing ?? this.badgeRing,
+    skeletonBase: skeletonBase ?? this.skeletonBase,
+    skeletonHighlight: skeletonHighlight ?? this.skeletonHighlight,
     avatarBackgrounds: avatarBackgrounds ?? this.avatarBackgrounds,
     storySheet: storySheet ?? this.storySheet,
     storySheetRow: storySheetRow ?? this.storySheetRow,
@@ -377,6 +389,12 @@ class AppColors extends ThemeExtension<AppColors> {
         t,
       )!,
       badgeRing: Color.lerp(badgeRing, other.badgeRing, t)!,
+      skeletonBase: Color.lerp(skeletonBase, other.skeletonBase, t)!,
+      skeletonHighlight: Color.lerp(
+        skeletonHighlight,
+        other.skeletonHighlight,
+        t,
+      )!,
       avatarBackgrounds: [
         for (var i = 0; i < avatarBackgrounds.length; i++)
           Color.lerp(avatarBackgrounds[i], other.avatarBackgrounds[i], t)!,

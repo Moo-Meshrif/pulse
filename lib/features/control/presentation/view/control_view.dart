@@ -55,7 +55,7 @@ class _ControlViewState extends State<ControlView> {
   }
 
   /// Another tab: switch to it. The selected tab again: go back to its root, or when it is there
-  /// already, scroll it to the top.
+  /// already, scroll it to the top (and load the Home feed again).
   void _onTab(MainTab tab) {
     if (tab != _cubit.state.selected) {
       _cubit.select(tab);
@@ -63,8 +63,8 @@ class _ControlViewState extends State<ControlView> {
     }
     final handle = _handles[tab]!;
     if (handle.popToRoot()) return;
-    // TODO(control-page-plan T6): on the Home root also refresh the feed once the home feature exists.
     handle.scrollToTop();
+    if (tab == MainTab.home) _cubit.refreshHome();
   }
 
   /// Closes the sheet and opens the chosen flow over the whole shell, nav bar included.

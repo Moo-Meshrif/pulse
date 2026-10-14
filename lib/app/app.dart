@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../core/di/injection.dart';
 import '../core/extensions/l10n.dart';
@@ -48,9 +49,13 @@ class _AppState extends State<App> {
       navigatorKey: _navigator,
       navigatorObservers: [_sessionGuard],
       // Fonts are already scaled by AppScale; cap the user's text scale so the two together stay <= 2.0x.
-      builder: (context, child) => MediaQuery.withClampedTextScaling(
-        maxScaleFactor: AppScale.maxSystemTextScale,
-        child: child!,
+      // Dark status bar icons by default (light theme); dark screens override with their own region.
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: MediaQuery.withClampedTextScaling(
+          maxScaleFactor: AppScale.maxSystemTextScale,
+          child: child!,
+        ),
       ),
       onGenerateTitle: (context) => context.l10n.appTitle,
       debugShowCheckedModeBanner: false,

@@ -50,6 +50,21 @@ abstract final class AppRoutes {
   static String profileOf(String userId) => '$profilePrefix$userId';
   static const profilePrefix = '/profile/';
 
+  /// Search people and posts; a placeholder until it is specced.
+  // TODO(home-plan H1): /search is not specced yet.
+  static const search = '/search';
+
+  /// Activity (follow requests, likes, comments); a placeholder until it is specced.
+  // TODO(home-plan H2): /activity is not specced yet.
+  static const activity = '/activity';
+
+  /// A post's comments (`/post/:postId/comments`); a placeholder until the comments page is specced.
+  // TODO(home-plan H3): the comments page is not specced yet.
+  static String commentsOf(String postId) =>
+      '$postPrefix$postId$commentsSuffix';
+  static const postPrefix = '/post/';
+  static const commentsSuffix = '/comments';
+
   /// The Close friends and Hide story from list screens (the Who can see this sheet opens them).
   static const audienceCloseFriends = '/audience/close-friends';
   static const audienceHidden = '/audience/hidden';

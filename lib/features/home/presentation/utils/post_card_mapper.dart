@@ -1,0 +1,40 @@
+import '../../../../shared/content/data/enums/content_audience.dart';
+import '../../../post/domain/entity/post_entity.dart';
+import '../../../post/presentation/utils/content_audience_display.dart';
+import '../../../post/presentation/utils/post_card_data.dart';
+import '../../../post/presentation/utils/post_card_media.dart';
+import '../../../post/presentation/utils/post_options_data.dart';
+
+/// What the card draws for [post]: the name people know them by, the place, and the small audience icon
+/// for a post that is not public.
+PostCardData postCardData(PostEntity post, List<PostCardMedia> media) {
+  final fullName = post.fullName?.trim();
+  return PostCardData(
+    id: post.id,
+    authorId: post.authorId,
+    authorName: fullName == null || fullName.isEmpty ? post.username : fullName,
+    authorAvatarUrl: post.avatarUrl,
+    city: post.location,
+    createdAt: post.createdAt,
+    caption: post.caption,
+    media: media,
+    likeCount: post.likeCount,
+    commentCount: post.commentCount,
+    isLiked: post.likedByMe,
+    isSaved: post.savedByMe,
+    audienceIcon: post.visibility == ContentAudience.public
+        ? null
+        : post.visibility.icon,
+  );
+}
+
+/// What the options sheet needs: whose post it is and what is set on it.
+PostOptionsData postOptionsData(PostEntity post, {required String? userId}) =>
+    PostOptionsData(
+      postId: post.id,
+      isMine: post.authorId == userId,
+      username: post.username,
+      isSaved: post.savedByMe,
+      commentsEnabled: post.commentsEnabled,
+      visibility: post.visibility,
+    );

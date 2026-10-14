@@ -1516,4 +1516,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationClearSearch => 'Clear search';
+
+  @override
+  String get homeSearch => 'Search';
+
+  @override
+  String get homeActivity => 'Activity';
+
+  @override
+  String get homeEmptyTitle => 'Your feed is quiet';
+
+  @override
+  String get homeEmptyBody => 'Follow people to see their posts here.';
+
+  @override
+  String get homeFindPeople => 'Find people';
+
+  @override
+  String get homeLoadMoreError => 'Couldn\'t load more · Retry';
+
+  @override
+  String get homeCaughtUp => 'You\'re all caught up';
 }

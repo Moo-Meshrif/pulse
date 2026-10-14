@@ -66,6 +66,7 @@ void main() {
     profiles = MockProfileDatasource();
     audience = MockAudienceDatasource();
     posts = _Posts();
+    stubOnePostFeed(posts);
     privacy = _Privacy();
     places = _Places();
     location = _Location();
@@ -252,6 +253,15 @@ void main() {
       ).called(1);
       expect(find.byType(NewPostScreen), findsNothing);
       expect(find.text(l10nEn.newPostShared), findsOneWidget);
+
+      // Home, under New post, loaded its feed on open and loads it again for the new post.
+      verify(
+        () => posts.getHomeFeed(
+          limit: any(named: 'limit'),
+          beforeCreated: any(named: 'beforeCreated'),
+          beforeId: any(named: 'beforeId'),
+        ),
+      ).called(2);
     },
   );
 }

@@ -7,6 +7,7 @@ import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
+import 'package:pulse/features/post/data/repository/feed_refresh_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
@@ -16,9 +17,12 @@ class _MockPosts extends Mock implements PostsDatasource {}
 
 class _MockThumbnails extends Mock implements VideoThumbnailService {}
 
+class _MockFeedRefresh extends Mock implements FeedRefreshRepository {}
+
 void main() {
   late _MockPosts posts;
   late _MockThumbnails thumbnails;
+  late _MockFeedRefresh feedRefresh;
   late CreatePostUseCase useCase;
 
   const photo = NewPostMediaEntity(
@@ -52,7 +56,8 @@ void main() {
   setUp(() {
     posts = _MockPosts();
     thumbnails = _MockThumbnails();
-    useCase = CreatePostUseCase(posts, thumbnails);
+    feedRefresh = _MockFeedRefresh();
+    useCase = CreatePostUseCase(posts, thumbnails, feedRefresh);
     when(() => posts.currentUserId).thenReturn('u1');
     when(() => posts.listFiles(any())).thenAnswer((_) async => const []);
     when(
@@ -222,4 +227,24 @@ void main() {
       verifyNever(() => posts.removeFiles(any()));
     },
   );
+
+  test('asks the home feed to load again once the post exists', () async {
+    await useCase(post);
+    verify(() => feedRefresh.request()).called(1);
+  });
+
+  test('does not ask when the post could not be created', () async {
+    when(
+      () => posts.createPost(
+        id: any(named: 'id'),
+        caption: any(named: 'caption'),
+        location: any(named: 'location'),
+        commentsEnabled: any(named: 'commentsEnabled'),
+        visibility: any(named: 'visibility'),
+        media: any(named: 'media'),
+      ),
+    ).thenThrow(const NetworkFailure());
+    await expectLater(useCase(post), throwsA(isA<NetworkFailure>()));
+    verifyNever(() => feedRefresh.request());
+  });
 }

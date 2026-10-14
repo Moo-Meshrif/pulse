@@ -14,7 +14,7 @@ Video: `video_flux` [user]. Backend: Supabase now, REST later; schema `../home/s
 | S4 | Post visibility picker (from the S1 chip and S2 "Change who can see") | screens/s4-visibility.md | screenshots/s4-visibility.png | sheet |
 | S2 | Post options sheet + report flow (opened from a post's "···") | screens/s2-post-options.md | screenshots/s2-post-options.png | sheet |
 
-Shared post widgets (post card, options sheet): specced in `02-components.md`, built in `lib/core/widgets/` [user].
+Public post widgets (post card, options flow, visibility sheet): specced in `02-components.md`, built in `features/post/presentation/` and exported for other features [user, 2026-10-14].
 
 Not specced yet: media picker, tag people, feeling/activity, settings > privacy, post detail, comments, edit caption (opened from Home S2), saved posts.
 

@@ -43,13 +43,9 @@ class ViewersList extends StatelessWidget {
                 ),
               );
             }
-            return NotificationListener<ScrollNotification>(
-              onNotification: (n) {
-                if (n.metrics.extentAfter < StoryDimens.viewerRowHeight * 3) {
-                  cubit.loadMore();
-                }
-                return false;
-              },
+            return LoadMoreListener(
+              onLoadMore: cubit.loadMore,
+              triggerDistance: StoryDimens.viewerRowHeight * 3,
               child: ListView.builder(
                 controller: controller,
                 padding: EdgeInsets.symmetric(

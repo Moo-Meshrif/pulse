@@ -10,12 +10,17 @@ import 'package:pulse/core/theme/app_scroll_behavior.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/utils/country_names_delegate.dart';
 import 'package:pulse/core/widgets/widgets.dart';
+import 'package:pulse/features/activity/data/datasource/activity_datasource.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
 import 'package:pulse/features/follow/domain/use_case/follow_all_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/get_suggested_profiles_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/legal/data/datasource/legal_datasource.dart';
+import 'package:pulse/features/post/data/datasource/post_actions_datasource.dart';
+import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
+import 'package:pulse/features/post/data/model/feed_page_model.dart';
+import 'package:pulse/features/post/data/model/post_model.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
@@ -33,7 +38,10 @@ import 'package:pulse/features/story/data/datasource/story_media_uploader.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/content_actions_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class MockActivityDatasource extends Mock implements ActivityDatasource {}
 
 class MockAuthDatasource extends Mock implements AuthDatasource {}
 
@@ -78,6 +86,10 @@ class MockLegalDatasource extends Mock implements LegalDatasource {}
 class MockFollowsDatasource extends Mock implements FollowsDatasource {}
 
 class MockStoriesDatasource extends Mock implements StoriesDatasource {}
+
+class MockPostsDatasource extends Mock implements PostsDatasource {}
+
+class MockPostActionsDatasource extends Mock implements PostActionsDatasource {}
 
 class MockStoryMediaUploader extends Mock implements StoryMediaUploader {}
 
@@ -129,6 +141,9 @@ extension PumpApp on WidgetTester {
 
     /// Pass false for a widget with an endless animation (a spinner).
     bool settle = true,
+
+    /// Resolves the named routes the widget pushes.
+    RouteFactory? onGenerateRoute,
   }) async {
     await pumpWidget(
       AppScaleScope(
@@ -140,6 +155,7 @@ extension PumpApp on WidgetTester {
           scrollBehavior: const AppScrollBehavior(),
           theme: AppTheme.light,
           locale: locale,
+          onGenerateRoute: onGenerateRoute,
           localizationsDelegates: const [
             ...AppLocalizations.localizationsDelegates,
             CountryNamesDelegate(),
@@ -200,16 +216,20 @@ Future<void> setUpRealWiring({
   when(() => signedOut.recoverySignals).thenAnswer((_) => const Stream.empty());
   when(() => signedOut.recoveryActive).thenReturn(false);
   when(() => signedOut.sessionEnded).thenAnswer((_) => const Stream.empty());
+  await getIt.unregister<ActivityDatasource>();
   await getIt.unregister<AuthDatasource>();
   await getIt.unregister<ProfileDatasource>();
   await getIt.unregister<InterestsDatasource>();
   await getIt.unregister<FollowsDatasource>();
   await getIt.unregister<LegalDatasource>();
   await getIt.unregister<StoriesDatasource>();
+  await getIt.unregister<PostsDatasource>();
+  await getIt.unregister<PostActionsDatasource>();
   await getIt.unregister<StoryMediaUploader>();
   await getIt.unregister<ContentActionsDatasource>();
   await getIt.unregister<MediaFilesDatasource>();
   await getIt.unregister<AudienceDatasource>();
+  getIt.registerSingleton<ActivityDatasource>(MockActivityDatasource());
   getIt.registerSingleton<AuthDatasource>(auth ?? signedOut);
   getIt.registerSingleton<ProfileDatasource>(
     profiles ?? MockProfileDatasource(),
@@ -224,10 +244,47 @@ Future<void> setUpRealWiring({
   when(() => emptyRail.getStoryRail(limit: any(named: 'limit')))
       .thenAnswer((_) async => []);
   getIt.registerSingleton<StoriesDatasource>(stories ?? emptyRail);
+  // Home loads its feed on open: one plain post (the empty page floats forever and would never settle).
+  final emptyFeed = MockPostsDatasource();
+  stubOnePostFeed(emptyFeed);
+  getIt.registerSingleton<PostsDatasource>(emptyFeed);
+  getIt.registerSingleton<PostActionsDatasource>(MockPostActionsDatasource());
   getIt.registerSingleton<StoryMediaUploader>(MockStoryMediaUploader());
   getIt.registerSingleton<ContentActionsDatasource>(
     MockContentActionsDatasource(),
   );
   getIt.registerSingleton<MediaFilesDatasource>(MockMediaFilesDatasource());
   getIt.registerSingleton<AudienceDatasource>(MockAudienceDatasource());
+}
+
+/// Makes [posts] answer a feed of one plain post: Home loads its feed on open, and its empty page floats
+/// forever, so a test that settles needs a post to show.
+void stubOnePostFeed(PostsDatasource posts) {
+  when(
+    () => posts.getHomeFeed(
+      limit: any(named: 'limit'),
+      beforeCreated: any(named: 'beforeCreated'),
+      beforeId: any(named: 'beforeId'),
+    ),
+  ).thenAnswer(
+    (_) async => FeedPageModel(
+      posts: [
+        PostModel(
+          id: 'feed-post',
+          authorId: 'someone-else',
+          username: 'nour.adel',
+          fullName: 'Nour Adel',
+          caption: 'Hello',
+          likeCount: 3,
+          commentCount: 1,
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+          createdAt: DateTime(2026, 10, 14),
+          likedByMe: false,
+          savedByMe: false,
+          media: const [],
+        ),
+      ],
+    ),
+  );
 }

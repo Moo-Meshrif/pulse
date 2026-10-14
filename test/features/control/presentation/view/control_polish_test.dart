@@ -13,6 +13,7 @@ import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_ba
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
 import 'package:pulse/features/control/presentation/widgets/tab_placeholder.dart';
 
+import '../../../../helpers/feed_refresh_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
@@ -25,7 +26,7 @@ void main() {
   setUp(() {
     final recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    cubit = ControlCubit(recovery);
+    cubit = ControlCubit(recovery, MockRequestFeedRefresh());
   });
 
   tearDown(() => cubit.close());

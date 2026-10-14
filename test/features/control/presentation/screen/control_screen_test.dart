@@ -8,10 +8,11 @@ import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case
 import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
 import 'package:pulse/features/control/presentation/screen/control_screen.dart';
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
-import 'package:pulse/features/control/presentation/widgets/tab_placeholder.dart';
+import 'package:pulse/features/home/presentation/screen/home_screen.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 
-import '../../../../helpers/pump_app.dart';
+import '../../../../helpers/feed_refresh_mocks.dart';
+import '../../../home/home_doubles.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
@@ -22,7 +23,10 @@ void main() {
     await getIt.reset();
     recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    getIt.registerFactory<ControlCubit>(() => ControlCubit(recovery));
+    getIt.registerFactory<ControlCubit>(
+      () => ControlCubit(recovery, MockRequestFeedRefresh()),
+    );
+    registerHomeDoubles();
   });
 
   tearDown(() => getIt.reset());
@@ -42,14 +46,13 @@ void main() {
     ),
   );
 
-  testWidgets('opens on Home with the nav bar and the Home placeholder', (
+  testWidgets('opens on Home with the nav bar and the Home screen', (
     tester,
   ) async {
     await pumpHome(tester);
     await tester.pumpAndSettle();
     expect(find.byType(GlassNavBar), findsOneWidget);
-    expect(find.byType(TabPlaceholder), findsOneWidget);
-    expect(find.text(l10nEn.navHome), findsWidgets);
+    expect(find.byType(HomeScreen), findsOneWidget);
     expect(find.text('reset screen'), findsNothing);
   });
 

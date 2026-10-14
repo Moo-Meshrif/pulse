@@ -1976,5 +1976,33 @@
   "locationClearSearch": "Clear search",
   "@locationClearSearch": {
     "description": "Semantics: the clear button of the Add location search"
+  },
+  "homeSearch": "Search",
+  "@homeSearch": {
+    "description": "Home header search button (accessibility label)"
+  },
+  "homeActivity": "Activity",
+  "@homeActivity": {
+    "description": "Home header bell button (accessibility label)"
+  },
+  "homeEmptyTitle": "Your feed is quiet",
+  "@homeEmptyTitle": {
+    "description": "Home feed empty state title"
+  },
+  "homeEmptyBody": "Follow people to see their posts here.",
+  "@homeEmptyBody": {
+    "description": "Home feed empty state body"
+  },
+  "homeFindPeople": "Find people",
+  "@homeFindPeople": {
+    "description": "Home feed empty state button"
+  },
+  "homeLoadMoreError": "Couldn't load more · Retry",
+  "@homeLoadMoreError": {
+    "description": "Home feed footer when loading the next page failed"
+  },
+  "homeCaughtUp": "You're all caught up",
+  "@homeCaughtUp": {
+    "description": "Home feed footer at the end of the feed"
   }
 }

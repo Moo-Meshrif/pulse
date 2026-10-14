@@ -7,17 +7,26 @@ import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
 import 'package:pulse/features/control/presentation/cubit/control_state.dart';
 import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
 
+import '../../../../helpers/feed_refresh_mocks.dart';
+
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
 void main() {
   late MockIsRecoveryPending recovery;
+  late MockRequestFeedRefresh feedRefresh;
 
   setUp(() {
     recovery = MockIsRecoveryPending();
+    feedRefresh = MockRequestFeedRefresh();
     when(() => recovery()).thenReturn(false);
   });
 
-  ControlCubit build() => ControlCubit(recovery);
+  ControlCubit build() => ControlCubit(recovery, feedRefresh);
+
+  test('refreshHome asks the home feed to load again', () {
+    build().refreshHome();
+    verify(() => feedRefresh()).called(1);
+  });
 
   test('starts on Home with the hardcoded chat badge of 4', () {
     final cubit = build();
