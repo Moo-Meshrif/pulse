@@ -6,9 +6,11 @@ import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/audience_list.dart';
 import 'package:pulse/features/story/data/enums/audience_tab.dart';
 import 'package:pulse/features/story/data/model/audience_person_model.dart';
-import 'package:pulse/features/story/data/model/audience_summary_model.dart';
 import 'package:pulse/features/story/presentation/cubit/audience_list_cubit.dart';
 import 'package:pulse/features/story/presentation/utils/enums/audience_list_status.dart';
+import 'package:pulse/shared/content/domain/entity/audience_summary_entity.dart';
+
+import '../../../../helpers/content_mocks.dart';
 
 class _Stories extends Mock implements StoriesDatasource {}
 
@@ -22,6 +24,7 @@ AudiencePersonModel person(String id, {bool selected = false}) =>
 
 void main() {
   late _Stories stories;
+  late MockGetAudienceSummary summary;
 
   setUpAll(() {
     registerFallbackValue(AudienceList.closeFriends);
@@ -30,9 +33,13 @@ void main() {
 
   setUp(() {
     stories = _Stories();
-    when(() => stories.getAudienceSummary()).thenAnswer(
-      (_) async =>
-          const AudienceSummaryModel(followers: 50, closeFriends: 2, hidden: 1),
+    summary = MockGetAudienceSummary();
+    when(() => summary()).thenAnswer(
+      (_) async => const AudienceSummaryEntity(
+        followers: 50,
+        closeFriends: 2,
+        hidden: 1,
+      ),
     );
     when(
       () => stories.getAudiencePeople(
@@ -55,7 +62,7 @@ void main() {
   });
 
   AudienceListCubit build([AudienceList list = AudienceList.closeFriends]) =>
-      AudienceListCubit(stories, list);
+      AudienceListCubit(stories, summary, list);
 
   test('start: the saved count of that list and the first page', () async {
     final cubit = build();

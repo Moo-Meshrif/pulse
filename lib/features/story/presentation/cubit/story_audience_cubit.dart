@@ -1,8 +1,10 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/state/base_cubit.dart';
-import '../../data/datasource/stories_datasource.dart';
-import '../../data/enums/story_audience.dart';
+import '../../../../shared/content/data/enums/content_audience.dart';
+import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/domain/use_case/get_audience_summary_use_case.dart';
+import '../../../../shared/content/domain/use_case/set_content_audience_use_case.dart';
 import '../utils/enums/story_audience_status.dart';
 import 'story_audience_state.dart';
 
@@ -11,12 +13,14 @@ import 'story_audience_state.dart';
 @injectable
 class StoryAudienceCubit extends BaseCubit<StoryAudienceState> {
   StoryAudienceCubit(
-    this._stories,
+    this._summary,
+    this._setAudience,
     @factoryParam this.storyId,
-    @factoryParam StoryAudience audience,
+    @factoryParam ContentAudience audience,
   ) : super(StoryAudienceState(audience: audience));
 
-  final StoriesDatasource _stories;
+  final GetAudienceSummaryUseCase _summary;
+  final SetContentAudienceUseCase _setAudience;
 
   final String storyId;
 
@@ -25,7 +29,7 @@ class StoryAudienceCubit extends BaseCubit<StoryAudienceState> {
   Future<void> load() async {
     final isShowing = state.status == StoryAudienceStatus.ready;
     await run(
-      _stories.getAudienceSummary,
+      _summary.call,
       loading: isShowing
           ? null
           : state.copyWith(status: StoryAudienceStatus.loading),
@@ -37,9 +41,9 @@ class StoryAudienceCubit extends BaseCubit<StoryAudienceState> {
     // A Close friends story with nobody on the list goes back to Followers (the server does the same the
     // moment the list is emptied; this covers a story that was already in that state).
     if (state.status == StoryAudienceStatus.ready &&
-        state.audience == StoryAudience.closeFriends &&
+        state.audience == ContentAudience.closeFriends &&
         state.summary.closeFriends == 0) {
-      await select(StoryAudience.followers);
+      await select(ContentAudience.followers);
     }
   }
 
@@ -47,23 +51,23 @@ class StoryAudienceCubit extends BaseCubit<StoryAudienceState> {
   /// mark Close friends as the audience (the person went there to choose them); editing a list that
   /// already had people leaves the audience alone.
   Future<void> listEdited({required bool isCloseFriends}) async {
-    final hadNoCloseFriends = (state.summary.closeFriends ?? 0) == 0;
+    final hadNoCloseFriends = state.summary.closeFriends == 0;
     await load();
     if (isCloseFriends &&
         hadNoCloseFriends &&
-        (state.summary.closeFriends ?? 0) > 0 &&
-        state.audience == StoryAudience.followers) {
-      await select(StoryAudience.closeFriends);
+        state.summary.closeFriends > 0 &&
+        state.audience == ContentAudience.followers) {
+      await select(ContentAudience.closeFriends);
     }
   }
 
   /// Shows [audience] at once and saves it; goes back to the one before when saving fails.
-  Future<void> select(StoryAudience audience) async {
+  Future<void> select(ContentAudience audience) async {
     final before = state.audience;
     if (audience == before) return;
     emit(state.copyWith(audience: audience, failure: null));
     await run(
-      () => _stories.setAudience(storyId, audience),
+      () => _setAudience(ContentKind.story, storyId, audience),
       onSuccess: (_) => null,
       onFailure: (failure) =>
           state.copyWith(audience: before, failure: failure),

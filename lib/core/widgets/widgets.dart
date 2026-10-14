@@ -30,6 +30,7 @@ export 'photo_source_sheet.dart';
 export 'pill_button.dart';
 export 'primary_button.dart';
 export 'report_sheet/report_copy.dart';
+export 'report_sheet/report_sent_row.dart';
 export 'report_sheet/report_sheet.dart';
 export 'selectable_chip.dart';
 export 'tinted_chip.dart';

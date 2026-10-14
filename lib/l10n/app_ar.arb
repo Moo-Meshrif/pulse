@@ -1376,5 +1376,441 @@
   "storyMoveToCloseConfirm": "إضافة",
   "@storyMoveToCloseConfirm": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "postMore": "المزيد",
+  "@postMore": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLess": "أقل",
+  "@postLess": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTimeNow": "الآن",
+  "@postTimeNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTimeMinutes": "{count}د",
+  "@postTimeMinutes": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTimeHours": "{count}س",
+  "@postTimeHours": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTimeDays": "{count}ي",
+  "@postTimeDays": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTimeWeeks": "{count}أ",
+  "@postTimeWeeks": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLike": "إعجاب",
+  "@postLike": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnlike": "إلغاء الإعجاب",
+  "@postUnlike": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postComment": "تعليق",
+  "@postComment": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postShare": "مشاركة",
+  "@postShare": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postSave": "حفظ",
+  "@postSave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnsave": "إلغاء الحفظ",
+  "@postUnsave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postOptions": "خيارات المنشور",
+  "@postOptions": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postMuteVideo": "كتم",
+  "@postMuteVideo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnmuteVideo": "إلغاء الكتم",
+  "@postUnmuteVideo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postMediaCounter": "الصورة {number} من {total}",
+  "@postMediaCounter": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postMediaRetry": "تعذر التحميل. اضغط لإعادة المحاولة",
+  "@postMediaRetry": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postSaved": "تم الحفظ",
+  "@postSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postCopyLink": "نسخ الرابط",
+  "@postCopyLink": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postNotInterested": "غير مهتم",
+  "@postNotInterested": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postNotInterestedHint": "شاهد منشورات أقل مثل هذا",
+  "@postNotInterestedHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnfollow": "إلغاء متابعة @{username}",
+  "@postUnfollow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postMute": "كتم @{username}",
+  "@postMute": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postMuteHint": "إخفاء منشوراته دون إلغاء المتابعة",
+  "@postMuteHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postReportTitle": "الإبلاغ عن المنشور",
+  "@postReportTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postReportBody": "لماذا تبلغ عن هذا المنشور؟ بلاغك مجهول.",
+  "@postReportBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postReportSent": "سنراجع هذا المنشور ولن تراه في خلاصتك بعد الآن.",
+  "@postReportSent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postReportNotePlaceholder": "أخبرنا بما يزعجك في هذا المنشور…",
+  "@postReportNotePlaceholder": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postEditCaption": "تعديل التعليق",
+  "@postEditCaption": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postChangeWhoCanSee": "تغيير من يمكنه المشاهدة",
+  "@postChangeWhoCanSee": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postCommentsOff": "إيقاف التعليقات",
+  "@postCommentsOff": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postCommentsOn": "تشغيل التعليقات",
+  "@postCommentsOn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postDelete": "حذف المنشور",
+  "@postDelete": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postDeleteTitle": "حذف هذا المنشور؟",
+  "@postDeleteTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postDeleteBody": "ستتم إزالته من ملفك الشخصي ومن خلاصة الجميع. لا يمكنك التراجع.",
+  "@postDeleteBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHidden": "تم إخفاء المنشور",
+  "@postHidden": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHiddenHint": "سترى منشورات أقل مثل هذا.",
+  "@postHiddenHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnfollowed": "تم إلغاء متابعة @{username}",
+  "@postUnfollowed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postMuted": "تم كتم @{username}",
+  "@postMuted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postDeleted": "تم حذف المنشور",
+  "@postDeleted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostTitle": "منشور جديد",
+  "@newPostTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostHint": "بماذا تفكر؟",
+  "@newPostHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostAdd": "إضافة",
+  "@newPostAdd": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostAddToPost": "أضف إلى منشورك",
+  "@newPostAddToPost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostPhotoVideo": "صورة / فيديو",
+  "@newPostPhotoVideo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostAdded": "تمت إضافة {count}",
+  "@newPostAdded": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostTag": "وسم الأشخاص",
+  "@newPostTag": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostLocation": "الموقع",
+  "@newPostLocation": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostFeeling": "الشعور / النشاط",
+  "@newPostFeeling": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostAllowComments": "السماح بالتعليقات",
+  "@newPostAllowComments": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostShare": "مشاركة المنشور",
+  "@newPostShare": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostShared": "تمت مشاركة المنشور",
+  "@newPostShared": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostDiscardTitle": "تجاهل المنشور؟",
+  "@newPostDiscardTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostDiscardBody": "لن يتم حفظ منشورك.",
+  "@newPostDiscardBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostKeepEditing": "متابعة التعديل",
+  "@newPostKeepEditing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostDiscard": "تجاهل",
+  "@newPostDiscard": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostShareFailed": "تعذّرت مشاركة منشورك.",
+  "@newPostShareFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostVideoTooLong": "يمكن أن يصل طول الفيديو إلى {minutes} دقائق.",
+  "@newPostVideoTooLong": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostVideoTooBig": "يمكن أن يصل حجم الفيديو إلى {megabytes} ميغابايت.",
+  "@newPostVideoTooBig": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostMediaLimit": "يمكنك إضافة حتى {count} صور وفيديوهات.",
+  "@newPostMediaLimit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostRemoveMedia": "إزالة الصورة {number}",
+  "@newPostRemoveMedia": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostCounterAtLimit": "{count} من {max}، تم بلوغ الحد",
+  "@newPostCounterAtLimit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postAudiencePublic": "عام",
+  "@postAudiencePublic": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postAudienceFollowers": "المتابعون",
+  "@postAudienceFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postAudienceCloseFriends": "الأصدقاء المقربون",
+  "@postAudienceCloseFriends": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postAudienceOnlyMe": "أنا فقط",
+  "@postAudienceOnlyMe": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostVisibilityLabel": "من يمكنه رؤية هذا المنشور: {choice}",
+  "@newPostVisibilityLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityTitle": "من يمكنه رؤية هذا المنشور؟",
+  "@postVisibilityTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityChangeTitle": "تغيير من يمكنه الرؤية",
+  "@postVisibilityChangeTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityCurrently": "الحالي: {choice}",
+  "@postVisibilityCurrently": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityPublicHint": "أي شخص داخل Pulse أو خارجه",
+  "@postVisibilityPublicHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityPublicOff": "غير متاح لأن حسابك خاص",
+  "@postVisibilityPublicOff": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityOnlyMeHint": "محفوظ في ملفك الشخصي ومخفي عن الجميع",
+  "@postVisibilityOnlyMeHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityPeople": "{count, plural, =1{شخص واحد} other{{count} شخص}}",
+  "@postVisibilityPeople": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityEdit": "تعديل",
+  "@postVisibilityEdit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityFuture": "استخدام للمنشورات القادمة",
+  "@postVisibilityFuture": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityFutureHint": "يمكنك تغييره من الإعدادات ← الخصوصية",
+  "@postVisibilityFutureHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityPrivateNote": "حسابك خاص، لذا يرى منشوراتك متابعوك فقط.",
+  "@postVisibilityPrivateNote": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityPrivacySettings": "إعدادات الخصوصية",
+  "@postVisibilityPrivacySettings": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityKeptNote": "تبقى الإعجابات والتعليقات من الأشخاص الذين فقدوا الوصول لكنها تُخفى عنهم.",
+  "@postVisibilityKeptNote": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityDone": "تم",
+  "@postVisibilityDone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilitySave": "حفظ",
+  "@postVisibilitySave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityUpdated": "تم تحديث الظهور",
+  "@postVisibilityUpdated": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityNoticeCloseFriendsTitle": "المشاركة مع الأصدقاء المقربين",
+  "@postVisibilityNoticeCloseFriendsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityNoticeCloseFriendsBody": "{count, plural, =1{سيرى شخص واحد هذا المنشور} other{سيرى {count} شخص هذا المنشور}}",
+  "@postVisibilityNoticeCloseFriendsBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityNoticeOnlyMeTitle": "أنت فقط من يمكنه رؤية هذا المنشور",
+  "@postVisibilityNoticeOnlyMeTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postVisibilityNoticeOnlyMeBody": "محفوظ في ملفك الشخصي ومخفي عن الجميع",
+  "@postVisibilityNoticeOnlyMeBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationTitle": "إضافة موقع",
+  "@locationTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationRemove": "إزالة",
+  "@locationRemove": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationSearchHint": "ابحث عن أماكن",
+  "@locationSearchHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationUseCurrent": "استخدام الموقع الحالي",
+  "@locationUseCurrent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationNearby": "بالقرب منك",
+  "@locationNearby": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationRecent": "الأخيرة",
+  "@locationRecent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationResults": "النتائج",
+  "@locationResults": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationNoResults": "لم يتم العثور على أماكن",
+  "@locationNoResults": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationOffline": "البحث يحتاج إلى اتصال",
+  "@locationOffline": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationSearchFailed": "تعذر البحث. حاول مرة أخرى.",
+  "@locationSearchFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationPrimerTitle": "السماح بالوصول إلى الموقع",
+  "@locationPrimerTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationPrimerBody": "شاهد الأماكن القريبة منك عند إضافة موقع. يستخدم Pulse موقعك فقط أثناء اختيارك لمكان.",
+  "@locationPrimerBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationAllow": "السماح بالموقع",
+  "@locationAllow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationNotNow": "ليس الآن",
+  "@locationNotNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationOpenSettings": "فتح الإعدادات",
+  "@locationOpenSettings": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationDistance": "{km} كم",
+  "@locationDistance": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationKindCity": "مدينة",
+  "@locationKindCity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationKindTown": "بلدة",
+  "@locationKindTown": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationKindNeighborhood": "حي",
+  "@locationKindNeighborhood": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationSelected": "محدد",
+  "@locationSelected": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationClearSearch": "مسح البحث",
+  "@locationClearSearch": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

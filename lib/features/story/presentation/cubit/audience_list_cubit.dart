@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/state/base_cubit.dart';
+import '../../../../shared/content/domain/use_case/get_audience_summary_use_case.dart';
 import '../../data/datasource/stories_datasource.dart';
 import '../../data/enums/audience_list.dart';
 import '../../data/enums/audience_tab.dart';
@@ -14,7 +15,7 @@ import 'audience_list_state.dart';
 /// and the Suggested / Selected tabs. Taps are kept on the screen and saved together by Done.
 @injectable
 class AudienceListCubit extends BaseCubit<AudienceListState> {
-  AudienceListCubit(this._stories, @factoryParam this.list)
+  AudienceListCubit(this._stories, this._summary, @factoryParam this.list)
     : super(const AudienceListState());
 
   static const searchDelay = Duration(milliseconds: 300);
@@ -23,6 +24,7 @@ class AudienceListCubit extends BaseCubit<AudienceListState> {
   static const pageSize = 30;
 
   final StoriesDatasource _stories;
+  final GetAudienceSummaryUseCase _summary;
 
   final AudienceList list;
 
@@ -33,12 +35,12 @@ class AudienceListCubit extends BaseCubit<AudienceListState> {
 
   Future<void> start() async {
     try {
-      final summary = await _stories.getAudienceSummary();
+      final summary = await _summary();
       emit(
         state.copyWith(
           savedCount: list == AudienceList.closeFriends
-              ? summary.closeFriends ?? 0
-              : summary.hidden ?? 0,
+              ? summary.closeFriends
+              : summary.hidden,
         ),
       );
     } on Object {

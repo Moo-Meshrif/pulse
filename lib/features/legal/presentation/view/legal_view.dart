@@ -12,8 +12,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../cubit/legal_cubit.dart';
 import '../cubit/legal_state.dart';
 
-/// A legal page's UI: the title bar (the backend's title once loaded), then loading, the error with
-/// Retry, or the HTML (`AppHtml`).
+/// A legal page's UI: loading, the error with Retry, or the HTML (`AppHtml`).
 class LegalView extends StatelessWidget {
   const LegalView({super.key, required this.document});
 

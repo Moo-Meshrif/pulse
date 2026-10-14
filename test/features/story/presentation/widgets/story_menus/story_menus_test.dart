@@ -7,9 +7,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
-import 'package:pulse/features/story/data/enums/story_audience.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
-import 'package:pulse/features/story/data/model/audience_summary_model.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
 import 'package:pulse/features/story/data/model/story_viewer_model.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
@@ -19,7 +17,14 @@ import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart'
 import 'package:pulse/features/story/presentation/cubit/story_viewers_cubit.dart';
 import 'package:pulse/features/story/presentation/view/story_viewer_view.dart';
 import 'package:pulse/features/story/presentation/widgets/story_paused_chip.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/enums/mute_scope.dart';
+import 'package:pulse/shared/content/domain/use_case/remove_media_files_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/report_content_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/set_mute_use_case.dart';
 
+import '../../../../../helpers/content_mocks.dart';
 import '../../../../../helpers/png_http_overrides.dart';
 import '../../../../../helpers/pump_app.dart';
 
@@ -47,9 +52,7 @@ class _Rail implements GetStoryRailUseCase {
 
 /// One fake datasource for the whole viewer: it records what the menus do (mute, delete, report).
 class _Stories extends Fake implements StoriesDatasource {
-  final muted = <(String, bool)>[];
   final deleted = <String?>[];
-  final reported = <(String, ReportReason)>[];
 
   @override
   Future<List<StoryModel>> getAuthorStories(String authorId) async => [
@@ -67,25 +70,10 @@ class _Stories extends Fake implements StoriesDatasource {
   Future<void> markViewed(String storyId) async {}
 
   @override
-  Future<void> setMuted(String userId, {required bool muted}) async =>
-      this.muted.add((userId, muted));
-
-  @override
   Future<void> deleteStory(StoryModel story) async => deleted.add(story.id);
 
   @override
-  Future<void> reportStory(
-    String storyId,
-    ReportReason reason, {
-    String? note,
-  }) async => reported.add((storyId, reason));
-
-  @override
-  Future<AudienceSummaryModel> getAudienceSummary() async =>
-      const AudienceSummaryModel(followers: 312, closeFriends: 12, hidden: 2);
-
-  @override
-  Future<void> setAudience(String storyId, StoryAudience audience) async {}
+  void notifyRailChanged() {}
 
   @override
   Future<List<StoryViewerModel>> getViewers(
@@ -114,8 +102,38 @@ class _Stories extends Fake implements StoriesDatasource {
 
 class _Gallery extends Fake implements GalleryService {}
 
+class _Mute extends Fake implements SetMuteUseCase {
+  final calls = <(String, bool)>[];
+
+  @override
+  Future<void> call(
+    String userId, {
+    required bool muted,
+    required MuteScope scope,
+  }) async => calls.add((userId, muted));
+}
+
+class _RemoveFiles extends Fake implements RemoveMediaFilesUseCase {
+  @override
+  Future<void> call(List<String> paths) async {}
+}
+
+class _Report extends Fake implements ReportContentUseCase {
+  final calls = <(String, ReportReason)>[];
+
+  @override
+  Future<void> call(
+    ContentKind kind,
+    String id,
+    ReportReason reason, {
+    String? note,
+  }) async => calls.add((id, reason));
+}
+
 void main() {
   late _Stories stories;
+  late _Mute mute;
+  late _Report report;
   late StoryViewerCubit cubit;
   HttpOverrides? previous;
 
@@ -127,12 +145,26 @@ void main() {
 
   setUp(() async {
     stories = _Stories();
+    mute = _Mute();
+    report = _Report();
     await getIt.reset();
-    getIt.registerFactoryParam<StoryAudienceCubit, String, StoryAudience>(
-      (id, audience) => StoryAudienceCubit(stories, id, audience),
+    getIt.registerFactoryParam<StoryAudienceCubit, String, ContentAudience>(
+      (id, audience) => StoryAudienceCubit(
+        okGetAudienceSummary(),
+        okSetContentAudience(),
+        id,
+        audience,
+      ),
     );
     getIt.registerFactory<StoryViewersCubit>(() => StoryViewersCubit(stories));
-    cubit = StoryViewerCubit(_Rail(), stories, _Gallery());
+    cubit = StoryViewerCubit(
+      _Rail(),
+      stories,
+      _Gallery(),
+      mute,
+      report,
+      _RemoveFiles(),
+    );
   });
 
   tearDown(() async {
@@ -226,13 +258,13 @@ void main() {
       await tester.tap(find.text(l10nEn.storyMute('nour.adel')));
       await settle(tester);
 
-      expect(stories.muted, [('a', true)]);
+      expect(mute.calls, [('a', true)]);
       expect(cubit.state.person!.authorId, 'me');
       expect(find.text(l10nEn.storyMuted('nour.adel')), findsOneWidget);
 
       await tester.tap(find.text(l10nEn.undo));
       await settle(tester);
-      expect(stories.muted.last, ('a', false));
+      expect(mute.calls.last, ('a', false));
     });
 
     testWidgets('report sends the reason, then Done skips to the next', (
@@ -247,7 +279,7 @@ void main() {
 
       await tester.tap(find.text(l10nEn.reportReasonSpam));
       await settle(tester);
-      expect(stories.reported, [('a1', ReportReason.spam)]);
+      expect(report.calls, [('a1', ReportReason.spam)]);
 
       await tester.tap(find.text(l10nEn.reportDone));
       await settle(tester);

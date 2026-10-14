@@ -2,17 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/audience_list.dart';
 import 'package:pulse/features/story/data/enums/audience_tab.dart';
-import 'package:pulse/features/story/data/enums/story_audience.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/enums/story_overlay_type.dart';
 import 'package:pulse/features/story/data/model/new_story_model.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
 import 'package:pulse/features/story/data/model/story_overlay_model.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../../../helpers/backend_double.dart';
 
@@ -227,79 +226,42 @@ void main() {
   });
 
   group('railChanges', () {
-    test('fires after a mute and after an undo', () async {
+    test('notifyRailChanged fires it', () async {
       final backend = await signedIn((_) async => BackendDouble.json(true));
       final datasource = SupabaseStoriesDatasource(backend.client);
       var events = 0;
       final sub = datasource.railChanges.listen((_) => events++);
-      await datasource.setMuted('u1', muted: true);
-      await datasource.setMuted('u1', muted: false);
+      datasource.notifyRailChanged();
+      datasource.notifyRailChanged();
       await Future<void>.delayed(Duration.zero);
       expect(events, 2);
       await sub.cancel();
     });
 
-    test('does not fire when the call failed', () async {
-      final backend = await signedIn(
-        (_) async => BackendDouble.postgrestError(500, 'XX000'),
-      );
+    test('deleting a story fires it, a failed delete does not', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([]));
       final datasource = SupabaseStoriesDatasource(backend.client);
       var events = 0;
       final sub = datasource.railChanges.listen((_) => events++);
-      await failureOf(datasource.setMuted('u1', muted: true));
+      await datasource.deleteStory(const StoryModel(id: 's1'));
       await Future<void>.delayed(Duration.zero);
-      expect(events, 0);
+      expect(events, 1);
+
+      final failing = await signedIn(
+        (_) async => BackendDouble.postgrestError(500, 'XX000'),
+      );
+      final other = SupabaseStoriesDatasource(failing.client);
+      var failedEvents = 0;
+      final sub2 = other.railChanges.listen((_) => failedEvents++);
+      await failureOf(other.deleteStory(const StoryModel(id: 's1')));
+      await Future<void>.delayed(Duration.zero);
+      expect(failedEvents, 0);
       await sub.cancel();
+      await sub2.cancel();
     });
   });
 
   group('audience', () {
-    test('setAudience sends the story and the wire value', () async {
-      final backend = await signedIn(
-        (_) async => BackendDouble.json('close_friends'),
-      );
-      await SupabaseStoriesDatasource(backend.client)
-          .setAudience('s1', StoryAudience.closeFriends);
-      expect(body(backend.to('/rpc/set_story_audience').single), {
-        'p_story': 's1',
-        'p_audience': 'close_friends',
-      });
-    });
-
-    test('setAudience on a story that is not yours is a failure', () async {
-      final backend = await signedIn(
-        (_) async => BackendDouble.postgrestError(403, '42501'),
-      );
-      expect(
-        await failureOf(
-          SupabaseStoriesDatasource(backend.client)
-              .setAudience('s1', StoryAudience.followers),
-        ),
-        isA<AuthFailure>(),
-      );
-    });
-
-    test('getAudienceSummary reads the three numbers', () async {
-      final backend = await signedIn(
-        (_) async => BackendDouble.json([
-          {'followers': 312, 'close_friends': 12, 'hidden': 2},
-        ]),
-      );
-      final summary = await SupabaseStoriesDatasource(backend.client)
-          .getAudienceSummary();
-      expect(
-        [summary.followers, summary.closeFriends, summary.hidden],
-        [312, 12, 2],
-      );
-    });
-
-    test('getAudienceSummary of an empty answer is zeros', () async {
-      final backend = await signedIn((_) async => BackendDouble.json([]));
-      final summary = await SupabaseStoriesDatasource(backend.client)
-          .getAudienceSummary();
-      expect(summary.followers, isNull);
-    });
-
     test('getAudiencePeople sends list, tab, query and the page', () async {
       final backend = await signedIn(
         (_) async => BackendDouble.json([
@@ -350,20 +312,14 @@ void main() {
     test('author_stories rows carry the audience', () {
       expect(
         StoryModel.fromJson({'id': 's1', 'audience': 'close_friends'}).audience,
-        StoryAudience.closeFriends,
+        ContentAudience.closeFriends,
       );
       expect(StoryModel.fromJson({'id': 's1'}).audience, isNull);
     });
   });
 
-  test('deleteStory deletes the row, then the media and the poster', () async {
-    final backend = await signedIn((request) async {
-      if (request.method == 'DELETE' &&
-          request.url.path.contains('/object/post-media')) {
-        return BackendDouble.json([]);
-      }
-      return BackendDouble.json([]);
-    });
+  test('deleteStory deletes the row and leaves the files to core', () async {
+    final backend = await signedIn((_) async => BackendDouble.json([]));
     await SupabaseStoriesDatasource(backend.client).deleteStory(
       const StoryModel(
         id: 's1',
@@ -375,15 +331,7 @@ void main() {
     final row = backend.to('/stories').single;
     expect(row.method, 'DELETE');
     expect(row.url.queryParameters['id'], 'eq.s1');
-    final files = backend.to('/object/post-media').single;
-    expect(body(files)['prefixes'], [
-      'user-1/stories/s1.mp4',
-      'user-1/stories/s1_thumb.jpg',
-    ]);
-    expect(
-      backend.requests.indexOf(row),
-      lessThan(backend.requests.indexOf(files)),
-    );
+    expect(backend.to('/object/post-media'), isEmpty);
   });
 
   test('deleteStory without an id is a not-found failure', () async {
@@ -396,30 +344,6 @@ void main() {
       isA<NotFoundFailure>(),
     );
     expect(backend.to('/stories'), isEmpty);
-  });
-
-  test('setMuted calls set_story_mute', () async {
-    final backend = await signedIn((_) async => BackendDouble.json(true));
-    await SupabaseStoriesDatasource(backend.client).setMuted('u1', muted: true);
-    expect(body(backend.to('/rpc/set_story_mute').single), {
-      'p_user': 'u1',
-      'p_muted': true,
-    });
-  });
-
-  test('reportStory sends the reason wire value and the note', () async {
-    final backend = await signedIn((_) async => BackendDouble.json(null));
-    final datasource = SupabaseStoriesDatasource(backend.client);
-    await datasource.reportStory('s1', ReportReason.falseInfo);
-    await datasource.reportStory('s1', ReportReason.other, note: 'rude');
-
-    final calls = backend.to('/rpc/report_story').map(body).toList();
-    expect(calls[0], {
-      'p_story': 's1',
-      'p_reason': 'false_info',
-      'p_note': null,
-    });
-    expect(calls[1], {'p_story': 's1', 'p_reason': 'other', 'p_note': 'rude'});
   });
 
   test(

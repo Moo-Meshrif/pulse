@@ -7,6 +7,7 @@ import '../../theme/app_dimens.dart';
 import '../app_bottom_sheet.dart';
 import 'report_copy.dart';
 import 'report_palette.dart';
+import 'report_sent_row.dart';
 import 'report_steps.dart';
 
 /// Sends a report: [note] is set only for [ReportReason.other]. Throws a [Failure] when it cannot.
@@ -23,6 +24,7 @@ abstract final class ReportSheet {
     required ReportCopy copy,
     required ReportSubmit onSubmit,
     SheetTone tone = SheetTone.light,
+    List<ReportSentRow> sentRows = const [],
   }) async {
     var sent = false;
     await AppBottomSheet.show<void>(
@@ -32,6 +34,7 @@ abstract final class ReportSheet {
         copy: copy,
         tone: tone,
         onSubmit: onSubmit,
+        sentRows: sentRows,
         onSent: () => sent = true,
       ),
     );
@@ -46,12 +49,14 @@ class _ReportFlow extends StatefulWidget {
     required this.copy,
     required this.tone,
     required this.onSubmit,
+    required this.sentRows,
     required this.onSent,
   });
 
   final ReportCopy copy;
   final SheetTone tone;
   final ReportSubmit onSubmit;
+  final List<ReportSentRow> sentRows;
   final VoidCallback onSent;
 
   @override
@@ -103,6 +108,11 @@ class _ReportFlowState extends State<_ReportFlow> {
 
   void _close() => Navigator.of(context).pop();
 
+  void _closeThenRun(ReportSentRow row) {
+    _close();
+    row.onTap();
+  }
+
   @override
   Widget build(BuildContext context) {
     final palette = ReportPalette.of(context, widget.tone);
@@ -151,6 +161,8 @@ class _ReportFlowState extends State<_ReportFlow> {
               key: const ValueKey(_Step.sent),
               palette: palette,
               copy: widget.copy,
+              rows: widget.sentRows,
+              onRow: _closeThenRun,
               onDone: _close,
             ),
           },

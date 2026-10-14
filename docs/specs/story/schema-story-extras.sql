@@ -1,3 +1,5 @@
+-- NOTE 2026-10-14: set_story_mute and report_story are no longer defined here: they are replaced by the shared
+--   set_mute(p_scope) and report_content(p_kind) (supabase/migrations/20261019120000_shared_content_actions.sql).
 -- =====================================================================
 -- Pulse · Story extras — SPEC-LEVEL migration, NOT applied
 -- Migration: supabase/migrations/20261014120000_story_extras.sql
@@ -162,23 +164,8 @@ alter table public.story_mutes enable row level security;
 create policy "story_mutes: own" on public.story_mutes
   for all to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 
--- set_story_mute: Mute / Undo. Idempotent.
-create or replace function public.set_story_mute(p_user uuid, p_muted boolean)
-returns boolean
-language plpgsql
-security invoker
-set search_path = ''
-as $$
-begin
-  if p_muted then
-    insert into public.story_mutes (user_id, muted_id) values (auth.uid(), p_user)
-    on conflict do nothing;
-  else
-    delete from public.story_mutes where user_id = auth.uid() and muted_id = p_user;
-  end if;
-  return p_muted;
-end;
-$$;
+-- Mute / Undo for stories is the shared set_mute(p_user, p_muted, p_scope => 'stories')
+-- (docs/specs/post/schema-shared-content-actions.sql); it writes story_mutes.
 
 -- reports: a report targets a post OR a story (exactly one).
 alter table public.reports alter column post_id drop not null;
@@ -189,30 +176,5 @@ alter table public.reports
 alter table public.reports
   add constraint reports_one_per_user_story unique (reporter_id, story_id);
 
--- report_story: stores the report; the viewer then skips to the next story.
-create or replace function public.report_story(p_story uuid, p_reason text, p_note text default null)
-returns void
-language plpgsql
-security definer
-set search_path = ''
-as $$
-declare
-  v_uid uuid := auth.uid();
-begin
-  if v_uid is null then
-    raise exception 'not signed in' using errcode = '42501';
-  end if;
-  if not exists (select 1 from public.stories s
-                 where s.id = p_story and s.expires_at > now() and public.can_view_author(s.author_id)) then
-    raise exception 'story not found' using errcode = '22023';
-  end if;
-  insert into public.reports (reporter_id, story_id, reason, note)
-  values (v_uid, p_story, p_reason, nullif(btrim(p_note), ''))
-  on conflict (reporter_id, story_id) do nothing;
-end;
-$$;
-
-revoke all on function public.set_story_mute(uuid, boolean)          from public, anon;
-revoke all on function public.report_story(uuid, text, text)         from public, anon;
-grant execute on function public.set_story_mute(uuid, boolean)          to authenticated;
-grant execute on function public.report_story(uuid, text, text)         to authenticated;
+-- Reporting a story is the shared report_content(p_kind => 'story', ...)
+-- (docs/specs/post/schema-shared-content-actions.sql): same checks (visible, not expired), one report per user and story.

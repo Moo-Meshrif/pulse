@@ -2077,6 +2077,660 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get storyMoveToCloseConfirm;
+
+  /// The caption's expand link
+  ///
+  /// In en, this message translates to:
+  /// **'more'**
+  String get postMore;
+
+  /// The caption's collapse link
+  ///
+  /// In en, this message translates to:
+  /// **'less'**
+  String get postLess;
+
+  /// Post age under a minute
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get postTimeNow;
+
+  /// Post age in minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m'**
+  String postTimeMinutes(int count);
+
+  /// Post age in hours
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h'**
+  String postTimeHours(int count);
+
+  /// Post age in days
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d'**
+  String postTimeDays(int count);
+
+  /// Post age in weeks
+  ///
+  /// In en, this message translates to:
+  /// **'{count}w'**
+  String postTimeWeeks(int count);
+
+  /// Semantics: like button
+  ///
+  /// In en, this message translates to:
+  /// **'Like'**
+  String get postLike;
+
+  /// Semantics: liked button
+  ///
+  /// In en, this message translates to:
+  /// **'Unlike'**
+  String get postUnlike;
+
+  /// Semantics: comment button
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get postComment;
+
+  /// Semantics: share button
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get postShare;
+
+  /// Semantics: save button
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get postSave;
+
+  /// Semantics: saved button
+  ///
+  /// In en, this message translates to:
+  /// **'Unsave'**
+  String get postUnsave;
+
+  /// Semantics: the ... button
+  ///
+  /// In en, this message translates to:
+  /// **'Post options'**
+  String get postOptions;
+
+  /// Semantics: mute a video
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get postMuteVideo;
+
+  /// Semantics: unmute a video
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get postUnmuteVideo;
+
+  /// Semantics: position in a post's media pager
+  ///
+  /// In en, this message translates to:
+  /// **'Photo {number} of {total}'**
+  String postMediaCounter(int number, int total);
+
+  /// Semantics: a post picture that failed to load
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load. Tap to retry'**
+  String get postMediaRetry;
+
+  /// Options sheet: save tile once saved
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get postSaved;
+
+  /// Options sheet: copy link tile
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get postCopyLink;
+
+  /// Options sheet: hide this post
+  ///
+  /// In en, this message translates to:
+  /// **'Not interested'**
+  String get postNotInterested;
+
+  /// Options sheet: hint under Not interested
+  ///
+  /// In en, this message translates to:
+  /// **'See fewer posts like this'**
+  String get postNotInterestedHint;
+
+  /// Options sheet: unfollow the author
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow @{username}'**
+  String postUnfollow(String username);
+
+  /// Options sheet: mute the author's posts
+  ///
+  /// In en, this message translates to:
+  /// **'Mute @{username}'**
+  String postMute(String username);
+
+  /// Options sheet: hint under Mute
+  ///
+  /// In en, this message translates to:
+  /// **'Hide their posts without unfollowing'**
+  String get postMuteHint;
+
+  /// Report sheet title for a post
+  ///
+  /// In en, this message translates to:
+  /// **'Report post'**
+  String get postReportTitle;
+
+  /// Report sheet reasons step, post
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you reporting this post? Your report is anonymous.'**
+  String get postReportBody;
+
+  /// Report sheet thanks step, post
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll review this post. You won\'t see it in your feed anymore.'**
+  String get postReportSent;
+
+  /// Report sheet note field hint, post
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what\'s wrong with this post…'**
+  String get postReportNotePlaceholder;
+
+  /// Options sheet (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Edit caption'**
+  String get postEditCaption;
+
+  /// Options sheet (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Change who can see'**
+  String get postChangeWhoCanSee;
+
+  /// Options sheet (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off comments'**
+  String get postCommentsOff;
+
+  /// Options sheet (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on comments'**
+  String get postCommentsOn;
+
+  /// Options sheet (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Delete post'**
+  String get postDelete;
+
+  /// Delete dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this post?'**
+  String get postDeleteTitle;
+
+  /// Delete dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed from your profile and everyone\'s feed. You can\'t undo this.'**
+  String get postDeleteBody;
+
+  /// Hidden post row title
+  ///
+  /// In en, this message translates to:
+  /// **'Post hidden'**
+  String get postHidden;
+
+  /// Hidden post row hint
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll see fewer posts like this.'**
+  String get postHiddenHint;
+
+  /// Notice after unfollowing
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollowed @{username}'**
+  String postUnfollowed(String username);
+
+  /// Notice after muting
+  ///
+  /// In en, this message translates to:
+  /// **'@{username} muted'**
+  String postMuted(String username);
+
+  /// Notice after deleting
+  ///
+  /// In en, this message translates to:
+  /// **'Post deleted'**
+  String get postDeleted;
+
+  /// New post screen title
+  ///
+  /// In en, this message translates to:
+  /// **'New post'**
+  String get newPostTitle;
+
+  /// New post caption hint
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s on your mind?'**
+  String get newPostHint;
+
+  /// New post: the add-media tile
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get newPostAdd;
+
+  /// New post section label
+  ///
+  /// In en, this message translates to:
+  /// **'Add to your post'**
+  String get newPostAddToPost;
+
+  /// New post option row
+  ///
+  /// In en, this message translates to:
+  /// **'Photo / video'**
+  String get newPostPhotoVideo;
+
+  /// New post: how many photos and videos are added
+  ///
+  /// In en, this message translates to:
+  /// **'{count} added'**
+  String newPostAdded(int count);
+
+  /// New post option row
+  ///
+  /// In en, this message translates to:
+  /// **'Tag people'**
+  String get newPostTag;
+
+  /// New post option row
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get newPostLocation;
+
+  /// New post option row
+  ///
+  /// In en, this message translates to:
+  /// **'Feeling / activity'**
+  String get newPostFeeling;
+
+  /// New post option switch
+  ///
+  /// In en, this message translates to:
+  /// **'Allow comments'**
+  String get newPostAllowComments;
+
+  /// New post share button
+  ///
+  /// In en, this message translates to:
+  /// **'Share post'**
+  String get newPostShare;
+
+  /// Notice after sharing a post
+  ///
+  /// In en, this message translates to:
+  /// **'Post shared'**
+  String get newPostShared;
+
+  /// Discard dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Discard post?'**
+  String get newPostDiscardTitle;
+
+  /// Discard dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'Your post won\'t be saved.'**
+  String get newPostDiscardBody;
+
+  /// Discard dialog: stay
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get newPostKeepEditing;
+
+  /// Discard dialog: leave
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get newPostDiscard;
+
+  /// Notice when sharing fails (Retry action)
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share your post.'**
+  String get newPostShareFailed;
+
+  /// Notice: a picked video is too long
+  ///
+  /// In en, this message translates to:
+  /// **'Videos can be up to {minutes} minutes.'**
+  String newPostVideoTooLong(int minutes);
+
+  /// Notice: a picked video is too big
+  ///
+  /// In en, this message translates to:
+  /// **'Videos can be up to {megabytes} MB.'**
+  String newPostVideoTooBig(int megabytes);
+
+  /// Notice: the media limit
+  ///
+  /// In en, this message translates to:
+  /// **'You can add up to {count} photos and videos.'**
+  String newPostMediaLimit(int count);
+
+  /// Semantics: remove a picked photo or video
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo {number}'**
+  String newPostRemoveMedia(int number);
+
+  /// Semantics: the caption counter at its limit
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max}, limit reached'**
+  String newPostCounterAtLimit(int count, int max);
+
+  /// Who can see a post
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get postAudiencePublic;
+
+  /// Who can see a post
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get postAudienceFollowers;
+
+  /// Who can see a post
+  ///
+  /// In en, this message translates to:
+  /// **'Close friends'**
+  String get postAudienceCloseFriends;
+
+  /// Who can see a post
+  ///
+  /// In en, this message translates to:
+  /// **'Only me'**
+  String get postAudienceOnlyMe;
+
+  /// Semantics: the visibility chip
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see this post: {choice}'**
+  String newPostVisibilityLabel(String choice);
+
+  /// Visibility picker title (New post)
+  ///
+  /// In en, this message translates to:
+  /// **'Who can see this post?'**
+  String get postVisibilityTitle;
+
+  /// Visibility picker title (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Change who can see'**
+  String get postVisibilityChangeTitle;
+
+  /// Visibility picker: the audience the post has now
+  ///
+  /// In en, this message translates to:
+  /// **'Currently: {choice}'**
+  String postVisibilityCurrently(String choice);
+
+  /// Visibility picker: under Public
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on or off Pulse'**
+  String get postVisibilityPublicHint;
+
+  /// Visibility picker: under Public when the account is private
+  ///
+  /// In en, this message translates to:
+  /// **'Off while your account is private'**
+  String get postVisibilityPublicOff;
+
+  /// Visibility picker: under Only me
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to your profile, hidden from everyone'**
+  String get postVisibilityOnlyMeHint;
+
+  /// Visibility picker: how many people an audience reaches
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person} other{{count} people}}'**
+  String postVisibilityPeople(int count);
+
+  /// Visibility picker: opens the close friends list
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get postVisibilityEdit;
+
+  /// Visibility picker toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Use for future posts'**
+  String get postVisibilityFuture;
+
+  /// Visibility picker: under the toggle
+  ///
+  /// In en, this message translates to:
+  /// **'You can change it in Settings → Privacy'**
+  String get postVisibilityFutureHint;
+
+  /// Visibility picker: note for a private account
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is private, so only your followers can see your posts.'**
+  String get postVisibilityPrivateNote;
+
+  /// Visibility picker: link in the private note
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy settings'**
+  String get postVisibilityPrivacySettings;
+
+  /// Visibility picker footer when changing a post
+  ///
+  /// In en, this message translates to:
+  /// **'Likes and comments from people who lose access are kept but hidden from them.'**
+  String get postVisibilityKeptNote;
+
+  /// Visibility picker button (New post)
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get postVisibilityDone;
+
+  /// Visibility picker button (own post)
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get postVisibilitySave;
+
+  /// Notice after changing who can see a post
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility updated'**
+  String get postVisibilityUpdated;
+
+  /// One-time notice after choosing Close friends
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing with close friends'**
+  String get postVisibilityNoticeCloseFriendsTitle;
+
+  /// One-time notice body
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person will see this post} other{{count} people will see this post}}'**
+  String postVisibilityNoticeCloseFriendsBody(int count);
+
+  /// One-time notice after choosing Only me
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see this post'**
+  String get postVisibilityNoticeOnlyMeTitle;
+
+  /// One-time notice body
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s saved to your profile, hidden from everyone'**
+  String get postVisibilityNoticeOnlyMeBody;
+
+  /// Add location screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Add location'**
+  String get locationTitle;
+
+  /// Add location: clear the location
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get locationRemove;
+
+  /// Add location search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search places'**
+  String get locationSearchHint;
+
+  /// Add location: the row that uses where you are
+  ///
+  /// In en, this message translates to:
+  /// **'Use current location'**
+  String get locationUseCurrent;
+
+  /// Add location section
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby'**
+  String get locationNearby;
+
+  /// Add location section
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get locationRecent;
+
+  /// Add location section
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get locationResults;
+
+  /// Add location: nothing matches the search
+  ///
+  /// In en, this message translates to:
+  /// **'No places found'**
+  String get locationNoResults;
+
+  /// Add location: shown instead of search when offline
+  ///
+  /// In en, this message translates to:
+  /// **'Search needs a connection'**
+  String get locationOffline;
+
+  /// Add location: the search failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t search. Try again.'**
+  String get locationSearchFailed;
+
+  /// Add location permission primer title
+  ///
+  /// In en, this message translates to:
+  /// **'Allow location access'**
+  String get locationPrimerTitle;
+
+  /// Add location permission primer body
+  ///
+  /// In en, this message translates to:
+  /// **'See places near you when you add a location. Pulse only uses it while you\'re choosing a place.'**
+  String get locationPrimerBody;
+
+  /// Add location primer button
+  ///
+  /// In en, this message translates to:
+  /// **'Allow location'**
+  String get locationAllow;
+
+  /// Add location primer link
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get locationNotNow;
+
+  /// Add location primer button when location is blocked
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get locationOpenSettings;
+
+  /// Distance in kilometres
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String locationDistance(String km);
+
+  /// Kind of place
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get locationKindCity;
+
+  /// Kind of place
+  ///
+  /// In en, this message translates to:
+  /// **'Town'**
+  String get locationKindTown;
+
+  /// Kind of place
+  ///
+  /// In en, this message translates to:
+  /// **'Neighborhood'**
+  String get locationKindNeighborhood;
+
+  /// Semantics: the place already on the post
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get locationSelected;
+
+  /// Semantics: the clear button of the Add location search
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get locationClearSearch;
 }
 
 class _AppLocalizationsDelegate

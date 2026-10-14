@@ -14,6 +14,7 @@ import '../app_text.dart';
 import '../primary_button.dart';
 import 'report_copy.dart';
 import 'report_palette.dart';
+import 'report_sent_row.dart';
 
 /// A 44 x 44 round button of the sheet header (close, back).
 class _HeaderButton extends StatelessWidget {
@@ -436,11 +437,15 @@ class ReportSentStep extends StatelessWidget {
     super.key,
     required this.palette,
     required this.copy,
+    required this.rows,
+    required this.onRow,
     required this.onDone,
   });
 
   final ReportPalette palette;
   final ReportCopy copy;
+  final List<ReportSentRow> rows;
+  final ValueChanged<ReportSentRow> onRow;
   final VoidCallback onDone;
 
   @override
@@ -469,7 +474,32 @@ class ReportSentStep extends StatelessWidget {
         color: palette.body,
         textAlign: TextAlign.center,
       ),
-      // TODO(story-plan T6): post adds Mute / Unfollow rows to the sent step
+      if (rows.isNotEmpty) ...[
+        SizedBox(height: AppSpacing.s16),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: palette.group,
+            borderRadius: BorderRadius.circular(StorySheetDimens.groupRadius),
+          ),
+          child: Column(
+            children: [
+              for (final (i, row) in rows.indexed) ...[
+                if (i > 0)
+                  Divider(
+                    height: StorySheetDimens.separator,
+                    thickness: StorySheetDimens.separator,
+                    color: palette.separator,
+                  ),
+                _SentRowTile(
+                  palette: palette,
+                  row: row,
+                  onTap: () => onRow(row),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
       SizedBox(height: AppSpacing.s24),
       PrimaryButton(
         label: context.l10n.reportDone,
@@ -478,5 +508,55 @@ class ReportSentStep extends StatelessWidget {
         onPressed: onDone,
       ),
     ],
+  );
+}
+
+class _SentRowTile extends StatelessWidget {
+  const _SentRowTile({
+    required this.palette,
+    required this.row,
+    required this.onTap,
+  });
+
+  final ReportPalette palette;
+  final ReportSentRow row;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    excludeSemantics: true,
+    label: row.title,
+    child: InkWell(
+      onTap: onTap,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: StorySheetDimens.reasonRowHeight,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: StorySheetDimens.rowPaddingH,
+            vertical: StorySheetDimens.rowPaddingV,
+          ),
+          child: Row(
+            children: [
+              AppSvgIcon(
+                row.icon,
+                size: StorySheetDimens.rowIcon,
+                color: palette.title,
+              ),
+              SizedBox(width: StorySheetDimens.rowGap),
+              Expanded(
+                child: AppText(
+                  row.title,
+                  style: context.text.body,
+                  color: palette.title,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
   );
 }

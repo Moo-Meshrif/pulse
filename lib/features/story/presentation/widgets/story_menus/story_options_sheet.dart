@@ -4,7 +4,7 @@ import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/theme/app_dimens.dart';
-import '../../../data/enums/story_audience.dart';
+import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
 import '../../utils/enums/story_option.dart';
 import 'story_option_row.dart';
@@ -24,7 +24,7 @@ class StoryOptionsSheet extends StatelessWidget {
   final int viewCount;
 
   /// Who can see your story; Followers when the server did not say.
-  final StoryAudience audience;
+  final ContentAudience audience;
 
   void _pick(BuildContext context, StoryOption option) =>
       AppNavigator.back(context, option);
@@ -48,7 +48,7 @@ class StoryOptionsSheet extends StatelessWidget {
                   StoryOptionRow(
                     icon: AppAssets.audience,
                     title: l10n.storyWhoCanSee,
-                    subtitle: audience == StoryAudience.closeFriends
+                    subtitle: audience == ContentAudience.closeFriends
                         ? l10n.storyAudienceCloseFriends
                         : l10n.storyAudienceFollowers,
                     showsChevron: true,

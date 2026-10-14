@@ -12,6 +12,16 @@ abstract final class JsonMapper {
     _ => null,
   };
 
+  /// A number with a fraction: `1.5` or `2` -> `double`. Not a finite number -> `null`.
+  static double? decimal(Object? value) {
+    final number = switch (value) {
+      num() => value.toDouble(),
+      String() => double.tryParse(value),
+      _ => null,
+    };
+    return number != null && number.isFinite ? number : null;
+  }
+
   static bool? boolean(Object? value) => value is bool ? value : null;
 
   static final _dateOnly = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$');

@@ -1126,4 +1126,391 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get storyMoveToCloseConfirm => 'إضافة';
+
+  @override
+  String get postMore => 'المزيد';
+
+  @override
+  String get postLess => 'أقل';
+
+  @override
+  String get postTimeNow => 'الآن';
+
+  @override
+  String postTimeMinutes(int count) {
+    return '$countد';
+  }
+
+  @override
+  String postTimeHours(int count) {
+    return '$countس';
+  }
+
+  @override
+  String postTimeDays(int count) {
+    return '$countي';
+  }
+
+  @override
+  String postTimeWeeks(int count) {
+    return '$countأ';
+  }
+
+  @override
+  String get postLike => 'إعجاب';
+
+  @override
+  String get postUnlike => 'إلغاء الإعجاب';
+
+  @override
+  String get postComment => 'تعليق';
+
+  @override
+  String get postShare => 'مشاركة';
+
+  @override
+  String get postSave => 'حفظ';
+
+  @override
+  String get postUnsave => 'إلغاء الحفظ';
+
+  @override
+  String get postOptions => 'خيارات المنشور';
+
+  @override
+  String get postMuteVideo => 'كتم';
+
+  @override
+  String get postUnmuteVideo => 'إلغاء الكتم';
+
+  @override
+  String postMediaCounter(int number, int total) {
+    return 'الصورة $number من $total';
+  }
+
+  @override
+  String get postMediaRetry => 'تعذر التحميل. اضغط لإعادة المحاولة';
+
+  @override
+  String get postSaved => 'تم الحفظ';
+
+  @override
+  String get postCopyLink => 'نسخ الرابط';
+
+  @override
+  String get postNotInterested => 'غير مهتم';
+
+  @override
+  String get postNotInterestedHint => 'شاهد منشورات أقل مثل هذا';
+
+  @override
+  String postUnfollow(String username) {
+    return 'إلغاء متابعة @$username';
+  }
+
+  @override
+  String postMute(String username) {
+    return 'كتم @$username';
+  }
+
+  @override
+  String get postMuteHint => 'إخفاء منشوراته دون إلغاء المتابعة';
+
+  @override
+  String get postReportTitle => 'الإبلاغ عن المنشور';
+
+  @override
+  String get postReportBody => 'لماذا تبلغ عن هذا المنشور؟ بلاغك مجهول.';
+
+  @override
+  String get postReportSent =>
+      'سنراجع هذا المنشور ولن تراه في خلاصتك بعد الآن.';
+
+  @override
+  String get postReportNotePlaceholder => 'أخبرنا بما يزعجك في هذا المنشور…';
+
+  @override
+  String get postEditCaption => 'تعديل التعليق';
+
+  @override
+  String get postChangeWhoCanSee => 'تغيير من يمكنه المشاهدة';
+
+  @override
+  String get postCommentsOff => 'إيقاف التعليقات';
+
+  @override
+  String get postCommentsOn => 'تشغيل التعليقات';
+
+  @override
+  String get postDelete => 'حذف المنشور';
+
+  @override
+  String get postDeleteTitle => 'حذف هذا المنشور؟';
+
+  @override
+  String get postDeleteBody =>
+      'ستتم إزالته من ملفك الشخصي ومن خلاصة الجميع. لا يمكنك التراجع.';
+
+  @override
+  String get postHidden => 'تم إخفاء المنشور';
+
+  @override
+  String get postHiddenHint => 'سترى منشورات أقل مثل هذا.';
+
+  @override
+  String postUnfollowed(String username) {
+    return 'تم إلغاء متابعة @$username';
+  }
+
+  @override
+  String postMuted(String username) {
+    return 'تم كتم @$username';
+  }
+
+  @override
+  String get postDeleted => 'تم حذف المنشور';
+
+  @override
+  String get newPostTitle => 'منشور جديد';
+
+  @override
+  String get newPostHint => 'بماذا تفكر؟';
+
+  @override
+  String get newPostAdd => 'إضافة';
+
+  @override
+  String get newPostAddToPost => 'أضف إلى منشورك';
+
+  @override
+  String get newPostPhotoVideo => 'صورة / فيديو';
+
+  @override
+  String newPostAdded(int count) {
+    return 'تمت إضافة $count';
+  }
+
+  @override
+  String get newPostTag => 'وسم الأشخاص';
+
+  @override
+  String get newPostLocation => 'الموقع';
+
+  @override
+  String get newPostFeeling => 'الشعور / النشاط';
+
+  @override
+  String get newPostAllowComments => 'السماح بالتعليقات';
+
+  @override
+  String get newPostShare => 'مشاركة المنشور';
+
+  @override
+  String get newPostShared => 'تمت مشاركة المنشور';
+
+  @override
+  String get newPostDiscardTitle => 'تجاهل المنشور؟';
+
+  @override
+  String get newPostDiscardBody => 'لن يتم حفظ منشورك.';
+
+  @override
+  String get newPostKeepEditing => 'متابعة التعديل';
+
+  @override
+  String get newPostDiscard => 'تجاهل';
+
+  @override
+  String get newPostShareFailed => 'تعذّرت مشاركة منشورك.';
+
+  @override
+  String newPostVideoTooLong(int minutes) {
+    return 'يمكن أن يصل طول الفيديو إلى $minutes دقائق.';
+  }
+
+  @override
+  String newPostVideoTooBig(int megabytes) {
+    return 'يمكن أن يصل حجم الفيديو إلى $megabytes ميغابايت.';
+  }
+
+  @override
+  String newPostMediaLimit(int count) {
+    return 'يمكنك إضافة حتى $count صور وفيديوهات.';
+  }
+
+  @override
+  String newPostRemoveMedia(int number) {
+    return 'إزالة الصورة $number';
+  }
+
+  @override
+  String newPostCounterAtLimit(int count, int max) {
+    return '$count من $max، تم بلوغ الحد';
+  }
+
+  @override
+  String get postAudiencePublic => 'عام';
+
+  @override
+  String get postAudienceFollowers => 'المتابعون';
+
+  @override
+  String get postAudienceCloseFriends => 'الأصدقاء المقربون';
+
+  @override
+  String get postAudienceOnlyMe => 'أنا فقط';
+
+  @override
+  String newPostVisibilityLabel(String choice) {
+    return 'من يمكنه رؤية هذا المنشور: $choice';
+  }
+
+  @override
+  String get postVisibilityTitle => 'من يمكنه رؤية هذا المنشور؟';
+
+  @override
+  String get postVisibilityChangeTitle => 'تغيير من يمكنه الرؤية';
+
+  @override
+  String postVisibilityCurrently(String choice) {
+    return 'الحالي: $choice';
+  }
+
+  @override
+  String get postVisibilityPublicHint => 'أي شخص داخل Pulse أو خارجه';
+
+  @override
+  String get postVisibilityPublicOff => 'غير متاح لأن حسابك خاص';
+
+  @override
+  String get postVisibilityOnlyMeHint => 'محفوظ في ملفك الشخصي ومخفي عن الجميع';
+
+  @override
+  String postVisibilityPeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count شخص',
+      one: 'شخص واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postVisibilityEdit => 'تعديل';
+
+  @override
+  String get postVisibilityFuture => 'استخدام للمنشورات القادمة';
+
+  @override
+  String get postVisibilityFutureHint => 'يمكنك تغييره من الإعدادات ← الخصوصية';
+
+  @override
+  String get postVisibilityPrivateNote =>
+      'حسابك خاص، لذا يرى منشوراتك متابعوك فقط.';
+
+  @override
+  String get postVisibilityPrivacySettings => 'إعدادات الخصوصية';
+
+  @override
+  String get postVisibilityKeptNote =>
+      'تبقى الإعجابات والتعليقات من الأشخاص الذين فقدوا الوصول لكنها تُخفى عنهم.';
+
+  @override
+  String get postVisibilityDone => 'تم';
+
+  @override
+  String get postVisibilitySave => 'حفظ';
+
+  @override
+  String get postVisibilityUpdated => 'تم تحديث الظهور';
+
+  @override
+  String get postVisibilityNoticeCloseFriendsTitle =>
+      'المشاركة مع الأصدقاء المقربين';
+
+  @override
+  String postVisibilityNoticeCloseFriendsBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'سيرى $count شخص هذا المنشور',
+      one: 'سيرى شخص واحد هذا المنشور',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postVisibilityNoticeOnlyMeTitle =>
+      'أنت فقط من يمكنه رؤية هذا المنشور';
+
+  @override
+  String get postVisibilityNoticeOnlyMeBody =>
+      'محفوظ في ملفك الشخصي ومخفي عن الجميع';
+
+  @override
+  String get locationTitle => 'إضافة موقع';
+
+  @override
+  String get locationRemove => 'إزالة';
+
+  @override
+  String get locationSearchHint => 'ابحث عن أماكن';
+
+  @override
+  String get locationUseCurrent => 'استخدام الموقع الحالي';
+
+  @override
+  String get locationNearby => 'بالقرب منك';
+
+  @override
+  String get locationRecent => 'الأخيرة';
+
+  @override
+  String get locationResults => 'النتائج';
+
+  @override
+  String get locationNoResults => 'لم يتم العثور على أماكن';
+
+  @override
+  String get locationOffline => 'البحث يحتاج إلى اتصال';
+
+  @override
+  String get locationSearchFailed => 'تعذر البحث. حاول مرة أخرى.';
+
+  @override
+  String get locationPrimerTitle => 'السماح بالوصول إلى الموقع';
+
+  @override
+  String get locationPrimerBody =>
+      'شاهد الأماكن القريبة منك عند إضافة موقع. يستخدم Pulse موقعك فقط أثناء اختيارك لمكان.';
+
+  @override
+  String get locationAllow => 'السماح بالموقع';
+
+  @override
+  String get locationNotNow => 'ليس الآن';
+
+  @override
+  String get locationOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String locationDistance(String km) {
+    return '$km كم';
+  }
+
+  @override
+  String get locationKindCity => 'مدينة';
+
+  @override
+  String get locationKindTown => 'بلدة';
+
+  @override
+  String get locationKindNeighborhood => 'حي';
+
+  @override
+  String get locationSelected => 'محدد';
+
+  @override
+  String get locationClearSearch => 'مسح البحث';
 }

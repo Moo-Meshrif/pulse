@@ -4,7 +4,7 @@ All open with the story **paused** (small "Paused" chip under the header, header
 
 ## Panel 7: options on someone's story (dark sheet, grabber)
 Group 1: **Mute @nour.adel** + subtitle "Hide their stories from your rail" (`ic_volume_off`) · **Go to profile** (`ic_user`) · **Copy link** (`ic_link`). Group 2 (red text): **Report story** (`ic_flag`).
-- Mute: hides that person's stories from the rail and skips them in the viewer; undo from a notice [board]. Backend: `set_story_mute` + `story_mutes` (schema extras section 4); `story_rail` skips muted authors.
+- Mute: hides that person's stories from the rail and skips them in the viewer; undo from a notice [board]. Backend: shared `set_mute(p_scope: 'stories')` + `story_mutes` (was `set_story_mute`; code path is the shared `SetMuteUseCase` with `MuteScope.stories`, the story keeps its own rail refresh); `story_rail` skips muted authors.
 - Go to profile: opens their profile. Copy link: copies the story link + notice.
 
 ## Panel 8: options on your story
@@ -48,3 +48,6 @@ White sheet (light), grabber, header eye + "24 viewers" with red-tint **delete**
 - [ ] Own: Save, Who can see this (Followers), Viewers (24), Delete. Others: Mute, Go to profile, Copy link, Report.
 - [ ] Report reasons list identical to Report post.
 - [ ] Delete dialog with red button and Cancel.
+
+## Shared code update [user, 2026-10-14]
+Report goes through the shared `ReportContentUseCase` (`ContentKind.story`, RPC `report_content`, replaces `report_story`); mute through the shared `SetMuteUseCase`; deleting a story removes its row, then its files through the shared `RemoveMediaFilesUseCase` (best effort: a failed cleanup no longer fails the delete). Code lives in `lib/shared/content`.

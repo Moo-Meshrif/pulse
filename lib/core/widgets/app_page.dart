@@ -88,7 +88,9 @@ class AppPage extends StatelessWidget {
     if (!showTopBar) return null;
 
     final hasTitle = title != null || titleWidget != null;
-    if (!hasTitle && !AppNavigator.canBack(context)) return null;
+    if (!hasTitle && onBack == null && !AppNavigator.canBack(context)) {
+      return null;
+    }
 
     return AppTopBar(
       onBack: onBack,

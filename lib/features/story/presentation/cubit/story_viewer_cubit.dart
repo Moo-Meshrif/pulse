@@ -8,8 +8,13 @@ import '../../../../core/enums/report_reason.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/gallery_service.dart';
 import '../../../../core/state/base_cubit.dart';
+import '../../../../shared/content/data/enums/content_audience.dart';
+import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/data/enums/mute_scope.dart';
+import '../../../../shared/content/domain/use_case/remove_media_files_use_case.dart';
+import '../../../../shared/content/domain/use_case/report_content_use_case.dart';
+import '../../../../shared/content/domain/use_case/set_mute_use_case.dart';
 import '../../data/datasource/stories_datasource.dart';
-import '../../data/enums/story_audience.dart';
 import '../../data/model/story_model.dart';
 import '../../domain/entity/story_rail_item_entity.dart';
 import '../../domain/use_case/get_story_rail_use_case.dart';
@@ -23,14 +28,23 @@ import 'story_viewer_state.dart';
 /// the "seen" mark.
 @injectable
 class StoryViewerCubit extends BaseCubit<StoryViewerState> {
-  StoryViewerCubit(this._rail, this._stories, this._gallery)
-    : super(const StoryViewerState());
+  StoryViewerCubit(
+    this._rail,
+    this._stories,
+    this._gallery,
+    this._setMute,
+    this._reportContent,
+    this._removeFiles,
+  ) : super(const StoryViewerState());
 
   static const seenAfter = Duration(seconds: 1);
 
   final GetStoryRailUseCase _rail;
   final StoriesDatasource _stories;
   final GalleryService _gallery;
+  final SetMuteUseCase _setMute;
+  final ReportContentUseCase _reportContent;
+  final RemoveMediaFilesUseCase _removeFiles;
 
   Timer? _seenTimer;
 
@@ -172,7 +186,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
   }
 
   /// The audience of [storyId] changed (the Who can see this sheet saved it).
-  void updateAudience(String storyId, StoryAudience audience) =>
+  void updateAudience(String storyId, ContentAudience audience) =>
       _replace(storyId, (s) => s.copyWith(audience: audience));
 
   /// Hides the person on screen from the rail and skips them. Null when it worked, else why not.
@@ -181,7 +195,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
     if (authorId == null) return null;
     Failure? failed;
     await run(
-      () => _stories.setMuted(authorId, muted: true),
+      () => _mute(authorId, muted: true),
       onSuccess: (_) {
         _removeCurrentPerson();
         return null;
@@ -197,9 +211,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
   /// Takes a mute back and brings the person back into the viewer, at their place, where it stops on
   /// their first story.
   Future<Failure?> unmute(String authorId) async {
-    final failure = await _attempt(
-      () => _stories.setMuted(authorId, muted: false),
-    );
+    final failure = await _attempt(() => _mute(authorId, muted: false));
     if (failure == null) _restorePerson(authorId);
     return failure;
   }
@@ -211,7 +223,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
     if (story?.id == null || authorId == null) return null;
     Failure? failed;
     await run(
-      () => _stories.deleteStory(story!),
+      () => _delete(story!),
       onSuccess: (_) {
         _removeStory(authorId, story!.id!);
         return null;
@@ -229,7 +241,20 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
     String storyId,
     ReportReason reason,
     String? note,
-  ) async => await _stories.reportStory(storyId, reason, note: note);
+  ) async =>
+      await _reportContent(ContentKind.story, storyId, reason, note: note);
+
+  /// Mutes the person's stories (core), then tells the rail on screen elsewhere to reload.
+  Future<void> _mute(String authorId, {required bool muted}) async {
+    await _setMute(authorId, muted: muted, scope: MuteScope.stories);
+    _stories.notifyRailChanged();
+  }
+
+  /// Deletes the row, then its files (best effort).
+  Future<void> _delete(StoryModel story) async {
+    await _stories.deleteStory(story);
+    await _removeFiles([?story.path, ?story.thumbPath]);
+  }
 
   /// After a report was sent: on to the next story.
   Future<void> skipReported() => next();

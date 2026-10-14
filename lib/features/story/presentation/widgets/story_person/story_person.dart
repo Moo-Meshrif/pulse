@@ -67,7 +67,6 @@ class _StoryPersonState extends State<StoryPerson> {
         preloadForward: 1,
         windowSize: 2,
         scrollDebounce: Duration.zero,
-        handleAppLifecycle: false,
       ),
       onControllerInitialized: (_) {
         if (mounted) setState(() {});
@@ -114,14 +113,12 @@ class _StoryPersonState extends State<StoryPerson> {
     return controller is AppVideoController ? controller : null;
   }
 
-  /// Starts the preloader over with fresh controllers (a video that failed to open).
+  /// Opens a video that failed again, with a fresh controller from the preloader.
   void _retryVideo(StoryModel story) {
-    _flux?.disposeAll();
-    setState(() {
-      _flux = null;
-      _selectedVideoId = null;
-      _failedVideos.remove(story.id);
-    });
+    final index = _videos.indexWhere((v) => v.id == story.id);
+    if (index < 0) return;
+    setState(() => _failedVideos.remove(story.id));
+    _flux?.retry(index);
   }
 
   @override

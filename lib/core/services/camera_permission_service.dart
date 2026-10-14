@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../enums/permission_access.dart';
+import 'permission_access_mapper.dart';
 
 /// Camera and microphone permissions, for every camera flow (story, short, profile photo). Tests mock it.
 abstract interface class CameraPermissionService {
@@ -25,11 +26,11 @@ abstract interface class CameraPermissionService {
 final class HandlerCameraPermissionService implements CameraPermissionService {
   @override
   Future<PermissionAccess> camera() async =>
-      _map(await Permission.camera.status);
+      permissionAccessOf(await Permission.camera.status);
 
   @override
   Future<PermissionAccess> microphone() async =>
-      _map(await Permission.microphone.status);
+      permissionAccessOf(await Permission.microphone.status);
 
   @override
   Future<void> request() async {
@@ -44,13 +45,4 @@ final class HandlerCameraPermissionService implements CameraPermissionService {
 
   @override
   Future<bool> openSettings() => openAppSettings();
-
-  PermissionAccess _map(PermissionStatus status) {
-    if (status.isGranted || status.isLimited || status.isProvisional) {
-      return PermissionAccess.granted;
-    }
-    if (status.isPermanentlyDenied) return PermissionAccess.blocked;
-    if (status.isRestricted) return PermissionAccess.restricted;
-    return PermissionAccess.denied;
-  }
 }

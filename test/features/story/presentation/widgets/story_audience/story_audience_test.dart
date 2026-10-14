@@ -12,16 +12,18 @@ import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/audience_list.dart';
 import 'package:pulse/features/story/data/enums/audience_tab.dart';
-import 'package:pulse/features/story/data/enums/story_audience.dart';
 import 'package:pulse/features/story/data/model/audience_person_model.dart';
-import 'package:pulse/features/story/data/model/audience_summary_model.dart';
 import 'package:pulse/features/story/presentation/cubit/audience_list_cubit.dart';
 import 'package:pulse/features/story/presentation/cubit/story_audience_cubit.dart';
 import 'package:pulse/features/story/presentation/screen/audience_list_screen.dart';
 import 'package:pulse/features/story/presentation/widgets/story_audience/audience_check.dart';
 import 'package:pulse/features/story/presentation/widgets/story_audience/story_audience_sheet.dart';
 import 'package:pulse/l10n/app_localizations.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/domain/entity/audience_summary_entity.dart';
 
+import '../../../../../helpers/content_mocks.dart';
 import '../../../../../helpers/pump_app.dart';
 
 class _Stories extends Mock implements StoriesDatasource {}
@@ -36,23 +38,26 @@ AudiencePersonModel person(String id, {bool selected = false}) =>
 
 void main() {
   late _Stories stories;
+  late MockGetAudienceSummary summary;
+  late MockSetContentAudience setAudience;
 
   setUpAll(() {
-    registerFallbackValue(StoryAudience.followers);
+    registerContentFallbacks();
     registerFallbackValue(AudienceList.closeFriends);
     registerFallbackValue(AudienceTab.suggested);
   });
 
   setUp(() async {
     stories = _Stories();
-    when(() => stories.getAudienceSummary()).thenAnswer(
-      (_) async => const AudienceSummaryModel(
+    summary = MockGetAudienceSummary();
+    setAudience = okSetContentAudience();
+    when(() => summary()).thenAnswer(
+      (_) async => const AudienceSummaryEntity(
         followers: 312,
         closeFriends: 12,
         hidden: 1,
       ),
     );
-    when(() => stories.setAudience(any(), any())).thenAnswer((_) async {});
     when(
       () => stories.getAudiencePeople(
         any(),
@@ -72,11 +77,11 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     await getIt.reset();
-    getIt.registerFactoryParam<StoryAudienceCubit, String, StoryAudience>(
-      (id, audience) => StoryAudienceCubit(stories, id, audience),
+    getIt.registerFactoryParam<StoryAudienceCubit, String, ContentAudience>(
+      (id, audience) => StoryAudienceCubit(summary, setAudience, id, audience),
     );
     getIt.registerFactoryParam<AudienceListCubit, AudienceList, void>(
-      (list, _) => AudienceListCubit(stories, list),
+      (list, _) => AudienceListCubit(stories, summary, list),
     );
   });
 
@@ -86,11 +91,11 @@ void main() {
       tester.pump(const Duration(milliseconds: 400));
 
   group('the Who can see this sheet', () {
-    StoryAudience? result;
+    ContentAudience? result;
 
     Future<void> open(
       WidgetTester tester, {
-      StoryAudience audience = StoryAudience.followers,
+      ContentAudience audience = ContentAudience.followers,
       Locale locale = const Locale('en'),
       double textScale = 1,
     }) async {
@@ -131,15 +136,19 @@ void main() {
     testWidgets('a loader fills the sheet until the numbers arrive', (
       tester,
     ) async {
-      final gate = Completer<AudienceSummaryModel>();
-      when(() => stories.getAudienceSummary()).thenAnswer((_) => gate.future);
+      final gate = Completer<AudienceSummaryEntity>();
+      when(() => summary()).thenAnswer((_) => gate.future);
       await open(tester);
       expect(find.byType(PulseLineLoader), findsOneWidget);
       expect(find.text(l10nEn.storyAudienceFollowers), findsNothing);
       expect(find.text(l10nEn.storyAudienceDone), findsNothing);
 
       gate.complete(
-        const AudienceSummaryModel(followers: 312, closeFriends: 12, hidden: 1),
+        const AudienceSummaryEntity(
+          followers: 312,
+          closeFriends: 12,
+          hidden: 1,
+        ),
       );
       await tester.pump();
       await tester.pump();
@@ -150,14 +159,13 @@ void main() {
     testWidgets('a failed load offers Retry, which loads again', (
       tester,
     ) async {
-      when(() => stories.getAudienceSummary())
-          .thenThrow(const NetworkFailure());
+      when(() => summary()).thenThrow(const NetworkFailure());
       await open(tester);
       expect(find.text(l10nEn.storyAudienceLoadFailed), findsOneWidget);
       expect(find.text(l10nEn.storyAudienceFollowers), findsNothing);
 
-      when(() => stories.getAudienceSummary()).thenAnswer(
-        (_) async => const AudienceSummaryModel(
+      when(() => summary()).thenAnswer(
+        (_) async => const AudienceSummaryEntity(
           followers: 7,
           closeFriends: 2,
           hidden: 0,
@@ -199,8 +207,10 @@ void main() {
       await open(tester);
       await tester.tap(find.text(l10nEn.storyAudienceCloseFriends));
       await tester.pump();
-      verify(() => stories.setAudience('s1', StoryAudience.closeFriends))
-          .called(1);
+      verify(
+        () =>
+            setAudience(ContentKind.story, 's1', ContentAudience.closeFriends),
+      ).called(1);
       final checks = tester
           .widgetList<AudienceCheck>(find.byType(AudienceCheck))
           .toList();
@@ -210,7 +220,7 @@ void main() {
     testWidgets('a failed save goes back and says so inside the sheet', (
       tester,
     ) async {
-      when(() => stories.setAudience(any(), any()))
+      when(() => setAudience(any(), any(), any()))
           .thenThrow(const NetworkFailure());
       await open(tester);
       await tester.tap(find.text(l10nEn.storyAudienceCloseFriends));
@@ -230,7 +240,7 @@ void main() {
       await tester.tap(find.text(l10nEn.storyAudienceDone));
       await pump(tester);
       await pump(tester);
-      expect(result, StoryAudience.closeFriends);
+      expect(result, ContentAudience.closeFriends);
       expect(find.text(l10nEn.storyAudienceBody), findsNothing);
     });
 
@@ -243,7 +253,7 @@ void main() {
       await tester.tapAt(const Offset(195, 40));
       await pump(tester);
       await pump(tester);
-      expect(result, StoryAudience.closeFriends);
+      expect(result, ContentAudience.closeFriends);
     });
 
     testWidgets('Edit and Hide story from open their list screens', (
@@ -263,8 +273,8 @@ void main() {
 
     testWidgets('no close friends: a chevron row that opens the list, no Edit '
         'and no radio', (tester) async {
-      when(() => stories.getAudienceSummary()).thenAnswer(
-        (_) async => const AudienceSummaryModel(
+      when(() => summary()).thenAnswer(
+        (_) async => const AudienceSummaryEntity(
           followers: 312,
           closeFriends: 0,
           hidden: 0,
@@ -285,13 +295,13 @@ void main() {
         ),
         findsOneWidget,
       );
-      verifyNever(() => stories.setAudience(any(), any()));
+      verifyNever(() => setAudience(any(), any(), any()));
     });
 
     testWidgets('choosing people from the empty Close friends row marks Close '
         'friends', (tester) async {
-      when(() => stories.getAudienceSummary()).thenAnswer(
-        (_) async => const AudienceSummaryModel(
+      when(() => summary()).thenAnswer(
+        (_) async => const AudienceSummaryEntity(
           followers: 312,
           closeFriends: 0,
           hidden: 0,
@@ -302,8 +312,8 @@ void main() {
       await pump(tester);
 
       // The list screen saved three people.
-      when(() => stories.getAudienceSummary()).thenAnswer(
-        (_) async => const AudienceSummaryModel(
+      when(() => summary()).thenAnswer(
+        (_) async => const AudienceSummaryEntity(
           followers: 312,
           closeFriends: 3,
           hidden: 0,
@@ -320,8 +330,10 @@ void main() {
       await pump(tester);
       await pump(tester);
 
-      verify(() => stories.setAudience('s1', StoryAudience.closeFriends))
-          .called(1);
+      verify(
+        () =>
+            setAudience(ContentKind.story, 's1', ContentAudience.closeFriends),
+      ).called(1);
       final checks = tester
           .widgetList<AudienceCheck>(find.byType(AudienceCheck))
           .map((c) => c.selected)

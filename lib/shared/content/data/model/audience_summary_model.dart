@@ -1,7 +1,7 @@
 import '../../../../core/utils/equatable.dart';
 import '../../../../core/utils/json_mapper.dart';
 
-/// The row of `audience_summary()`: the numbers on the Who can see this sheet.
+/// The row of `audience_summary()`: how many followers, close friends and hidden people you have.
 class AudienceSummaryModel extends Equatable {
   final int? followers;
   final int? closeFriends;

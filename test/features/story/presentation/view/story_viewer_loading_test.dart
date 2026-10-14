@@ -12,6 +12,7 @@ import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart'
 import 'package:pulse/features/story/presentation/view/story_viewer_view.dart';
 import 'package:pulse/features/story/presentation/widgets/story_progress_bars.dart';
 
+import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 
 class _Rail extends Mock implements GetStoryRailUseCase {}
@@ -28,7 +29,14 @@ void main() {
     rail = Completer();
     final railCase = _Rail();
     when(() => railCase()).thenAnswer((_) => rail.future);
-    cubit = StoryViewerCubit(railCase, _Stories(), _Gallery());
+    cubit = StoryViewerCubit(
+      railCase,
+      _Stories(),
+      _Gallery(),
+      okSetMute(),
+      okReportContent(),
+      okRemoveMediaFiles(),
+    );
   });
 
   tearDown(() => cubit.close());

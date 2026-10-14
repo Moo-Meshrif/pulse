@@ -1126,4 +1126,394 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storyMoveToCloseConfirm => 'Add';
+
+  @override
+  String get postMore => 'more';
+
+  @override
+  String get postLess => 'less';
+
+  @override
+  String get postTimeNow => 'now';
+
+  @override
+  String postTimeMinutes(int count) {
+    return '${count}m';
+  }
+
+  @override
+  String postTimeHours(int count) {
+    return '${count}h';
+  }
+
+  @override
+  String postTimeDays(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String postTimeWeeks(int count) {
+    return '${count}w';
+  }
+
+  @override
+  String get postLike => 'Like';
+
+  @override
+  String get postUnlike => 'Unlike';
+
+  @override
+  String get postComment => 'Comment';
+
+  @override
+  String get postShare => 'Share';
+
+  @override
+  String get postSave => 'Save';
+
+  @override
+  String get postUnsave => 'Unsave';
+
+  @override
+  String get postOptions => 'Post options';
+
+  @override
+  String get postMuteVideo => 'Mute';
+
+  @override
+  String get postUnmuteVideo => 'Unmute';
+
+  @override
+  String postMediaCounter(int number, int total) {
+    return 'Photo $number of $total';
+  }
+
+  @override
+  String get postMediaRetry => 'Couldn\'t load. Tap to retry';
+
+  @override
+  String get postSaved => 'Saved';
+
+  @override
+  String get postCopyLink => 'Copy link';
+
+  @override
+  String get postNotInterested => 'Not interested';
+
+  @override
+  String get postNotInterestedHint => 'See fewer posts like this';
+
+  @override
+  String postUnfollow(String username) {
+    return 'Unfollow @$username';
+  }
+
+  @override
+  String postMute(String username) {
+    return 'Mute @$username';
+  }
+
+  @override
+  String get postMuteHint => 'Hide their posts without unfollowing';
+
+  @override
+  String get postReportTitle => 'Report post';
+
+  @override
+  String get postReportBody =>
+      'Why are you reporting this post? Your report is anonymous.';
+
+  @override
+  String get postReportSent =>
+      'We\'ll review this post. You won\'t see it in your feed anymore.';
+
+  @override
+  String get postReportNotePlaceholder =>
+      'Tell us what\'s wrong with this post…';
+
+  @override
+  String get postEditCaption => 'Edit caption';
+
+  @override
+  String get postChangeWhoCanSee => 'Change who can see';
+
+  @override
+  String get postCommentsOff => 'Turn off comments';
+
+  @override
+  String get postCommentsOn => 'Turn on comments';
+
+  @override
+  String get postDelete => 'Delete post';
+
+  @override
+  String get postDeleteTitle => 'Delete this post?';
+
+  @override
+  String get postDeleteBody =>
+      'It will be removed from your profile and everyone\'s feed. You can\'t undo this.';
+
+  @override
+  String get postHidden => 'Post hidden';
+
+  @override
+  String get postHiddenHint => 'You\'ll see fewer posts like this.';
+
+  @override
+  String postUnfollowed(String username) {
+    return 'Unfollowed @$username';
+  }
+
+  @override
+  String postMuted(String username) {
+    return '@$username muted';
+  }
+
+  @override
+  String get postDeleted => 'Post deleted';
+
+  @override
+  String get newPostTitle => 'New post';
+
+  @override
+  String get newPostHint => 'What\'s on your mind?';
+
+  @override
+  String get newPostAdd => 'Add';
+
+  @override
+  String get newPostAddToPost => 'Add to your post';
+
+  @override
+  String get newPostPhotoVideo => 'Photo / video';
+
+  @override
+  String newPostAdded(int count) {
+    return '$count added';
+  }
+
+  @override
+  String get newPostTag => 'Tag people';
+
+  @override
+  String get newPostLocation => 'Location';
+
+  @override
+  String get newPostFeeling => 'Feeling / activity';
+
+  @override
+  String get newPostAllowComments => 'Allow comments';
+
+  @override
+  String get newPostShare => 'Share post';
+
+  @override
+  String get newPostShared => 'Post shared';
+
+  @override
+  String get newPostDiscardTitle => 'Discard post?';
+
+  @override
+  String get newPostDiscardBody => 'Your post won\'t be saved.';
+
+  @override
+  String get newPostKeepEditing => 'Keep editing';
+
+  @override
+  String get newPostDiscard => 'Discard';
+
+  @override
+  String get newPostShareFailed => 'Couldn\'t share your post.';
+
+  @override
+  String newPostVideoTooLong(int minutes) {
+    return 'Videos can be up to $minutes minutes.';
+  }
+
+  @override
+  String newPostVideoTooBig(int megabytes) {
+    return 'Videos can be up to $megabytes MB.';
+  }
+
+  @override
+  String newPostMediaLimit(int count) {
+    return 'You can add up to $count photos and videos.';
+  }
+
+  @override
+  String newPostRemoveMedia(int number) {
+    return 'Remove photo $number';
+  }
+
+  @override
+  String newPostCounterAtLimit(int count, int max) {
+    return '$count of $max, limit reached';
+  }
+
+  @override
+  String get postAudiencePublic => 'Public';
+
+  @override
+  String get postAudienceFollowers => 'Followers';
+
+  @override
+  String get postAudienceCloseFriends => 'Close friends';
+
+  @override
+  String get postAudienceOnlyMe => 'Only me';
+
+  @override
+  String newPostVisibilityLabel(String choice) {
+    return 'Who can see this post: $choice';
+  }
+
+  @override
+  String get postVisibilityTitle => 'Who can see this post?';
+
+  @override
+  String get postVisibilityChangeTitle => 'Change who can see';
+
+  @override
+  String postVisibilityCurrently(String choice) {
+    return 'Currently: $choice';
+  }
+
+  @override
+  String get postVisibilityPublicHint => 'Anyone on or off Pulse';
+
+  @override
+  String get postVisibilityPublicOff => 'Off while your account is private';
+
+  @override
+  String get postVisibilityOnlyMeHint =>
+      'Saved to your profile, hidden from everyone';
+
+  @override
+  String postVisibilityPeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postVisibilityEdit => 'Edit';
+
+  @override
+  String get postVisibilityFuture => 'Use for future posts';
+
+  @override
+  String get postVisibilityFutureHint =>
+      'You can change it in Settings → Privacy';
+
+  @override
+  String get postVisibilityPrivateNote =>
+      'Your account is private, so only your followers can see your posts.';
+
+  @override
+  String get postVisibilityPrivacySettings => 'Privacy settings';
+
+  @override
+  String get postVisibilityKeptNote =>
+      'Likes and comments from people who lose access are kept but hidden from them.';
+
+  @override
+  String get postVisibilityDone => 'Done';
+
+  @override
+  String get postVisibilitySave => 'Save';
+
+  @override
+  String get postVisibilityUpdated => 'Visibility updated';
+
+  @override
+  String get postVisibilityNoticeCloseFriendsTitle =>
+      'Sharing with close friends';
+
+  @override
+  String postVisibilityNoticeCloseFriendsBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people will see this post',
+      one: '1 person will see this post',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postVisibilityNoticeOnlyMeTitle => 'Only you can see this post';
+
+  @override
+  String get postVisibilityNoticeOnlyMeBody =>
+      'It\'s saved to your profile, hidden from everyone';
+
+  @override
+  String get locationTitle => 'Add location';
+
+  @override
+  String get locationRemove => 'Remove';
+
+  @override
+  String get locationSearchHint => 'Search places';
+
+  @override
+  String get locationUseCurrent => 'Use current location';
+
+  @override
+  String get locationNearby => 'Nearby';
+
+  @override
+  String get locationRecent => 'Recent';
+
+  @override
+  String get locationResults => 'Results';
+
+  @override
+  String get locationNoResults => 'No places found';
+
+  @override
+  String get locationOffline => 'Search needs a connection';
+
+  @override
+  String get locationSearchFailed => 'Couldn\'t search. Try again.';
+
+  @override
+  String get locationPrimerTitle => 'Allow location access';
+
+  @override
+  String get locationPrimerBody =>
+      'See places near you when you add a location. Pulse only uses it while you\'re choosing a place.';
+
+  @override
+  String get locationAllow => 'Allow location';
+
+  @override
+  String get locationNotNow => 'Not now';
+
+  @override
+  String get locationOpenSettings => 'Open settings';
+
+  @override
+  String locationDistance(String km) {
+    return '$km km';
+  }
+
+  @override
+  String get locationKindCity => 'City';
+
+  @override
+  String get locationKindTown => 'Town';
+
+  @override
+  String get locationKindNeighborhood => 'Neighborhood';
+
+  @override
+  String get locationSelected => 'Selected';
+
+  @override
+  String get locationClearSearch => 'Clear search';
 }

@@ -30,6 +30,9 @@ import 'package:pulse/features/profile/domain/use_case/save_interests_use_case.d
 import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_case.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/datasource/story_media_uploader.dart';
+import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/content_actions_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockAuthDatasource extends Mock implements AuthDatasource {}
@@ -77,6 +80,13 @@ class MockFollowsDatasource extends Mock implements FollowsDatasource {}
 class MockStoriesDatasource extends Mock implements StoriesDatasource {}
 
 class MockStoryMediaUploader extends Mock implements StoryMediaUploader {}
+
+class MockContentActionsDatasource extends Mock
+    implements ContentActionsDatasource {}
+
+class MockAudienceDatasource extends Mock implements AudienceDatasource {}
+
+class MockMediaFilesDatasource extends Mock implements MediaFilesDatasource {}
 
 final l10nEn = lookupAppLocalizations(const Locale('en'));
 final l10nAr = lookupAppLocalizations(const Locale('ar'));
@@ -197,6 +207,9 @@ Future<void> setUpRealWiring({
   await getIt.unregister<LegalDatasource>();
   await getIt.unregister<StoriesDatasource>();
   await getIt.unregister<StoryMediaUploader>();
+  await getIt.unregister<ContentActionsDatasource>();
+  await getIt.unregister<MediaFilesDatasource>();
+  await getIt.unregister<AudienceDatasource>();
   getIt.registerSingleton<AuthDatasource>(auth ?? signedOut);
   getIt.registerSingleton<ProfileDatasource>(
     profiles ?? MockProfileDatasource(),
@@ -212,4 +225,9 @@ Future<void> setUpRealWiring({
       .thenAnswer((_) async => []);
   getIt.registerSingleton<StoriesDatasource>(stories ?? emptyRail);
   getIt.registerSingleton<StoryMediaUploader>(MockStoryMediaUploader());
+  getIt.registerSingleton<ContentActionsDatasource>(
+    MockContentActionsDatasource(),
+  );
+  getIt.registerSingleton<MediaFilesDatasource>(MockMediaFilesDatasource());
+  getIt.registerSingleton<AudienceDatasource>(MockAudienceDatasource());
 }

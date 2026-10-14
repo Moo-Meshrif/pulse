@@ -9,6 +9,7 @@ import '../../features/control/presentation/screen/control_screen.dart';
 import '../../features/legal/presentation/screen/legal_screen.dart';
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
 import '../../features/onboarding/presentation/screen/onboarding_screen.dart';
+import '../../features/post/presentation/screen/new_post_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -18,10 +19,12 @@ import '../../features/story/presentation/screen/story_camera_screen.dart';
 import '../../features/story/presentation/screen/story_edit_screen.dart';
 import '../../features/story/presentation/screen/story_viewer_screen.dart';
 import '../../features/story/presentation/utils/story_page_route.dart';
+import '../../shared/places/presentation/screen/add_location_screen.dart';
 import '../di/injection.dart';
 import '../enums/legal_document.dart';
 import '../enums/signed_out_reason.dart';
 import 'app_routes.dart';
+import 'end_slide_page_route.dart';
 import 'not_found_screen.dart';
 import 'placeholder_screen.dart';
 
@@ -79,11 +82,11 @@ abstract final class AppRouter {
       ),
       // The main shell (tabs + nav bar); sign-in, sign-up and the splash end here.
       AppRoutes.home => _page(settings, const ControlScreen()),
-      // TODO(control-page-plan T7): New post placeholder until the post feature's New post screen
-      // (docs/specs/post/screens/s1-new-post.md) is built.
-      AppRoutes.createPost => _page(
+      AppRoutes.createPost => _page(settings, const NewPostScreen()),
+      // The place already on the post comes in as the route argument.
+      AppRoutes.pickPlace => _endSlidePage(
         settings,
-        const PlaceholderScreen(route: AppRoutes.createPost),
+        AddLocationScreen(current: settings.arguments as String?),
       ),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
       AppRoutes.createShort => _page(
@@ -140,4 +143,7 @@ abstract final class AppRouter {
 
   static Route<T> _page<T>(RouteSettings settings, Widget screen) =>
       MaterialPageRoute<T>(settings: settings, builder: (_) => screen);
+
+  static Route<T> _endSlidePage<T>(RouteSettings settings, Widget screen) =>
+      EndSlidePageRoute<T>(settings: settings, builder: (_) => screen);
 }

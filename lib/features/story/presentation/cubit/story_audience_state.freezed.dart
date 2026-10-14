@@ -15,8 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StoryAudienceState {
 
- StoryAudience get audience;/// The counts under each row; loaded when the sheet opens, again after a list screen.
- AudienceSummaryModel get summary; StoryAudienceStatus get status;/// One-shot: changing the audience failed (it went back to what it was).
+ ContentAudience get audience;/// The counts under each row; loaded when the sheet opens, again after a list screen.
+ AudienceSummaryEntity get summary; StoryAudienceStatus get status;/// One-shot: changing the audience failed (it went back to what it was).
  Failure? get failure;
 /// Create a copy of StoryAudienceState
 /// with the given fields replaced by the non-null parameter values.
@@ -53,7 +53,7 @@ abstract mixin class $StoryAudienceStateCopyWith<$Res>  {
   factory $StoryAudienceStateCopyWith(StoryAudienceState value, $Res Function(StoryAudienceState) _then) = _$StoryAudienceStateCopyWithImpl;
 @useResult
 $Res call({
- StoryAudience audience, AudienceSummaryModel summary, StoryAudienceStatus status, Failure? failure
+ ContentAudience audience, AudienceSummaryEntity summary, StoryAudienceStatus status, Failure? failure
 });
 
 
@@ -73,8 +73,8 @@ class _$StoryAudienceStateCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? audience = null,Object? summary = null,Object? status = null,Object? failure = freezed,}) {
   return _then(StoryAudienceState(
 audience: null == audience ? _self.audience : audience // ignore: cast_nullable_to_non_nullable
-as StoryAudience,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
-as AudienceSummaryModel,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as ContentAudience,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as AudienceSummaryEntity,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as StoryAudienceStatus,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
@@ -161,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( StoryAudience audience,  AudienceSummaryModel summary,  StoryAudienceStatus status,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ContentAudience audience,  AudienceSummaryEntity summary,  StoryAudienceStatus status,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryAudienceState() when $default != null:
 return $default(_that.audience,_that.summary,_that.status,_that.failure);case _:
@@ -182,7 +182,7 @@ return $default(_that.audience,_that.summary,_that.status,_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( StoryAudience audience,  AudienceSummaryModel summary,  StoryAudienceStatus status,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ContentAudience audience,  AudienceSummaryEntity summary,  StoryAudienceStatus status,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _StoryAudienceState():
 return $default(_that.audience,_that.summary,_that.status,_that.failure);case _:
@@ -202,7 +202,7 @@ return $default(_that.audience,_that.summary,_that.status,_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( StoryAudience audience,  AudienceSummaryModel summary,  StoryAudienceStatus status,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ContentAudience audience,  AudienceSummaryEntity summary,  StoryAudienceStatus status,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryAudienceState() when $default != null:
 return $default(_that.audience,_that.summary,_that.status,_that.failure);case _:
@@ -217,12 +217,12 @@ return $default(_that.audience,_that.summary,_that.status,_that.failure);case _:
 
 
 class _StoryAudienceState implements StoryAudienceState {
-  const _StoryAudienceState({required this.audience, this.summary = const AudienceSummaryModel(), this.status = StoryAudienceStatus.loading, this.failure});
+  const _StoryAudienceState({required this.audience, this.summary = const AudienceSummaryEntity(), this.status = StoryAudienceStatus.loading, this.failure});
   
 
-@override final  StoryAudience audience;
+@override final  ContentAudience audience;
 /// The counts under each row; loaded when the sheet opens, again after a list screen.
-@override@JsonKey() final  AudienceSummaryModel summary;
+@override@JsonKey() final  AudienceSummaryEntity summary;
 @override@JsonKey() final  StoryAudienceStatus status;
 /// One-shot: changing the audience failed (it went back to what it was).
 @override final  Failure? failure;
@@ -259,7 +259,7 @@ abstract mixin class _$StoryAudienceStateCopyWith<$Res> implements $StoryAudienc
   factory _$StoryAudienceStateCopyWith(_StoryAudienceState value, $Res Function(_StoryAudienceState) _then) = __$StoryAudienceStateCopyWithImpl;
 @override @useResult
 $Res call({
- StoryAudience audience, AudienceSummaryModel summary, StoryAudienceStatus status, Failure? failure
+ ContentAudience audience, AudienceSummaryEntity summary, StoryAudienceStatus status, Failure? failure
 });
 
 
@@ -279,8 +279,8 @@ class __$StoryAudienceStateCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? audience = null,Object? summary = null,Object? status = null,Object? failure = freezed,}) {
   return _then(_StoryAudienceState(
 audience: null == audience ? _self.audience : audience // ignore: cast_nullable_to_non_nullable
-as StoryAudience,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
-as AudienceSummaryModel,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as ContentAudience,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as AudienceSummaryEntity,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as StoryAudienceStatus,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));

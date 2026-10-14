@@ -4,11 +4,14 @@ Status: approved
 Mode: one-by-one
 Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers in `test/helpers/pump_app.dart`, datasource tests with `test/helpers/backend_double.dart`; widget tests EN + AR/RTL + 1.5x text)
 
+## Progress (updated 2026-10-14)
+Phases 0-3 are done; Phases 4-11 are built and tested on doubles, and only the device / live-data checks (B7) stay open. Nothing left to implement here except the shared-code follow-ups below. Pending with the shared refactor ("Shared code update" at the end): move the dark confirm dialog and the option / audience rows to core widgets (needs a decision on the dark dialog look), optionally move the close-friends list into `lib/shared/content`, (the migrations `20261018120000_post_visibility.sql` and `20261019120000_shared_content_actions.sql` are applied; story code calls `report_content`, `set_content_audience`, `set_mute(p_scope)`).
+
 ## Later changes
 - The temporary Home rail (Phase 9's tile, ring and its Cubit) was removed after device testing. The Home tab is the control-page placeholder again; nothing in the app opens the story screens until Home's real rail is built (the routes `/story/:id`, `/create/story` still work).
 
 ## Later additions (board v3)
-- Who can see this + Close friends + Hide story from (`docs/specs/story/screens/s7-who-can-see.md`): code and tests done; **migration `20261015120000_story_audience.sql` is validated in a rolled-back transaction and NOT applied** (awaiting the user's approval). Viewers sheet is dark.
+- Who can see this + Close friends + Hide story from (`docs/specs/story/screens/s7-who-can-see.md`): code and tests done; **migration `20261015120000_story_audience.sql` is applied** (linked project history `story_audience`). Viewers sheet is dark.
 
 ## Summary
 - **Screens:** S1 story viewer (panel 1 others', panel 2 own + count chip), S6 viewer options / report / delete / viewers sheet, S5 camera and microphone permissions (shared: story, short, profile photo), S2 camera and recording, S3 edit and share, S4 posting state on the rail.
@@ -111,7 +114,7 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 **Depends on:** Phase 0 (B1 for live checks only), Phase 1.
 **Spec refs:** `00-data-layer.md`; `screens/s1-story-viewer.md` > Data mapping; `screens/s3-create-edit.md` > Behavior; `screens/s6-viewer-menus.md`; `schema-story-extras.sql`; `open-questions.md` Q9, Q17, Q20, P1, P3; `source-tokens.md` §10 (signed URLs 3600 s, cache key = path).
 **Tasks:**
-- [x] Datasource(s) per `conventions/architecture.md` with Supabase adapters: story rail, `author_stories`, signed URLs for `path`/`thumb_path`, mark viewed (insert `story_views`, ignore duplicates), `set_story_like`, `story_viewers` (page 30, cursor `p_before`), delete own story (row + storage object), `set_story_mute`, `report_story`, create story (upload `post-media/{uid}/stories/{id}.jpg|mp4` + thumb, then insert `stories` with type, path, thumb_path, width, height, duration_ms, blurhash?, overlays).
+- [x] Datasource(s) per `conventions/architecture.md` with Supabase adapters: story rail, `author_stories`, signed URLs for `path`/`thumb_path`, mark viewed (insert `story_views`, ignore duplicates), `set_story_like`, `story_viewers` (page 30, cursor `p_before`), delete own story (row; the files go through the shared `RemoveMediaFilesUseCase`), mute and report (now the shared `SetMuteUseCase` / `ReportContentUseCase`, see the 2026-10-14 note), create story (upload `post-media/{uid}/stories/{id}.jpg|mp4` + thumb, then insert `stories` with type, path, thumb_path, width, height, duration_ms, blurhash?, overlays).
 - [x] Upload with byte progress (P3): streamed upload to the storage REST endpoint with the existing `http` package and the session token; progress 0..1.
 - [x] Wire models + `StoryMediaType` enum (own copy) + overlay model (type text|location, text, x, y fractions, scale, rotation, color; max 20) per `conventions/serialization.md`.
 - [x] Use cases only where another feature calls them or a rule needs one: `GetStoryRailUseCase` (maps models to the public `StoryRailItemEntity`), `WatchStoryUploadUseCase` and `RetryStoryUploadUseCase` (Home's rail; the upload status is owned by the story feature as a singleton). Everything else (author stories, mark seen, like, viewers, delete, mute, report, create, save to device, audience) is called by the story Cubits on `StoriesDatasource`, `StoryUploadRepository` and `GalleryService` directly; the pass-through use cases were removed.
@@ -150,7 +153,7 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 - [x] Dark options sheet (§5): someone's story = Mute @name (sub), Go to profile, [Copy link hidden: `// TODO(story-plan T2)`], group Report story (danger); own story = Save to device, Who can see this (read-only sub "Followers" / "Public", no chevron: `// TODO(story-plan T5)`), Viewers (sub = count), group Delete story (danger).
 - [x] Mute: `SetStoryMuteUseCase`, skip that person in the viewer, notice with Undo (Phase 2 action).
 - [x] Go to profile: route to the profile placeholder; `// TODO(story-plan T3)`.
-- [x] Report: open the shared report sheet (dark) with `ReportStoryUseCase`; after Done, skip to the next story.
+- [x] Report: open the shared report sheet (dark) with the shared `ReportContentUseCase` (`ContentKind.story`); after Done, skip to the next story.
 - [x] Viewers sheet (light, §3): height 430 draggable to 90%, header eye + count + delete and save circles, rows with liked heart, newest first, load more 30 at a time; opened by swipe up and by the Viewers row.
 - [x] Delete confirm (§6, dark dialog): body with the view count; after delete notice "Story deleted", go to your next story or close.
 - [x] Save to device: photo with overlays burned in; video saved as is (`// TODO(story-plan T4)`); notice on success.
@@ -260,3 +263,6 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 - Each phase: `fvm flutter analyze` clean, `fvm flutter test` green, the phase's tests added (cubit + widget, EN + AR/RTL + 1.5x).
 - UI phases: run the app and compare with the board panel named in the phase; tick the screen's acceptance checklist.
 - Backend: after B1, live smoke calls (rail, author stories, mark seen, create, delete) and Supabase advisors.
+
+## Shared code update [user, 2026-10-14]
+Report, change audience (`StoryAudienceCubit`), mute (`StoryViewerCubit`), file cleanup after a delete, and the audience counts now go through `lib/shared/content` (use cases `ReportContentUseCase`, `SetContentAudienceUseCase`, `SetMuteUseCase`, `RemoveMediaFilesUseCase`, `GetAudienceSummaryUseCase`); `StoryAudience` is replaced by the shared `ContentAudience` (story offers followers and close_friends only); `StoriesDatasource` keeps the rail, viewers, lists and `notifyRailChanged()` (called after a mute). Backend: `report_story`, `set_story_audience`, `set_story_mute` are replaced by `report_content`, `set_content_audience`, `set_mute(p_scope)` in `20261019120000_shared_content_actions.sql` (validated and **applied** 2026-10-14, after `post_visibility`). T6 stays open (post's Mute / Unfollow rows on the report sent step, post-plan Phase 5). Open: the dark confirm dialog and the option / audience rows could move to core widgets (waiting on the dark dialog decision).

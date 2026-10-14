@@ -13,6 +13,10 @@ import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dar
 import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart';
 import 'package:pulse/features/story/presentation/utils/enums/story_pause_reason.dart';
 import 'package:pulse/features/story/presentation/utils/enums/story_viewer_status.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/enums/mute_scope.dart';
+
+import '../../../../helpers/content_mocks.dart';
 
 class _Rail extends Mock implements GetStoryRailUseCase {}
 
@@ -36,15 +40,28 @@ void main() {
   late _Rail rail;
   late _Stories stories;
   late _Gallery gallery;
+  late MockSetMute setMute;
+  late MockReportContent reportContent;
+  late MockRemoveMediaFiles removeFiles;
 
-  StoryViewerCubit build() => StoryViewerCubit(rail, stories, gallery);
+  StoryViewerCubit build() => StoryViewerCubit(
+    rail,
+    stories,
+    gallery,
+    setMute,
+    reportContent,
+    removeFiles,
+  );
 
   setUp(() {
     rail = _Rail();
     stories = _Stories();
     gallery = _Gallery();
+    setMute = okSetMute();
+    reportContent = okReportContent();
+    removeFiles = okRemoveMediaFiles();
     registerFallbackValue(const StoryModel());
-    registerFallbackValue(ReportReason.spam);
+    registerContentFallbacks();
     when(() => rail()).thenAnswer(
       (_) async => [person('a'), person('b'), person('c', isMe: true)],
     );
@@ -320,13 +337,22 @@ void main() {
 
   group('mute', () {
     test('hides the person and moves on to the next', () async {
-      when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-          .thenAnswer((_) async {});
+      when(
+        () => setMute(
+          any(),
+          muted: any(named: 'muted'),
+          scope: any(named: 'scope'),
+        ),
+      ).thenAnswer((_) async {
+        return;
+      });
       final cubit = build();
       await cubit.load('a');
       final failure = await cubit.muteCurrent();
       expect(failure, isNull);
-      verify(() => stories.setMuted('a', muted: true)).called(1);
+      verify(() => stories.notifyRailChanged()).called(1);
+      verify(() => setMute('a', muted: true, scope: MuteScope.stories))
+          .called(1);
       expect(cubit.state.people.map((p) => p.authorId), ['b', 'c']);
       expect(cubit.state.person!.authorId, 'b');
       expect(cubit.state.story!.id, 'b1');
@@ -334,8 +360,15 @@ void main() {
     });
 
     test('muting the last person closes the viewer', () async {
-      when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-          .thenAnswer((_) async {});
+      when(
+        () => setMute(
+          any(),
+          muted: any(named: 'muted'),
+          scope: any(named: 'scope'),
+        ),
+      ).thenAnswer((_) async {
+        return;
+      });
       final cubit = build();
       await cubit.load('c');
       await cubit.muteCurrent();
@@ -344,8 +377,13 @@ void main() {
     });
 
     test('a failure keeps the person and is returned', () async {
-      when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-          .thenThrow(const NetworkFailure());
+      when(
+        () => setMute(
+          any(),
+          muted: any(named: 'muted'),
+          scope: any(named: 'scope'),
+        ),
+      ).thenThrow(const NetworkFailure());
       final cubit = build();
       await cubit.load('a');
       expect(await cubit.muteCurrent(), const NetworkFailure());
@@ -356,8 +394,15 @@ void main() {
     test(
       'Undo brings the person back at their place, on their first story',
       () async {
-        when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-            .thenAnswer((_) async {});
+        when(
+          () => setMute(
+            any(),
+            muted: any(named: 'muted'),
+            scope: any(named: 'scope'),
+          ),
+        ).thenAnswer((_) async {
+          return;
+        });
         final cubit = build();
         await cubit.load('a');
         await cubit.muteCurrent();
@@ -378,8 +423,15 @@ void main() {
     test(
       'Undo of someone in the middle goes back between the same two',
       () async {
-        when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-            .thenAnswer((_) async {});
+        when(
+          () => setMute(
+            any(),
+            muted: any(named: 'muted'),
+            scope: any(named: 'scope'),
+          ),
+        ).thenAnswer((_) async {
+          return;
+        });
         final cubit = build();
         await cubit.load('b');
         await cubit.muteCurrent();
@@ -392,8 +444,15 @@ void main() {
     );
 
     test('Undo after the viewer closed changes nothing on screen', () async {
-      when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-          .thenAnswer((_) async {});
+      when(
+        () => setMute(
+          any(),
+          muted: any(named: 'muted'),
+          scope: any(named: 'scope'),
+        ),
+      ).thenAnswer((_) async {
+        return;
+      });
       final cubit = build();
       await cubit.load('c');
       await cubit.muteCurrent(); // the last person: the viewer closes
@@ -404,8 +463,11 @@ void main() {
     });
 
     test('a failed Undo keeps the person out', () async {
-      when(() => stories.setMuted(any(), muted: true)).thenAnswer((_) async {});
-      when(() => stories.setMuted(any(), muted: false))
+      when(() => setMute(any(), muted: true, scope: any(named: 'scope')))
+          .thenAnswer((_) async {
+            return;
+          });
+      when(() => setMute(any(), muted: false, scope: any(named: 'scope')))
           .thenThrow(const NetworkFailure());
       final cubit = build();
       await cubit.load('a');
@@ -416,16 +478,55 @@ void main() {
     });
 
     test('unmute sends muted: false', () async {
-      when(() => stories.setMuted(any(), muted: any(named: 'muted')))
-          .thenAnswer((_) async {});
+      when(
+        () => setMute(
+          any(),
+          muted: any(named: 'muted'),
+          scope: any(named: 'scope'),
+        ),
+      ).thenAnswer((_) async {
+        return;
+      });
       final cubit = build();
       expect(await cubit.unmute('a'), isNull);
-      verify(() => stories.setMuted('a', muted: false)).called(1);
+      verify(() => setMute('a', muted: false, scope: MuteScope.stories))
+          .called(1);
       await cubit.close();
     });
   });
 
   group('delete', () {
+    test('removes the files of the story after the row', () async {
+      when(() => stories.getAuthorStories('a')).thenAnswer(
+        (_) async => [
+          story('a1', seen: true),
+          const StoryModel(
+            id: 'a2',
+            path: 'u/stories/a2.jpg',
+            thumbPath: 'u/stories/a2_t.jpg',
+          ),
+        ],
+      );
+      when(() => stories.deleteStory(any())).thenAnswer((_) async {});
+      final cubit = build();
+      await cubit.load('a'); // a2
+      await cubit.deleteCurrent();
+      verifyInOrder([
+        () => stories.deleteStory(any()),
+        () => removeFiles(['u/stories/a2.jpg', 'u/stories/a2_t.jpg']),
+      ]);
+      await cubit.close();
+    });
+
+    test('a failed delete keeps the files', () async {
+      when(() => stories.deleteStory(any())).thenThrow(const NetworkFailure());
+      final cubit = build();
+      await cubit.load('c');
+      await cubit.deleteCurrent();
+      verifyNever(() => removeFiles(any()));
+      await cubit.close();
+    });
+
     test('shows the story that takes its place', () async {
       when(() => stories.deleteStory(any())).thenAnswer((_) async {});
       final cubit = build();
@@ -474,15 +575,18 @@ void main() {
     test(
       'report passes the reason and note; a failure reaches the sheet',
       () async {
-        when(() => stories.reportStory(any(), any(), note: any(named: 'note')))
-            .thenAnswer((_) async {});
         final cubit = build();
         await cubit.report('a2', ReportReason.other, 'rude');
         verify(
-          () => stories.reportStory('a2', ReportReason.other, note: 'rude'),
+          () => reportContent(
+            ContentKind.story,
+            'a2',
+            ReportReason.other,
+            note: 'rude',
+          ),
         ).called(1);
 
-        when(() => stories.reportStory(any(), any(), note: any(named: 'note')))
+        when(() => reportContent(any(), any(), any(), note: any(named: 'note')))
             .thenThrow(const NetworkFailure());
         await expectLater(
           cubit.report('a2', ReportReason.spam, null),

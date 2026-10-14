@@ -5,7 +5,7 @@ import '../../../../../core/enums/sheet_tone.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../data/enums/story_audience.dart';
+import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../cubit/story_viewer_cubit.dart';
 import '../../utils/enums/story_option.dart';
 import '../../utils/enums/story_pause_reason.dart';
@@ -32,7 +32,7 @@ abstract final class StoryMenus {
         child: StoryOptionsSheet(
           person: person,
           viewCount: story!.viewCount ?? 0,
-          audience: story.audience ?? StoryAudience.followers,
+          audience: story.audience ?? ContentAudience.followers,
         ),
       );
       if (option == null || !context.mounted) return;
@@ -89,7 +89,7 @@ abstract final class StoryMenus {
     final audience = await StoryAudienceSheet.show(
       context,
       storyId: id,
-      audience: story!.audience ?? StoryAudience.followers,
+      audience: story!.audience ?? ContentAudience.followers,
     );
     cubit.updateAudience(id, audience);
   }

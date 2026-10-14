@@ -43,10 +43,9 @@ void main() {
       return legal;
     }
 
-    testWidgets('/terms shows the backend title and HTML', (tester) async {
+    testWidgets('/terms shows the HTML', (tester) async {
       final legal = await openLegal(tester, AppRoutes.terms);
       verify(() => legal.getDocument('terms', 'en')).called(1);
-      expect(find.text('Terms of Use'), findsOneWidget);
       expect(
         find.textContaining('Body text', findRichText: true),
         findsOneWidget,
@@ -82,11 +81,13 @@ void main() {
           .pushNamed(AppRoutes.terms);
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.retry), findsOneWidget);
-      expect(find.text(l10nEn.terms), findsOneWidget);
 
       await tester.tap(find.text(l10nEn.retry));
       await tester.pumpAndSettle();
-      expect(find.text('Terms of Use'), findsOneWidget);
+      expect(
+        find.textContaining('Body text', findRichText: true),
+        findsOneWidget,
+      );
       expect(find.text(l10nEn.retry), findsNothing);
     });
   });

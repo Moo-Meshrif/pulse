@@ -31,6 +31,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.warningText,
     required this.scrim,
     required this.videoChip,
+    required this.mediaChip,
     required this.glassFill,
     required this.glassBorder,
     required this.glassActive,
@@ -88,6 +89,9 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color warningText;
   final Color scrim;
   final Color videoChip;
+
+  /// Post chips on media (counter, mute, duration, remove): #161A19 @ 55%.
+  final Color mediaChip;
   final Color glassFill;
   final Color glassBorder;
   final Color glassActive;
@@ -175,6 +179,7 @@ class AppColors extends ThemeExtension<AppColors> {
     warningText: Color(0xFF8A560C),
     scrim: Color(0x66161A19), // #161A19 @ 40%
     videoChip: Color(0x73161A19), // #161A19 @ 45%
+    mediaChip: Color(0x8C161A19), // #161A19 @ 55%
     glassFill: Color(0x8CFFFFFF), // #FFFFFF @ 55%
     glassBorder: Color(0xCCFFFFFF), // #FFFFFF @ 80%
     glassActive: Color(0xD9FFFFFF), // #FFFFFF @ 85%
@@ -244,6 +249,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? warningText,
     Color? scrim,
     Color? videoChip,
+    Color? mediaChip,
     Color? glassFill,
     Color? glassBorder,
     Color? glassActive,
@@ -296,6 +302,7 @@ class AppColors extends ThemeExtension<AppColors> {
     warningText: warningText ?? this.warningText,
     scrim: scrim ?? this.scrim,
     videoChip: videoChip ?? this.videoChip,
+    mediaChip: mediaChip ?? this.mediaChip,
     glassFill: glassFill ?? this.glassFill,
     glassBorder: glassBorder ?? this.glassBorder,
     glassActive: glassActive ?? this.glassActive,
@@ -353,6 +360,7 @@ class AppColors extends ThemeExtension<AppColors> {
       warningText: Color.lerp(warningText, other.warningText, t)!,
       scrim: Color.lerp(scrim, other.scrim, t)!,
       videoChip: Color.lerp(videoChip, other.videoChip, t)!,
+      mediaChip: Color.lerp(mediaChip, other.mediaChip, t)!,
       glassFill: Color.lerp(glassFill, other.glassFill, t)!,
       glassBorder: Color.lerp(glassBorder, other.glassBorder, t)!,
       glassActive: Color.lerp(glassActive, other.glassActive, t)!,

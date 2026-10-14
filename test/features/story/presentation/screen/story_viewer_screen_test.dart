@@ -18,6 +18,7 @@ import 'package:pulse/features/story/presentation/screen/story_viewer_screen.dar
 import 'package:pulse/features/story/presentation/utils/story_page_route.dart';
 import 'package:pulse/features/story/presentation/view/story_viewer_view.dart';
 
+import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/png_http_overrides.dart';
 import '../../../../helpers/pump_app.dart';
 
@@ -62,7 +63,14 @@ void main() {
   setUp(() async {
     await getIt.reset();
     getIt.registerFactory<StoryViewerCubit>(
-      () => StoryViewerCubit(_Rail(), _Stories(), _Gallery()),
+      () => StoryViewerCubit(
+        _Rail(),
+        _Stories(),
+        _Gallery(),
+        okSetMute(),
+        okReportContent(),
+        okRemoveMediaFiles(),
+      ),
     );
   });
 

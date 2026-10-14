@@ -1,6 +1,6 @@
 import '../../../../core/utils/equatable.dart';
 import '../../../../core/utils/json_mapper.dart';
-import '../enums/story_audience.dart';
+import '../../../../shared/content/data/enums/content_audience.dart';
 import '../enums/story_media_type.dart';
 import 'story_overlay_model.dart';
 
@@ -22,7 +22,7 @@ class StoryModel extends Equatable {
   final bool? likedByMe;
 
   /// Who can see it; null from a server that does not send it yet.
-  final StoryAudience? audience;
+  final ContentAudience? audience;
 
   /// Only for your own stories.
   final int? viewCount;
@@ -68,7 +68,7 @@ class StoryModel extends Equatable {
     expiresAt: JsonMapper.date(json['expires_at']),
     seenByMe: JsonMapper.boolean(json['seen_by_me']),
     likedByMe: JsonMapper.boolean(json['liked_by_me']),
-    audience: StoryAudience.fromWire(JsonMapper.string(json['audience'])),
+    audience: ContentAudience.fromWire(json['audience']),
     viewCount: JsonMapper.integer(json['view_count']),
   );
 
@@ -79,7 +79,7 @@ class StoryModel extends Equatable {
   StoryModel copyWith({
     bool? seenByMe,
     bool? likedByMe,
-    StoryAudience? audience,
+    ContentAudience? audience,
     String? mediaUrl,
     String? thumbUrl,
   }) => StoryModel(

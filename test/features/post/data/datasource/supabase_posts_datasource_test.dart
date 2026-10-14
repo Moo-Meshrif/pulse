@@ -1,0 +1,233 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
+import 'package:pulse/features/post/data/enums/media_type.dart';
+import 'package:pulse/features/post/data/model/post_media_model.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
+
+import '../../../../helpers/backend_double.dart';
+
+void main() {
+  Future<BackendDouble> signedIn(
+    Future<http.Response> Function(http.Request request) handler,
+  ) async {
+    final backend = BackendDouble((request) {
+      if (request.url.path.endsWith('/token')) {
+        return Future.value(BackendDouble.sessionResponse());
+      }
+      return handler(request);
+    });
+    await backend.signIn();
+    return backend;
+  }
+
+  Map<String, dynamic> body(http.Request request) =>
+      jsonDecode(request.body) as Map<String, dynamic>;
+
+  Map<String, dynamic> row(int n) => {
+    'id': 'p$n',
+    'author_id': 'a1',
+    'username': 'dip',
+    'full_name': 'Dip',
+    'avatar_url': null,
+    'caption': 'Hello',
+    'location': 'Cairo',
+    'like_count': 3,
+    'comment_count': 1,
+    'comments_enabled': true,
+    'created_at': '2026-10-13T10:0$n:00Z',
+    'liked_by_me': false,
+    'saved_by_me': true,
+    'media': [
+      {
+        'position': 0,
+        'type': 'video',
+        'path': 'a1/p$n/0.mp4',
+        'thumb_path': 'a1/p$n/0_thumb.jpg',
+        'width': 1080,
+        'height': 1350,
+        'duration_ms': 9000,
+        'blurhash': 'LEHV6n',
+      },
+    ],
+  };
+
+  group('getHomeFeed', () {
+    test('first page sends only the limit and parses the rows', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([row(1)]));
+      final posts = SupabasePostsDatasource(backend.client);
+
+      final page = await posts.getHomeFeed(limit: 20);
+
+      expect(body(backend.to('/rpc/home_feed').single), {'p_limit': 20});
+      final post = page.posts.single;
+      expect(post.id, 'p1');
+      expect(post.savedByMe, isTrue);
+      expect(post.media!.single.type, MediaType.video);
+      expect(post.media!.single.durationMs, 9000);
+    });
+
+    test('sends the cursor of the page before', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([]));
+      final posts = SupabasePostsDatasource(backend.client);
+
+      await posts.getHomeFeed(
+        limit: 2,
+        beforeCreated: DateTime.utc(2026, 10, 13, 10),
+        beforeId: 'p9',
+      );
+
+      expect(body(backend.to('/rpc/home_feed').single), {
+        'p_limit': 2,
+        'p_before_created': '2026-10-13T10:00:00.000Z',
+        'p_before_id': 'p9',
+      });
+    });
+
+    test('a full page carries the cursor of its last post', () async {
+      final backend = await signedIn(
+        (_) async => BackendDouble.json([row(2), row(1)]),
+      );
+      final posts = SupabasePostsDatasource(backend.client);
+
+      final page = await posts.getHomeFeed(limit: 2);
+
+      expect(page.nextBeforeId, 'p1');
+      expect(page.nextBeforeCreated, DateTime.utc(2026, 10, 13, 10, 1));
+    });
+
+    test('a short page has no next cursor', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([row(1)]));
+      final posts = SupabasePostsDatasource(backend.client);
+
+      final page = await posts.getHomeFeed(limit: 2);
+
+      expect(page.nextBeforeId, isNull);
+      expect(page.nextBeforeCreated, isNull);
+    });
+  });
+
+  test(
+    'signMediaUrls returns the links by path and skips the ones that fail',
+    () async {
+      final backend = await signedIn(
+        (_) async => BackendDouble.json([
+          {
+            'path': 'a/0.jpg',
+            'signedURL': '/object/sign/post-media/a/0.jpg?token=t',
+            'error': null,
+          },
+          {'path': 'a/1.jpg', 'signedURL': null, 'error': 'Object not found'},
+        ]),
+      );
+      final posts = SupabasePostsDatasource(backend.client);
+
+      final urls = await posts.signMediaUrls(['a/0.jpg', 'a/1.jpg']);
+
+      expect(urls.keys, ['a/0.jpg']);
+      expect(urls['a/0.jpg'], contains('token=t'));
+    },
+  );
+
+  test('signMediaUrls with no paths makes no request', () async {
+    final backend = await signedIn((_) async => BackendDouble.json([]));
+    final posts = SupabasePostsDatasource(backend.client);
+
+    expect(await posts.signMediaUrls([]), isEmpty);
+    expect(backend.requests, isEmpty);
+  });
+
+  test('listFiles returns the names in the folder', () async {
+    final backend = await signedIn(
+      (_) async => BackendDouble.json([
+        {'name': '0.jpg'},
+        {'name': '1.mp4'},
+      ]),
+    );
+    final posts = SupabasePostsDatasource(backend.client);
+
+    expect(await posts.listFiles('user-1/p1'), ['0.jpg', '1.mp4']);
+    expect(body(backend.requests.single)['prefix'], 'user-1/p1');
+  });
+
+  test(
+    'uploadFile posts the file to its path, replacing an existing one',
+    () async {
+      final backend = await signedIn(
+        (_) async => BackendDouble.json({'Key': 'post-media/user-1/p1/0.jpg'}),
+      );
+      final posts = SupabasePostsDatasource(backend.client);
+      final file = File('${Directory.systemTemp.path}/post_upload_test.jpg')
+        ..writeAsBytesSync([1, 2, 3]);
+      addTearDown(file.deleteSync);
+
+      await posts.uploadFile(
+        path: 'user-1/p1/0.jpg',
+        file: file,
+        contentType: 'image/jpeg',
+      );
+
+      final request = backend.requests.single;
+      expect(request.url.path, endsWith('/object/post-media/user-1/p1/0.jpg'));
+      expect(request.headers['x-upsert'], 'true');
+    },
+  );
+
+  test(
+    'createPost sends one create_post call with the media in order',
+    () async {
+      final backend = await signedIn((_) async => BackendDouble.json('p1'));
+      final posts = SupabasePostsDatasource(backend.client);
+
+      await posts.createPost(
+        id: 'p1',
+        caption: 'Hello',
+        location: 'Cairo',
+        commentsEnabled: false,
+        visibility: ContentAudience.onlyMe,
+        media: const [
+          PostMediaModel(
+            type: MediaType.image,
+            path: 'user-1/p1/0.jpg',
+            width: 1080,
+            height: 1350,
+          ),
+          PostMediaModel(
+            type: MediaType.video,
+            path: 'user-1/p1/1.mp4',
+            thumbPath: 'user-1/p1/1_thumb.jpg',
+            width: 720,
+            height: 1280,
+            durationMs: 5000,
+            blurhash: 'LEHV6n',
+          ),
+        ],
+      );
+
+      final sent = body(backend.to('/rpc/create_post').single);
+      expect(sent['p_id'], 'p1');
+      expect(sent['p_kind'], 'post');
+      expect(sent['p_caption'], 'Hello');
+      expect(sent['p_location'], 'Cairo');
+      expect(sent['p_comments_enabled'], isFalse);
+      expect(sent['p_visibility'], 'only_me');
+      final media = (sent['p_media'] as List).cast<Map<String, dynamic>>();
+      expect(media.map((m) => m['path']), [
+        'user-1/p1/0.jpg',
+        'user-1/p1/1.mp4',
+      ]);
+      expect(media[1], {
+        'type': 'video',
+        'path': 'user-1/p1/1.mp4',
+        'thumb_path': 'user-1/p1/1_thumb.jpg',
+        'width': 720,
+        'height': 1280,
+        'duration_ms': 5000,
+        'blurhash': 'LEHV6n',
+      });
+    },
+  );
+}

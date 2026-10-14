@@ -1434,5 +1434,547 @@
   "storyMoveToCloseConfirm": "Add",
   "@storyMoveToCloseConfirm": {
     "description": "Story audience: confirm moving a person between the two lists"
+  },
+  "postMore": "more",
+  "@postMore": {
+    "description": "The caption's expand link"
+  },
+  "postLess": "less",
+  "@postLess": {
+    "description": "The caption's collapse link"
+  },
+  "postTimeNow": "now",
+  "@postTimeNow": {
+    "description": "Post age under a minute"
+  },
+  "postTimeMinutes": "{count}m",
+  "@postTimeMinutes": {
+    "description": "Post age in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTimeHours": "{count}h",
+  "@postTimeHours": {
+    "description": "Post age in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTimeDays": "{count}d",
+  "@postTimeDays": {
+    "description": "Post age in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTimeWeeks": "{count}w",
+  "@postTimeWeeks": {
+    "description": "Post age in weeks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postLike": "Like",
+  "@postLike": {
+    "description": "Semantics: like button"
+  },
+  "postUnlike": "Unlike",
+  "@postUnlike": {
+    "description": "Semantics: liked button"
+  },
+  "postComment": "Comment",
+  "@postComment": {
+    "description": "Semantics: comment button"
+  },
+  "postShare": "Share",
+  "@postShare": {
+    "description": "Semantics: share button"
+  },
+  "postSave": "Save",
+  "@postSave": {
+    "description": "Semantics: save button"
+  },
+  "postUnsave": "Unsave",
+  "@postUnsave": {
+    "description": "Semantics: saved button"
+  },
+  "postOptions": "Post options",
+  "@postOptions": {
+    "description": "Semantics: the ... button"
+  },
+  "postMuteVideo": "Mute",
+  "@postMuteVideo": {
+    "description": "Semantics: mute a video"
+  },
+  "postUnmuteVideo": "Unmute",
+  "@postUnmuteVideo": {
+    "description": "Semantics: unmute a video"
+  },
+  "postMediaCounter": "Photo {number} of {total}",
+  "@postMediaCounter": {
+    "description": "Semantics: position in a post's media pager",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "postMediaRetry": "Couldn't load. Tap to retry",
+  "@postMediaRetry": {
+    "description": "Semantics: a post picture that failed to load"
+  },
+  "postSaved": "Saved",
+  "@postSaved": {
+    "description": "Options sheet: save tile once saved"
+  },
+  "postCopyLink": "Copy link",
+  "@postCopyLink": {
+    "description": "Options sheet: copy link tile"
+  },
+  "postNotInterested": "Not interested",
+  "@postNotInterested": {
+    "description": "Options sheet: hide this post"
+  },
+  "postNotInterestedHint": "See fewer posts like this",
+  "@postNotInterestedHint": {
+    "description": "Options sheet: hint under Not interested"
+  },
+  "postUnfollow": "Unfollow @{username}",
+  "@postUnfollow": {
+    "description": "Options sheet: unfollow the author",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "postMute": "Mute @{username}",
+  "@postMute": {
+    "description": "Options sheet: mute the author's posts",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "postMuteHint": "Hide their posts without unfollowing",
+  "@postMuteHint": {
+    "description": "Options sheet: hint under Mute"
+  },
+  "postReportTitle": "Report post",
+  "@postReportTitle": {
+    "description": "Report sheet title for a post"
+  },
+  "postReportBody": "Why are you reporting this post? Your report is anonymous.",
+  "@postReportBody": {
+    "description": "Report sheet reasons step, post"
+  },
+  "postReportSent": "We'll review this post. You won't see it in your feed anymore.",
+  "@postReportSent": {
+    "description": "Report sheet thanks step, post"
+  },
+  "postReportNotePlaceholder": "Tell us what's wrong with this post…",
+  "@postReportNotePlaceholder": {
+    "description": "Report sheet note field hint, post"
+  },
+  "postEditCaption": "Edit caption",
+  "@postEditCaption": {
+    "description": "Options sheet (own post)"
+  },
+  "postChangeWhoCanSee": "Change who can see",
+  "@postChangeWhoCanSee": {
+    "description": "Options sheet (own post)"
+  },
+  "postCommentsOff": "Turn off comments",
+  "@postCommentsOff": {
+    "description": "Options sheet (own post)"
+  },
+  "postCommentsOn": "Turn on comments",
+  "@postCommentsOn": {
+    "description": "Options sheet (own post)"
+  },
+  "postDelete": "Delete post",
+  "@postDelete": {
+    "description": "Options sheet (own post)"
+  },
+  "postDeleteTitle": "Delete this post?",
+  "@postDeleteTitle": {
+    "description": "Delete dialog title"
+  },
+  "postDeleteBody": "It will be removed from your profile and everyone's feed. You can't undo this.",
+  "@postDeleteBody": {
+    "description": "Delete dialog body"
+  },
+  "postHidden": "Post hidden",
+  "@postHidden": {
+    "description": "Hidden post row title"
+  },
+  "postHiddenHint": "You'll see fewer posts like this.",
+  "@postHiddenHint": {
+    "description": "Hidden post row hint"
+  },
+  "postUnfollowed": "Unfollowed @{username}",
+  "@postUnfollowed": {
+    "description": "Notice after unfollowing",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "postMuted": "@{username} muted",
+  "@postMuted": {
+    "description": "Notice after muting",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "postDeleted": "Post deleted",
+  "@postDeleted": {
+    "description": "Notice after deleting"
+  },
+  "newPostTitle": "New post",
+  "@newPostTitle": {
+    "description": "New post screen title"
+  },
+  "newPostHint": "What's on your mind?",
+  "@newPostHint": {
+    "description": "New post caption hint"
+  },
+  "newPostAdd": "Add",
+  "@newPostAdd": {
+    "description": "New post: the add-media tile"
+  },
+  "newPostAddToPost": "Add to your post",
+  "@newPostAddToPost": {
+    "description": "New post section label"
+  },
+  "newPostPhotoVideo": "Photo / video",
+  "@newPostPhotoVideo": {
+    "description": "New post option row"
+  },
+  "newPostAdded": "{count} added",
+  "@newPostAdded": {
+    "description": "New post: how many photos and videos are added",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newPostTag": "Tag people",
+  "@newPostTag": {
+    "description": "New post option row"
+  },
+  "newPostLocation": "Location",
+  "@newPostLocation": {
+    "description": "New post option row"
+  },
+  "newPostFeeling": "Feeling / activity",
+  "@newPostFeeling": {
+    "description": "New post option row"
+  },
+  "newPostAllowComments": "Allow comments",
+  "@newPostAllowComments": {
+    "description": "New post option switch"
+  },
+  "newPostShare": "Share post",
+  "@newPostShare": {
+    "description": "New post share button"
+  },
+  "newPostShared": "Post shared",
+  "@newPostShared": {
+    "description": "Notice after sharing a post"
+  },
+  "newPostDiscardTitle": "Discard post?",
+  "@newPostDiscardTitle": {
+    "description": "Discard dialog title"
+  },
+  "newPostDiscardBody": "Your post won't be saved.",
+  "@newPostDiscardBody": {
+    "description": "Discard dialog body"
+  },
+  "newPostKeepEditing": "Keep editing",
+  "@newPostKeepEditing": {
+    "description": "Discard dialog: stay"
+  },
+  "newPostDiscard": "Discard",
+  "@newPostDiscard": {
+    "description": "Discard dialog: leave"
+  },
+  "newPostShareFailed": "Couldn't share your post.",
+  "@newPostShareFailed": {
+    "description": "Notice when sharing fails (Retry action)"
+  },
+  "newPostVideoTooLong": "Videos can be up to {minutes} minutes.",
+  "@newPostVideoTooLong": {
+    "description": "Notice: a picked video is too long",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "newPostVideoTooBig": "Videos can be up to {megabytes} MB.",
+  "@newPostVideoTooBig": {
+    "description": "Notice: a picked video is too big",
+    "placeholders": {
+      "megabytes": {
+        "type": "int"
+      }
+    }
+  },
+  "newPostMediaLimit": "You can add up to {count} photos and videos.",
+  "@newPostMediaLimit": {
+    "description": "Notice: the media limit",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newPostRemoveMedia": "Remove photo {number}",
+  "@newPostRemoveMedia": {
+    "description": "Semantics: remove a picked photo or video",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "newPostCounterAtLimit": "{count} of {max}, limit reached",
+  "@newPostCounterAtLimit": {
+    "description": "Semantics: the caption counter at its limit",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "postAudiencePublic": "Public",
+  "@postAudiencePublic": {
+    "description": "Who can see a post"
+  },
+  "postAudienceFollowers": "Followers",
+  "@postAudienceFollowers": {
+    "description": "Who can see a post"
+  },
+  "postAudienceCloseFriends": "Close friends",
+  "@postAudienceCloseFriends": {
+    "description": "Who can see a post"
+  },
+  "postAudienceOnlyMe": "Only me",
+  "@postAudienceOnlyMe": {
+    "description": "Who can see a post"
+  },
+  "newPostVisibilityLabel": "Who can see this post: {choice}",
+  "@newPostVisibilityLabel": {
+    "description": "Semantics: the visibility chip",
+    "placeholders": {
+      "choice": {
+        "type": "String"
+      }
+    }
+  },
+  "postVisibilityTitle": "Who can see this post?",
+  "@postVisibilityTitle": {
+    "description": "Visibility picker title (New post)"
+  },
+  "postVisibilityChangeTitle": "Change who can see",
+  "@postVisibilityChangeTitle": {
+    "description": "Visibility picker title (own post)"
+  },
+  "postVisibilityCurrently": "Currently: {choice}",
+  "@postVisibilityCurrently": {
+    "description": "Visibility picker: the audience the post has now",
+    "placeholders": {
+      "choice": {
+        "type": "String"
+      }
+    }
+  },
+  "postVisibilityPublicHint": "Anyone on or off Pulse",
+  "@postVisibilityPublicHint": {
+    "description": "Visibility picker: under Public"
+  },
+  "postVisibilityPublicOff": "Off while your account is private",
+  "@postVisibilityPublicOff": {
+    "description": "Visibility picker: under Public when the account is private"
+  },
+  "postVisibilityOnlyMeHint": "Saved to your profile, hidden from everyone",
+  "@postVisibilityOnlyMeHint": {
+    "description": "Visibility picker: under Only me"
+  },
+  "postVisibilityPeople": "{count, plural, =1{1 person} other{{count} people}}",
+  "@postVisibilityPeople": {
+    "description": "Visibility picker: how many people an audience reaches",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postVisibilityEdit": "Edit",
+  "@postVisibilityEdit": {
+    "description": "Visibility picker: opens the close friends list"
+  },
+  "postVisibilityFuture": "Use for future posts",
+  "@postVisibilityFuture": {
+    "description": "Visibility picker toggle"
+  },
+  "postVisibilityFutureHint": "You can change it in Settings → Privacy",
+  "@postVisibilityFutureHint": {
+    "description": "Visibility picker: under the toggle"
+  },
+  "postVisibilityPrivateNote": "Your account is private, so only your followers can see your posts.",
+  "@postVisibilityPrivateNote": {
+    "description": "Visibility picker: note for a private account"
+  },
+  "postVisibilityPrivacySettings": "Privacy settings",
+  "@postVisibilityPrivacySettings": {
+    "description": "Visibility picker: link in the private note"
+  },
+  "postVisibilityKeptNote": "Likes and comments from people who lose access are kept but hidden from them.",
+  "@postVisibilityKeptNote": {
+    "description": "Visibility picker footer when changing a post"
+  },
+  "postVisibilityDone": "Done",
+  "@postVisibilityDone": {
+    "description": "Visibility picker button (New post)"
+  },
+  "postVisibilitySave": "Save",
+  "@postVisibilitySave": {
+    "description": "Visibility picker button (own post)"
+  },
+  "postVisibilityUpdated": "Visibility updated",
+  "@postVisibilityUpdated": {
+    "description": "Notice after changing who can see a post"
+  },
+  "postVisibilityNoticeCloseFriendsTitle": "Sharing with close friends",
+  "@postVisibilityNoticeCloseFriendsTitle": {
+    "description": "One-time notice after choosing Close friends"
+  },
+  "postVisibilityNoticeCloseFriendsBody": "{count, plural, =1{1 person will see this post} other{{count} people will see this post}}",
+  "@postVisibilityNoticeCloseFriendsBody": {
+    "description": "One-time notice body",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postVisibilityNoticeOnlyMeTitle": "Only you can see this post",
+  "@postVisibilityNoticeOnlyMeTitle": {
+    "description": "One-time notice after choosing Only me"
+  },
+  "postVisibilityNoticeOnlyMeBody": "It's saved to your profile, hidden from everyone",
+  "@postVisibilityNoticeOnlyMeBody": {
+    "description": "One-time notice body"
+  },
+  "locationTitle": "Add location",
+  "@locationTitle": {
+    "description": "Add location screen title"
+  },
+  "locationRemove": "Remove",
+  "@locationRemove": {
+    "description": "Add location: clear the location"
+  },
+  "locationSearchHint": "Search places",
+  "@locationSearchHint": {
+    "description": "Add location search field hint"
+  },
+  "locationUseCurrent": "Use current location",
+  "@locationUseCurrent": {
+    "description": "Add location: the row that uses where you are"
+  },
+  "locationNearby": "Nearby",
+  "@locationNearby": {
+    "description": "Add location section"
+  },
+  "locationRecent": "Recent",
+  "@locationRecent": {
+    "description": "Add location section"
+  },
+  "locationResults": "Results",
+  "@locationResults": {
+    "description": "Add location section"
+  },
+  "locationNoResults": "No places found",
+  "@locationNoResults": {
+    "description": "Add location: nothing matches the search"
+  },
+  "locationOffline": "Search needs a connection",
+  "@locationOffline": {
+    "description": "Add location: shown instead of search when offline"
+  },
+  "locationSearchFailed": "Couldn't search. Try again.",
+  "@locationSearchFailed": {
+    "description": "Add location: the search failed"
+  },
+  "locationPrimerTitle": "Allow location access",
+  "@locationPrimerTitle": {
+    "description": "Add location permission primer title"
+  },
+  "locationPrimerBody": "See places near you when you add a location. Pulse only uses it while you're choosing a place.",
+  "@locationPrimerBody": {
+    "description": "Add location permission primer body"
+  },
+  "locationAllow": "Allow location",
+  "@locationAllow": {
+    "description": "Add location primer button"
+  },
+  "locationNotNow": "Not now",
+  "@locationNotNow": {
+    "description": "Add location primer link"
+  },
+  "locationOpenSettings": "Open settings",
+  "@locationOpenSettings": {
+    "description": "Add location primer button when location is blocked"
+  },
+  "locationDistance": "{km} km",
+  "@locationDistance": {
+    "description": "Distance in kilometres",
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "locationKindCity": "City",
+  "@locationKindCity": {
+    "description": "Kind of place"
+  },
+  "locationKindTown": "Town",
+  "@locationKindTown": {
+    "description": "Kind of place"
+  },
+  "locationKindNeighborhood": "Neighborhood",
+  "@locationKindNeighborhood": {
+    "description": "Kind of place"
+  },
+  "locationSelected": "Selected",
+  "@locationSelected": {
+    "description": "Semantics: the place already on the post"
+  },
+  "locationClearSearch": "Clear search",
+  "@locationClearSearch": {
+    "description": "Semantics: the clear button of the Add location search"
   }
 }

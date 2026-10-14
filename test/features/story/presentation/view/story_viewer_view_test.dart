@@ -17,6 +17,7 @@ import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart'
 import 'package:pulse/features/story/presentation/view/story_viewer_view.dart';
 import 'package:pulse/features/story/presentation/widgets/story_progress_bars.dart';
 
+import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/png_http_overrides.dart';
 import '../../../../helpers/pump_app.dart';
 
@@ -107,7 +108,14 @@ void main() {
 
   setUp(() {
     stories = _Stories();
-    cubit = StoryViewerCubit(_Rail(), stories, _Gallery());
+    cubit = StoryViewerCubit(
+      _Rail(),
+      stories,
+      _Gallery(),
+      okSetMute(),
+      okReportContent(),
+      okRemoveMediaFiles(),
+    );
   });
 
   tearDown(() => cubit.close());

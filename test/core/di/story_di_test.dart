@@ -9,7 +9,6 @@ import 'package:pulse/core/state/camera_permission_cubit.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/datasource/story_camera_hint_datasource.dart';
 import 'package:pulse/features/story/data/enums/audience_list.dart';
-import 'package:pulse/features/story/data/enums/story_audience.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
 import 'package:pulse/features/story/domain/entity/captured_story_media.dart';
@@ -22,6 +21,7 @@ import 'package:pulse/features/story/presentation/cubit/story_camera_cubit.dart'
 import 'package:pulse/features/story/presentation/cubit/story_edit_cubit.dart';
 import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart';
 import 'package:pulse/features/story/presentation/cubit/story_viewers_cubit.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -39,7 +39,10 @@ void main() {
     expect(getIt<StoryCameraCubit>(), isA<StoryCameraCubit>());
     expect(getIt<CameraPermissionCubit>(), isA<CameraPermissionCubit>());
     expect(
-      getIt<StoryAudienceCubit>(param1: 's1', param2: StoryAudience.followers),
+      getIt<StoryAudienceCubit>(
+        param1: 's1',
+        param2: ContentAudience.followers,
+      ),
       isA<StoryAudienceCubit>(),
     );
     expect(

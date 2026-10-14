@@ -10,6 +10,7 @@ abstract final class AppAssets {
   static const bell = '$_icons/ic_bell.svg';
   static const block = '$_icons/ic_block.svg';
   static const bookmark = '$_icons/ic_bookmark.svg';
+  static const bookmarkFilled = '$_icons/ic_bookmark_filled.svg';
   static const cloudAlert = '$_icons/ic_cloud_alert.svg';
   static const pulseLine = '$_icons/ic_pulse_line.svg';
   static const camera = '$_icons/ic_camera.svg';
@@ -18,8 +19,11 @@ abstract final class AppAssets {
   static const check = '$_icons/ic_check.svg';
   static const chevronDown = '$_icons/ic_chevron_down.svg';
   static const chevronRight = '$_icons/ic_chevron_right.svg';
+  static const clock = '$_icons/ic_clock.svg';
   static const close = '$_icons/ic_close.svg';
   static const comment = '$_icons/ic_comment.svg';
+  static const crosshair = '$_icons/ic_crosshair.svg';
+  static const crosshairThin = '$_icons/ic_crosshair_thin.svg';
   static const createPost = '$_icons/ic_create_post.svg';
   static const createShort = '$_icons/ic_create_short.svg';
   static const document = '$_icons/ic_document.svg';
@@ -36,6 +40,7 @@ abstract final class AppAssets {
   static const image = '$_icons/ic_image.svg';
   static const laptop = '$_icons/ic_laptop.svg';
   static const location = '$_icons/ic_location.svg';
+  static const locationThin = '$_icons/ic_location_thin.svg';
   static const key = '$_icons/ic_key.svg';
   static const lock = '$_icons/ic_lock.svg';
   static const unlock = '$_icons/ic_unlock.svg';

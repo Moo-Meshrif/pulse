@@ -12,7 +12,7 @@ import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../data/enums/story_audience.dart';
+import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../cubit/story_audience_cubit.dart';
 import '../../cubit/story_audience_state.dart';
 import '../../utils/enums/story_audience_status.dart';
@@ -25,10 +25,10 @@ import 'audience_sheet_states.dart';
 /// (with Edit) and Hide story from, on the dark story sheet. A choice is saved at once; Done only closes.
 abstract final class StoryAudienceSheet {
   /// The audience of the story when the sheet closed (whatever way it closed).
-  static Future<StoryAudience> show(
+  static Future<ContentAudience> show(
     BuildContext context, {
     required String storyId,
-    required StoryAudience audience,
+    required ContentAudience audience,
   }) async {
     var current = audience;
     await AppBottomSheet.show<void>(
@@ -122,8 +122,8 @@ class _Body extends StatelessWidget {
                   icon: AppAssets.audience,
                   title: l10n.storyAudienceFollowers,
                   subtitle: people(state.summary.followers),
-                  selected: state.audience == StoryAudience.followers,
-                  onTap: () => cubit.select(StoryAudience.followers),
+                  selected: state.audience == ContentAudience.followers,
+                  onTap: () => cubit.select(ContentAudience.followers),
                 ),
                 AudienceRow(
                   icon: AppAssets.star,
@@ -135,10 +135,10 @@ class _Body extends StatelessWidget {
                   // a chevron like Hide story from, and the choice and Edit come once it has people.
                   selected: noCloseFriends
                       ? null
-                      : state.audience == StoryAudience.closeFriends,
+                      : state.audience == ContentAudience.closeFriends,
                   onTap: noCloseFriends
                       ? () => _openList(context, AppRoutes.audienceCloseFriends)
-                      : () => cubit.select(StoryAudience.closeFriends),
+                      : () => cubit.select(ContentAudience.closeFriends),
                   onEdit: noCloseFriends
                       ? null
                       : () =>

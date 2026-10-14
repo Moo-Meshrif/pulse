@@ -4,14 +4,11 @@ import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/enums/auth_failure_reason.dart';
-import '../../../../core/enums/report_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
 import '../enums/audience_list.dart';
 import '../enums/audience_tab.dart';
-import '../enums/story_audience.dart';
 import '../model/audience_person_model.dart';
-import '../model/audience_summary_model.dart';
 import '../model/new_story_model.dart';
 import '../model/story_model.dart';
 import '../model/story_rail_item_model.dart';
@@ -41,23 +38,15 @@ abstract interface class StoriesDatasource {
     DateTime? before,
   });
 
-  /// Deletes your story and its media files.
+  /// Deletes your story's row. Its files go through core's `RemoveMediaFilesUseCase`.
   Future<void> deleteStory(StoryModel story);
 
   /// Fires after something changed who is on your rail (a mute or an undo, a deleted story), so a rail on
   /// screen elsewhere reloads.
   Stream<void> get railChanges;
 
-  /// Hides [userId]'s stories from your rail ([muted]) or shows them again.
-  Future<void> setMuted(String userId, {required bool muted});
-
-  Future<void> reportStory(String storyId, ReportReason reason, {String? note});
-
-  /// Changes who can see [storyId] (yours), at once, posted or not.
-  Future<void> setAudience(String storyId, StoryAudience audience);
-
-  /// Followers, close friends and hidden-from counts of the Who can see this sheet.
-  Future<AudienceSummaryModel> getAudienceSummary();
+  /// Tells [railChanges] listeners the rail changed (after a mute, which core's `SetMuteUseCase` does).
+  void notifyRailChanged();
 
   /// Your followers for a list screen: the [tab], those matching [query], [limit] from [offset].
   Future<List<AudiencePersonModel>> getAudiencePeople(
@@ -84,7 +73,7 @@ abstract interface class StoriesDatasource {
 }
 
 /// [StoriesDatasource] as an adapter over Supabase: `story_rail`, `author_stories`, `story_views`,
-/// `set_story_like`, `story_viewers`, `set_story_mute`, `report_story`, the `stories` table and the
+/// `set_story_like`, `story_viewers`, the `stories` table and the
 /// private `post-media` bucket.
 @LazySingleton(as: StoriesDatasource)
 final class SupabaseStoriesDatasource implements StoriesDatasource {
@@ -196,49 +185,11 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
     final id = story.id;
     if (id == null) throw const NotFoundException('story id');
     await _client.from('stories').delete().eq('id', id);
-    final paths = [?story.path, ?story.thumbPath];
-    if (paths.isNotEmpty) await _client.storage.from(bucket).remove(paths);
     _railChanges.add(null);
   });
 
   @override
-  Future<void> setMuted(String userId, {required bool muted}) =>
-      Guard.run(() async {
-        await _client.rpc<dynamic>(
-          'set_story_mute',
-          params: {'p_user': userId, 'p_muted': muted},
-        );
-        _railChanges.add(null);
-      });
-
-  @override
-  Future<void> reportStory(
-    String storyId,
-    ReportReason reason, {
-    String? note,
-  }) => Guard.run(
-    () => _client.rpc<dynamic>(
-      'report_story',
-      params: {'p_story': storyId, 'p_reason': reason.wire, 'p_note': note},
-    ),
-  );
-
-  @override
-  Future<void> setAudience(String storyId, StoryAudience audience) => Guard.run(
-    () => _client.rpc<dynamic>(
-      'set_story_audience',
-      params: {'p_story': storyId, 'p_audience': audience.wire},
-    ),
-  );
-
-  @override
-  Future<AudienceSummaryModel> getAudienceSummary() => Guard.run(() async {
-    final rows = await _client.rpc<dynamic>('audience_summary');
-    final list = rows as List;
-    return list.isEmpty
-        ? const AudienceSummaryModel()
-        : AudienceSummaryModel.fromJson(list.first as Map<String, dynamic>);
-  });
+  void notifyRailChanged() => _railChanges.add(null);
 
   @override
   Future<List<AudiencePersonModel>> getAudiencePeople(

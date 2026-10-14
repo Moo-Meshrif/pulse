@@ -15,4 +15,14 @@ abstract final class StorageKeys {
 
   // story: the camera hint ("Tap for photo, hold for video") was shown and a story was captured
   static const storyCameraHintSeen = 'story_camera_hint_seen';
+
+  // post: the one-time "who will see this" notice was shown for this audience (wire value of the choice)
+  static String postVisibilityNoticeSeen(String wire) =>
+      'post_visibility_notice_seen_$wire';
+
+  // places: the last places picked (a post's location), newest first
+  static const recentPlaces = 'recent_places';
+
+  // places: "Not now" was chosen on the location permission primer
+  static const locationPrimerDismissed = 'location_primer_dismissed';
 }

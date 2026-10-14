@@ -1,0 +1,2 @@
+# Post feature: assets
+Icons for S3 (added by the user, verified in `assets/icons`): `ic_clock`, `ic_crosshair`, `ic_crosshair_thin` (large, primer), `ic_location_thin` (large pin 56). Others used already exist: `ic_arrow_back`, `ic_search`/`ic_magnifier`, `ic_close`, `ic_check`, `ic_location`, `ic_image`, `ic_tag_person`, `ic_smile`, `ic_globe`, `ic_chevron_down`, `ic_chevron_right`, plus the five added for post options.

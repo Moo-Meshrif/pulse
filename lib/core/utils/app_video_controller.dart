@@ -14,12 +14,16 @@ class AppVideoItem implements VideoFluxItem {
 
 /// `video_flux` over `video_player`: [player] is what the viewer draws and listens to.
 class AppVideoController extends CustomVideoController {
-  AppVideoController(this.dataSource)
+  AppVideoController(this.dataSource, {this.volume, this.isLooping = false})
     : player = VideoPlayerController.networkUrl(Uri.parse(dataSource));
 
   @override
   final String dataSource;
   final VideoPlayerController player;
+
+  /// The volume to start with (0 to 1), read when the video is ready; the player's own when null.
+  final double Function()? volume;
+  final bool isLooping;
 
   @override
   bool get isInitialized => player.value.isInitialized;
@@ -39,9 +43,12 @@ class AppVideoController extends CustomVideoController {
   @override
   Future<void> dispose() => player.dispose();
 
-  /// Decodes the first frame so the video paints at once.
+  /// Sets volume and looping, then decodes the first frame so the video paints at once.
   @override
   Future<void> warmUp() async {
+    final startVolume = volume;
+    if (startVolume != null) await player.setVolume(startVolume());
+    if (isLooping) await player.setLooping(true);
     await player.seekTo(Duration.zero);
     await player.pause();
   }

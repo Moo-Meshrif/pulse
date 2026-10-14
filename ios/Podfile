@@ -45,7 +45,13 @@ post_install do |installer|
         '$(inherited)',
         'PERMISSION_CAMERA=1',
         'PERMISSION_MICROPHONE=1',
+        'PERMISSION_LOCATION=1',
       ]
+      # geolocator: the app reads the position only while it is open, so it never needs the "always"
+      # location entry in Info.plist (geolocator README).
+      if target.name == 'geolocator_apple'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'BYPASS_PERMISSION_LOCATION_ALWAYS=1'
+      end
     end
   end
 end

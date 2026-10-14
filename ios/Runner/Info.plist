@@ -53,6 +53,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Pulse uses the camera to take photos and record videos for your stories and profile photo.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Pulse uses your location once to suggest nearby places when you add a location to a post.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Pulse uses the microphone to record sound with your story videos.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

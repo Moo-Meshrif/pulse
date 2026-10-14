@@ -14,7 +14,7 @@
 | Q11 | Packages | - | **answered** [user, plan]: `camera` + `permission_handler` + `video_flux` + `gal` + `image_picker` (existing) |
 | Q12 | Arabic copy | review | `x-review` |
 | Q13 | Save story to device and Delete confirm copy [estimated] | confirm | pending |
-| Q14 | story_mutes + story reports | - | **answered**: written in `schema-story-extras.sql` section 4 (`story_mutes`, `set_story_mute`, `reports.story_id`, `report_story`); `story_rail` must skip muted authors (plan) |
+| Q14 | story_mutes + story reports | - | **answered**: written in `schema-story-extras.sql` section 4 (`story_mutes`, `set_story_mute`, `reports.story_id`, `report_story`); `story_rail` must skip muted authors (plan). **Update 2026-10-14**: `set_story_mute` and `report_story` are replaced by the shared `set_mute(p_user, p_muted, p_scope: 'stories')` and `report_content(p_kind: 'story', …)` (`20261019120000_shared_content_actions.sql`, applied 2026-10-14); `story_mutes` and `reports.story_id` stay |
 | Q15 | Dark colors | - | **answered** [user]: sheet/dialog surface `#1F2423` (estimated), background `#161A19`, amber `#F2B45A` |
 | Q16 | Permissions board file | - | **answered**: copied from the session image cache to `screenshots/camera-permissions-board.png` |
 | Q17 | Viewers data | - | **answered** [user]: `story_viewers` RPC (liked + total); token file query superseded |

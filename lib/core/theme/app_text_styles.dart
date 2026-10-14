@@ -37,6 +37,11 @@ class AppTextStyles {
     required this.stickerLabel,
     required this.chipLabel,
     required this.countLabel,
+    required this.input,
+    required this.chip,
+    required this.moreLink,
+    required this.optionTitle,
+    required this.sheetTitle,
   });
 
   static const _sora = 'Sora';
@@ -90,6 +95,21 @@ class AppTextStyles {
 
   /// Viewer count chip, "Off" label.
   final TextStyle countLabel;
+
+  /// Post composer input and placeholder: 17/400.
+  final TextStyle input;
+
+  /// Post chips: visibility chip, duration chip: 12/600.
+  final TextStyle chip;
+
+  /// The caption's "more" / "less": 14/600.
+  final TextStyle moreLink;
+
+  /// Option row title (New post options card): 16/500.
+  final TextStyle optionTitle;
+
+  /// Visibility picker sheet title: Sora 18/700.
+  final TextStyle sheetTitle;
 
   static const latin = AppTextStyles._(
     logo: TextStyle(
@@ -274,6 +294,41 @@ class AppTextStyles {
       fontSize: 13,
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
+    ),
+    input: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 17,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0,
+    ),
+    chip: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+    ),
+    moreLink: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+    ),
+    optionTitle: TextStyle(
+      inherit: false,
+      fontFamily: _noto,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0,
+    ),
+    sheetTitle: TextStyle(
+      inherit: false,
+      fontFamily: _sora,
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      letterSpacing: -0.2,
     ),
   );
 
@@ -473,6 +528,41 @@ class AppTextStyles {
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
     ),
+    input: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 17,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0,
+    ),
+    chip: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+    ),
+    moreLink: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+    ),
+    optionTitle: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0,
+    ),
+    sheetTitle: TextStyle(
+      inherit: false,
+      fontFamily: _arabic,
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+    ),
   );
 
   /// Every style with its size multiplied by [factor] (the responsive scale; see [AppScale]).
@@ -506,6 +596,11 @@ class AppTextStyles {
       stickerLabel: f(stickerLabel),
       chipLabel: f(chipLabel),
       countLabel: f(countLabel),
+      input: f(input),
+      chip: f(chip),
+      moreLink: f(moreLink),
+      optionTitle: f(optionTitle),
+      sheetTitle: f(sheetTitle),
     );
   }
 

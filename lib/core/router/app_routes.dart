@@ -36,6 +36,10 @@ abstract final class AppRoutes {
 
   /// Full-screen create flows pushed over the shell (the Create sheet's Post and Short rows).
   static const createPost = '/create/post';
+
+  /// Choose a place for a post, a story or anything else that has a location. Takes the place already
+  /// chosen as its argument and goes back with a `LocationChoice`.
+  static const pickPlace = '/pick-place';
   static const createShort = '/create/short';
 
   /// Story viewer for one person's stories (`/story/:authorId`).
