@@ -7,11 +7,14 @@ import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
-import 'package:pulse/features/post/presentation/cubit/new_post_cubit.dart';
-import 'package:pulse/features/post/presentation/screen/new_post_screen.dart';
+import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
+import 'package:pulse/features/post/presentation/cubit/add_edit_post_cubit.dart';
+import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
-import 'package:pulse/features/post/presentation/widgets/new_post/add_media_tile.dart';
+import 'package:pulse/features/post/presentation/widgets/add_edit_post/add_media_tile.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
@@ -20,6 +23,10 @@ import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import '../../../../helpers/pump_app.dart';
 
 class _CreatePost extends Mock implements CreatePostUseCase {}
+
+class _UpdatePost extends Mock implements UpdatePostUseCase {}
+
+class _SignUrls extends Mock implements SignPostMediaUrlsUseCase {}
 
 class _Picker extends Mock implements MediaPickerService {}
 
@@ -58,8 +65,17 @@ void main() {
       ),
     );
     when(() => createPost(any())).thenAnswer((_) async {});
-    getIt.registerFactory(
-      () => NewPostCubit(createPost, picker, privacy, _Thumbnails(), account),
+    getIt.registerFactoryParam<AddEditPostCubit, PostEntity?, dynamic>(
+      (post, _) => AddEditPostCubit(
+        createPost,
+        _UpdatePost(),
+        _SignUrls(),
+        picker,
+        privacy,
+        _Thumbnails(),
+        account,
+        post,
+      ),
     );
   });
 
@@ -72,7 +88,7 @@ void main() {
     Size size = const Size(390, 844),
   }) async {
     setUpView(tester, textScale: textScale, size: size);
-    await tester.pumpApp(const NewPostScreen(), locale: locale);
+    await tester.pumpApp(const AddEditPostScreen(), locale: locale);
   }
 
   Finder shareButton() => find.byType(FilledButton);

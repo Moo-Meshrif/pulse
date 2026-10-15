@@ -25,7 +25,7 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 - **Post feature widgets (pure UI in `features/post/presentation/widgets/`, moved to `core` only if a second feature needs them):** P1 PostCard, P2 PostAuthorRow, P3 ExpandableCaption, P4 PostMedia, P5 PostActionBar, P6 relative time (`core/utils`), P7 PostOptionsSheet, P8 HiddenPostRow (`02-components.md`), plus the S4 sheet. Built here, connected to the feed by the home plan [user].
 - **Data:** post feature (feed page, signed media URLs, create post with visibility), post actions (like, save, hide, comments toggle, delete) in the post feature, and report / change audience / mute / audience counts / account privacy as shared use cases in `lib/shared/content` (Q13, superseded 2026-10-14) [user], post visibility backend (migration from the S4 board), places (Edge Function `places` over OSM, recent places on device, one-time device position).
 - **Goal:** a person can write a post with up to 10 photos/videos, a place, an audience and comments on/off, and share it; the card, options sheet and visibility picker are ready for Home.
-- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), Tag people and Feeling / activity (coming soon), sharing a post by link (Copy link / Share are coming soon, Q-V3), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, Edit caption page, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
+- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), Tag people and Feeling / activity (coming soon), sharing a post by link (Copy link / Share are coming soon, Q-V3), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
 - **Build order** (progress.md): control-page (done), story (done), **post**, home.
 
 ## Reuse
@@ -62,7 +62,7 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | T3 | Feeling / activity is "coming soon" | the New post options card | 6 |
 | T4 | Camera capture not in the New post picker (gallery only now) | the New post media picking | 6 |
 | T5 | ~~Home feed refresh after "Post shared"~~ done 2026-10-14: `CreatePostUseCase` asks for a feed refresh once the post exists; marker removed | `NewPostScreen` (`TODO(post-plan T5)`) | 6 |
-| T6 | Edit caption opens no page yet (not specced) | `PostOptionsFlow` (`TODO(post-plan T6)`, "Coming soon" until the list gives `onEditCaption`) | 5 |
+| T6 | ~~Edit caption opens no page~~ done: Edit post screen (`s5-edit-post.md`), marker removed | `PostOptionsActions.onEdit` | 5 |
 | T7 | Copy link and Share are "coming soon" until post deep links (`https://pulse.app/p/{post_id}`) and `share_plus` are added (Q-V3) | `PostOptionsFlow` (`TODO(post-plan T7)`) | 5 |
 | T8 | ~~Story plan's `TODO(story-plan T6)`: Mute / Unfollow rows~~ done in Phase 5 (`ReportSentRow`), marker removed | the shared report sheet | 5 |
 | T12 | ~~The visibility chip says "Coming soon" until the picker exists~~ done in Phase 7 | - | 7 |

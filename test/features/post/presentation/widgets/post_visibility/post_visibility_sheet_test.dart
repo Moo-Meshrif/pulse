@@ -8,7 +8,7 @@ import 'package:pulse/features/post/presentation/cubit/post_visibility_cubit.dar
 import 'package:pulse/features/post/presentation/utils/post_options_actions.dart';
 import 'package:pulse/features/post/presentation/utils/post_options_data.dart';
 import 'package:pulse/features/post/presentation/utils/post_visibility_result.dart';
-import 'package:pulse/features/post/presentation/widgets/new_post/visibility_chip.dart';
+import 'package:pulse/features/post/presentation/widgets/add_edit_post/visibility_chip.dart';
 import 'package:pulse/features/post/presentation/widgets/post_options/post_options_flow.dart';
 import 'package:pulse/features/post/presentation/widgets/post_visibility/post_visibility_sheet.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
@@ -255,6 +255,7 @@ void main() {
                   onToggleComments: () async {},
                   onDelete: () async {},
                   onAudienceChanged: changed.add,
+                  onEdit: () {},
                 ),
               ),
               child: const Text('open'),

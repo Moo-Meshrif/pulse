@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../cubit/new_post_cubit.dart';
-import '../../cubit/new_post_state.dart';
 import '../../dimens/post_composer_dimens.dart';
 import '../../utils/new_post_limits.dart';
 
 /// The caption: a borderless multiline field that grows with its text, and the counter under it.
+/// It starts with [initial] and reports every change to [onChanged].
 class CaptionField extends StatefulWidget {
-  const CaptionField({super.key});
+  const CaptionField({super.key, this.initial = '', required this.onChanged});
+
+  final String initial;
+  final ValueChanged<String> onChanged;
 
   @override
   State<CaptionField> createState() => _CaptionFieldState();
 }
 
 class _CaptionFieldState extends State<CaptionField> {
-  final _controller = TextEditingController();
+  late final _controller = TextEditingController(text: widget.initial);
 
   @override
   void dispose() {
@@ -40,7 +41,7 @@ class _CaptionFieldState extends State<CaptionField> {
           ),
           child: TextField(
             controller: _controller,
-            onChanged: context.read<NewPostCubit>().captionChanged,
+            onChanged: widget.onChanged,
             minLines: null,
             maxLines: null,
             keyboardType: TextInputType.multiline,
@@ -61,21 +62,24 @@ class _CaptionFieldState extends State<CaptionField> {
             ),
           ),
         ),
-        const _CaptionCounter(),
+        _CaptionCounter(controller: _controller),
       ],
     );
   }
 }
 
 class _CaptionCounter extends StatelessWidget {
-  const _CaptionCounter();
+  const _CaptionCounter({required this.controller});
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    return BlocSelector<NewPostCubit, NewPostState, int>(
-      selector: (state) => state.caption.length,
-      builder: (context, length) {
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: controller,
+      builder: (context, value, _) {
+        final length = value.text.length;
         final atLimit = length >= NewPostLimits.maxCaption;
         return Semantics(
           liveRegion: atLimit,

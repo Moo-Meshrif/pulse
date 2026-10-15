@@ -48,9 +48,8 @@ abstract final class PostOptionsFlow {
         return _mute(context, data, actions);
       case PostOption.report:
         return _report(context, data, actions);
-      case PostOption.editCaption:
-        // TODO(post-plan T6): Edit caption has no page yet.
-        _runOrComingSoon(context, actions.onEditCaption);
+      case PostOption.edit:
+        actions.onEdit();
         return Future.value();
       case PostOption.changeAudience:
         return _changeAudience(context, data, actions);
@@ -76,14 +75,6 @@ abstract final class PostOptionsFlow {
     if (audience == null) return;
     actions.onAudienceChanged(audience);
     messenger.showNotice(l10n.postVisibilityUpdated);
-  }
-
-  static void _runOrComingSoon(BuildContext context, VoidCallback? action) {
-    if (action == null) {
-      context.showSnackBar(context.l10n.comingSoon);
-      return;
-    }
-    action();
   }
 
   /// Runs [action] and shows the failure it throws, if any. Returns whether it succeeded.

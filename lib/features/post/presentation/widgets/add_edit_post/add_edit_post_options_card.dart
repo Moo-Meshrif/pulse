@@ -8,16 +8,17 @@ import '../../../../../core/extensions/snack_bar_context.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/utils/location_choice.dart';
-import '../../cubit/new_post_cubit.dart';
-import '../../cubit/new_post_state.dart';
+import '../../cubit/add_edit_post_cubit.dart';
+import '../../cubit/add_edit_post_state.dart';
 import '../../dimens/post_composer_dimens.dart';
-import 'new_post_option_row.dart';
+import 'add_edit_post_option_row.dart';
 
 /// The "Add to your post" card: photo / video, tag people, location, feeling and the comments switch.
-class NewPostOptionsCard extends StatelessWidget {
-  const NewPostOptionsCard({super.key});
+class AddEditPostOptionsCard extends StatelessWidget {
+  const AddEditPostOptionsCard({super.key});
 
-  NewPostCubit _cubit(BuildContext context) => context.read<NewPostCubit>();
+  AddEditPostCubit _cubit(BuildContext context) =>
+      context.read<AddEditPostCubit>();
 
   Future<void> _chooseLocation(BuildContext context) async {
     final cubit = _cubit(context);
@@ -44,9 +45,9 @@ class NewPostOptionsCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(PostComposerDimens.cardRadius),
         child: Column(
           children: [
-            BlocSelector<NewPostCubit, NewPostState, int>(
-              selector: (state) => state.media.length,
-              builder: (context, count) => NewPostOptionRow(
+            BlocSelector<AddEditPostCubit, AddEditPostState, int>(
+              selector: (state) => state.mediaCount,
+              builder: (context, count) => AddEditPostOptionRow(
                 icon: AppAssets.image,
                 title: l10n.newPostPhotoVideo,
                 value: count == 0 ? null : l10n.newPostAdded(count),
@@ -54,14 +55,14 @@ class NewPostOptionsCard extends StatelessWidget {
               ),
             ),
             // TODO(post-plan T2): Tag people is coming soon.
-            NewPostOptionRow(
+            AddEditPostOptionRow(
               icon: AppAssets.tagPerson,
               title: l10n.newPostTag,
               onTap: () => context.showSnackBar(l10n.comingSoon),
             ),
-            BlocSelector<NewPostCubit, NewPostState, String?>(
+            BlocSelector<AddEditPostCubit, AddEditPostState, String?>(
               selector: (state) => state.location,
-              builder: (context, location) => NewPostOptionRow(
+              builder: (context, location) => AddEditPostOptionRow(
                 icon: AppAssets.location,
                 title: l10n.newPostLocation,
                 value: location,
@@ -69,14 +70,14 @@ class NewPostOptionsCard extends StatelessWidget {
               ),
             ),
             // TODO(post-plan T3): Feeling / activity is coming soon.
-            NewPostOptionRow(
+            AddEditPostOptionRow(
               icon: AppAssets.smile,
               title: l10n.newPostFeeling,
               onTap: () => context.showSnackBar(l10n.comingSoon),
             ),
-            BlocSelector<NewPostCubit, NewPostState, bool>(
+            BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
               selector: (state) => state.commentsEnabled,
-              builder: (context, enabled) => NewPostOptionRow(
+              builder: (context, enabled) => AddEditPostOptionRow(
                 icon: AppAssets.comment,
                 title: l10n.newPostAllowComments,
                 onTap: () => cubit.commentsChanged(!enabled),

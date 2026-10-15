@@ -1232,7 +1232,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tell us what\'s wrong with this post…';
 
   @override
-  String get postEditCaption => 'Edit caption';
+  String get postEditPost => 'Edit post';
+
+  @override
+  String get editPostTitle => 'Edit post';
+
+  @override
+  String get editPostSave => 'Save';
+
+  @override
+  String get postUpdated => 'Post updated';
+
+  @override
+  String get editPostSaveFailed => 'Couldn\'t save your changes';
+
+  @override
+  String get editPostDiscardTitle => 'Discard changes?';
+
+  @override
+  String get editPostDiscardBody =>
+      'Your changes to this post won\'t be saved.';
 
   @override
   String get postChangeWhoCanSee => 'Change who can see';

@@ -1493,8 +1493,32 @@
   "@postReportNotePlaceholder": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "postEditCaption": "تعديل التعليق",
-  "@postEditCaption": {
+  "postEditPost": "تعديل المنشور",
+  "@postEditPost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "editPostTitle": "تعديل المنشور",
+  "@editPostTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "editPostSave": "حفظ",
+  "@editPostSave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUpdated": "تم تحديث المنشور",
+  "@postUpdated": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "editPostSaveFailed": "تعذّر حفظ تغييراتك",
+  "@editPostSaveFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "editPostDiscardTitle": "تجاهل التغييرات؟",
+  "@editPostDiscardTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "editPostDiscardBody": "لن يتم حفظ تغييراتك على هذا المنشور.",
+  "@editPostDiscardBody": {
     "x-review": "Arabic draft: pending user approval"
   },
   "postChangeWhoCanSee": "تغيير من يمكنه المشاهدة",

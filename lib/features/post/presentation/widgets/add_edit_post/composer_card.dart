@@ -6,8 +6,8 @@ import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
-import '../../cubit/new_post_cubit.dart';
-import '../../cubit/new_post_state.dart';
+import '../../cubit/add_edit_post_cubit.dart';
+import '../../cubit/add_edit_post_state.dart';
 import '../../dimens/post_composer_dimens.dart';
 import '../../utils/content_audience_display.dart';
 import '../post_visibility/post_visibility_sheet.dart';
@@ -34,7 +34,10 @@ class ComposerCard extends StatelessWidget {
         children: [
           const _AuthorRow(),
           SizedBox(height: AppSpacing.s12),
-          const CaptionField(),
+          CaptionField(
+            initial: context.read<AddEditPostCubit>().state.caption,
+            onChanged: context.read<AddEditPostCubit>().captionChanged,
+          ),
           SizedBox(height: AppSpacing.s12),
           const MediaStrip(),
         ],
@@ -47,7 +50,7 @@ class _AuthorRow extends StatelessWidget {
   const _AuthorRow();
 
   Future<void> _chooseAudience(BuildContext context) async {
-    final cubit = context.read<NewPostCubit>();
+    final cubit = context.read<AddEditPostCubit>();
     final result = await PostVisibilitySheet.choose(
       context,
       audience: cubit.state.visibility,
@@ -67,7 +70,7 @@ class _AuthorRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final me = context.read<NewPostCubit>().me;
+    final me = context.read<AddEditPostCubit>().me;
     final name = me?.fullName ?? me?.username;
     return Row(
       children: [
@@ -90,8 +93,8 @@ class _AuthorRow extends StatelessWidget {
                 ),
               SizedBox(height: AppSpacing.s4),
               BlocSelector<
-                NewPostCubit,
-                NewPostState,
+                AddEditPostCubit,
+                AddEditPostState,
                 ({ContentAudience audience, bool isNarrowed})
               >(
                 selector: (state) => (

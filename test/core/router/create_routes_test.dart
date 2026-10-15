@@ -4,7 +4,7 @@ import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/router/end_slide_page_route.dart';
 import 'package:pulse/core/router/placeholder_screen.dart';
-import 'package:pulse/features/post/presentation/screen/new_post_screen.dart';
+import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 
 void main() {
   for (final route in [
@@ -41,7 +41,7 @@ void main() {
         ),
       ),
     );
-    expect(screen, isA<NewPostScreen>());
+    expect(screen, isA<AddEditPostScreen>());
   });
 
   testWidgets('/create/post/location opens Add location with the place', (

@@ -8,6 +8,7 @@ import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/repository/feed_refresh_repository.dart';
+import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
@@ -57,7 +58,11 @@ void main() {
     posts = _MockPosts();
     thumbnails = _MockThumbnails();
     feedRefresh = _MockFeedRefresh();
-    useCase = CreatePostUseCase(posts, thumbnails, feedRefresh);
+    useCase = CreatePostUseCase(
+      posts,
+      PostMediaRepository(posts, thumbnails),
+      feedRefresh,
+    );
     when(() => posts.currentUserId).thenReturn('u1');
     when(() => posts.listFiles(any())).thenAnswer((_) async => const []);
     when(

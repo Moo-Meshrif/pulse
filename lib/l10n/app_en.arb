@@ -1589,9 +1589,33 @@
   "@postReportNotePlaceholder": {
     "description": "Report sheet note field hint, post"
   },
-  "postEditCaption": "Edit caption",
-  "@postEditCaption": {
+  "postEditPost": "Edit post",
+  "@postEditPost": {
     "description": "Options sheet (own post)"
+  },
+  "editPostTitle": "Edit post",
+  "@editPostTitle": {
+    "description": "Edit post screen title"
+  },
+  "editPostSave": "Save",
+  "@editPostSave": {
+    "description": "Edit post save button"
+  },
+  "postUpdated": "Post updated",
+  "@postUpdated": {
+    "description": "Notice after saving an edited post"
+  },
+  "editPostSaveFailed": "Couldn't save your changes",
+  "@editPostSaveFailed": {
+    "description": "Notice when saving an edited post failed"
+  },
+  "editPostDiscardTitle": "Discard changes?",
+  "@editPostDiscardTitle": {
+    "description": "Edit post: confirm leaving with unsaved changes"
+  },
+  "editPostDiscardBody": "Your changes to this post won't be saved.",
+  "@editPostDiscardBody": {
+    "description": "Edit post: confirm leaving with unsaved changes"
   },
   "postChangeWhoCanSee": "Change who can see",
   "@postChangeWhoCanSee": {

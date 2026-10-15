@@ -9,8 +9,8 @@ import '../../dimens/post_composer_dimens.dart';
 
 /// One row of the "Add to your post" card: an icon tile, a title, an optional value and a chevron, or a
 /// [trailing] widget (the comments switch) instead of the chevron.
-class NewPostOptionRow extends StatelessWidget {
-  const NewPostOptionRow({
+class AddEditPostOptionRow extends StatelessWidget {
+  const AddEditPostOptionRow({
     super.key,
     required this.icon,
     required this.title,
@@ -70,13 +70,11 @@ class NewPostOptionRow extends StatelessWidget {
                   ),
                 ),
                 if (value != null) ...[
-                  Flexible(
-                    child: AppText(
-                      value!,
-                      style: context.text.bodySm,
-                      color: colors.textSecondary,
-                      maxLines: 1,
-                    ),
+                  AppText(
+                    value!,
+                    style: context.text.bodySm,
+                    color: colors.textSecondary,
+                    maxLines: 1,
                   ),
                   SizedBox(width: AppSpacing.s8),
                 ],

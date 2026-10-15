@@ -17,7 +17,7 @@ import 'package:pulse/features/places/data/enums/place_kind.dart';
 import 'package:pulse/features/places/data/model/place_model.dart';
 import 'package:pulse/features/places/presentation/screen/add_location_screen.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
-import 'package:pulse/features/post/presentation/screen/new_post_screen.dart';
+import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
@@ -180,7 +180,7 @@ void main() {
     await settle(tester);
     await tester.tap(find.bySemanticsLabel(RegExp('^${l10nEn.createPost}\\.')));
     await settle(tester);
-    expect(find.byType(NewPostScreen), findsOneWidget);
+    expect(find.byType(AddEditPostScreen), findsOneWidget);
   }
 
   testWidgets('the Create sheet opens New post; X returns to the shell', (
@@ -191,7 +191,7 @@ void main() {
 
     await tester.tap(find.bySemanticsLabel(l10nEn.close));
     await settle(tester);
-    expect(find.byType(NewPostScreen), findsNothing);
+    expect(find.byType(AddEditPostScreen), findsNothing);
     expect(find.byType(ControlScreen), findsOneWidget);
   });
 
@@ -251,7 +251,7 @@ void main() {
           media: any(named: 'media'),
         ),
       ).called(1);
-      expect(find.byType(NewPostScreen), findsNothing);
+      expect(find.byType(AddEditPostScreen), findsNothing);
       expect(find.text(l10nEn.newPostShared), findsOneWidget);
 
       // Home, under New post, loaded its feed on open and loads it again for the new post.

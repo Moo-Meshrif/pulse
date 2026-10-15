@@ -3,9 +3,14 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
+import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_media_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
-import 'package:pulse/features/post/presentation/cubit/new_post_cubit.dart';
+import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
+import 'package:pulse/features/post/presentation/cubit/add_edit_post_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/new_post_notice.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
 import 'package:pulse/features/post/presentation/utils/post_visibility_result.dart';
@@ -15,6 +20,10 @@ import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 
 class _CreatePost extends Mock implements CreatePostUseCase {}
+
+class _UpdatePost extends Mock implements UpdatePostUseCase {}
+
+class _SignUrls extends Mock implements SignPostMediaUrlsUseCase {}
 
 class _Picker extends Mock implements MediaPickerService {}
 
@@ -39,6 +48,8 @@ PickedMedia video({int durationMs = 30000, int sizeBytes = 1000}) =>
 
 void main() {
   late _CreatePost createPost;
+  late _UpdatePost updatePost;
+  late _SignUrls signUrls;
   late _Picker picker;
   late _Privacy privacy;
   late _Thumbnails thumbnails;
@@ -57,6 +68,8 @@ void main() {
 
   setUp(() {
     createPost = _CreatePost();
+    updatePost = _UpdatePost();
+    signUrls = _SignUrls();
     picker = _Picker();
     privacy = _Privacy();
     thumbnails = _Thumbnails();
@@ -66,22 +79,30 @@ void main() {
     when(() => thumbnails.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
   });
 
-  NewPostCubit build() =>
-      NewPostCubit(createPost, picker, privacy, thumbnails, account);
+  AddEditPostCubit build([PostEntity? post]) => AddEditPostCubit(
+    createPost,
+    updatePost,
+    signUrls,
+    picker,
+    privacy,
+    thumbnails,
+    account,
+    post,
+  );
 
   group('Share is enabled', () {
     test('not when empty', () {
-      expect(build().state.canShare, isFalse);
+      expect(build().state.canSave, isFalse);
     });
 
     test('with text', () {
       final cubit = build()..captionChanged('hello');
-      expect(cubit.state.canShare, isTrue);
+      expect(cubit.state.canSave, isTrue);
     });
 
     test('not with only spaces', () {
       final cubit = build()..captionChanged('   ');
-      expect(cubit.state.canShare, isFalse);
+      expect(cubit.state.canSave, isFalse);
     });
 
     test('with one photo and no text', () async {
@@ -89,7 +110,7 @@ void main() {
           .thenAnswer((_) async => [photo()]);
       final cubit = build();
       await cubit.pickMedia();
-      expect(cubit.state.canShare, isTrue);
+      expect(cubit.state.canSave, isTrue);
     });
   });
 
@@ -191,7 +212,7 @@ void main() {
         ..captionChanged('  hello  ')
         ..commentsChanged(false)
         ..locationChanged('Kolkata');
-      await cubit.share();
+      await cubit.save();
 
       final sent =
           verify(() => createPost(captureAny())).captured.single
@@ -201,30 +222,30 @@ void main() {
       expect(sent.commentsEnabled, isFalse);
       expect(sent.location, 'Kolkata');
       expect(sent.visibility, ContentAudience.public);
-      expect(cubit.state.isShared, isTrue);
-      expect(cubit.state.isSharing, isFalse);
+      expect(cubit.state.isSaved, isTrue);
+      expect(cubit.state.isSaving, isFalse);
     });
 
     test('a failure stays, then Retry sends the same post id', () async {
       when(() => createPost(any())).thenThrow(const UnexpectedFailure());
       final cubit = build()..captionChanged('hello');
-      await cubit.share();
-      expect(cubit.state.isShared, isFalse);
-      expect(cubit.state.isSharing, isFalse);
+      await cubit.save();
+      expect(cubit.state.isSaved, isFalse);
+      expect(cubit.state.isSaving, isFalse);
       expect(cubit.state.notice, NewPostNotice.shareFailed);
 
       when(() => createPost(any())).thenAnswer((_) async {});
-      await cubit.share();
+      await cubit.save();
       final ids = verify(() => createPost(captureAny())).captured
           .cast<NewPostEntity>()
           .map((p) => p.id)
           .toSet();
       expect(ids, {cubit.state.postId});
-      expect(cubit.state.isShared, isTrue);
+      expect(cubit.state.isSaved, isTrue);
     });
 
     test('an empty post is not sent', () async {
-      await build().share();
+      await build().save();
       verifyNever(() => createPost(any()));
     });
   });
@@ -288,6 +309,120 @@ void main() {
       final cubit = build();
       await cubit.loadDefaultVisibility();
       expect(cubit.state.visibility, ContentAudience.public);
+    });
+  });
+
+  group('editing a post', () {
+    const m0 = PostMediaEntity(
+      isVideo: false,
+      path: 'u/p/0.jpg',
+      width: 1,
+      height: 1,
+    );
+    const m1 = PostMediaEntity(
+      isVideo: false,
+      path: 'u/p/1.jpg',
+      width: 1,
+      height: 1,
+    );
+    final post = PostEntity(
+      id: 'p',
+      authorId: 'u',
+      username: 'omar',
+      caption: 'Hello',
+      location: 'Cairo',
+      likeCount: 0,
+      commentCount: 0,
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      createdAt: DateTime(2026),
+      likedByMe: false,
+      savedByMe: false,
+      media: const [m0, m1],
+    );
+
+    setUp(() {
+      registerFallbackValue(
+        const EditPostEntity(
+          id: 'x',
+          kept: [],
+          added: [],
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+        ),
+      );
+      registerFallbackValue(post);
+      when(() => updatePost(any(), before: any(named: 'before')))
+          .thenAnswer((_) async {});
+      when(() => signUrls(any())).thenAnswer((_) async => {'u/p/0.jpg': 'u0'});
+      when(privacy.call).thenAnswer(
+        (_) async => const PrivacyEntity(
+          isPrivate: false,
+          defaultVisibility: ContentAudience.followers,
+        ),
+      );
+    });
+
+    test('starts from the post and cannot save until something changes', () {
+      final cubit = build(post);
+      expect(cubit.state.caption, 'Hello');
+      expect(cubit.state.kept, [m0, m1]);
+      expect(cubit.state.canSave, isFalse);
+      expect(cubit.state.hasContent, isFalse);
+    });
+
+    test(
+      'the account default audience does not replace the post\'s own',
+      () async {
+        final cubit = build(post);
+        await cubit.loadDefaultVisibility();
+        expect(cubit.state.visibility, ContentAudience.public);
+        expect(cubit.state.defaultVisibility, ContentAudience.followers);
+      },
+    );
+
+    test(
+      'the comments switch, audience, and removing media count as changes',
+      () {
+        expect((build(post)..commentsChanged(false)).state.canSave, isTrue);
+        expect((build(post)..removeMedia(0)).state.kept, [m1]);
+        expect((build(post)..removeMedia(0)).state.canSave, isTrue);
+      },
+    );
+
+    test('an emptied post cannot be saved', () {
+      final cubit = build(post)
+        ..captionChanged('')
+        ..removeMedia(0)
+        ..removeMedia(0);
+      expect(cubit.state.canSave, isFalse);
+    });
+
+    test('loads signed links for the post\'s media', () async {
+      final cubit = build(post);
+      await cubit.loadUrls();
+      expect(cubit.state.urls, {'u/p/0.jpg': 'u0'});
+    });
+
+    test('save updates the post, not creates it', () async {
+      final cubit = build(post)..captionChanged('  Changed  ');
+      await cubit.save();
+      final edited =
+          verify(() => updatePost(captureAny(), before: post)).captured.single
+              as EditPostEntity;
+      expect(edited.caption, 'Changed');
+      expect(edited.kept, [m0, m1]);
+      verifyNever(() => createPost(any()));
+      expect(cubit.state.isSaved, isTrue);
+    });
+
+    test('a failed save stays with the save-failed notice', () async {
+      when(() => updatePost(any(), before: any(named: 'before')))
+          .thenThrow(const NetworkFailure());
+      final cubit = build(post)..captionChanged('Changed');
+      await cubit.save();
+      expect(cubit.state.isSaved, isFalse);
+      expect(cubit.state.notice, NewPostNotice.saveFailed);
     });
   });
 }

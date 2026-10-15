@@ -1230,7 +1230,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get postReportNotePlaceholder => 'أخبرنا بما يزعجك في هذا المنشور…';
 
   @override
-  String get postEditCaption => 'تعديل التعليق';
+  String get postEditPost => 'تعديل المنشور';
+
+  @override
+  String get editPostTitle => 'تعديل المنشور';
+
+  @override
+  String get editPostSave => 'حفظ';
+
+  @override
+  String get postUpdated => 'تم تحديث المنشور';
+
+  @override
+  String get editPostSaveFailed => 'تعذّر حفظ تغييراتك';
+
+  @override
+  String get editPostDiscardTitle => 'تجاهل التغييرات؟';
+
+  @override
+  String get editPostDiscardBody => 'لن يتم حفظ تغييراتك على هذا المنشور.';
 
   @override
   String get postChangeWhoCanSee => 'تغيير من يمكنه المشاهدة';

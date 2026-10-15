@@ -30,7 +30,7 @@ void main() {
   test('your post: edit caption, who can see, comments, then delete', () {
     final l = layout(isMine: true);
     expect(l.groupA, [
-      PostOption.editCaption,
+      PostOption.edit,
       PostOption.changeAudience,
       PostOption.toggleComments,
     ]);

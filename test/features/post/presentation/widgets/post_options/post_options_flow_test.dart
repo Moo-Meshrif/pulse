@@ -29,6 +29,7 @@ void main() {
     onToggleComments: () => step('toggleComments'),
     onDelete: () => step('delete'),
     onAudienceChanged: (audience) => calls.add('audience ${audience.wire}'),
+    onEdit: () => calls.add('edit'),
   );
 
   Future<void> open(
@@ -82,7 +83,7 @@ void main() {
     testWidgets('your post shows its rows and the red delete', (tester) async {
       await open(tester, mine);
       for (final text in [
-        l10nEn.postEditCaption,
+        l10nEn.postEditPost,
         l10nEn.postChangeWhoCanSee,
         l10nEn.postCommentsOff,
         l10nEn.postDelete,
@@ -160,6 +161,13 @@ void main() {
       await tester.tap(find.text(l10nEn.postNotInterested));
       await tester.pumpAndSettle();
       expect(calls, ['notInterested']);
+    });
+
+    testWidgets('Edit post opens the editor', (tester) async {
+      await open(tester, mine);
+      await tester.tap(find.text(l10nEn.postEditPost));
+      await tester.pumpAndSettle();
+      expect(calls, ['edit']);
     });
 
     testWidgets('Copy link says coming soon and calls nothing', (tester) async {

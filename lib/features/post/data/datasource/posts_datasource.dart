@@ -11,7 +11,7 @@ import '../model/feed_page_model.dart';
 import '../model/post_media_model.dart';
 import '../model/post_model.dart';
 
-/// Posts: the home feed, signed links to their media, and creating one. What people do to a post
+/// Posts: the home feed, signed links to their media, and creating and editing one. What people do to a post
 /// (like, save, hide, report, delete...) is the core `PostActionsDatasource`.
 abstract interface class PostsDatasource {
   /// The signed-in user's id; no session throws an auth failure.
@@ -47,6 +47,15 @@ abstract interface class PostsDatasource {
     String? location,
     required bool commentsEnabled,
     required ContentAudience visibility,
+    required List<PostMediaModel> media,
+  });
+
+  /// Replaces the caption, place and media list of the signed-in user's post [id]; the [media] files
+  /// are already uploaded.
+  Future<void> updatePost({
+    required String id,
+    String? caption,
+    String? location,
     required List<PostMediaModel> media,
   });
 }
@@ -154,6 +163,24 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_media': [for (final item in media) item.toJson()],
         'p_comments_enabled': commentsEnabled,
         'p_visibility': visibility.wire,
+      },
+    ),
+  );
+
+  @override
+  Future<void> updatePost({
+    required String id,
+    String? caption,
+    String? location,
+    required List<PostMediaModel> media,
+  }) => Guard.run(
+    () => _client.rpc<dynamic>(
+      'update_post',
+      params: {
+        'p_id': id,
+        'p_caption': caption,
+        'p_location': location,
+        'p_media': [for (final item in media) item.toJson()],
       },
     ),
   );

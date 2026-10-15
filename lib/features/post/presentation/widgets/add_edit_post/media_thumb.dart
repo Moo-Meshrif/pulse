@@ -1,33 +1,31 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/services/media_picker_service.dart';
 import '../../../../../core/utils/format_countdown.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/post_composer_dimens.dart';
 import '../media/post_media_chip.dart';
 
-/// A picked photo or video in the strip, with its remove button and, for a video, its length.
+/// A photo or video in the strip, with its remove button and, for a video, its length.
 class MediaThumb extends StatelessWidget {
   const MediaThumb({
     super.key,
-    required this.media,
     required this.index,
-    this.poster,
+    this.image,
+    this.durationMs,
     required this.onRemove,
   });
-
-  final PickedMedia media;
 
   /// Position in the strip, from 0.
   final int index;
 
-  /// A frame of the video, if one could be made.
-  final String? poster;
+  /// The photo, or a frame of the video; null while there is none, which draws a plain tile.
+  final ImageProvider? image;
+
+  /// A video's length; null for a photo.
+  final int? durationMs;
   final VoidCallback onRemove;
 
   @override
@@ -36,7 +34,7 @@ class MediaThumb extends StatelessWidget {
     final cacheWidth =
         (PostComposerDimens.thumb * MediaQuery.devicePixelRatioOf(context))
             .round();
-    final picture = media.isVideo ? poster : media.path;
+    final picture = image;
     return SizedBox.square(
       dimension: PostComposerDimens.thumb,
       child: Stack(
@@ -49,24 +47,25 @@ class MediaThumb extends StatelessWidget {
               ),
               child: picture == null
                   ? ColoredBox(color: colors.border)
-                  : Image.file(
-                      File(picture),
+                  : Image(
+                      image: ResizeImage.resizeIfNeeded(
+                        cacheWidth,
+                        null,
+                        picture,
+                      ),
                       fit: BoxFit.cover,
-                      cacheWidth: cacheWidth,
                       excludeFromSemantics: true,
                       errorBuilder: (_, _, _) =>
                           ColoredBox(color: colors.border),
                     ),
             ),
           ),
-          if (media.isVideo && media.durationMs != null)
+          if (durationMs != null)
             PositionedDirectional(
               start: PostComposerDimens.durationInset,
               bottom: PostComposerDimens.durationInset,
               child: PostMediaChip(
-                text: formatCountdown(
-                  Duration(milliseconds: media.durationMs!),
-                ),
+                text: formatCountdown(Duration(milliseconds: durationMs!)),
                 radius: PostComposerDimens.durationRadius,
               ),
             ),

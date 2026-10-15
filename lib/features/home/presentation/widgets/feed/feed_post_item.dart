@@ -64,10 +64,18 @@ class _FeedPostItemState extends State<FeedPostItem> {
     onDelete: () => _actions.delete(_loaded),
     onAudienceChanged: (audience) =>
         _actions.audienceChanged(_loaded, audience),
+    onEdit: _openEdit,
   );
 
   void _openProfile() =>
       AppNavigator.push<void>(context, AppRoutes.profileOf(_loaded.authorId));
+
+  void _openEdit() => AppNavigator.push<void>(
+    context,
+    AppRoutes.editPost,
+    rootNavigator: true,
+    arguments: _actions.postOf(_loaded),
+  );
 
   void _openComments() =>
       AppNavigator.push<void>(context, AppRoutes.commentsOf(_loaded.id));

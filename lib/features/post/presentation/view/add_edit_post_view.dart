@@ -6,18 +6,18 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/new_post_cubit.dart';
-import '../cubit/new_post_state.dart';
+import '../cubit/add_edit_post_cubit.dart';
+import '../cubit/add_edit_post_state.dart';
 import '../dimens/post_composer_dimens.dart';
-import '../widgets/new_post/composer_card.dart';
-import '../widgets/new_post/new_post_options_card.dart';
-import '../widgets/new_post/new_post_share_bar.dart';
-import '../widgets/new_post/new_post_title_row.dart';
+import '../widgets/add_edit_post/add_edit_post_options_card.dart';
+import '../widgets/add_edit_post/add_edit_post_submit_bar.dart';
+import '../widgets/add_edit_post/add_edit_post_title_row.dart';
+import '../widgets/add_edit_post/composer_card.dart';
 
 /// The New post layout (docs/specs/post/screens/s1-new-post.md): title row, the composer and options
 /// cards in a scroll area, and the Share pill pinned under it. Nothing answers taps while it uploads.
-class NewPostView extends StatelessWidget {
-  const NewPostView({super.key, required this.onClose});
+class AddEditPostView extends StatelessWidget {
+  const AddEditPostView({super.key, required this.onClose});
 
   final VoidCallback onClose;
 
@@ -28,13 +28,21 @@ class NewPostView extends StatelessWidget {
       showTopBar: false,
       backgroundColor: colors.background,
       bottomSpace: PostComposerDimens.shareBottom,
-      child: BlocSelector<NewPostCubit, NewPostState, bool>(
-        selector: (state) => state.isSharing,
-        builder: (context, isSharing) => IgnorePointer(
-          ignoring: isSharing,
+      child: BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
+        selector: (state) => state.isSaving,
+        builder: (context, isSaving) => IgnorePointer(
+          ignoring: isSaving,
           child: Column(
             children: [
-              NewPostTitleRow(onClose: onClose),
+              BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
+                selector: (state) => state.isEditing,
+                builder: (context, isEditing) => AddEditPostTitleRow(
+                  title: isEditing
+                      ? context.l10n.editPostTitle
+                      : context.l10n.newPostTitle,
+                  onClose: onClose,
+                ),
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   keyboardDismissBehavior:
@@ -47,12 +55,12 @@ class NewPostView extends StatelessWidget {
                     children: [
                       const ComposerCard(),
                       const _SectionLabel(),
-                      const NewPostOptionsCard(),
+                      const AddEditPostOptionsCard(),
                     ],
                   ),
                 ),
               ),
-              const NewPostShareBar(),
+              const AddEditPostSubmitBar(),
             ],
           ),
         ),

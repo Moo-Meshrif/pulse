@@ -2255,8 +2255,44 @@ abstract class AppLocalizations {
   /// Options sheet (own post)
   ///
   /// In en, this message translates to:
-  /// **'Edit caption'**
-  String get postEditCaption;
+  /// **'Edit post'**
+  String get postEditPost;
+
+  /// Edit post screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Edit post'**
+  String get editPostTitle;
+
+  /// Edit post save button
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get editPostSave;
+
+  /// Notice after saving an edited post
+  ///
+  /// In en, this message translates to:
+  /// **'Post updated'**
+  String get postUpdated;
+
+  /// Notice when saving an edited post failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save your changes'**
+  String get editPostSaveFailed;
+
+  /// Edit post: confirm leaving with unsaved changes
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get editPostDiscardTitle;
+
+  /// Edit post: confirm leaving with unsaved changes
+  ///
+  /// In en, this message translates to:
+  /// **'Your changes to this post won\'t be saved.'**
+  String get editPostDiscardBody;
 
   /// Options sheet (own post)
   ///

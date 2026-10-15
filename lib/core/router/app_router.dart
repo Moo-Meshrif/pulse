@@ -10,7 +10,8 @@ import '../../features/legal/presentation/screen/legal_screen.dart';
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
 import '../../features/onboarding/presentation/screen/onboarding_screen.dart';
 import '../../features/places/presentation/screen/add_location_screen.dart';
-import '../../features/post/presentation/screen/new_post_screen.dart';
+import '../../features/post/domain/entity/post_entity.dart';
+import '../../features/post/presentation/screen/add_edit_post_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -87,7 +88,11 @@ abstract final class AppRouter {
       ),
       // The main shell (tabs + nav bar); sign-in, sign-up and the splash end here.
       AppRoutes.home => _page(settings, const ControlScreen()),
-      AppRoutes.createPost => _page(settings, const NewPostScreen()),
+      AppRoutes.createPost => _page(settings, const AddEditPostScreen()),
+      AppRoutes.editPost => _page(
+        settings,
+        AddEditPostScreen(post: settings.arguments as PostEntity),
+      ),
       // The place already on the post comes in as the route argument.
       AppRoutes.pickPlace => _endSlidePage(
         settings,

@@ -8,7 +8,7 @@ Sheet (shell = Create sheet: surface, top radius 28, padding 10 16 34, grabber 4
 ├─ Quick row: 3 tiles Save | Copy link | Share  (76 high, r18, `background` fill, icon 24, label 13/600, gap between 12)
 ├─ Group A (r18, `background`, rows >= 56, icon 22, label 15/600, sub 12 textSecondary, divider `divider`)
 │    others: Not interested (sub "See fewer posts like this") · Unfollow @user · Mute @user (sub "Hide their posts without unfollowing")
-│    own:    Edit caption · Change who can see (S4, board s4-visibility panel 4) · Turn off comments
+│    own:    Edit post · Change who can see (S4, board s4-visibility panel 4) · Turn off comments
 └─ Group B (own group, danger #C42B34 icon + label)
      others: Report post (ic_flag)     own: Delete post (ic_trash)
 gap between groups 12
@@ -37,7 +37,7 @@ Opens from the post's "···": button turns `primarySoft` while open (44 button
 | Unfollow | closes; the author's posts leave the feed on refresh; notice "Unfollowed @x" + Undo |
 | Mute | notice "@x muted" + Undo |
 | Report | reasons step, then sent step ("Something else" adds the note step) |
-| Edit caption | caption editor page (not specced) |
+| Edit post | Edit post screen (`s5-edit-post.md`) |
 | Change who can see | opens S4 panel 4 ("Currently: X", Save -> shared `SetContentAudienceUseCase` (`set_content_audience`), notice "Visibility updated") |
 | Turn off comments | toggles; label becomes "Turn on comments" |
 | Delete | confirm dialog |
@@ -52,7 +52,7 @@ Opens from the post's "···": button turns `primarySoft` while open (44 button
 | postUnfollow | Unfollow @{username} | إلغاء متابعة @{username} |
 | postMute / sub | Mute @{username} / Hide their posts without unfollowing | كتم @{username} / إخفاء منشوراته دون إلغاء المتابعة |
 | postReport | Report post | الإبلاغ عن المنشور |
-| postEditCaption | Edit caption | تعديل التعليق |
+| postEditPost | Edit post | تعديل المنشور |
 | postCommentsOff / On | Turn off comments / Turn on comments | إيقاف التعليقات / تشغيل التعليقات |
 | postDelete | Delete post | حذف المنشور |
 | reportTitle / body | Report post / Why are you reporting this post? Your report is anonymous. | الإبلاغ عن المنشور / لماذا تبلغ عن هذا المنشور؟ بلاغك مجهول. |
@@ -80,7 +80,7 @@ Sheet uses `AppSafeArea` (bottomSpace 34). Rows >= 56 high; semantics labels = v
 
 ## Acceptance checklist
 - [ ] Others' variant shows quick row, Not interested/Unfollow/Mute group, red Report group.
-- [ ] Own variant shows Edit caption/Turn off comments and red Delete.
+- [ ] Own variant shows Edit post/Turn off comments and red Delete.
 - [ ] "···" turns primarySoft while open; scrim tap and drag close.
 - [ ] Something else: note step with back arrow, autofocus, 0/500 counter, Send disabled under 5 chars, loader on send, counter danger at 500.
 - [ ] Report step slides in; each reason submits; sent step with Mute/Unfollow and Done.

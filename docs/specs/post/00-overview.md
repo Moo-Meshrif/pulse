@@ -16,7 +16,7 @@ Video: `video_flux` [user]. Backend: Supabase now, REST later; schema `../home/s
 
 Public post widgets (post card, options flow, visibility sheet): specced in `02-components.md`, built in `features/post/presentation/` and exported for other features [user, 2026-10-14].
 
-Not specced yet: media picker, tag people, feeling/activity, settings > privacy, post detail, comments, edit caption (opened from Home S2), saved posts.
+Not specced yet: media picker, tag people, feeling/activity, settings > privacy, post detail, comments, saved posts.
 
 ## Navigation map
 ```

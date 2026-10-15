@@ -18,7 +18,7 @@ class PostOptionLayout {
       return PostOptionLayout._(
         quick,
         const [
-          PostOption.editCaption,
+          PostOption.edit,
           PostOption.changeAudience,
           PostOption.toggleComments,
         ],

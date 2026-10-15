@@ -13,7 +13,7 @@ enum PostOption {
   unfollow,
   mute,
   report,
-  editCaption,
+  edit,
   changeAudience,
   toggleComments,
   delete;
@@ -28,7 +28,7 @@ enum PostOption {
     unfollow => AppAssets.userMinus,
     mute => AppAssets.volumeOff,
     report => AppAssets.flag,
-    editCaption => AppAssets.edit,
+    edit => AppAssets.edit,
     changeAudience => AppAssets.audience,
     toggleComments => AppAssets.comment,
     delete => AppAssets.trash,
@@ -44,7 +44,7 @@ enum PostOption {
       unfollow => l10n.postUnfollow(data.username),
       mute => l10n.postMute(data.username),
       report => l10n.postReportTitle,
-      editCaption => l10n.postEditCaption,
+      edit => l10n.postEditPost,
       changeAudience => l10n.postChangeWhoCanSee,
       toggleComments =>
         data.commentsEnabled ? l10n.postCommentsOff : l10n.postCommentsOn,

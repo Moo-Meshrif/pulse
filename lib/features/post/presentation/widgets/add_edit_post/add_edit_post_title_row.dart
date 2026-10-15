@@ -7,10 +7,15 @@ import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/post_composer_dimens.dart';
 
-/// "New post" at the start and the close button at the end.
-class NewPostTitleRow extends StatelessWidget {
-  const NewPostTitleRow({super.key, required this.onClose});
+/// The screen title at the start and the close button at the end.
+class AddEditPostTitleRow extends StatelessWidget {
+  const AddEditPostTitleRow({
+    super.key,
+    required this.title,
+    required this.onClose,
+  });
 
+  final String title;
   final VoidCallback onClose;
 
   @override
@@ -24,7 +29,7 @@ class NewPostTitleRow extends StatelessWidget {
           children: [
             Expanded(
               child: AppText(
-                context.l10n.newPostTitle,
+                title,
                 style: context.text.title,
                 color: colors.textPrimary,
                 maxLines: 1,
