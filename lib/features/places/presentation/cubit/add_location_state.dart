@@ -1,11 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/enums/permission_access.dart';
+import '../../../../core/utils/location_choice.dart';
 import '../../domain/entity/place_entity.dart';
 import '../utils/add_location_limits.dart';
 import '../utils/enums/add_location_status.dart';
 import '../utils/enums/location_search_status.dart';
-import '../utils/location_choice.dart';
 
 part 'add_location_state.freezed.dart';
 

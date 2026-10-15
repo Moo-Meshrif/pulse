@@ -7,13 +7,13 @@ import 'package:pulse/core/enums/permission_access.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/services/location_service.dart';
-import 'package:pulse/shared/places/data/datasource/location_primer_datasource.dart';
-import 'package:pulse/shared/places/data/enums/place_kind.dart';
-import 'package:pulse/shared/places/data/repository/places_repository.dart';
-import 'package:pulse/shared/places/domain/entity/place_entity.dart';
-import 'package:pulse/shared/places/presentation/cubit/add_location_cubit.dart';
-import 'package:pulse/shared/places/presentation/utils/enums/location_search_status.dart';
-import 'package:pulse/shared/places/presentation/utils/location_choice.dart';
+import 'package:pulse/core/utils/location_choice.dart';
+import 'package:pulse/features/places/data/datasource/location_primer_datasource.dart';
+import 'package:pulse/features/places/data/enums/place_kind.dart';
+import 'package:pulse/features/places/data/repository/places_repository.dart';
+import 'package:pulse/features/places/domain/entity/place_entity.dart';
+import 'package:pulse/features/places/presentation/cubit/add_location_cubit.dart';
+import 'package:pulse/features/places/presentation/utils/enums/location_search_status.dart';
 
 class _Places extends Mock implements PlacesRepository {}
 

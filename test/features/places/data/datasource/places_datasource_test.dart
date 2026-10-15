@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/shared/places/data/datasource/places_datasource.dart';
-import 'package:pulse/shared/places/data/enums/place_kind.dart';
+import 'package:pulse/features/places/data/datasource/places_datasource.dart';
+import 'package:pulse/features/places/data/enums/place_kind.dart';
 
 import '../../../../helpers/backend_double.dart';
 

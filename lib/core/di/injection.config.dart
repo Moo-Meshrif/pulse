@@ -64,6 +64,14 @@ import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
     as _i834;
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart'
     as _i807;
+import '../../features/places/data/datasource/location_primer_datasource.dart'
+    as _i234;
+import '../../features/places/data/datasource/places_datasource.dart' as _i438;
+import '../../features/places/data/datasource/recent_places_datasource.dart'
+    as _i366;
+import '../../features/places/data/repository/places_repository.dart' as _i974;
+import '../../features/places/presentation/cubit/add_location_cubit.dart'
+    as _i490;
 import '../../features/post/data/datasource/post_actions_datasource.dart'
     as _i512;
 import '../../features/post/data/datasource/posts_datasource.dart' as _i141;
@@ -171,14 +179,6 @@ import '../../shared/content/domain/use_case/save_default_audience_use_case.dart
 import '../../shared/content/domain/use_case/set_content_audience_use_case.dart'
     as _i998;
 import '../../shared/content/domain/use_case/set_mute_use_case.dart' as _i71;
-import '../../shared/places/data/datasource/location_primer_datasource.dart'
-    as _i916;
-import '../../shared/places/data/datasource/places_datasource.dart' as _i712;
-import '../../shared/places/data/datasource/recent_places_datasource.dart'
-    as _i190;
-import '../../shared/places/data/repository/places_repository.dart' as _i767;
-import '../../shared/places/presentation/cubit/add_location_cubit.dart'
-    as _i528;
 import '../router/recovery_link_handler.dart' as _i358;
 import '../router/session_guard.dart' as _i96;
 import '../services/camera_device.dart' as _i64;
@@ -276,9 +276,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i604.LegalDatasource>(
       () => _i604.SupabaseLegalDatasource(gh<_i454.SupabaseClient>()),
     );
-    gh.lazySingleton<_i712.PlacesDatasource>(
-      () => _i712.SupabasePlacesDatasource(gh<_i454.SupabaseClient>()),
-    );
     gh.lazySingleton<_i568.ActivityDatasource>(
       () => _i568.SupabaseActivityDatasource(gh<_i454.SupabaseClient>()),
     );
@@ -331,6 +328,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i47.ConnectivityService>(
       () => _i47.PlusConnectivityService(gh<_i895.Connectivity>()),
+    );
+    gh.lazySingleton<_i438.PlacesDatasource>(
+      () => _i438.SupabasePlacesDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i885.PrivacyDatasource>(
       () => _i885.SupabasePrivacyDatasource(gh<_i454.SupabaseClient>()),
@@ -400,6 +400,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i834.OnboardingDatasource>(
       () => _i834.OnboardingDatasource(gh<_i527.LocalStorageService>()),
     );
+    gh.lazySingleton<_i234.LocationPrimerDatasource>(
+      () => _i234.LocationPrimerDatasource(gh<_i527.LocalStorageService>()),
+    );
+    gh.lazySingleton<_i366.RecentPlacesDatasource>(
+      () => _i366.RecentPlacesDatasource(gh<_i527.LocalStorageService>()),
+    );
     gh.lazySingleton<_i722.VisibilityNoticeDatasource>(
       () => _i722.VisibilityNoticeDatasource(gh<_i527.LocalStorageService>()),
     );
@@ -408,12 +414,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i996.StoryCameraHintDatasource>(
       () => _i996.StoryCameraHintDatasource(gh<_i527.LocalStorageService>()),
-    );
-    gh.lazySingleton<_i916.LocationPrimerDatasource>(
-      () => _i916.LocationPrimerDatasource(gh<_i527.LocalStorageService>()),
-    );
-    gh.lazySingleton<_i190.RecentPlacesDatasource>(
-      () => _i190.RecentPlacesDatasource(gh<_i527.LocalStorageService>()),
     );
     gh.factory<_i91.GetCurrentUserIdUseCase>(
       () => _i91.GetCurrentUserIdUseCase(gh<_i320.ProfileDatasource>()),
@@ -445,12 +445,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i575.GetUnreadActivityCountUseCase>(
       () => _i575.GetUnreadActivityCountUseCase(gh<_i568.ActivityDatasource>()),
-    );
-    gh.lazySingleton<_i767.PlacesRepository>(
-      () => _i767.PlacesRepositoryImpl(
-        gh<_i712.PlacesDatasource>(),
-        gh<_i190.RecentPlacesDatasource>(),
-      ),
     );
     gh.factory<_i660.GetPrivacyUseCase>(
       () => _i660.GetPrivacyUseCase(gh<_i885.PrivacyDatasource>()),
@@ -528,6 +522,12 @@ extension GetItInjectableX on _i174.GetIt {
         audience,
       ),
     );
+    gh.lazySingleton<_i974.PlacesRepository>(
+      () => _i974.PlacesRepositoryImpl(
+        gh<_i438.PlacesDatasource>(),
+        gh<_i366.RecentPlacesDatasource>(),
+      ),
+    );
     gh.factoryParam<_i264.PostVisibilityCubit, String?, _i248.ContentAudience>(
       (postId, audience) => _i264.PostVisibilityCubit(
         gh<_i660.GetPrivacyUseCase>(),
@@ -545,12 +545,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ProfileRepository>(),
       ),
     );
-    gh.factoryParam<_i528.AddLocationCubit, String?, dynamic>(
-      (current, _) => _i528.AddLocationCubit(
-        gh<_i767.PlacesRepository>(),
+    gh.factoryParam<_i490.AddLocationCubit, String?, dynamic>(
+      (current, _) => _i490.AddLocationCubit(
+        gh<_i974.PlacesRepository>(),
         gh<_i669.LocationService>(),
         gh<_i47.ConnectivityService>(),
-        gh<_i916.LocationPrimerDatasource>(),
+        gh<_i234.LocationPrimerDatasource>(),
         current,
       ),
     );

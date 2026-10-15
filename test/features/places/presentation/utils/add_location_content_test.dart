@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/shared/places/domain/entity/place_entity.dart';
-import 'package:pulse/shared/places/presentation/cubit/add_location_state.dart';
-import 'package:pulse/shared/places/presentation/utils/enums/add_location_content.dart';
-import 'package:pulse/shared/places/presentation/utils/enums/add_location_status.dart';
-import 'package:pulse/shared/places/presentation/utils/enums/location_search_status.dart';
+import 'package:pulse/features/places/domain/entity/place_entity.dart';
+import 'package:pulse/features/places/presentation/cubit/add_location_state.dart';
+import 'package:pulse/features/places/presentation/utils/enums/add_location_content.dart';
+import 'package:pulse/features/places/presentation/utils/enums/add_location_status.dart';
+import 'package:pulse/features/places/presentation/utils/enums/location_search_status.dart';
 
 void main() {
   const ready = AddLocationState(status: AddLocationStatus.ready);

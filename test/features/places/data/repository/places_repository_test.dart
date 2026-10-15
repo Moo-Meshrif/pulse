@@ -2,12 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/location_service.dart';
-import 'package:pulse/shared/places/data/datasource/places_datasource.dart';
-import 'package:pulse/shared/places/data/datasource/recent_places_datasource.dart';
-import 'package:pulse/shared/places/data/enums/place_kind.dart';
-import 'package:pulse/shared/places/data/model/place_model.dart';
-import 'package:pulse/shared/places/data/repository/places_repository.dart';
-import 'package:pulse/shared/places/domain/entity/place_entity.dart';
+import 'package:pulse/features/places/data/datasource/places_datasource.dart';
+import 'package:pulse/features/places/data/datasource/recent_places_datasource.dart';
+import 'package:pulse/features/places/data/enums/place_kind.dart';
+import 'package:pulse/features/places/data/model/place_model.dart';
+import 'package:pulse/features/places/data/repository/places_repository.dart';
+import 'package:pulse/features/places/domain/entity/place_entity.dart';
 
 class _Places extends Mock implements PlacesDatasource {}
 

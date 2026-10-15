@@ -8,7 +8,7 @@ import '../../../../../core/extensions/snack_bar_context.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/theme/app_dimens.dart';
-import '../../../../../shared/places/presentation/utils/location_choice.dart';
+import '../../../../../core/utils/location_choice.dart';
 import '../../cubit/new_post_cubit.dart';
 import '../../cubit/new_post_state.dart';
 import 'new_post_option_row.dart';

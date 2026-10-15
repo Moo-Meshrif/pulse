@@ -12,6 +12,10 @@ import 'package:pulse/core/services/location_service.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/control/presentation/screen/control_screen.dart';
+import 'package:pulse/features/places/data/datasource/places_datasource.dart';
+import 'package:pulse/features/places/data/enums/place_kind.dart';
+import 'package:pulse/features/places/data/model/place_model.dart';
+import 'package:pulse/features/places/presentation/screen/add_location_screen.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/presentation/screen/new_post_screen.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
@@ -21,10 +25,6 @@ import 'package:pulse/shared/content/data/datasource/privacy_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/model/audience_summary_model.dart';
 import 'package:pulse/shared/content/data/model/privacy_model.dart';
-import 'package:pulse/shared/places/data/datasource/places_datasource.dart';
-import 'package:pulse/shared/places/data/enums/place_kind.dart';
-import 'package:pulse/shared/places/data/model/place_model.dart';
-import 'package:pulse/shared/places/presentation/screen/add_location_screen.dart';
 
 import '../helpers/pump_app.dart';
 

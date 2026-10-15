@@ -1,4 +1,4 @@
-import '../../../../core/utils/equatable.dart';
+import 'equatable.dart';
 
 /// What Add location hands back to New post: the place name to save, or none ("Remove").
 class LocationChoice extends Equatable {

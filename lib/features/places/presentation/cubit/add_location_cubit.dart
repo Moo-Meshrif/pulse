@@ -7,13 +7,13 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/services/connectivity_service.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/state/base_cubit.dart';
+import '../../../../core/utils/location_choice.dart';
 import '../../data/datasource/location_primer_datasource.dart';
 import '../../data/repository/places_repository.dart';
 import '../../domain/entity/place_entity.dart';
 import '../utils/add_location_limits.dart';
 import '../utils/enums/add_location_status.dart';
 import '../utils/enums/location_search_status.dart';
-import '../utils/location_choice.dart';
 import 'add_location_state.dart';
 
 /// The Add location screen (docs/specs/post/screens/s3-add-location.md): where the device is, the places
