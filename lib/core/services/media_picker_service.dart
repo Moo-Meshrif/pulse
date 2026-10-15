@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
-import 'package:flutter/painting.dart' show FileImage;
+import 'package:flutter/painting.dart' show FileImage, ResizeImage;
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:video_player/video_player.dart';
@@ -49,18 +49,26 @@ class PickedMedia extends Equatable {
 abstract interface class MediaPickerService {
   Future<PickedMedia?> pick();
 
-  /// Up to [limit] photos and videos at once. Photos come back shrunk to [preset] with their size and
-  /// blurhash; videos with their length, size and file size. Empty when the person cancels or it fails.
+  /// Up to [limit] photos and videos at once, with only their [PickedMedia.path] and kind: photos come
+  /// back shrunk to [preset]. It does not read the files, so the caller can show them at once and fill in
+  /// the rest with [describe]. Empty when the person cancels or it fails.
   Future<List<PickedMedia>> pickMany({
     required int limit,
     ImageResizePreset preset = ImageResizePreset.active,
   });
+
+  /// [media] with its size and blurhash (a photo) or its length, size and file size (a video). If the file
+  /// cannot be read, [media] comes back as it is.
+  Future<PickedMedia> describe(PickedMedia media);
 }
 
 /// [MediaPickerService] over `image_picker`; a video's length and size are read with `video_player`.
 @LazySingleton(as: MediaPickerService)
 final class ImagePickerMediaPickerService implements MediaPickerService {
   static const _blurhashTimeout = Duration(seconds: 3);
+
+  /// A blurhash is a few colour blobs, so it is made from a small copy of the photo.
+  static const _blurhashSide = 64;
 
   ImagePickerMediaPickerService() : _picker = ImagePicker();
 
@@ -94,10 +102,21 @@ final class ImagePickerMediaPickerService implements MediaPickerService {
       );
       return [
         for (final file in files.take(limit))
-          _isVideo(file) ? await _video(file.path) : await _photo(file.path),
+          PickedMedia(path: file.path, isVideo: _isVideo(file)),
       ];
     } on Object {
       return const [];
+    }
+  }
+
+  @override
+  Future<PickedMedia> describe(PickedMedia media) async {
+    try {
+      return media.isVideo
+          ? await _video(media.path)
+          : await _photo(media.path);
+    } on Object {
+      return media;
     }
   }
 
@@ -126,8 +145,9 @@ final class ImagePickerMediaPickerService implements MediaPickerService {
   /// A photo still shares without a placeholder when the hash cannot be made in time.
   Future<String?> _blurhash(String path) async {
     try {
-      return await BlurhashFFI.encode(FileImage(File(path)))
-          .timeout(_blurhashTimeout);
+      return await BlurhashFFI.encode(
+        ResizeImage(FileImage(File(path)), width: _blurhashSide),
+      ).timeout(_blurhashTimeout);
     } on Object {
       return null;
     }

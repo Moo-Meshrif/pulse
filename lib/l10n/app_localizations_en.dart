@@ -1556,4 +1556,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeCaughtUp => 'You\'re all caught up';
+
+  @override
+  String get postPublishing => 'Posting…';
+
+  @override
+  String get postPublishSaving => 'Saving changes…';
+
+  @override
+  String get postPublishFailed => 'Couldn\'t post';
+
+  @override
+  String get postPublishDiscard => 'Discard';
+
+  @override
+  String get newPostPublishBusy =>
+      'Your previous post is still being sent. Try again in a moment.';
 }

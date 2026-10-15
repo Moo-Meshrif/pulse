@@ -24,15 +24,12 @@ class AddEditPostSubmitBar extends StatelessWidget {
       ),
       child: BlocBuilder<AddEditPostCubit, AddEditPostState>(
         buildWhen: (before, now) =>
-            before.isEditing != now.isEditing ||
-            before.canSave != now.canSave ||
-            before.isSaving != now.isSaving,
+            before.isEditing != now.isEditing || before.canSave != now.canSave,
         builder: (context, state) => PrimaryButton(
           label: state.isEditing
               ? context.l10n.editPostSave
               : context.l10n.newPostShare,
           expand: true,
-          loading: state.isSaving,
           buttonHeight: PostComposerDimens.shareHeight,
           onPressed: state.canSave ? cubit.save : null,
         ),

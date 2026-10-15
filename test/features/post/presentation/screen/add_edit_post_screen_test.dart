@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
-import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
+import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
@@ -41,6 +41,7 @@ void main() {
   late _Picker picker;
 
   setUpAll(() {
+    registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
     registerFallbackValue(
       const NewPostEntity(
         id: 'x',
@@ -69,6 +70,7 @@ void main() {
       (post, _) => AddEditPostCubit(
         createPost,
         _UpdatePost(),
+        PostPublishRepositoryImpl(),
         _SignUrls(),
         picker,
         privacy,
@@ -129,6 +131,9 @@ void main() {
           PickedMedia(path: '/missing_$i.jpg', isVideo: false),
       ],
     );
+    when(() => picker.describe(any())).thenAnswer(
+      (invocation) async => invocation.positionalArguments.first as PickedMedia,
+    );
     await open(tester);
     expect(find.byType(AddMediaTile), findsOneWidget);
 
@@ -178,17 +183,14 @@ void main() {
     expect(find.text('hello'), findsOneWidget);
   });
 
-  testWidgets('a failed share shows a notice with Retry', (tester) async {
-    when(() => createPost(any())).thenThrow(const UnexpectedFailure());
+  testWidgets('Share hands the post over without waiting', (tester) async {
     await open(tester);
     await tester.enterText(find.byType(TextField), 'hello');
     await tester.pump();
     await tester.tap(shareButton());
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(find.text(l10nEn.newPostShareFailed), findsOneWidget);
-    expect(find.text(l10nEn.retry), findsOneWidget);
-    expect(find.text(l10nEn.newPostTitle), findsOneWidget);
+    verify(() => createPost(any())).called(1);
   });
 
   testWidgets('Arabic at 1.5x text does not overflow', (tester) async {

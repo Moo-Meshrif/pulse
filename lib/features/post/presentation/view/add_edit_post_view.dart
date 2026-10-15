@@ -28,42 +28,33 @@ class AddEditPostView extends StatelessWidget {
       showTopBar: false,
       backgroundColor: colors.background,
       bottomSpace: PostComposerDimens.shareBottom,
-      child: BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
-        selector: (state) => state.isSaving,
-        builder: (context, isSaving) => IgnorePointer(
-          ignoring: isSaving,
-          child: Column(
-            children: [
-              BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
-                selector: (state) => state.isEditing,
-                builder: (context, isEditing) => AddEditPostTitleRow(
-                  title: isEditing
-                      ? context.l10n.editPostTitle
-                      : context.l10n.newPostTitle,
-                  onClose: onClose,
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSpacing.cardMargin,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const ComposerCard(),
-                      const _SectionLabel(),
-                      const AddEditPostOptionsCard(),
-                    ],
-                  ),
-                ),
-              ),
-              const AddEditPostSubmitBar(),
-            ],
+      child: Column(
+        children: [
+          BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
+            selector: (state) => state.isEditing,
+            builder: (context, isEditing) => AddEditPostTitleRow(
+              title: isEditing
+                  ? context.l10n.editPostTitle
+                  : context.l10n.newPostTitle,
+              onClose: onClose,
+            ),
           ),
-        ),
+          Expanded(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.cardMargin),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const ComposerCard(),
+                  const _SectionLabel(),
+                  const AddEditPostOptionsCard(),
+                ],
+              ),
+            ),
+          ),
+          const AddEditPostSubmitBar(),
+        ],
       ),
     );
   }

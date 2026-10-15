@@ -10,11 +10,10 @@ import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/post_entity.dart';
 import '../cubit/add_edit_post_cubit.dart';
 import '../cubit/add_edit_post_state.dart';
-import '../utils/enums/new_post_notice.dart';
 import '../view/add_edit_post_view.dart';
 
 /// `/create/post`: write and share a post (docs/specs/post/screens/s1-new-post.md). Closing with
-/// something written asks first; nothing closes it while it uploads.
+/// something written asks first. Share closes it at once; the post is sent in the background.
 class AddEditPostScreen extends StatelessWidget {
   /// [post] is the post to edit; null adds a new one.
   const AddEditPostScreen({super.key, this.post});
@@ -47,7 +46,6 @@ class AddEditPostScreen extends StatelessWidget {
 
   Future<void> _closeAskingFirst(BuildContext context) async {
     final state = context.read<AddEditPostCubit>().state;
-    if (state.isSaving) return;
     if (!state.hasContent) {
       AppNavigator.back(context);
       return;
@@ -71,30 +69,12 @@ class AddEditPostScreen extends StatelessWidget {
   void _closeOrShowNotice(BuildContext context, AddEditPostState state) {
     final cubit = context.read<AddEditPostCubit>();
     if (state.isSaved) {
-      final message = state.isEditing
-          ? context.l10n.postUpdated
-          : context.l10n.newPostShared;
       AppNavigator.back(context);
-      Notices.success(message);
       return;
     }
     final notice = state.notice;
     if (notice == null) return;
-    final isSendFailure =
-        notice == NewPostNotice.shareFailed ||
-        notice == NewPostNotice.saveFailed;
-    final message = notice.message(context);
-    if (isSendFailure) {
-      Notices.error(
-        message,
-        actionLabel: context.l10n.retry,
-        onResult: (acted) {
-          if (acted) cubit.save();
-        },
-      );
-    } else {
-      Notices.info(message);
-    }
+    Notices.info(notice.message(context));
     cubit.clearNotice();
   }
 }

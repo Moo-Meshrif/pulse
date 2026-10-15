@@ -1552,4 +1552,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeCaughtUp => 'لقد اطلعت على كل شيء';
+
+  @override
+  String get postPublishing => 'جارٍ النشر…';
+
+  @override
+  String get postPublishSaving => 'جارٍ حفظ التغييرات…';
+
+  @override
+  String get postPublishFailed => 'تعذّر النشر';
+
+  @override
+  String get postPublishDiscard => 'تجاهل';
+
+  @override
+  String get newPostPublishBusy =>
+      'منشورك السابق ما زال قيد الإرسال. حاول بعد قليل.';
 }

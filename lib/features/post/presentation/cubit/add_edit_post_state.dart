@@ -49,9 +49,8 @@ abstract class AddEditPostState with _$AddEditPostState {
 
     /// The audience the account starts new posts with; a narrower choice looks different on the chip.
     @Default(ContentAudience.public) ContentAudience defaultVisibility,
-    @Default(false) bool isSaving,
 
-    /// One-shot: the post was shared or saved; the screen closes.
+    /// One-shot: the post was handed over to be sent; the screen closes.
     @Default(false) bool isSaved,
 
     /// One-shot message for the screen.
@@ -79,9 +78,8 @@ abstract class AddEditPostState with _$AddEditPostState {
         visibility != post.visibility;
   }
 
-  /// Text or at least one photo or video, something to save when editing, and not already saving.
+  /// Text or at least one photo or video, and something to save when editing.
   bool get canSave =>
-      !isSaving &&
       (!isEditing || hasChanges) &&
       (caption.trim().isNotEmpty || mediaCount > 0);
 

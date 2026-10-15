@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/services/media_picker_service.dart';
@@ -7,6 +9,7 @@ import '../../../../core/utils/uuid_v4.dart';
 import '../../../../shared/content/domain/use_case/get_privacy_use_case.dart';
 import '../../../profile/domain/entity/last_account_entity.dart';
 import '../../../profile/domain/use_case/get_last_account_use_case.dart';
+import '../../data/repository/post_publish_repository.dart';
 import '../../domain/entity/edit_post_entity.dart';
 import '../../domain/entity/new_post_entity.dart';
 import '../../domain/entity/new_post_media_entity.dart';
@@ -28,6 +31,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
   AddEditPostCubit(
     this._createPost,
     this._updatePost,
+    this._publish,
     this._signUrls,
     MediaPickerService picker,
     this._privacy,
@@ -47,8 +51,12 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
 
   final CreatePostUseCase _createPost;
   final UpdatePostUseCase _updatePost;
+  final PostPublishRepository _publish;
   final SignPostMediaUrlsUseCase _signUrls;
   final MediaIntake _intake;
+
+  /// Each picked file being read, by path; the sender waits for them.
+  final _details = <String, Future<DescribedMedia>>{};
   final GetPrivacyUseCase _privacy;
 
   /// Who is posting, for the author row; null when this device has no saved account.
@@ -121,82 +129,122 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
     );
   }
 
+  /// The picked files are on the strip at once; each is read in the background and replaced by its full
+  /// version (a video that is too long or big is taken off again with a notice).
   Future<void> pickMedia() async {
-    if (state.isSaving) return;
     final room = NewPostLimits.maxMedia - state.mediaCount;
     if (room <= 0) {
       emit(state.copyWith(notice: NewPostNotice.mediaLimit));
       return;
     }
-    final batch = await _intake.pick(room: room);
-    if (batch.isEmpty) return;
+    final picked = await _intake.pick(room: room);
+    if (picked.isEmpty) return;
+    emit(state.copyWith(media: [...state.media, ...picked]));
+    for (final item in picked) {
+      final details = _intake.describe(item);
+      _details[item.path] = details;
+      unawaited(details.then(_described));
+    }
+  }
+
+  void _described(DescribedMedia described) {
+    final path = described.media.path;
+    final index = state.media.indexWhere((item) => item.path == path);
+    if (index < 0) return; // taken off while it was read
+    final media = [...state.media];
+    if (described.rejection != null) {
+      emit(
+        state.copyWith(
+          media: media..removeAt(index),
+          notice: described.rejection,
+        ),
+      );
+      return;
+    }
+    final poster = described.poster;
     emit(
       state.copyWith(
-        media: [...state.media, ...batch.accepted],
-        posters: {...state.posters, ...batch.posters},
-        notice: batch.notice,
+        media: media..[index] = described.media,
+        posters: {...state.posters, path: ?poster},
       ),
     );
   }
 
   void clearNotice() => emit(state.copyWith(notice: null));
 
-  /// Uploads the files and creates the post, or saves the edited one. A failure stays on the screen; Retry
-  /// calls this again (a new post keeps its id, so the files already uploaded are not sent twice).
-  Future<void> save() => run(
-    _send,
-    prevent: !state.canSave,
-    loading: state.copyWith(isSaving: true),
-    onSuccess: (_) => state.copyWith(isSaving: false, isSaved: true),
-    onFailure: (_) => state.copyWith(
-      isSaving: false,
-      notice: state.isEditing
-          ? NewPostNotice.saveFailed
-          : NewPostNotice.shareFailed,
-    ),
-  );
-
-  Future<void> _send() {
-    final caption = state.caption.trim();
+  /// Hands the post to the background sender and closes the screen; Home shows how it goes and offers Retry.
+  /// Only one post is sent at a time. Files still being read are waited for by the sender, not the screen.
+  void save() {
+    if (!state.canSave) return;
+    final picked = state.media;
     final original = state.original;
-    if (original == null) {
-      return _createPost(
-        NewPostEntity(
-          id: state.postId,
-          caption: caption.isEmpty ? null : caption,
-          location: state.location,
-          commentsEnabled: state.commentsEnabled,
-          visibility: state.visibility,
-          media: _pickedFiles(),
-          authorUsername: me?.username,
-          authorFullName: me?.fullName,
-          authorAvatarUrl: me?.avatarUrl,
-        ),
-      );
-    }
-    return _updatePost(
-      EditPostEntity(
-        id: state.postId,
-        caption: caption.isEmpty ? null : caption,
-        location: state.location,
-        kept: state.kept,
-        added: _pickedFiles(),
-        commentsEnabled: state.commentsEnabled,
-        visibility: state.visibility,
-      ),
-      before: original,
+    final postId = state.postId;
+    final caption = state.caption.trim();
+    final location = state.location;
+    final commentsEnabled = state.commentsEnabled;
+    final visibility = state.visibility;
+    final kept = state.kept;
+    final previewPath = picked.firstOrNull?.path;
+    final isStarted = original == null
+        ? _publish.enqueue(
+            isEdit: false,
+            previewPath: previewPath,
+            send: () async => _createPost(
+              NewPostEntity(
+                id: postId,
+                caption: caption.isEmpty ? null : caption,
+                location: location,
+                commentsEnabled: commentsEnabled,
+                visibility: visibility,
+                media: await _read(picked),
+                authorUsername: me?.username,
+                authorFullName: me?.fullName,
+                authorAvatarUrl: me?.avatarUrl,
+              ),
+            ),
+          )
+        : _publish.enqueue(
+            isEdit: true,
+            previewPath: previewPath,
+            send: () async => _updatePost(
+              EditPostEntity(
+                id: postId,
+                caption: caption.isEmpty ? null : caption,
+                location: location,
+                kept: kept,
+                added: await _read(picked),
+                commentsEnabled: commentsEnabled,
+                visibility: visibility,
+              ),
+              before: original,
+            ),
+          );
+    emit(
+      isStarted
+          ? state.copyWith(isSaved: true)
+          : state.copyWith(notice: NewPostNotice.publishBusy),
     );
   }
 
-  List<NewPostMediaEntity> _pickedFiles() => [
-    for (final item in state.media)
-      NewPostMediaEntity(
-        filePath: item.path,
-        isVideo: item.isVideo,
-        width: item.width ?? _fallbackSide,
-        height: item.height ?? _fallbackSide,
-        durationMs: item.isVideo ? (item.durationMs ?? 0) : null,
-        blurhash: item.blurhash,
-      ),
-  ];
+  /// The files for the sender: each one once it is fully read, without the ones that cannot go in a post.
+  Future<List<NewPostMediaEntity>> _read(List<PickedMedia> picked) async {
+    final described = await Future.wait([
+      for (final item in picked)
+        _details[item.path] ?? Future.value(DescribedMedia(item)),
+    ]);
+    return [
+      for (final item in described)
+        if (item.rejection == null)
+          NewPostMediaEntity(
+            filePath: item.media.path,
+            isVideo: item.media.isVideo,
+            width: item.media.width ?? _fallbackSide,
+            height: item.media.height ?? _fallbackSide,
+            durationMs: item.media.isVideo
+                ? (item.media.durationMs ?? 0)
+                : null,
+            blurhash: item.media.blurhash,
+          ),
+    ];
+  }
 }

@@ -4,65 +4,45 @@ import '../../../../core/services/video_thumbnail_service.dart';
 import 'enums/new_post_notice.dart';
 import 'new_post_limits.dart';
 
-/// What the person added from the library: the files a post can hold, a frame for each video, and the
-/// first reason a file was left out.
-class PickedBatch {
-  const PickedBatch({
-    this.accepted = const [],
-    this.posters = const {},
-    this.notice,
-  });
+/// A picked file once it was read: [media] with its size, a frame for a video, and why it cannot go in a
+/// post, if it cannot.
+class DescribedMedia {
+  const DescribedMedia(this.media, {this.poster, this.rejection});
 
-  final List<PickedMedia> accepted;
+  final PickedMedia media;
 
-  /// A frame of each accepted video, by video path.
-  final Map<String, String> posters;
-  final NewPostNotice? notice;
-
-  bool get isEmpty => accepted.isEmpty && notice == null;
+  /// A frame of a video; null for a photo or when it could not be made.
+  final String? poster;
+  final NewPostNotice? rejection;
 }
 
-/// Lets the person pick photos and videos for a post (New post and Edit post) and keeps the ones
-/// [NewPostLimits] allows.
+/// Lets the person pick photos and videos for a post (New post and Edit post): [pick] returns the files at
+/// once so they can be shown, and [describe] reads each one afterwards and applies [NewPostLimits].
 class MediaIntake {
   MediaIntake(this._picker, this._thumbnails);
 
   final MediaPickerService _picker;
   final VideoThumbnailService _thumbnails;
 
-  Future<PickedBatch> pick({required int room}) async {
-    final picked = await _picker.pickMany(limit: room);
-    final accepted = <PickedMedia>[];
-    NewPostNotice? notice;
-    for (final item in picked) {
-      final rejection = NewPostLimits.rejection(item);
-      if (rejection == null) {
-        accepted.add(item);
-      } else {
-        notice ??= rejection;
-      }
-    }
-    return PickedBatch(
-      accepted: accepted,
-      posters: await _posters(accepted),
-      notice: notice,
+  Future<List<PickedMedia>> pick({required int room}) =>
+      _picker.pickMany(limit: room);
+
+  /// Never throws: a file that cannot be read is kept as it is.
+  Future<DescribedMedia> describe(PickedMedia picked) async {
+    final media = await _picker.describe(picked);
+    final rejection = NewPostLimits.rejection(media);
+    if (rejection != null) return DescribedMedia(media, rejection: rejection);
+    return DescribedMedia(
+      media,
+      poster: media.isVideo ? await _poster(media.path) : null,
     );
   }
 
-  Future<Map<String, String>> _posters(List<PickedMedia> picked) async {
-    final posters = <String, String>{};
-    await Future.wait([
-      for (final item in picked)
-        if (item.isVideo) _addPoster(posters, item.path),
-    ]);
-    return posters;
-  }
-
-  Future<void> _addPoster(Map<String, String> posters, String video) async {
+  Future<String?> _poster(String video) async {
     try {
-      posters[video] = await _thumbnails.thumbnail(video);
+      return await _thumbnails.thumbnail(video);
     } on Failure {
-      // The thumbnail strip draws a plain tile for it.
+      return null; // the thumbnail strip draws a plain tile for it
     }
   }
 }

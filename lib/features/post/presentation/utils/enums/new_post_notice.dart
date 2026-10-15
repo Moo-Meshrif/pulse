@@ -8,8 +8,7 @@ enum NewPostNotice {
   videoTooLong,
   videoTooBig,
   mediaLimit,
-  shareFailed,
-  saveFailed;
+  publishBusy;
 
   String message(BuildContext context) {
     final l10n = context.l10n;
@@ -17,8 +16,7 @@ enum NewPostNotice {
       videoTooLong => l10n.newPostVideoTooLong(NewPostLimits.maxVideoMinutes),
       videoTooBig => l10n.newPostVideoTooBig(NewPostLimits.maxVideoMegabytes),
       mediaLimit => l10n.newPostMediaLimit(NewPostLimits.maxMedia),
-      shareFailed => l10n.newPostShareFailed,
-      saveFailed => l10n.editPostSaveFailed,
+      publishBusy => l10n.newPostPublishBusy,
     };
   }
 }

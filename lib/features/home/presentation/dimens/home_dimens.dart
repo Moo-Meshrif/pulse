@@ -31,6 +31,10 @@ abstract final class HomeDimens {
     0,
   );
   static double get cardGap => AppScale.scale(12);
+  // Publish banner.
+  static EdgeInsets get publishPadding => EdgeInsets.all(AppScale.scale(12));
+  static double get publishThumb => AppScale.scale(48);
+  static double get publishProgress => AppScale.scale(4);
   // First-load skeleton.
   static const int skeletonCards = 3;
   static const int skeletonStories = 4;

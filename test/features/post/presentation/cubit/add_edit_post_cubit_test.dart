@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
+import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_media_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
@@ -54,8 +58,10 @@ void main() {
   late _Privacy privacy;
   late _Thumbnails thumbnails;
   late _Account account;
+  late PostPublishRepositoryImpl publish;
 
   setUpAll(() {
+    registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
     registerFallbackValue(
       const NewPostEntity(
         id: 'x',
@@ -74,7 +80,11 @@ void main() {
     privacy = _Privacy();
     thumbnails = _Thumbnails();
     account = _Account();
+    publish = PostPublishRepositoryImpl();
     when(account.call).thenReturn(null);
+    when(() => picker.describe(any())).thenAnswer(
+      (invocation) async => invocation.positionalArguments.first as PickedMedia,
+    );
     when(() => createPost(any())).thenAnswer((_) async {});
     when(() => thumbnails.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
   });
@@ -82,6 +92,7 @@ void main() {
   AddEditPostCubit build([PostEntity? post]) => AddEditPostCubit(
     createPost,
     updatePost,
+    publish,
     signUrls,
     picker,
     privacy,
@@ -110,6 +121,7 @@ void main() {
           .thenAnswer((_) async => [photo()]);
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.canSave, isTrue);
     });
   });
@@ -120,10 +132,53 @@ void main() {
           .thenAnswer((_) async => [photo('/a.jpg'), photo('/b.jpg')]);
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       await cubit.pickMedia();
+      await pumpEventQueue();
       verify(() => picker.pickMany(limit: 10)).called(1);
       verify(() => picker.pickMany(limit: 8)).called(1);
       expect(cubit.state.media, hasLength(4));
+    });
+
+    test('the files are on the strip before they are read', () async {
+      final read = Completer<PickedMedia>();
+      when(() => picker.pickMany(limit: any(named: 'limit'))).thenAnswer(
+        (_) async => [const PickedMedia(path: '/p.jpg', isVideo: false)],
+      );
+      when(() => picker.describe(any())).thenAnswer((_) => read.future);
+      final cubit = build();
+      await cubit.pickMedia();
+      expect(cubit.state.media.single.width, isNull);
+      expect(cubit.state.canSave, isTrue);
+
+      read.complete(
+        PickedMedia(path: '/p.jpg', isVideo: false, width: 800, height: 600),
+      );
+      await pumpEventQueue();
+      expect(cubit.state.media.single.width, 800);
+    });
+
+    test('sharing waits for the files that are still being read', () async {
+      final read = Completer<PickedMedia>();
+      when(() => picker.pickMany(limit: any(named: 'limit'))).thenAnswer(
+        (_) async => [const PickedMedia(path: '/p.jpg', isVideo: false)],
+      );
+      when(() => picker.describe(any())).thenAnswer((_) => read.future);
+      final cubit = build();
+      await cubit.pickMedia();
+      cubit.save();
+      expect(cubit.state.isSaved, isTrue);
+      await pumpEventQueue();
+      verifyNever(() => createPost(any()));
+
+      read.complete(
+        PickedMedia(path: '/p.jpg', isVideo: false, width: 800, height: 600),
+      );
+      await pumpEventQueue();
+      final sent =
+          verify(() => createPost(captureAny())).captured.single
+              as NewPostEntity;
+      expect(sent.media.single.width, 800);
     });
 
     test('a full post asks for nothing and says so', () async {
@@ -134,9 +189,12 @@ void main() {
       );
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.canAddMedia, isFalse);
 
       await cubit.pickMedia();
+
+      await pumpEventQueue();
       verify(() => picker.pickMany(limit: any(named: 'limit'))).called(1);
       expect(cubit.state.notice, NewPostNotice.mediaLimit);
     });
@@ -147,6 +205,7 @@ void main() {
       );
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.media.map((m) => m.path), ['/p.jpg']);
       expect(cubit.state.notice, NewPostNotice.videoTooLong);
     });
@@ -159,6 +218,7 @@ void main() {
       );
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.media, hasLength(1));
       expect(cubit.state.notice, isNull);
     });
@@ -168,6 +228,7 @@ void main() {
           .thenAnswer((_) async => [video(sizeBytes: 50 * 1024 * 1024 + 1)]);
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.media, isEmpty);
       expect(cubit.state.notice, NewPostNotice.videoTooBig);
     });
@@ -177,12 +238,14 @@ void main() {
           .thenAnswer((_) async => [video()]);
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.posters, {'/v.mp4': '/t.jpg'});
 
       when(() => thumbnails.thumbnail(any()))
           .thenThrow(const UnexpectedFailure());
       final other = build();
       await other.pickMedia();
+      await pumpEventQueue();
       expect(other.state.media, hasLength(1));
       expect(other.state.posters, isEmpty);
     });
@@ -193,6 +256,7 @@ void main() {
       final cubit = build();
       final before = cubit.state;
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state, before);
     });
 
@@ -201,6 +265,7 @@ void main() {
           .thenAnswer((_) async => [photo('/a.jpg'), photo('/b.jpg')]);
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       cubit.removeMedia(0);
       expect(cubit.state.media.map((m) => m.path), ['/b.jpg']);
     });
@@ -212,7 +277,8 @@ void main() {
         ..captionChanged('  hello  ')
         ..commentsChanged(false)
         ..locationChanged('Kolkata');
-      await cubit.save();
+      cubit.save();
+      await pumpEventQueue();
 
       final sent =
           verify(() => createPost(captureAny())).captured.single
@@ -223,29 +289,55 @@ void main() {
       expect(sent.location, 'Kolkata');
       expect(sent.visibility, ContentAudience.public);
       expect(cubit.state.isSaved, isTrue);
-      expect(cubit.state.isSaving, isFalse);
     });
 
-    test('a failure stays, then Retry sends the same post id', () async {
-      when(() => createPost(any())).thenThrow(const UnexpectedFailure());
+    test('closes at once, before the post is sent', () {
+      final done = Completer<void>();
+      when(() => createPost(any())).thenAnswer((_) => done.future);
       final cubit = build()..captionChanged('hello');
-      await cubit.save();
-      expect(cubit.state.isSaved, isFalse);
-      expect(cubit.state.isSaving, isFalse);
-      expect(cubit.state.notice, NewPostNotice.shareFailed);
-
-      when(() => createPost(any())).thenAnswer((_) async {});
-      await cubit.save();
-      final ids = verify(() => createPost(captureAny())).captured
-          .cast<NewPostEntity>()
-          .map((p) => p.id)
-          .toSet();
-      expect(ids, {cubit.state.postId});
+      cubit.save();
       expect(cubit.state.isSaved, isTrue);
+      done.complete();
+    });
+
+    test(
+      'a failure is kept by the sender, then Retry sends the same id',
+      () async {
+        when(() => createPost(any())).thenThrow(const UnexpectedFailure());
+        final cubit = build()..captionChanged('hello');
+        cubit.save();
+        await pumpEventQueue();
+        expect(cubit.state.isSaved, isTrue);
+        expect(await publish.status.first, isA<PostPublishFailed>());
+
+        when(() => createPost(any())).thenAnswer((_) async {});
+        publish.retry();
+        await pumpEventQueue();
+        final ids = verify(() => createPost(captureAny())).captured
+            .cast<NewPostEntity>()
+            .map((p) => p.id)
+            .toSet();
+        expect(ids, {cubit.state.postId});
+        expect(await publish.status.first, isA<PostPublishIdle>());
+      },
+    );
+
+    test('another post is refused while one is waiting for Retry', () async {
+      when(() => createPost(any())).thenThrow(const UnexpectedFailure());
+      build()
+        ..captionChanged('first')
+        ..save();
+      await pumpEventQueue();
+
+      final second = build()..captionChanged('second');
+      second.save();
+      expect(second.state.isSaved, isFalse);
+      expect(second.state.notice, NewPostNotice.publishBusy);
     });
 
     test('an empty post is not sent', () async {
-      await build().save();
+      build().save();
+      await pumpEventQueue();
       verifyNever(() => createPost(any()));
     });
   });
@@ -262,6 +354,7 @@ void main() {
           .thenAnswer((_) async => [photo()]);
       final cubit = build();
       await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.hasContent, isTrue);
     });
   });
@@ -406,7 +499,8 @@ void main() {
 
     test('save updates the post, not creates it', () async {
       final cubit = build(post)..captionChanged('  Changed  ');
-      await cubit.save();
+      cubit.save();
+      await pumpEventQueue();
       final edited =
           verify(() => updatePost(captureAny(), before: post)).captured.single
               as EditPostEntity;
@@ -414,15 +508,6 @@ void main() {
       expect(edited.kept, [m0, m1]);
       verifyNever(() => createPost(any()));
       expect(cubit.state.isSaved, isTrue);
-    });
-
-    test('a failed save stays with the save-failed notice', () async {
-      when(() => updatePost(any(), before: any(named: 'before')))
-          .thenThrow(const NetworkFailure());
-      final cubit = build(post)..captionChanged('Changed');
-      await cubit.save();
-      expect(cubit.state.isSaved, isFalse);
-      expect(cubit.state.notice, NewPostNotice.saveFailed);
     });
   });
 }

@@ -59,17 +59,25 @@ void main() {
     ).called(1);
   });
 
-  testWidgets('a photo comes back measured with its file size', (tester) async {
+  testWidgets('a photo is listed at once, then measured with its file size', (
+    tester,
+  ) async {
     final file = File('${dir.path}/a.png')..writeAsBytesSync(_png);
     whenPicks([XFile(file.path, mimeType: 'image/png')]);
 
-    final picked = (await tester.runAsync(() => service.pickMany(limit: 3)))!;
+    final listed = (await tester.runAsync(() => service.pickMany(limit: 3)))!;
+    expect(listed, hasLength(1));
+    expect(listed.single.path, file.path);
+    expect(listed.single.width, isNull);
 
-    expect(picked, hasLength(1));
-    expect(picked.single.isVideo, isFalse);
-    expect(picked.single.width, 2);
-    expect(picked.single.height, 3);
-    expect(picked.single.sizeBytes, _png.length);
+    final picked = (await tester.runAsync(
+      () => service.describe(listed.single),
+    ))!;
+
+    expect(picked.isVideo, isFalse);
+    expect(picked.width, 2);
+    expect(picked.height, 3);
+    expect(picked.sizeBytes, _png.length);
   });
 
   test('a failing library gives an empty list', () async {

@@ -2028,5 +2028,25 @@
   "homeCaughtUp": "You're all caught up",
   "@homeCaughtUp": {
     "description": "Home feed footer at the end of the feed"
+  },
+  "postPublishing": "Posting…",
+  "@postPublishing": {
+    "description": "Banner above the feed while a new post is being sent"
+  },
+  "postPublishSaving": "Saving changes…",
+  "@postPublishSaving": {
+    "description": "Banner above the feed while an edited post is being saved"
+  },
+  "postPublishFailed": "Couldn't post",
+  "@postPublishFailed": {
+    "description": "Banner above the feed when sending a new post failed"
+  },
+  "postPublishDiscard": "Discard",
+  "@postPublishDiscard": {
+    "description": "Banner action that drops a post that failed to send"
+  },
+  "newPostPublishBusy": "Your previous post is still being sent. Try again in a moment.",
+  "@newPostPublishBusy": {
+    "description": "Notice when sharing while another post is still being sent"
   }
 }

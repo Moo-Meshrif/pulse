@@ -5,16 +5,20 @@ import 'package:pulse/features/activity/domain/use_case/get_unread_activity_coun
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/home/presentation/cubit/bell_dot_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/feed_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/post_publish_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/retry_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/watch_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
@@ -25,6 +29,12 @@ import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case
 
 import '../../helpers/content_mocks.dart';
 import '../post/post_fixtures.dart';
+
+class _WatchPublish extends Mock implements WatchPostPublishUseCase {}
+
+class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
+
+class _DiscardPublish extends Mock implements DiscardPostPublishUseCase {}
 
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
 
@@ -77,6 +87,8 @@ void registerHomeDoubles() {
   when(railChanges.call).thenAnswer((_) => const Stream<void>.empty());
   when(uploadStatus.call).thenAnswer((_) => const Stream.empty());
   when(refresh.call).thenAnswer((_) => const Stream<void>.empty());
+  final watchPublish = _WatchPublish();
+  when(watchPublish.call).thenAnswer((_) => const Stream.empty());
   final saved = _Saved();
   when(saved.call).thenAnswer((_) => const Stream.empty());
   getIt
@@ -94,6 +106,9 @@ void registerHomeDoubles() {
         MockSetMute(),
         _Follow(),
       ),
+    )
+    ..registerFactory(
+      () => PostPublishCubit(watchPublish, _RetryPublish(), _DiscardPublish()),
     )
     ..registerFactory(() => BellDotCubit(unread, refresh))
     ..registerFactory(

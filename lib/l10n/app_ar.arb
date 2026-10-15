@@ -1864,5 +1864,25 @@
   "homeCaughtUp": "لقد اطلعت على كل شيء",
   "@homeCaughtUp": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishing": "جارٍ النشر…",
+  "@postPublishing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishSaving": "جارٍ حفظ التغييرات…",
+  "@postPublishSaving": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishFailed": "تعذّر النشر",
+  "@postPublishFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishDiscard": "تجاهل",
+  "@postPublishDiscard": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostPublishBusy": "منشورك السابق ما زال قيد الإرسال. حاول بعد قليل.",
+  "@newPostPublishBusy": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

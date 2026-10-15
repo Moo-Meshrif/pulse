@@ -2809,6 +2809,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re all caught up'**
   String get homeCaughtUp;
+
+  /// Banner above the feed while a new post is being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Posting…'**
+  String get postPublishing;
+
+  /// Banner above the feed while an edited post is being saved
+  ///
+  /// In en, this message translates to:
+  /// **'Saving changes…'**
+  String get postPublishSaving;
+
+  /// Banner above the feed when sending a new post failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t post'**
+  String get postPublishFailed;
+
+  /// Banner action that drops a post that failed to send
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get postPublishDiscard;
+
+  /// Notice when sharing while another post is still being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Your previous post is still being sent. Try again in a moment.'**
+  String get newPostPublishBusy;
 }
 
 class _AppLocalizationsDelegate

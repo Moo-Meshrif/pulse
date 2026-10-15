@@ -57,6 +57,8 @@ import '../../features/follow/domain/use_case/toggle_follow_use_case.dart'
     as _i130;
 import '../../features/home/presentation/cubit/bell_dot_cubit.dart' as _i472;
 import '../../features/home/presentation/cubit/feed_cubit.dart' as _i646;
+import '../../features/home/presentation/cubit/post_publish_cubit.dart'
+    as _i704;
 import '../../features/home/presentation/cubit/story_rail_cubit.dart' as _i363;
 import '../../features/legal/data/datasource/legal_datasource.dart' as _i604;
 import '../../features/legal/presentation/cubit/legal_cubit.dart' as _i736;
@@ -81,14 +83,20 @@ import '../../features/post/data/repository/feed_refresh_repository.dart'
     as _i113;
 import '../../features/post/data/repository/post_media_repository.dart'
     as _i599;
+import '../../features/post/data/repository/post_publish_repository.dart'
+    as _i442;
 import '../../features/post/domain/entity/post_entity.dart' as _i569;
 import '../../features/post/domain/use_case/create_post_use_case.dart' as _i592;
 import '../../features/post/domain/use_case/delete_post_use_case.dart' as _i898;
+import '../../features/post/domain/use_case/discard_post_publish_use_case.dart'
+    as _i415;
 import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i280;
 import '../../features/post/domain/use_case/hide_post_use_case.dart' as _i856;
 import '../../features/post/domain/use_case/request_feed_refresh_use_case.dart'
     as _i187;
+import '../../features/post/domain/use_case/retry_post_publish_use_case.dart'
+    as _i175;
 import '../../features/post/domain/use_case/set_comments_enabled_use_case.dart'
     as _i246;
 import '../../features/post/domain/use_case/set_post_like_use_case.dart'
@@ -100,6 +108,8 @@ import '../../features/post/domain/use_case/sign_post_media_urls_use_case.dart'
 import '../../features/post/domain/use_case/update_post_use_case.dart' as _i908;
 import '../../features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart'
     as _i558;
+import '../../features/post/domain/use_case/watch_post_publish_use_case.dart'
+    as _i999;
 import '../../features/post/domain/use_case/watch_saved_posts_use_case.dart'
     as _i52;
 import '../../features/post/presentation/cubit/add_edit_post_cubit.dart'
@@ -240,6 +250,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i669.LocationService>(
       () => _i669.GeolocatorLocationService(),
     );
+    gh.lazySingleton<_i442.PostPublishRepository>(
+      () => _i442.PostPublishRepositoryImpl(),
+    );
     gh.lazySingleton<_i1016.LaunchService>(
       () => _i1016.UrlLauncherLaunchService(),
     );
@@ -358,6 +371,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1016.LaunchService>(),
       ),
     );
+    gh.factory<_i415.DiscardPostPublishUseCase>(
+      () => _i415.DiscardPostPublishUseCase(gh<_i442.PostPublishRepository>()),
+    );
+    gh.factory<_i175.RetryPostPublishUseCase>(
+      () => _i175.RetryPostPublishUseCase(gh<_i442.PostPublishRepository>()),
+    );
+    gh.factory<_i999.WatchPostPublishUseCase>(
+      () => _i999.WatchPostPublishUseCase(gh<_i442.PostPublishRepository>()),
+    );
     gh.factory<_i77.GetAudienceSummaryUseCase>(
       () => _i77.GetAudienceSummaryUseCase(gh<_i61.AudienceDatasource>()),
     );
@@ -451,6 +473,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i76.RemoveMediaFilesUseCase>(
       () => _i76.RemoveMediaFilesUseCase(gh<_i285.MediaFilesDatasource>()),
+    );
+    gh.factory<_i704.PostPublishCubit>(
+      () => _i704.PostPublishCubit(
+        gh<_i999.WatchPostPublishUseCase>(),
+        gh<_i175.RetryPostPublishUseCase>(),
+        gh<_i415.DiscardPostPublishUseCase>(),
+      ),
     );
     gh.factory<_i807.OnboardingCubit>(
       () => _i807.OnboardingCubit(gh<_i834.OnboardingDatasource>()),
@@ -657,6 +686,7 @@ extension GetItInjectableX on _i174.GetIt {
       (post, _) => _i897.AddEditPostCubit(
         gh<_i592.CreatePostUseCase>(),
         gh<_i908.UpdatePostUseCase>(),
+        gh<_i442.PostPublishRepository>(),
         gh<_i600.SignPostMediaUrlsUseCase>(),
         gh<_i715.MediaPickerService>(),
         gh<_i660.GetPrivacyUseCase>(),

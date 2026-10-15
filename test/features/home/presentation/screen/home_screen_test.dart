@@ -17,6 +17,7 @@ import 'package:pulse/features/activity/domain/use_case/get_unread_activity_coun
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/home/presentation/cubit/bell_dot_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/feed_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/post_publish_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
 import 'package:pulse/features/home/presentation/screen/home_screen.dart';
 import 'package:pulse/features/home/presentation/widgets/feed/feed_skeleton.dart';
@@ -25,14 +26,18 @@ import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.d
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/retry_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/watch_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
@@ -78,6 +83,12 @@ class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
 
 class _Saved extends Mock implements WatchSavedPostsUseCase {}
 
+class _WatchPublish extends Mock implements WatchPostPublishUseCase {}
+
+class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
+
+class _DiscardPublish extends Mock implements DiscardPostPublishUseCase {}
+
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
 /// The empty and failed pages float forever; with reduced motion they hold still, so the test can settle.
@@ -97,6 +108,9 @@ void main() {
   late _RetryUpload retryUpload;
   late StreamController<StoryUploadStatus> uploads;
   late StreamController<void> refreshRequests;
+  late StreamController<PostPublishStatus> publishing;
+  late _RetryPublish retryPublish;
+  late _DiscardPublish discardPublish;
 
   final now = DateTime(2026, 10, 14, 12);
   final cursor = FeedCursorEntity(createdAt: DateTime(2026, 10, 13), id: 'p3');
@@ -144,6 +158,12 @@ void main() {
     addTearDown(refreshRequests.close);
     final refresh = _Refresh();
     when(refresh.call).thenAnswer((_) => refreshRequests.stream);
+    publishing = StreamController<PostPublishStatus>.broadcast();
+    addTearDown(publishing.close);
+    retryPublish = _RetryPublish();
+    discardPublish = _DiscardPublish();
+    final watchPublish = _WatchPublish();
+    when(watchPublish.call).thenAnswer((_) => publishing.stream);
     final saved = _Saved();
     when(saved.call).thenAnswer((_) => const Stream.empty());
     final sign = _Sign();
@@ -173,6 +193,9 @@ void main() {
           MockSetMute(),
           _Follow(),
         ),
+      )
+      ..registerFactory(
+        () => PostPublishCubit(watchPublish, retryPublish, discardPublish),
       )
       ..registerFactory(() => BellDotCubit(requestCount, refresh))
       ..registerFactory(
@@ -263,6 +286,55 @@ void main() {
         ),
       );
       verify(retryUpload.call).called(1);
+    });
+  });
+
+  group('post publishing', () {
+    testView('a post going out shows the banner, done shows the notice', (
+      tester,
+    ) async {
+      await show(tester);
+      publishing.add(const PostPublishing(isEdit: false));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.postPublishing), findsOneWidget);
+
+      publishing
+        ..add(const PostPublishDone(isEdit: false))
+        ..add(const PostPublishIdle());
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1)); // the notice slides in
+      expect(find.text(l10nEn.postPublishing), findsNothing);
+      expect(find.text(l10nEn.newPostShared), findsOneWidget);
+    });
+
+    testView('an empty feed shows the banner too', (tester) async {
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => const FeedPageEntity(posts: []));
+      await show(tester, settle: false);
+      await tester.pump();
+      await tester.pump();
+      publishing.add(const PostPublishing(isEdit: false));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.homeEmptyTitle), findsOneWidget);
+      expect(find.text(l10nEn.postPublishing), findsOneWidget);
+    });
+
+    testView('a failed post offers Retry and Discard', (tester) async {
+      await show(tester);
+      publishing.add(
+        const PostPublishFailed(failure: NetworkFailure(), isEdit: false),
+      );
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.postPublishFailed), findsOneWidget);
+
+      await tester.tap(find.text(l10nEn.retry));
+      verify(retryPublish.call).called(1);
+      await tester.tap(find.text(l10nEn.postPublishDiscard));
+      verify(discardPublish.call).called(1);
     });
   });
 
