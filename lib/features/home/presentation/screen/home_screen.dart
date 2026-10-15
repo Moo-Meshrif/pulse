@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,11 +39,20 @@ class HomeScreen extends StatelessWidget {
       if (entry.value == PostRow.removed) entry.key,
   };
 
-  bool _hasNewRemovedPost(PostActionsState before, PostActionsState state) =>
-      _removedIds(state).length > _removedIds(before).length;
+  Set<String> _deletingIds(PostActionsState state) => {
+    for (final entry in state.rows.entries)
+      if (entry.value == PostRow.deleting) entry.key,
+  };
 
-  void _dropRemovedPosts(BuildContext context, PostActionsState state) =>
-      context.read<FeedCubit>().removePosts(_removedIds(state));
+  bool _hasDeleteChanged(PostActionsState before, PostActionsState state) =>
+      !setEquals(_removedIds(state), _removedIds(before)) ||
+      !setEquals(_deletingIds(state), _deletingIds(before));
+
+  void _syncDeletedPosts(BuildContext context, PostActionsState state) {
+    final feed = context.read<FeedCubit>();
+    feed.removePosts(_removedIds(state));
+    feed.setPendingDeletes(_deletingIds(state));
+  }
 
   bool _hasNewActionFailure(PostActionsState before, PostActionsState state) =>
       state.failure != null && state.failure != before.failure;
@@ -54,10 +64,13 @@ class HomeScreen extends StatelessWidget {
       state.upload is StoryUploadFailed && before.upload is! StoryUploadFailed;
 
   void _showUploadFailedWithRetry(BuildContext context, StoryRailState state) {
+    final rail = context.read<StoryRailCubit>();
     Notices.error(
       context.l10n.storyPostFailed,
       actionLabel: context.l10n.retry,
-      onAction: context.read<StoryRailCubit>().retryUpload,
+      onResult: (acted) {
+        if (acted) rail.retryUpload();
+      },
     );
   }
 
@@ -81,8 +94,8 @@ class HomeScreen extends StatelessWidget {
           listener: _showRefreshFailure,
         ),
         BlocListener<PostActionsCubit, PostActionsState>(
-          listenWhen: _hasNewRemovedPost,
-          listener: _dropRemovedPosts,
+          listenWhen: _hasDeleteChanged,
+          listener: _syncDeletedPosts,
         ),
         BlocListener<PostActionsCubit, PostActionsState>(
           listenWhen: _hasNewActionFailure,

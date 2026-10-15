@@ -16,6 +16,8 @@ class PostOptionsActions {
     required this.onReport,
     required this.onToggleComments,
     required this.onDelete,
+    required this.onUndoDelete,
+    required this.onCommitDelete,
     required this.onAudienceChanged,
     required this.onEdit,
   });
@@ -28,7 +30,12 @@ class PostOptionsActions {
   final Future<void> Function() onUndoMute;
   final Future<void> Function(ReportReason reason, String? note) onReport;
   final Future<void> Function() onToggleComments;
-  final Future<void> Function() onDelete;
+
+  /// Delete is in two steps so it can be undone: the card goes at once, and the request is sent when the
+  /// notice ends without Undo.
+  final VoidCallback onDelete;
+  final VoidCallback onUndoDelete;
+  final VoidCallback onCommitDelete;
 
   /// The picker saved a new audience for the post: the list shows it on the card.
   final ValueChanged<ContentAudience> onAudienceChanged;

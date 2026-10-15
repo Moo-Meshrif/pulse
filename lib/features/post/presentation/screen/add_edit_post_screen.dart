@@ -88,7 +88,9 @@ class AddEditPostScreen extends StatelessWidget {
       Notices.error(
         message,
         actionLabel: context.l10n.retry,
-        onAction: cubit.save,
+        onResult: (acted) {
+          if (acted) cubit.save();
+        },
       );
     } else {
       Notices.info(message);

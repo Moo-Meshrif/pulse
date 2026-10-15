@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
@@ -51,6 +52,7 @@ void main() {
     setMute,
     reportContent,
     removeFiles,
+    EventBus(),
   );
 
   setUp(() {
@@ -510,7 +512,7 @@ void main() {
       when(() => stories.deleteStory(any())).thenAnswer((_) async {});
       final cubit = build();
       await cubit.load('a'); // a2
-      await cubit.deleteCurrent();
+      await cubit.commitDelete(cubit.deleteCurrent()!);
       verifyInOrder([
         () => stories.deleteStory(any()),
         () => removeFiles(['u/stories/a2.jpg', 'u/stories/a2_t.jpg']),
@@ -522,7 +524,7 @@ void main() {
       when(() => stories.deleteStory(any())).thenThrow(const NetworkFailure());
       final cubit = build();
       await cubit.load('c');
-      await cubit.deleteCurrent();
+      await cubit.commitDelete(cubit.deleteCurrent()!);
       verifyNever(() => removeFiles(any()));
       await cubit.close();
     });
@@ -531,7 +533,8 @@ void main() {
       when(() => stories.deleteStory(any())).thenAnswer((_) async {});
       final cubit = build();
       await cubit.load('a'); // a2
-      expect(await cubit.deleteCurrent(), isNull);
+      cubit.deleteCurrent();
+      verifyNever(() => stories.deleteStory(any()));
       expect(cubit.state.currentStories!.map((s) => s.id), ['a1', 'a3']);
       expect(cubit.state.story!.id, 'a3');
       expect(cubit.state.isFinished, isFalse);
@@ -545,7 +548,7 @@ void main() {
         final cubit = build();
         await cubit.load('a');
         await cubit.next(); // a3
-        await cubit.deleteCurrent();
+        cubit.deleteCurrent();
         expect(cubit.state.story!.id, 'a2');
         await cubit.close();
       },
@@ -555,18 +558,34 @@ void main() {
       when(() => stories.deleteStory(any())).thenAnswer((_) async {});
       final cubit = build();
       await cubit.load('c');
-      await cubit.deleteCurrent();
+      cubit.deleteCurrent();
       expect(cubit.state.isFinished, isTrue);
       await cubit.close();
     });
 
-    test('a failure keeps the story and is returned', () async {
-      when(() => stories.deleteStory(any())).thenThrow(const NetworkFailure());
+    test(
+      'a failed commit puts the story back and returns the failure',
+      () async {
+        when(() => stories.deleteStory(any()))
+            .thenThrow(const NetworkFailure());
+        final cubit = build();
+        await cubit.load('a');
+        await cubit.next(); // a3
+        final id = cubit.deleteCurrent()!;
+        expect(await cubit.commitDelete(id), const NetworkFailure());
+        expect(cubit.state.story!.id, 'a3');
+        await cubit.close();
+      },
+    );
+
+    test('Undo puts the story back at its place and sends nothing', () async {
       final cubit = build();
-      await cubit.load('c');
-      expect(await cubit.deleteCurrent(), const NetworkFailure());
-      expect(cubit.state.isFinished, isFalse);
-      expect(cubit.state.story!.id, 'c1');
+      await cubit.load('a'); // a2
+      final id = cubit.deleteCurrent()!;
+      cubit.undoDelete(id);
+      expect(cubit.state.currentStories!.map((s) => s.id), ['a1', 'a2', 'a3']);
+      expect(cubit.state.story!.id, 'a2');
+      verifyNever(() => stories.deleteStory(any()));
       await cubit.close();
     });
   });

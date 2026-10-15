@@ -6,11 +6,13 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/enums/report_reason.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/events/event_bus.dart';
 import '../../../../core/services/gallery_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
 import '../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../shared/content/data/enums/mute_scope.dart';
+import '../../../../shared/content/domain/event/content_delete_event.dart';
 import '../../../../shared/content/domain/use_case/remove_media_files_use_case.dart';
 import '../../../../shared/content/domain/use_case/report_content_use_case.dart';
 import '../../../../shared/content/domain/use_case/set_mute_use_case.dart';
@@ -35,6 +37,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
     this._setMute,
     this._reportContent,
     this._removeFiles,
+    this._events,
   ) : super(const StoryViewerState());
 
   static const seenAfter = Duration(seconds: 1);
@@ -45,8 +48,13 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
   final SetMuteUseCase _setMute;
   final ReportContentUseCase _reportContent;
   final RemoveMediaFilesUseCase _removeFiles;
+  final EventBus _events;
 
   Timer? _seenTimer;
+
+  /// Stories deleted on screen whose request has not been sent yet, for Undo.
+  final _deleting =
+      <String, ({StoryModel story, String authorId, int index})>{};
 
   /// People muted from this viewer and where they stood, for Undo.
   final _muted = <String, ({StoryRailItemEntity person, int index})>{};
@@ -216,24 +224,63 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
     return failure;
   }
 
-  /// Deletes the story on screen (yours), then shows your next one, or closes after the last.
-  Future<Failure?> deleteCurrent() async {
+  /// Delete, step 1: the story on screen (yours) goes at once, then your next one shows, or the viewer
+  /// closes after the last. The request waits for [commitDelete], so Undo can still bring it back.
+  /// Returns the story's id, or null when there is nothing to delete.
+  String? deleteCurrent() {
     final story = state.story;
     final authorId = state.person?.authorId;
-    if (story?.id == null || authorId == null) return null;
-    Failure? failed;
-    await run(
-      () => _delete(story!),
-      onSuccess: (_) {
-        _removeStory(authorId, story!.id!);
-        return null;
-      },
-      onFailure: (failure) {
-        failed = failure;
-        return null;
-      },
+    final id = story?.id;
+    if (story == null || id == null || authorId == null) return null;
+    final list = state.stories[authorId] ?? const <StoryModel>[];
+    _deleting[id] = (
+      story: story,
+      authorId: authorId,
+      index: max(0, list.indexWhere((s) => s.id == id)),
     );
-    return failed;
+    _announce(id, ContentDeleteStage.pending);
+    _removeStory(authorId, id);
+    return id;
+  }
+
+  /// Delete, step 2 (the notice ended without Undo): sends the request. A failure puts the story back
+  /// and is returned for the caller to show. Safe after the viewer closed.
+  Future<Failure?> commitDelete(String storyId) async {
+    final pending = _deleting[storyId];
+    if (pending == null) return null;
+    final failure = await _attempt(() => _delete(pending.story));
+    if (failure != null) {
+      _restoreStory(storyId);
+    } else {
+      _deleting.remove(storyId);
+      _announce(storyId, ContentDeleteStage.deleted);
+    }
+    return failure;
+  }
+
+  /// Takes the delete back: the story returns to the rail and, if the viewer is still open, to its
+  /// place.
+  void undoDelete(String storyId) => _restoreStory(storyId);
+
+  void _announce(String storyId, ContentDeleteStage stage) =>
+      _events.fire(ContentDeleteEvent(ContentKind.story, storyId, stage));
+
+  void _restoreStory(String storyId) {
+    final pending = _deleting.remove(storyId);
+    if (pending == null) return;
+    _announce(storyId, ContentDeleteStage.restored);
+    if (isClosed || state.isFinished) return;
+    final list = [...?state.stories[pending.authorId]];
+    final index = min(pending.index, list.length);
+    list.insert(index, pending.story);
+    emit(
+      state.copyWith(
+        stories: {...state.stories, pending.authorId: list},
+        storyIndex: index,
+        restarts: state.restarts + 1,
+      ),
+    );
+    _afterChange();
   }
 
   /// Sends a report for [storyId]. Throws a [Failure] when it cannot (the report sheet shows it).

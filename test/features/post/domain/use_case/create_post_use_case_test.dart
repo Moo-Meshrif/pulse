@@ -11,6 +11,7 @@ import 'package:pulse/features/post/data/repository/feed_refresh_repository.dart
 import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
@@ -52,6 +53,21 @@ void main() {
   setUpAll(() {
     registerFallbackValue(File(''));
     registerFallbackValue(ContentAudience.public);
+    registerFallbackValue(
+      PostEntity(
+        id: '',
+        authorId: '',
+        username: '',
+        likeCount: 0,
+        commentCount: 0,
+        commentsEnabled: true,
+        visibility: ContentAudience.public,
+        createdAt: DateTime(2026),
+        likedByMe: false,
+        savedByMe: false,
+        media: const [],
+      ),
+    );
   });
 
   setUp(() {
@@ -233,9 +249,31 @@ void main() {
     },
   );
 
-  test('asks the home feed to load again once the post exists', () async {
+  test('gives the home feed the new post once it exists', () async {
+    await useCase(
+      const NewPostEntity(
+        id: 'p1',
+        caption: 'Hello',
+        commentsEnabled: true,
+        visibility: ContentAudience.public,
+        media: [photo],
+        authorUsername: 'sara',
+      ),
+    );
+    final saved =
+        verify(() => feedRefresh.postSaved(captureAny())).captured.single
+            as PostEntity;
+    expect(saved.id, 'p1');
+    expect(saved.authorId, 'u1');
+    expect(saved.username, 'sara');
+    expect(saved.media.single.path, 'u1/p1/0.jpg');
+    verifyNever(() => feedRefresh.request());
+  });
+
+  test('asks the feed to load again when the author is unknown', () async {
     await useCase(post);
     verify(() => feedRefresh.request()).called(1);
+    verifyNever(() => feedRefresh.postSaved(any()));
   });
 
   test('does not ask when the post could not be created', () async {
@@ -251,5 +289,6 @@ void main() {
     ).thenThrow(const NetworkFailure());
     await expectLater(useCase(post), throwsA(isA<NetworkFailure>()));
     verifyNever(() => feedRefresh.request());
+    verifyNever(() => feedRefresh.postSaved(any()));
   });
 }

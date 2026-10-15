@@ -210,9 +210,31 @@ void main() {
       expect(cubit.rowOf('p1'), PostRow.card);
     });
 
-    test('Delete removes the post', () async {
-      await cubit.delete(post);
+    test('Delete hides the post and sends nothing yet', () {
+      cubit.delete(post);
+      expect(cubit.rowOf('p1'), PostRow.deleting);
+      verifyNever(() => delete(any()));
+    });
+
+    test('Undo brings the deleted post back', () {
+      cubit.delete(post);
+      cubit.undoDelete(post);
+      expect(cubit.rowOf('p1'), PostRow.card);
+    });
+
+    test('the commit sends the delete and removes the post', () async {
+      cubit.delete(post);
+      await cubit.commitDelete(post);
+      verify(() => delete('p1')).called(1);
       expect(cubit.rowOf('p1'), PostRow.removed);
+    });
+
+    test('a failed commit brings the post back with the failure', () async {
+      when(() => delete(any())).thenThrow(const NetworkFailure());
+      cubit.delete(post);
+      await cubit.commitDelete(post);
+      expect(cubit.rowOf('p1'), PostRow.card);
+      expect(cubit.state.failure, const NetworkFailure());
     });
 
     test('turns comments off and on again', () async {
@@ -230,7 +252,7 @@ void main() {
   });
 
   test('reset forgets everything done to the old posts', () async {
-    await cubit.delete(post);
+    cubit.delete(post);
     cubit.audienceChanged(post, ContentAudience.onlyMe);
     cubit.reset();
     expect(cubit.rowOf('p1'), PostRow.card);

@@ -145,10 +145,25 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     _emitPost(postOf(loaded).copyWith(commentsEnabled: enabled));
   }
 
-  Future<void> delete(PostEntity loaded) async {
-    await _deletePost(loaded.id);
-    _emitRow(loaded.id, PostRow.removed);
-  }
+  /// Delete, step 1: the card goes at once and the request waits for [commitDelete], so the notice's
+  /// Undo can still bring it back.
+  void delete(PostEntity loaded) => _emitRow(loaded.id, PostRow.deleting);
+
+  void undoDelete(PostEntity loaded) => _emitRow(loaded.id, PostRow.card);
+
+  /// Delete, step 2: the notice ended without Undo. A failure brings the card back and is shown by the
+  /// screen through [PostActionsState.failure].
+  Future<void> commitDelete(PostEntity loaded) => run(
+    () => _deletePost(loaded.id),
+    onSuccess: (_) => state.copyWith(
+      rows: {...state.rows, loaded.id: PostRow.removed},
+      failure: null,
+    ),
+    onFailure: (failure) => state.copyWith(
+      rows: {...state.rows, loaded.id: PostRow.card},
+      failure: failure,
+    ),
+  );
 
   /// The audience picker saved a new audience for the post.
   void audienceChanged(PostEntity loaded, ContentAudience audience) =>

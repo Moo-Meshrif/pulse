@@ -39,8 +39,19 @@ void main() {
       NoticeKind.error,
       'x',
       actionLabel: 'Retry',
-      onAction: () {},
+      onResult: (_) {},
     );
     expect(withAction.duration.inSeconds, 5);
+  });
+
+  test('onResult gets true for the action and false for anything else', () {
+    final results = <bool>[];
+    Notices.info('A', actionLabel: 'Undo', onResult: results.add);
+    Notices.dismiss(Notices.current.value!, acted: true);
+    Notices.info('B', actionLabel: 'Undo', onResult: results.add);
+    Notices.dismiss(Notices.current.value!);
+    Notices.info('C', actionLabel: 'Undo', onResult: results.add);
+    Notices.info('D'); // replaces C
+    expect(results, [true, false, false]);
   });
 }

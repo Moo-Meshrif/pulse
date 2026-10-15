@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/constants/app_assets.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
@@ -64,7 +65,14 @@ void main() {
     when(upload.call).thenAnswer((_) => uploadStatus.stream);
     final refresh = _Refresh();
     when(refresh.call).thenAnswer((_) => const Stream<void>.empty());
-    cubit = StoryRailCubit(getRail, changes, upload, retry, refresh);
+    cubit = StoryRailCubit(
+      getRail,
+      changes,
+      EventBus(),
+      upload,
+      retry,
+      refresh,
+    );
     addTearDown(cubit.close);
     addTearDown(uploadStatus.close);
   });

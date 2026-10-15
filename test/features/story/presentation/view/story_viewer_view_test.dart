@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart' show kLongPressTimeout;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
@@ -115,6 +116,7 @@ void main() {
       okSetMute(),
       okReportContent(),
       okRemoveMediaFiles(),
+      EventBus(),
     );
   });
 

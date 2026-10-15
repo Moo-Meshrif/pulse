@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/report_reason.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
@@ -164,6 +165,7 @@ void main() {
       mute,
       report,
       _RemoveFiles(),
+      EventBus(),
     );
   });
 
@@ -338,9 +340,13 @@ void main() {
       await tester.tap(find.text(l10nEn.delete));
       await settle(tester);
 
-      expect(stories.deleted, ['m1']);
+      expect(stories.deleted, isEmpty); // waits for the notice to end
       expect(cubit.state.isFinished, isTrue);
       expect(find.text(l10nEn.storyDeleted), findsOneWidget);
+
+      await tester.tap(find.text(l10nEn.storyDeleted));
+      await settle(tester);
+      expect(stories.deleted, ['m1']);
       expect(popped, isFalse); // the screen (not the bare view) pops on finish
     });
 

@@ -116,6 +116,7 @@ void main() {
     savedByMe: false,
     media: const [old0, old1],
   );
+  setUpAll(() => registerFallbackValue(before));
 
   test(
     'saves the kept media then the added one, and removes the dropped file',
@@ -135,7 +136,14 @@ void main() {
       expect(media.map((m) => m.path).first, 'u1/p1/0.jpg');
       expect(media.last.path, startsWith('u1/p1/e'));
       verify(() => posts.removeFiles(['u1/p1/1.jpg'])).called(1);
-      verify(() => feedRefresh.request()).called(1);
+      final saved =
+          verify(() => feedRefresh.postSaved(captureAny())).captured.single
+              as PostEntity;
+      expect(saved.id, 'p1');
+      expect(saved.caption, 'New');
+      expect(saved.media.first.path, 'u1/p1/0.jpg');
+      expect(saved.media.last.path, startsWith('u1/p1/e'));
+      verifyNever(() => feedRefresh.request());
     },
   );
 
@@ -160,7 +168,7 @@ void main() {
           verify(() => posts.removeFiles(captureAny())).captured.single
               as List<String>;
       expect(removed.single, startsWith('u1/p1/e'));
-      verifyNever(() => feedRefresh.request());
+      verifyNever(() => feedRefresh.postSaved(any()));
     },
   );
 

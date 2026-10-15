@@ -15,10 +15,16 @@ import '../app_text.dart';
 /// notice's duration. It dismisses itself when the bar runs out, on a tap, on a swipe up, or after its
 /// action; a long press holds the timer.
 class NoticeCard extends StatefulWidget {
-  const NoticeCard({super.key, required this.notice, required this.onDismiss});
+  const NoticeCard({
+    super.key,
+    required this.notice,
+    required this.onDismiss,
+    required this.onAction,
+  });
 
   final Notice notice;
   final VoidCallback onDismiss;
+  final VoidCallback onAction;
 
   @override
   State<NoticeCard> createState() => _NoticeCardState();
@@ -51,11 +57,6 @@ class _NoticeCardState extends State<NoticeCard>
       _dragUp = 0;
       widget.onDismiss();
     }
-  }
-
-  void _onAction() {
-    widget.notice.onAction?.call();
-    widget.onDismiss();
   }
 
   @override
@@ -118,7 +119,7 @@ class _NoticeCardState extends State<NoticeCard>
                               SizedBox(width: NoticeDimens.gap),
                               _NoticeAction(
                                 label: notice.actionLabel!,
-                                onTap: _onAction,
+                                onTap: widget.onAction,
                               ),
                             ],
                           ],

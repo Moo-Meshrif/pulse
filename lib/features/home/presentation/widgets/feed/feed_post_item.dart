@@ -38,8 +38,10 @@ class _FeedPostItemState extends State<FeedPostItem> {
   PostEntity get _loaded => widget.post.entity;
   PostActionsCubit get _actions => context.read<PostActionsCubit>();
 
-  ({PostEntity post, PostRow row}) _current(PostActionsState state) => (
-    post: state.posts[_loaded.id] ?? _loaded,
+  /// Only what the cubit changed is selected: the post itself comes from the widget at build time, so an
+  /// edited post is never drawn from a copy the selector kept.
+  ({PostEntity? changed, PostRow row}) _current(PostActionsState state) => (
+    changed: state.posts[_loaded.id],
     row: state.rows[_loaded.id] ?? PostRow.card,
   );
 
@@ -53,18 +55,30 @@ class _FeedPostItemState extends State<FeedPostItem> {
     onSave: () => _actions.toggleSave(_loaded),
   );
 
-  PostOptionsActions _optionsActions() => PostOptionsActions(
-    onSave: () => _actions.toggleSave(_loaded),
-    onNotInterested: () => _actions.notInterested(_loaded),
-    onUnfollow: () => _actions.unfollow(_loaded),
-    onUndoUnfollow: () => _actions.undoUnfollow(_loaded),
-    onMute: () => _actions.mute(_loaded),
-    onUndoMute: () => _actions.undoMute(_loaded),
-    onReport: (reason, note) => _actions.report(_loaded, reason, note),
-    onToggleComments: () => _actions.toggleComments(_loaded),
-    onDelete: () => _actions.delete(_loaded),
-    onAudienceChanged: (audience) =>
-        _actions.audienceChanged(_loaded, audience),
+  /// The delete's Undo and commit run when the notice ends, maybe after this card has scrolled away:
+  /// they use the cubit and post taken now, never the context.
+  PostOptionsActions _optionsActions() {
+    final actions = _actions;
+    final loaded = _loaded;
+    return _optionsActionsOf(actions, loaded);
+  }
+
+  PostOptionsActions _optionsActionsOf(
+    PostActionsCubit actions,
+    PostEntity loaded,
+  ) => PostOptionsActions(
+    onSave: () => actions.toggleSave(loaded),
+    onNotInterested: () => actions.notInterested(loaded),
+    onUnfollow: () => actions.unfollow(loaded),
+    onUndoUnfollow: () => actions.undoUnfollow(loaded),
+    onMute: () => actions.mute(loaded),
+    onUndoMute: () => actions.undoMute(loaded),
+    onReport: (reason, note) => actions.report(loaded, reason, note),
+    onToggleComments: () => actions.toggleComments(loaded),
+    onDelete: () => actions.delete(loaded),
+    onUndoDelete: () => actions.undoDelete(loaded),
+    onCommitDelete: () => actions.commitDelete(loaded),
+    onAudienceChanged: (audience) => actions.audienceChanged(loaded, audience),
     onEdit: _openEdit,
   );
 
@@ -110,11 +124,11 @@ class _FeedPostItemState extends State<FeedPostItem> {
       BlocSelector<
         PostActionsCubit,
         PostActionsState,
-        ({PostEntity post, PostRow row})
+        ({PostEntity? changed, PostRow row})
       >(
         selector: _current,
         builder: (context, current) => switch (current.row) {
-          PostRow.removed => const SizedBox.shrink(),
+          PostRow.deleting || PostRow.removed => const SizedBox.shrink(),
           PostRow.hidden => Padding(
             padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
             child: HiddenPostRow(onUndo: _undoNotInterested),
@@ -122,7 +136,10 @@ class _FeedPostItemState extends State<FeedPostItem> {
           PostRow.card => Padding(
             padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
             child: PostCard(
-              data: postCardData(current.post, widget.post.media),
+              data: postCardData(
+                current.changed ?? widget.post.entity,
+                widget.post.media,
+              ),
               callbacks: _callbacks(),
               isOptionsOpen: _isOptionsOpen,
             ),

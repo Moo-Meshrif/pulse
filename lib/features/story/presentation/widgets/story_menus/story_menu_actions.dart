@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/enums/sheet_tone.dart';
 import '../../../../../core/error/failures.dart';
+import '../../../../../core/extensions/failure_l10n.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/extensions/notice_context.dart';
 import '../../../../../core/notice/notices.dart';
@@ -28,7 +29,9 @@ abstract final class StoryMenuActions {
     Notices.info(
       l10n.storyMuted(person.username),
       actionLabel: l10n.undo,
-      onAction: () => cubit.unmute(person.authorId),
+      onResult: (acted) {
+        if (acted) cubit.unmute(person.authorId);
+      },
     );
   }
 
@@ -97,11 +100,16 @@ abstract final class StoryMenuActions {
       viewCount: story.viewCount ?? 0,
     );
     if (!confirmed) return;
-    final failure = await cubit.deleteCurrent();
-    if (failure == null) {
-      Notices.success(l10n.storyDeleted);
-    } else if (context.mounted) {
-      context.showFailure(failure);
-    }
+    final id = cubit.deleteCurrent();
+    if (id == null) return;
+    Notices.success(
+      l10n.storyDeleted,
+      actionLabel: l10n.undo,
+      onResult: (acted) async {
+        if (acted) return cubit.undoDelete(id);
+        final failure = await cubit.commitDelete(id);
+        if (failure != null) Notices.error(failure.messageOf(l10n));
+      },
+    );
   }
 }

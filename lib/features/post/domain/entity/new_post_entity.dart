@@ -3,7 +3,8 @@ import '../../../../shared/content/data/enums/content_audience.dart';
 import 'new_post_media_entity.dart';
 
 /// What the New post screen shares. [id] is made once per post, so a retry finds the files it already
-/// uploaded.
+/// uploaded. The author fields are who is sharing; with them the feed shows the post at once, without them
+/// it loads again.
 class NewPostEntity extends Equatable {
   final String id;
   final String? caption;
@@ -11,6 +12,9 @@ class NewPostEntity extends Equatable {
   final bool commentsEnabled;
   final ContentAudience visibility;
   final List<NewPostMediaEntity> media;
+  final String? authorUsername;
+  final String? authorFullName;
+  final String? authorAvatarUrl;
 
   const NewPostEntity({
     required this.id,
@@ -19,6 +23,9 @@ class NewPostEntity extends Equatable {
     required this.commentsEnabled,
     required this.visibility,
     required this.media,
+    this.authorUsername,
+    this.authorFullName,
+    this.authorAvatarUrl,
   });
 
   @override
@@ -29,5 +36,8 @@ class NewPostEntity extends Equatable {
     commentsEnabled,
     visibility,
     media,
+    authorUsername,
+    authorFullName,
+    authorAvatarUrl,
   ];
 }

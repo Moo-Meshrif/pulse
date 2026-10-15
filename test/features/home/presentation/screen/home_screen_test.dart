@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/constants/app_assets.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
@@ -32,6 +33,7 @@ import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart'
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
@@ -73,6 +75,8 @@ class _UploadStatus extends Mock implements WatchStoryUploadUseCase {}
 class _RetryUpload extends Mock implements RetryStoryUploadUseCase {}
 
 class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
+
+class _Saved extends Mock implements WatchSavedPostsUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
@@ -140,6 +144,8 @@ void main() {
     addTearDown(refreshRequests.close);
     final refresh = _Refresh();
     when(refresh.call).thenAnswer((_) => refreshRequests.stream);
+    final saved = _Saved();
+    when(saved.call).thenAnswer((_) => const Stream.empty());
     final sign = _Sign();
     final currentUser = _CurrentUser();
     when(currentUser.call).thenReturn('me');
@@ -153,7 +159,9 @@ void main() {
     when(() => hide(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
     getIt
-      ..registerFactory(() => FeedCubit(getFeed, sign, refresh, currentUser))
+      ..registerFactory(
+        () => FeedCubit(getFeed, sign, refresh, saved, currentUser),
+      )
       ..registerFactory(
         () => PostActionsCubit(
           like,
@@ -171,6 +179,7 @@ void main() {
         () => StoryRailCubit(
           getRail,
           railChanges,
+          EventBus(),
           uploadStatus,
           retryUpload,
           refresh,

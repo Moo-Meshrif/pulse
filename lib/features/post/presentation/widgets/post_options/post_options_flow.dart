@@ -100,7 +100,9 @@ abstract final class PostOptionsFlow {
     Notices.info(
       l10n.postUnfollowed(data.username),
       actionLabel: l10n.undo,
-      onAction: actions.onUndoUnfollow,
+      onResult: (acted) {
+        if (acted) actions.onUndoUnfollow();
+      },
     );
   }
 
@@ -114,7 +116,9 @@ abstract final class PostOptionsFlow {
     Notices.info(
       l10n.postMuted(data.username),
       actionLabel: l10n.undo,
-      onAction: actions.onUndoMute,
+      onResult: (acted) {
+        if (acted) actions.onUndoMute();
+      },
     );
   }
 
@@ -141,7 +145,9 @@ abstract final class PostOptionsFlow {
             Notices.info(
               l10n.postMuted(data.username),
               actionLabel: l10n.undo,
-              onAction: actions.onUndoMute,
+              onResult: (acted) {
+                if (acted) actions.onUndoMute();
+              },
             );
           }),
         ),
@@ -152,7 +158,9 @@ abstract final class PostOptionsFlow {
             Notices.info(
               l10n.postUnfollowed(data.username),
               actionLabel: l10n.undo,
-              onAction: actions.onUndoUnfollow,
+              onResult: (acted) {
+                if (acted) actions.onUndoUnfollow();
+              },
             );
           }),
         ),
@@ -188,8 +196,12 @@ abstract final class PostOptionsFlow {
       cancelLabel: l10n.cancel,
     );
     if (confirmed != true || !context.mounted) return;
-    if (await _attempt(context, actions.onDelete)) {
-      Notices.success(l10n.postDeleted);
-    }
+    actions.onDelete();
+    Notices.success(
+      l10n.postDeleted,
+      actionLabel: l10n.undo,
+      onResult: (acted) =>
+          acted ? actions.onUndoDelete() : actions.onCommitDelete(),
+    );
   }
 }

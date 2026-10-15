@@ -78,6 +78,7 @@ class _NoticeHostState extends State<NoticeHost>
                       key: ValueKey(shown),
                       notice: shown,
                       onDismiss: () => Notices.dismiss(shown),
+                      onAction: () => Notices.dismiss(shown, acted: true),
                     ),
                   ),
                 ),

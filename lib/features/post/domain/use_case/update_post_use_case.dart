@@ -16,7 +16,7 @@ import 'set_comments_enabled_use_case.dart';
 /// Saves an edited post: applies a changed comments switch and audience first, uploads the added files under names no existing file has (the post keeps showing
 /// its old media until the save succeeds), replaces the post's caption, place and media in one call, then
 /// removes the files the post no longer uses. If the save fails the new files are removed. Once it is
-/// saved the home feed is asked to load again.
+/// saved the home feed gets the edited post to show at once.
 @injectable
 class UpdatePostUseCase {
   UpdatePostUseCase(
@@ -69,7 +69,37 @@ class UpdatePostUseCase {
         for (final item in before.media) ...[item.path, ?item.thumbPath],
       ].where((path) => !kept.contains(path)).toList(),
     );
-    _feedRefresh.request();
+    _feedRefresh.postSaved(
+      PostEntity(
+        id: before.id,
+        authorId: before.authorId,
+        username: before.username,
+        fullName: before.fullName,
+        avatarUrl: before.avatarUrl,
+        caption: post.caption,
+        location: post.location,
+        likeCount: before.likeCount,
+        commentCount: before.commentCount,
+        commentsEnabled: post.commentsEnabled,
+        visibility: post.visibility,
+        createdAt: before.createdAt,
+        likedByMe: before.likedByMe,
+        savedByMe: before.savedByMe,
+        media: [
+          ...post.kept,
+          for (final item in added)
+            PostMediaEntity(
+              isVideo: item.type == MediaType.video,
+              path: item.path!,
+              thumbPath: item.thumbPath,
+              width: item.width!,
+              height: item.height!,
+              durationMs: item.durationMs,
+              blurhash: item.blurhash,
+            ),
+        ],
+      ),
+    );
   }
 
   List<String> _paths(List<PostMediaModel> media) => [

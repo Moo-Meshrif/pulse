@@ -6,9 +6,11 @@ import '../../../../core/state/base_cubit.dart';
 import '../../../../core/state/load_more_status.dart';
 import '../../../post/domain/entity/feed_cursor_entity.dart';
 import '../../../post/domain/entity/feed_page_entity.dart';
+import '../../../post/domain/entity/post_entity.dart';
 import '../../../post/domain/use_case/get_home_feed_use_case.dart';
 import '../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
 import '../../../post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import '../../../post/domain/use_case/watch_saved_posts_use_case.dart';
 import '../../../post/presentation/utils/post_card_media.dart';
 import '../../../profile/domain/use_case/get_current_user_id_use_case.dart';
 import '../utils/enums/feed_status.dart';
@@ -23,24 +25,42 @@ class FeedCubit extends BaseCubit<FeedState> {
     this._feed,
     this._signMedia,
     this._refreshRequests,
+    this._savedPosts,
     GetCurrentUserIdUseCase currentUserId,
   ) : super(FeedState(userId: currentUserId()));
 
   final GetHomeFeedUseCase _feed;
   final SignPostMediaUrlsUseCase _signMedia;
   final WatchFeedRefreshRequestsUseCase _refreshRequests;
+  final WatchSavedPostsUseCase _savedPosts;
   StreamSubscription<void>? _requests;
+  StreamSubscription<PostEntity>? _saved;
 
-  /// Loads the feed and loads it again whenever something asks for it (a post was shared, Home was tapped
-  /// while open).
+  /// Loads the feed and loads it again whenever something asks for it (Home was tapped while open). A post
+  /// that was shared or edited is put in the feed without loading.
   Future<void> start() {
     _requests ??= _refreshRequests().listen((_) => _reload());
+    _saved ??= _savedPosts().listen(_postSaved);
     return load();
   }
 
-  /// A feed that failed to load tries again; one on screen refreshes. While it is busy this does nothing.
-  Future<void> _reload() =>
-      state.status == FeedStatus.failed ? load() : refresh();
+  /// A feed that failed to load tries again; one on screen refreshes. A request that arrives while the feed
+  /// is busy waits for it to finish, so a post shared meanwhile is not missed.
+  Future<void> _reload() async {
+    if (_isBusy(state)) {
+      try {
+        await stream.firstWhere((state) => !_isBusy(state));
+      } on StateError {
+        return;
+      }
+    }
+    return state.status == FeedStatus.failed ? load() : refresh();
+  }
+
+  bool _isBusy(FeedState state) =>
+      state.status == FeedStatus.loading ||
+      state.isRefreshing ||
+      state.loadMore == LoadMoreStatus.loading;
 
   /// First load, and Try again after it failed.
   Future<void> load() => run(
@@ -93,6 +113,25 @@ class FeedCubit extends BaseCubit<FeedState> {
     );
   }
 
+  /// A post was shared or edited: a new one goes first, an edited one is replaced where it is.
+  Future<void> _postSaved(PostEntity entity) async {
+    final FeedPost post;
+    try {
+      post = (await _signed([entity])).single;
+    } on Object {
+      return _reload();
+    }
+    if (isClosed) return;
+    final index = state.posts.indexWhere((item) => item.id == post.id);
+    if (index >= 0) {
+      emit(state.copyWith(posts: [...state.posts]..[index] = post));
+    } else if (state.status == FeedStatus.ready) {
+      emit(state.copyWith(posts: [post, ...state.posts]));
+    } else {
+      await _reload();
+    }
+  }
+
   /// A post was deleted or reported: it leaves the feed, so an empty feed shows its empty page.
   void removePosts(Set<String> ids) => emit(
     state.copyWith(
@@ -103,9 +142,14 @@ class FeedCubit extends BaseCubit<FeedState> {
     ),
   );
 
+  /// Posts deleted but not yet committed: the delete's notice can still Undo them.
+  void setPendingDeletes(Set<String> ids) =>
+      emit(state.copyWith(pendingDeleteIds: ids));
+
   @override
   Future<void> close() async {
     await _requests?.cancel();
+    await _saved?.cancel();
     return super.close();
   }
 
@@ -116,22 +160,28 @@ class FeedCubit extends BaseCubit<FeedState> {
     isRefreshing: false,
     loadMore: LoadMoreStatus.idle,
     generation: state.generation + 1,
+    pendingDeleteIds: const {},
     failure: null,
   );
 
-  /// One page with the links of all its media signed in a single request. A file whose link could not be
-  /// made is left out of its post.
+  /// One page of the feed with its media links signed.
   Future<_Page> _page(FeedCursorEntity? cursor) async {
     final FeedPageEntity page = await _feed(cursor: cursor);
+    return _Page(await _signed(page.posts), page.nextCursor);
+  }
+
+  /// The posts with the links of all their media signed in a single request. A file whose link could not be
+  /// made is left out of its post.
+  Future<List<FeedPost>> _signed(List<PostEntity> posts) async {
     final paths = {
-      for (final post in page.posts)
+      for (final post in posts)
         for (final item in post.media) ...[item.path, ?item.thumbPath],
     }.toList();
     final links = paths.isEmpty
         ? const <String, String>{}
         : await _signMedia(paths);
-    return _Page([
-      for (final post in page.posts)
+    return [
+      for (final post in posts)
         FeedPost(
           entity: post,
           media: [
@@ -149,7 +199,7 @@ class FeedCubit extends BaseCubit<FeedState> {
                 ),
           ],
         ),
-    ], page.nextCursor);
+    ];
   }
 }
 

@@ -28,7 +28,9 @@ void main() {
     onUndoMute: () => step('undoMute'),
     onReport: (reason, note) => step('report ${reason.name} $note'),
     onToggleComments: () => step('toggleComments'),
-    onDelete: () => step('delete'),
+    onDelete: () => calls.add('delete'),
+    onUndoDelete: () => calls.add('undoDelete'),
+    onCommitDelete: () => calls.add('commitDelete'),
     onAudienceChanged: (audience) => calls.add('audience ${audience.wire}'),
     onEdit: () => calls.add('edit'),
   );
@@ -223,6 +225,32 @@ void main() {
       await tester.pumpAndSettle();
       expect(calls, ['delete']);
       expect(find.text(l10nEn.postDeleted), findsOneWidget);
+    });
+
+    testWidgets('Undo on the notice takes the delete back and never commits', (
+      tester,
+    ) async {
+      await open(tester, mine);
+      await tester.tap(find.text(l10nEn.postDelete));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.delete));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.undo));
+      await tester.pumpAndSettle();
+      expect(calls, ['delete', 'undoDelete']);
+    });
+
+    testWidgets('the notice ending without Undo commits the delete', (
+      tester,
+    ) async {
+      await open(tester, mine);
+      await tester.tap(find.text(l10nEn.postDelete));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.delete));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.postDeleted));
+      await tester.pumpAndSettle();
+      expect(calls, ['delete', 'commitDelete']);
     });
   });
 

@@ -1,5 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/activity/domain/use_case/get_unread_activity_count_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/home/presentation/cubit/bell_dot_cubit.dart';
@@ -14,6 +15,7 @@ import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart'
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
@@ -41,6 +43,8 @@ class _UploadStatus extends Mock implements WatchStoryUploadUseCase {}
 class _Retry extends Mock implements RetryStoryUploadUseCase {}
 
 class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
+
+class _Saved extends Mock implements WatchSavedPostsUseCase {}
 
 class _Like extends Mock implements SetPostLikeUseCase {}
 
@@ -73,8 +77,12 @@ void registerHomeDoubles() {
   when(railChanges.call).thenAnswer((_) => const Stream<void>.empty());
   when(uploadStatus.call).thenAnswer((_) => const Stream.empty());
   when(refresh.call).thenAnswer((_) => const Stream<void>.empty());
+  final saved = _Saved();
+  when(saved.call).thenAnswer((_) => const Stream.empty());
   getIt
-    ..registerFactory(() => FeedCubit(getFeed, _Sign(), refresh, currentUser))
+    ..registerFactory(
+      () => FeedCubit(getFeed, _Sign(), refresh, saved, currentUser),
+    )
     ..registerFactory(
       () => PostActionsCubit(
         _Like(),
@@ -89,7 +97,13 @@ void registerHomeDoubles() {
     )
     ..registerFactory(() => BellDotCubit(unread, refresh))
     ..registerFactory(
-      () =>
-          StoryRailCubit(getRail, railChanges, uploadStatus, _Retry(), refresh),
+      () => StoryRailCubit(
+        getRail,
+        railChanges,
+        EventBus(),
+        uploadStatus,
+        _Retry(),
+        refresh,
+      ),
     );
 }

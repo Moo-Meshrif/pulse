@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/gallery_service.dart';
@@ -70,6 +71,7 @@ void main() {
         okSetMute(),
         okReportContent(),
         okRemoveMediaFiles(),
+        EventBus(),
       ),
     );
   });

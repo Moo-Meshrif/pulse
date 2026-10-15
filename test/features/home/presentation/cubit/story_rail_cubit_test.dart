@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
 import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
@@ -11,6 +12,8 @@ import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dar
 import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/watch_story_rail_changes_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/domain/event/content_delete_event.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
@@ -35,6 +38,7 @@ void main() {
   late _GetRail getRail;
   late _Changes changes;
   late _Upload upload;
+  late EventBus bus;
   late _Retry retry;
   late _Refresh refresh;
   late StreamController<void> requests;
@@ -45,6 +49,8 @@ void main() {
     getRail = _GetRail();
     changes = _Changes();
     upload = _Upload();
+    bus = EventBus();
+    addTearDown(bus.dispose);
     retry = _Retry();
     refresh = _Refresh();
     requests = StreamController<void>.broadcast();
@@ -60,7 +66,7 @@ void main() {
   });
 
   StoryRailCubit build() =>
-      StoryRailCubit(getRail, changes, upload, retry, refresh);
+      StoryRailCubit(getRail, changes, bus, upload, retry, refresh);
 
   Future<void> flush() => Future<void>.delayed(Duration.zero);
 
@@ -79,6 +85,100 @@ void main() {
     await cubit.load();
     expect(cubit.state.items, hasLength(1));
     await cubit.close();
+  });
+
+  group('a delete that can be undone', () {
+    setUp(() {
+      when(getRail.call)
+          .thenAnswer((_) async => [person('me', isMe: true), person('a')]);
+    });
+
+    test('hides your last story at once, without reloading', () async {
+      final cubit = build();
+      await cubit.start();
+      bus.fire(
+        const ContentDeleteEvent(
+          ContentKind.story,
+          's1',
+          ContentDeleteStage.pending,
+        ),
+      );
+      await flush();
+      expect(cubit.state.items.map((p) => p.authorId), ['a']);
+      verify(getRail.call).called(1);
+      await cubit.close();
+    });
+
+    test('keeps your row with fewer stories while some are left', () async {
+      when(getRail.call).thenAnswer(
+        (_) async => [
+          StoryRailItemEntity(
+            authorId: 'me',
+            username: 'me',
+            isMe: true,
+            storyCount: 3,
+            allSeen: false,
+          ),
+        ],
+      );
+      final cubit = build();
+      await cubit.start();
+      bus.fire(
+        const ContentDeleteEvent(
+          ContentKind.story,
+          's1',
+          ContentDeleteStage.pending,
+        ),
+      );
+      await flush();
+      expect(cubit.state.me!.storyCount, 2);
+      await cubit.close();
+    });
+
+    test('Undo brings it back', () async {
+      final cubit = build();
+      await cubit.start();
+      bus.fire(
+        const ContentDeleteEvent(
+          ContentKind.story,
+          's1',
+          ContentDeleteStage.pending,
+        ),
+      );
+      bus.fire(
+        const ContentDeleteEvent(
+          ContentKind.story,
+          's1',
+          ContentDeleteStage.restored,
+        ),
+      );
+      await flush();
+      expect(cubit.state.items.map((p) => p.authorId), ['me', 'a']);
+      await cubit.close();
+    });
+
+    test('once deleted it reloads from the server', () async {
+      final cubit = build();
+      await cubit.start();
+      bus.fire(
+        const ContentDeleteEvent(
+          ContentKind.story,
+          's1',
+          ContentDeleteStage.pending,
+        ),
+      );
+      when(getRail.call).thenAnswer((_) async => [person('a')]);
+      bus.fire(
+        const ContentDeleteEvent(
+          ContentKind.story,
+          's1',
+          ContentDeleteStage.deleted,
+        ),
+      );
+      await flush();
+      expect(cubit.state.items.map((p) => p.authorId), ['a']);
+      await cubit.close();
+    });
   });
 
   test('a change on the rail reloads it', () async {

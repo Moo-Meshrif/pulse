@@ -23,54 +23,64 @@ abstract final class Notices {
   static void error(
     String? message, {
     String? actionLabel,
-    VoidCallback? onAction,
-  }) => _show(NoticeKind.error, message, actionLabel, onAction);
+    ValueChanged<bool>? onResult,
+  }) => _show(NoticeKind.error, message, actionLabel, onResult);
 
-  static void success(String? message) =>
-      _show(NoticeKind.success, message, null, null);
+  static void success(
+    String? message, {
+    String? actionLabel,
+    ValueChanged<bool>? onResult,
+  }) => _show(NoticeKind.success, message, actionLabel, onResult);
 
   /// A neutral message; with an action it is the reversible-action notice ("Undo").
   static void info(
     String? message, {
     String? actionLabel,
-    VoidCallback? onAction,
-  }) => _show(NoticeKind.info, message, actionLabel, onAction);
+    ValueChanged<bool>? onResult,
+  }) => _show(NoticeKind.info, message, actionLabel, onResult);
 
-  /// Takes [notice] off the screen (timer, swipe, tap or its action) and shows the next one waiting.
-  static void dismiss(Notice notice) {
+  /// Takes [notice] off the screen (timer, swipe, tap or its action, [acted]) and shows the next one
+  /// waiting.
+  static void dismiss(Notice notice, {bool acted = false}) {
     if (current.value != notice) {
-      _queue.remove(notice);
+      if (_queue.remove(notice)) notice.onResult?.call(acted);
       return;
     }
     current.value = _queue.isEmpty ? null : _queue.removeAt(0);
+    notice.onResult?.call(acted);
   }
 
   /// Drops everything: the host is gone.
   static void clear() {
+    final gone = [?current.value, ..._queue];
     _queue.clear();
     current.value = null;
+    for (final notice in gone) {
+      notice.onResult?.call(false);
+    }
   }
 
   static void _show(
     NoticeKind kind,
     String? message,
     String? actionLabel,
-    VoidCallback? onAction,
+    ValueChanged<bool>? onResult,
   ) {
     if (message == null) return;
     final notice = Notice(
       kind,
       message,
       actionLabel: actionLabel,
-      onAction: onAction,
+      onResult: onResult,
     );
     if (kind == NoticeKind.error) HapticFeedback.mediumImpact();
     final shown = current.value;
     if (shown == null || shown.kind == kind) {
       current.value = notice;
+      shown?.onResult?.call(false);
       return;
     }
     _queue.add(notice);
-    if (_queue.length > maxQueued) _queue.removeAt(0);
+    if (_queue.length > maxQueued) _queue.removeAt(0).onResult?.call(false);
   }
 }

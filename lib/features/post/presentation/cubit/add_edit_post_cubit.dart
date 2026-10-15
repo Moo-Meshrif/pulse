@@ -168,6 +168,9 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
           commentsEnabled: state.commentsEnabled,
           visibility: state.visibility,
           media: _pickedFiles(),
+          authorUsername: me?.username,
+          authorFullName: me?.fullName,
+          authorAvatarUrl: me?.avatarUrl,
         ),
       );
     }

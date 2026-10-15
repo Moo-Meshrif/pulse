@@ -16,7 +16,11 @@ void main() {
   ) async {
     await open(tester);
     var undone = 0;
-    Notices.info('Muted', actionLabel: 'Undo', onAction: () => undone++);
+    Notices.info(
+      'Muted',
+      actionLabel: 'Undo',
+      onResult: (acted) => acted ? undone++ : null,
+    );
     await tester.pumpAndSettle();
     expect(find.text('Muted'), findsOneWidget);
 

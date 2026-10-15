@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
@@ -36,6 +37,7 @@ void main() {
       okSetMute(),
       okReportContent(),
       okRemoveMediaFiles(),
+      EventBus(),
     );
   });
 

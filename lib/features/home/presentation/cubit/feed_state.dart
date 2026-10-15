@@ -24,6 +24,10 @@ abstract class FeedState with _$FeedState {
     @Default(false) bool isRefreshing,
     @Default(LoadMoreStatus.idle) LoadMoreStatus loadMore,
 
+    /// Posts whose delete can still be undone: they are not shown, and when they were the last ones the
+    /// empty page shows.
+    @Default(<String>{}) Set<String> pendingDeleteIds,
+
     /// Counts the times the posts were replaced (first load, refresh): what was done to the old ones
     /// no longer applies.
     @Default(0) int generation,
@@ -40,7 +44,8 @@ abstract class FeedState with _$FeedState {
   FeedMode get mode => switch (status) {
     FeedStatus.initial || FeedStatus.loading => FeedMode.skeleton,
     FeedStatus.failed => FeedMode.failed,
-    FeedStatus.ready when posts.isEmpty => FeedMode.empty,
+    FeedStatus.ready when posts.every((p) => pendingDeleteIds.contains(p.id)) =>
+      FeedMode.empty,
     FeedStatus.ready => FeedMode.content,
   };
 }
