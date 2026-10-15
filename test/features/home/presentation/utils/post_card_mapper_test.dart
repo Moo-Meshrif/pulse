@@ -48,6 +48,24 @@ void main() {
       );
     });
 
+    test('only an Only me post is marked Only me', () {
+      expect(postCardData(_post(), const []).isOnlyMe, isFalse);
+      expect(
+        postCardData(
+          _post(visibility: ContentAudience.closeFriends),
+          const [],
+        ).isOnlyMe,
+        isFalse,
+      );
+      expect(
+        postCardData(
+          _post(visibility: ContentAudience.onlyMe),
+          const [],
+        ).isOnlyMe,
+        isTrue,
+      );
+    });
+
     test('a public post has no audience icon, others do', () {
       expect(postCardData(_post(), const []).audienceIcon, isNull);
       expect(

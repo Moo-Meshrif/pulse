@@ -6,6 +6,7 @@ abstract final class LoadingDimens {
   static double get pageWidth => AppScale.scale(100);
   static double get refreshWidth => AppScale.scale(56);
   static double get loadMoreWidth => AppScale.scale(44);
+  static double get refreshIconSize => AppScale.scale(28);
   static double get refreshBand => AppScale.scale(64);
   static double get loadMoreBand => AppScale.scale(72);
   static double get labelGap => AppScale.scale(16);

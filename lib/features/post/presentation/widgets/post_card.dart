@@ -53,6 +53,9 @@ class PostCard extends StatelessWidget {
           if (hasCaption)
             ExpandableCaption(
               text: caption,
+              collapsedLines: hasMedia
+                  ? PostCardDimens.captionWithMediaCollapsedLines
+                  : PostCardDimens.captionOnlyCollapsedLines,
               margin: hasMedia
                   ? PostCardDimens.captionMargin
                   : PostCardDimens.captionOnlyMargin,
@@ -73,6 +76,7 @@ class PostCard extends StatelessWidget {
             onLike: callbacks.onLike,
             onComment: callbacks.onComment,
             onShare: callbacks.onShare,
+            onlySave: data.isOnlyMe,
             onSave: callbacks.onSave,
           ),
         ],

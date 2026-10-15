@@ -12,6 +12,7 @@ import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/core/widgets/notice/notice_card.dart';
+import 'package:pulse/core/widgets/paged_scroll_view/refresh_icon.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/activity/domain/use_case/get_unread_activity_count_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
@@ -529,7 +530,7 @@ void main() {
       await tester.pump();
       expect(
         find.byWidgetPredicate(
-          (w) => w is AppInlineLoading,
+          (w) => w is FeedMoreSkeleton,
           skipOffstage: false,
         ),
         findsOneWidget,
@@ -576,7 +577,7 @@ void main() {
   });
 
   group('refreshing', () {
-    testView('shows the loader under the header while the posts stay', (
+    testView('shows the nav icon under the header while the posts stay', (
       tester,
     ) async {
       await show(tester);
@@ -589,12 +590,12 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.byType(AppInlineLoading), findsOneWidget);
+      expect(find.byType(RefreshIcon), findsOneWidget);
       expect(find.byType(PostCard), findsNWidgets(2));
 
       again.complete(FeedPageEntity(posts: [post('p9')]));
       await tester.pumpAndSettle();
-      expect(find.byType(AppInlineLoading), findsNothing);
+      expect(find.byType(RefreshIcon), findsNothing);
       expect(find.text('Nour p9'), findsOneWidget);
     });
   });

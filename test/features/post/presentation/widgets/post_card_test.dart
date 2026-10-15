@@ -160,18 +160,24 @@ void main() {
       final long = List.filled(60, 'caption').join(' ');
       await show(tester, data(caption: long));
 
-      expect(find.text(l10nEn.postMore), findsOneWidget);
-      expect(tester.widget<Text>(find.text(long)).maxLines, 3);
+      expect(
+        find.textContaining(l10nEn.postMore, findRichText: true),
+        findsOneWidget,
+      );
+      expect(find.text(long), findsNothing);
 
-      await tester.tap(find.text(l10nEn.postMore));
+      await tester.tap(find.byType(ExpandableCaption));
       await tester.pump();
-      expect(tester.widget<Text>(find.text(long)).maxLines, isNull);
+      expect(find.text(long), findsOneWidget);
       expect(find.text(l10nEn.postLess), findsOneWidget);
 
-      await tester.tap(find.text(l10nEn.postLess));
+      await tester.tap(find.byType(ExpandableCaption));
       await tester.pumpAndSettle();
-      expect(tester.widget<Text>(find.text(long)).maxLines, 3);
-      expect(find.text(l10nEn.postMore), findsOneWidget);
+      expect(find.text(long), findsNothing);
+      expect(
+        find.textContaining(l10nEn.postMore, findRichText: true),
+        findsOneWidget,
+      );
     });
 
     postTest('no caption draws no caption widget', (tester) async {

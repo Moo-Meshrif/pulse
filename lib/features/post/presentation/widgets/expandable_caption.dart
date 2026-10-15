@@ -11,9 +11,15 @@ import 'post_tap_button.dart';
 /// A post's caption: collapsed to a few lines with "more"; "less" closes it and scrolls back to the start of
 /// the caption. A caption that fits has no control.
 class ExpandableCaption extends StatefulWidget {
-  const ExpandableCaption({super.key, required this.text, this.margin});
+  const ExpandableCaption({
+    super.key,
+    required this.text,
+    required this.collapsedLines,
+    this.margin,
+  });
 
   final String text;
+  final int collapsedLines;
   final EdgeInsetsGeometry? margin;
 
   @override
@@ -23,31 +29,52 @@ class ExpandableCaption extends StatefulWidget {
 class _ExpandableCaptionState extends State<ExpandableCaption> {
   bool _isExpanded = false;
 
-  /// The overflow check lays out the text, so it is kept until the text, width or text scale changes.
-  ({String text, double width, TextScaler scaler, bool overflows})? _measured;
+  /// The collapsed text comes from laying out the caption, so it is kept until an input changes.
+  ({
+    String text,
+    double width,
+    TextScaler scaler,
+    String label,
+    int lines,
+    String? cut,
+  })?
+  _measured;
 
-  bool _canExpand(BuildContext context, TextStyle style, double width) {
+  String? _collapsedText(
+    BuildContext context,
+    TextStyle style,
+    TextStyle moreStyle,
+    String label,
+    double width,
+  ) {
     final scaler = MediaQuery.textScalerOf(context);
     final last = _measured;
     if (last != null &&
         last.text == widget.text &&
         last.width == width &&
-        last.scaler == scaler) {
-      return last.overflows;
+        last.lines == widget.collapsedLines &&
+        last.scaler == scaler &&
+        last.label == label) {
+      return last.cut;
     }
-    final overflows = doesCaptionOverflow(
+    final cut = collapsedCaptionText(
       context,
       text: widget.text,
       style: style,
+      moreStyle: moreStyle,
+      moreLabel: label,
       width: width,
+      maxLines: widget.collapsedLines,
     );
     _measured = (
       text: widget.text,
       width: width,
       scaler: scaler,
-      overflows: overflows,
+      label: label,
+      lines: widget.collapsedLines,
+      cut: cut,
     );
-    return overflows;
+    return cut;
   }
 
   void _toggle() {
@@ -64,40 +91,53 @@ class _ExpandableCaptionState extends State<ExpandableCaption> {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final style = context.text.bodySm.copyWith(color: colors.textPrimary);
+    final moreStyle = context.text.moreLink.copyWith(color: colors.primary);
     return Padding(
       padding: widget.margin ?? EdgeInsets.zero,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final canExpand = _canExpand(context, style, constraints.maxWidth);
-          final isCollapsed = canExpand && !_isExpanded;
-          final label = _isExpanded
-              ? context.l10n.postLess
-              : context.l10n.postMore;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.text,
-                style: style,
-                maxLines: isCollapsed
-                    ? PostCardDimens.captionCollapsedLines
-                    : null,
-                overflow: isCollapsed ? TextOverflow.ellipsis : null,
+          final moreLabel = context.l10n.postMore;
+          final cut = _collapsedText(
+            context,
+            style,
+            moreStyle,
+            moreLabel,
+            constraints.maxWidth,
+          );
+          if (cut == null) return Text(widget.text, style: style);
+          if (!_isExpanded) {
+            return PostTapButton(
+              label: moreLabel,
+              onTap: _toggle,
+              child: Text.rich(
+                TextSpan(
+                  style: style,
+                  children: [
+                    TextSpan(text: '$cut… '),
+                    TextSpan(text: moreLabel, style: moreStyle),
+                  ],
+                ),
               ),
-              if (canExpand)
-                PostTapButton(
-                  label: label,
-                  onTap: _toggle,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: PostCardDimens.actionGap),
-                    child: AppText(
-                      label,
-                      style: context.text.moreLink,
-                      color: colors.textSecondary,
-                    ),
+            );
+          }
+          final lessLabel = context.l10n.postLess;
+          return PostTapButton(
+            label: lessLabel,
+            onTap: _toggle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.text, style: style),
+                Padding(
+                  padding: EdgeInsets.only(top: PostCardDimens.actionGap),
+                  child: AppText(
+                    lessLabel,
+                    style: context.text.moreLink,
+                    color: colors.primary,
                   ),
                 ),
-            ],
+              ],
+            ),
           );
         },
       ),

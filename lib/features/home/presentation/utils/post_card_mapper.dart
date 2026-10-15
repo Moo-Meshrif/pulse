@@ -25,6 +25,7 @@ PostCardData postCardData(PostEntity post, List<PostCardMedia> media) {
     audienceIcon: post.visibility == ContentAudience.public
         ? null
         : post.visibility.icon,
+    isOnlyMe: post.visibility == ContentAudience.onlyMe,
   );
 }
 

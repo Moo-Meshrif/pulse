@@ -9,7 +9,7 @@ Video: `video_flux` [user]. Backend: Supabase now, REST later; schema `../home/s
 | ID | Name | File | Screenshot | Route |
 |---|---|---|---|---|
 | S1 | New post | screens/s1-new-post.md | screenshots/s1-new-post.png | `/create/post` (full screen, pushed on the root Navigator, nav hidden) |
-
+| S5 | Edit post (S1 opened on an existing post, from S2 "Edit post") | screens/s5-edit-post.md | none (S1 layout) | `/edit/post` |
 | S3 | Add location (list picker opened from New post > Location) | screens/s3-add-location.md | screenshots/s3-add-location.png | `/create/post/location` |
 | S4 | Post visibility picker (from the S1 chip and S2 "Change who can see") | screens/s4-visibility.md | screenshots/s4-visibility.png | sheet |
 | S2 | Post options sheet + report flow (opened from a post's "···") | screens/s2-post-options.md | screenshots/s2-post-options.png | sheet |
@@ -25,5 +25,6 @@ Control page Create sheet --Post--> /create/post (S1)
 S1 Location row --> S3 (returns a place name or none)
 S1 X (or system back) --> discard confirm if there is content, else close
 S1 Share post ok --> close, notice "Post shared" (Home feed refreshes)
+S2 Edit post (own post) --> /edit/post (S5); Save ok --> close, notice "Post updated" (Home feed reloads)
 ```
 Files: `00-data-layer.md` · `01-design-tokens.md` · `02-components.md` · `screens/s1-new-post.md` · `screens/s2-post-options.md` · `screens/s3-add-location.md` · `open-questions.md` · `progress.md`

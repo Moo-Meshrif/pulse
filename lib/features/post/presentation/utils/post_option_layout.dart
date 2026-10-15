@@ -17,10 +17,10 @@ class PostOptionLayout {
     if (data.isMine) {
       return PostOptionLayout._(
         quick,
-        const [
+        [
           PostOption.edit,
           PostOption.changeAudience,
-          PostOption.toggleComments,
+          if (!data.isOnlyMe) PostOption.toggleComments,
         ],
         const [PostOption.delete],
       );

@@ -24,6 +24,7 @@ class MediaIntake {
   final MediaPickerService _picker;
   final VideoThumbnailService _thumbnails;
 
+  // TODO(post-plan T4): camera capture is not in the post picker yet (gallery only).
   Future<List<PickedMedia>> pick({required int room}) =>
       _picker.pickMany(limit: room);
 

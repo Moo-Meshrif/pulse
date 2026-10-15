@@ -31,7 +31,10 @@ abstract final class PostCardDimens {
     AppScale.scale(2),
     AppScale.scale(4),
   );
-  static const int captionCollapsedLines = 3;
+
+  /// Collapsed caption lines: a caption-only post has room for more than one under a photo.
+  static const int captionOnlyCollapsedLines = 6;
+  static const int captionWithMediaCollapsedLines = 2;
   static double get mediaRadius => AppRadius.media;
 
   /// Media aspect (width / height) clamp: 4:5 .. 1.91:1.

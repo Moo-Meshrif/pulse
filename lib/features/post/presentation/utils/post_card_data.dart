@@ -19,6 +19,9 @@ class PostCardData extends Equatable {
   /// The small icon after the time for a post that is not public (users, star, lock); null for a public one.
   final String? audienceIcon;
 
+  /// True for an Only me post: nobody else sees it, so its action bar has only Save.
+  final bool isOnlyMe;
+
   const PostCardData({
     required this.id,
     required this.authorId,
@@ -33,6 +36,7 @@ class PostCardData extends Equatable {
     this.isLiked = false,
     this.isSaved = false,
     this.audienceIcon,
+    this.isOnlyMe = false,
   });
 
   @override
@@ -50,5 +54,6 @@ class PostCardData extends Equatable {
     isLiked,
     isSaved,
     audienceIcon,
+    isOnlyMe,
   ];
 }

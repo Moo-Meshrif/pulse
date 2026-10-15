@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -37,25 +38,37 @@ class HomeView extends StatelessWidget {
   );
 }
 
-/// Fades from the skeleton to the loaded feed.
-class _Body extends StatelessWidget {
+/// Fades from the skeleton to the loaded feed. Each switch gets its own key, so a quick skeleton, loaded,
+/// skeleton flip never meets a page that is still fading out under the same key.
+class _Body extends StatefulWidget {
   const _Body();
 
-  static const _skeletonKey = ValueKey('skeleton');
-  static const _loadedKey = ValueKey('loaded');
+  @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  bool? _wasSkeleton;
+  int _switches = 0;
 
   @override
   Widget build(BuildContext context) =>
       BlocSelector<FeedCubit, FeedState, bool>(
         selector: (state) => state.mode == FeedMode.skeleton,
-        builder: (context, isSkeleton) => AnimatedSwitcher(
-          duration: MediaQuery.disableAnimationsOf(context)
-              ? Duration.zero
-              : HomeDimens.skeletonFade,
-          child: isSkeleton
-              ? const _Loading(key: _skeletonKey)
-              : const _Loaded(key: _loadedKey),
-        ),
+        builder: (context, isSkeleton) {
+          if (_wasSkeleton != isSkeleton) {
+            _wasSkeleton = isSkeleton;
+            _switches++;
+          }
+          return AnimatedSwitcher(
+            duration: MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : HomeDimens.skeletonFade,
+            child: isSkeleton
+                ? _Loading(key: ValueKey('skeleton$_switches'))
+                : _Loaded(key: ValueKey('loaded$_switches')),
+          );
+        },
       );
 }
 
@@ -122,7 +135,10 @@ class _Posts extends StatelessWidget {
         onLoadMore: () => unawaited(context.read<FeedCubit>().loadMore()),
         retryLabel: context.l10n.homeLoadMoreError,
         caughtUpLabel: context.l10n.homeCaughtUp,
+        refreshIcon: AppAssets.home,
+        refreshIconFilled: AppAssets.homeFilled,
         bottomSpace: NavClearance.of(context),
+        loadMoreSkeleton: const FeedMoreSkeleton(),
         headerSlivers: const [FeedHeader()],
         slivers: [
           const SliverToBoxAdapter(child: StoryRail()),

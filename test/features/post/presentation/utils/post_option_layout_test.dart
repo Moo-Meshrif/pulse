@@ -49,4 +49,16 @@ void main() {
     expect(layout(isPublic: false).quick, [PostOption.save]);
     expect(layout(isMine: true, isPublic: false).quick, [PostOption.save]);
   });
+
+  test('your Only me post has no comments switch', () {
+    final l = PostOptionLayout.of(
+      const PostOptionsData(
+        postId: 'p1',
+        isMine: true,
+        username: 'sara',
+        visibility: ContentAudience.onlyMe,
+      ),
+    );
+    expect(l.groupA, [PostOption.edit, PostOption.changeAudience]);
+  });
 }

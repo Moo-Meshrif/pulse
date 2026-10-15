@@ -22,6 +22,9 @@ class PostOptionsData extends Equatable {
   /// Copy link and Share only exist for a public post.
   bool get isPublic => visibility == ContentAudience.public;
 
+  /// Nobody else sees an Only me post, so comments cannot be turned on or off.
+  bool get isOnlyMe => visibility == ContentAudience.onlyMe;
+
   @override
   List<Object?> get props => [
     postId,

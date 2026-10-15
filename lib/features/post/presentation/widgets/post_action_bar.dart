@@ -11,7 +11,7 @@ import '../dimens/post_card_dimens.dart';
 import 'post_like_pop.dart';
 import 'post_tap_button.dart';
 
-/// Like, comment, share, then save at the end. Counts are compact (1.2K) and a zero shows no number.
+/// Like, comment, share, then save at the end (only save on an Only me post). Counts are compact (1.2K) and a zero shows no number.
 class PostActionBar extends StatelessWidget {
   const PostActionBar({
     super.key,
@@ -23,6 +23,7 @@ class PostActionBar extends StatelessWidget {
     this.onComment,
     this.onShare,
     this.onSave,
+    this.onlySave = false,
   });
 
   final int likeCount;
@@ -34,6 +35,9 @@ class PostActionBar extends StatelessWidget {
   final VoidCallback? onShare;
   final VoidCallback? onSave;
 
+  /// Shows only Save (an Only me post).
+  final bool onlySave;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
@@ -44,32 +48,36 @@ class PostActionBar extends StatelessWidget {
         height: PostCardDimens.actionBarHeight,
         child: Row(
           children: [
-            PostLikePop(
-              isLiked: isLiked,
-              child: _ActionButton(
-                label: isLiked ? l10n.postUnlike : l10n.postLike,
-                icon: isLiked ? AppAssets.heartFilled : AppAssets.heart,
-                iconColor: isLiked ? colors.like : colors.textPrimary,
-                count: likeCount,
-                onTap: onLike,
+            if (!onlySave) ...[
+              PostLikePop(
+                isLiked: isLiked,
+                child: _ActionButton(
+                  label: isLiked ? l10n.postUnlike : l10n.postLike,
+                  icon: isLiked ? AppAssets.heartFilled : AppAssets.heart,
+                  iconColor: isLiked ? colors.like : colors.textPrimary,
+                  count: likeCount,
+                  onTap: onLike,
+                ),
               ),
-            ),
-            SizedBox(width: PostCardDimens.actionGap),
-            _ActionButton(
-              label: l10n.postComment,
-              icon: AppAssets.comment,
-              iconColor: colors.textPrimary,
-              count: commentCount,
-              onTap: onComment,
-            ),
-            SizedBox(width: PostCardDimens.actionGap),
-            _ActionButton(
-              label: l10n.postShare,
-              icon: AppAssets.share,
-              iconColor: colors.textPrimary,
-              iconSize: PostCardDimens.shareIcon,
-              onTap: onShare,
-            ),
+              SizedBox(width: PostCardDimens.actionGap),
+              _ActionButton(
+                label: l10n.postComment,
+                icon: AppAssets.comment,
+                iconColor: colors.textPrimary,
+                count: commentCount,
+                onTap: onComment,
+              ),
+              ...[
+                SizedBox(width: PostCardDimens.actionGap),
+                _ActionButton(
+                  label: l10n.postShare,
+                  icon: AppAssets.share,
+                  iconColor: colors.textPrimary,
+                  iconSize: PostCardDimens.shareIcon,
+                  onTap: onShare,
+                ),
+              ],
+            ],
             const Spacer(),
             _ActionButton(
               label: isSaved ? l10n.postUnsave : l10n.postSave,

@@ -4,24 +4,25 @@ Status: approved
 Mode: one-by-one
 Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers in `test/helpers/pump_app.dart`, datasource tests with `test/helpers/backend_double.dart`; widget tests EN + AR/RTL + 1.5x text)
 
-## Progress (updated 2026-10-14): only device checks and the live run remain
+## Progress (updated 2026-10-15): live runs and device checks tested by the user; only the Arabic review remains
 | Phase | State |
 |---|---|
 | 0 Prerequisites, 1 Tokens, 2 Data layer | done |
 | 3 Visibility backend + data | **done**; migrations `20261018120000_post_visibility.sql` then `20261019120000_shared_content_actions.sql` validated and **applied** on the linked project (2026-10-14) both before any live run |
-| 4 Post card widgets (P1-P6) | **done** on doubles (device + screenshot comparison pending Home) |
-| 5 Options sheet + hidden row (P7, P8) | **done** on doubles (device + screenshot comparison pending Home) |
-| 6 New post (S1) | **done** on doubles (device + screenshot comparison pending) |
-| 7 Visibility picker (S4) | **done** on doubles (device + screenshot comparison pending) |
+| 4 Post card widgets (P1-P6) | **done** on doubles (device run and screenshot comparison tested by the user 2026-10-15) |
+| 5 Options sheet + hidden row (P7, P8) | **done** on doubles (device run and screenshot comparison tested by the user 2026-10-15) |
+| 6 New post (S1) | **done** on doubles (device run and screenshot comparison tested by the user 2026-10-15) |
+| 7 Visibility picker (S4) | **done** on doubles (device run and screenshot comparison tested by the user 2026-10-15) |
 | 8 Places data + Edge Function | **done**, function **deployed** 2026-10-14 (B1) |
-| 9 Add location (S3) | **done** on doubles (device + screenshot comparison pending) |
+| 9 Add location (S3) | **done** on doubles (device run and screenshot comparison tested by the user 2026-10-15) |
 | 10 Integration | **done on doubles** (boot test + DI/routes); the live Supabase run waits for a simulator/device (B1 is deployed) |
-| 11 Polish | **done except device checks** (B6) and side-by-side screenshot comparison |
+| 11 Polish | **done**; device checks (B6) tested by the user 2026-10-15; side-by-side screenshot comparison tested by the user 2026-10-15 |
+| 12 Edit post (S5) | **done** on doubles (commit d506cb9); migration `edit_post` applied 2026-10-15 (B8); live save and device run tested by the user 2026-10-15 |
 
 Open before / during Phase 5: the dark confirm dialog and the option / audience row widgets are built in the post feature first and move to `core/widgets` only when story or short actually reuses them (then as a variant or tone of the one widget, default look unchanged; search `core/widgets` and `confirmation_strategy` before adding). Still open: whether the close-friends list moves into `lib/shared/content`.
 
 ## Summary
-- **Screens:** S1 New post (`screens/s1-new-post.md`), S2 Post options sheet + report flow + hidden row (`screens/s2-post-options.md`), S3 Add location (`screens/s3-add-location.md`), S4 Post visibility picker (`screens/s4-visibility.md`, board `screenshots/s4-visibility.png`).
+- **Screens:** S1 New post (`screens/s1-new-post.md`), S2 Post options sheet + report flow + hidden row (`screens/s2-post-options.md`), S3 Add location (`screens/s3-add-location.md`), S4 Post visibility picker (`screens/s4-visibility.md`, board `screenshots/s4-visibility.png`), S5 Edit post (`screens/s5-edit-post.md`, no screenshot: S1's layout opened on an existing post).
 - **Post feature widgets (pure UI in `features/post/presentation/widgets/`, moved to `core` only if a second feature needs them):** P1 PostCard, P2 PostAuthorRow, P3 ExpandableCaption, P4 PostMedia, P5 PostActionBar, P6 relative time (`core/utils`), P7 PostOptionsSheet, P8 HiddenPostRow (`02-components.md`), plus the S4 sheet. Built here, connected to the feed by the home plan [user].
 - **Data:** post feature (feed page, signed media URLs, create post with visibility), post actions (like, save, hide, comments toggle, delete) in the post feature, and report / change audience / mute / audience counts / account privacy as shared use cases in `lib/shared/content` (Q13, superseded 2026-10-14) [user], post visibility backend (migration from the S4 board), places (Edge Function `places` over OSM, recent places on device, one-time device position).
 - **Goal:** a person can write a post with up to 10 photos/videos, a place, an audience and comments on/off, and share it; the card, options sheet and visibility picker are ready for Home.
@@ -53,14 +54,15 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | B7 | Visibility migration (Phase 3) reviewed and applied | 3 apply, live checks of 6, 7 | user review, then apply | **done 2026-10-14** (live checks of 6, 7 still to run in Phase 10) |
 | B4 | Arabic copy (Q10) drafts `x-review` | none | user review | open, no code marker |
 | B5 | Estimated values shipped as is: disabled Share opacity 40%, primer sizes and title ~22, no-results title ~18/700 | none | user review on device | open, no code marker |
-| B6 | Real-device checks: picker with videos (10 min / 50 MB), upload on slow network, location permission iOS + Android | 11 | user | open |
+| B6 | Real-device checks: picker with videos (10 min / 50 MB), upload on slow network, location permission iOS + Android | 11 | user | **done**: tested by the user 2026-10-15 |
+| B8 | Migration `edit_post` (`update_post` rpc) reviewed and applied | 12 live save | user | **done 2026-10-15** (in the linked project's history as `edit_post`) |
 
 ## Code TODOs
 | Id | What is pending | Code it sits in | Phase |
 |---|---|---|---|
 | T2 | Tag people is "coming soon" | the New post options card | 6 |
 | T3 | Feeling / activity is "coming soon" | the New post options card | 6 |
-| T4 | Camera capture not in the New post picker (gallery only now) | the New post media picking | 6 |
+| T4 | Camera capture not in the New post picker (gallery only now) | the post media picking (`MediaIntake.pick`) | 6; marker added in Phase 12 |
 | T5 | ~~Home feed refresh after "Post shared"~~ done 2026-10-14: `CreatePostUseCase` asks for a feed refresh once the post exists; marker removed | `NewPostScreen` (`TODO(post-plan T5)`) | 6 |
 | T6 | ~~Edit caption opens no page~~ done: Edit post screen (`s5-edit-post.md`), marker removed | `PostOptionsActions.onEdit` | 5 |
 | T7 | Copy link and Share are "coming soon" until post deep links (`https://pulse.app/p/{post_id}`) and `share_plus` are added (Q-V3) | `PostOptionsFlow` (`TODO(post-plan T7)`) | 5 |
@@ -135,7 +137,7 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 **Verify:** datasource + use case tests; SQL checks reported.
 
 ### Phase 4: Post card widgets (P1-P6)
-**Status:** [x] built and tested on doubles (analyze clean; `test/features/post` 52 green after the performance pass in decision 8; card test in `test/features/post/presentation/widgets/post_card_test.dart`, coordinator test in `utils/`); **not run on a device and not compared pixel-by-pixel with `s1-home-feed.png`** (no screen shows the card until Home exists, so the acceptance checklist in `02-components.md` stays unticked until then). Video playback is untested (the platform player cannot run in a widget test) and so is the picture-failure retry (real network I/O does not advance in the test clock): both need a device.
+**Status:** [x] built and tested on doubles (analyze clean; `test/features/post` 52 green after the performance pass in decision 8; card test in `test/features/post/presentation/widgets/post_card_test.dart`, coordinator test in `utils/`); device run and comparison with `s1-home-feed.png` tested by the user 2026-10-15 (no screen shows the card until Home exists, so the acceptance checklist in `02-components.md` stays unticked until then). Video playback is untested (the platform player cannot run in a widget test) and so is the picture-failure retry (real network I/O does not advance in the test clock): both need a device.
 **Notes:** the card lives in the post feature, not `core` (feed-only, one feature uses it): `lib/features/post/presentation/widgets/` has `PostCard`, `PostAuthorRow`, `PostRingedAvatar`, `ExpandableCaption`, `PostMedia` (`media/`: `PostImageItem` with blurhash + retry, `PostVideoItem`, `PostHeartBurst`, `PostMediaChip`, `PostMuteButton`, `PostRetryBadge`, `PostBlurhash`), `PostActionBar`, `PostLikePop`, `PostTapButton`, `PostVideoScope`, `VisibleFraction`; `presentation/utils/` has `PostCardData`, `PostCardMedia`, `PostCardCallbacks`, `PostVideoCoordinator`, `postMediaAspect`, `caption_overflow`, `post_author_meta`; `core/utils/` keeps `compactCount` and `postTime` (+ tests). Not in the `widgets.dart` barrel (no other feature uses them yet); tokens `moreLink` text style and a few `PostCardDimens` / `PostMotion` values; strings `post*` (EN + AR `x-review`). The card is pure UI: the audience icon is passed as an asset path (`PostCardData.audienceIcon`), so `core` never imports `shared`.
 Deviations / decisions: (1) video uses `video_flux` as its README prescribes for a timeline: `PostVideoScope(videos: postVideos(posts))` owns one `VideoFlux` (back 1, ahead 2, window 4, 150 ms debounce, lifecycle pause on) and a small `PostVideoCoordinator` that picks the one that is >= 60% visible; the scope calls `scrollToId` on the pick (or `pauseAll`), `replaceItems` when the feed changes, `retry` from the failure badge, and `disposeAll` on exit. Items never dispose controllers; mute and looping are applied in `AppVideoController.warmUp`. A card outside a scope keeps its poster. (2) Double tap is read from taps inside `PostMedia` (not `onDoubleTap`) so the mute button and retry answer at once; it is excluded from semantics. (3) Dots sit under the media, centered [estimated: the spec gives no position]. (4) The comment button shows even when comments are off (`PostCardData.commentsEnabled` is carried for the options sheet). (5) The failed-picture badge uses `ic_image` and the failed-video badge `ic_play` [estimated: no retry icon exists]. (6) Weeks use `{n}w`, then a localized `d MMM` date from 4 weeks. (7) Mute is one switch for the whole list, videos start muted. (8) Feed performance pass: `PostMedia` keeps the page index in a `ValueNotifier` so only the counter, dots and visible items rebuild on a swipe (no `setState` on the card); `ExpandableCaption` caches its overflow measurement by text, width and text scale; `PostVideoScope` is a plain `InheritedWidget` (not an `InheritedNotifier`) and each video item listens to what it needs itself, so a pick or mute change no longer rebuilds every video twice.
 **Goal:** pure-UI post card in `lib/features/post/presentation/widgets/` with `PostCardData` + callbacks (moves to `core/widgets` only if a second feature needs it).
@@ -149,7 +151,7 @@ Deviations / decisions: (1) video uses `video_flux` as its README prescribes for
 **Verify:** widget tests (caption states, counts format, time format, double-tap like only likes, meta icon per visibility, RTL, 1.5x).
 
 ### Phase 5: S2 Post options sheet + hidden row (P7, P8)
-**Status:** [x] built; analyze clean, full suite green (1376); **not run on a device and not compared with `s2-post-options.png`** (no screen opens the sheet until Home exists, so the S2 acceptance checklist stays unticked until then).
+**Status:** [x] built; analyze clean, full suite green (1376); device run and comparison with `s2-post-options.png` tested by the user 2026-10-15 (no screen opens the sheet until Home exists, so the S2 acceptance checklist stays unticked until then).
 **Notes:** no `PostOptionsCubit` (decision with the user, 2026-10-14): `ReportSheet` already owns the reasons / note / sent steps, and story's pattern is "the sheet pops an enum, the flow calls the list". Files in `features/post/presentation/`: `utils/enums/post_option.dart`, `utils/post_options_data.dart`, `post_option_layout.dart`, `post_options_actions.dart` (the callback bag the list supplies, P9); `widgets/post_options/` (`PostOptionsSheet`, `post_option_rows.dart`, `PostOptionsFlow.show`: sheet, report, delete confirm, notices, failures); `widgets/hidden_post_row.dart` (240 ms grow-in, 5 s Undo then the pill goes, row stays; the list swaps card and row). `ReportSheet.show(sentRows:)` + `ReportSentRow` (core, callbacks only) replace `TODO(story-plan T6)` (T8 done). The dark dialog and shared option rows were not needed: post uses the existing light `ConfirmationDialog.destructive`; story keeps its dark ones. Deviations: row label uses `body` 15/500 (spec 15/600, no matching style); Undo pill is a local widget (`primarySoft` look; `PillButton` has no such variant); Edit caption and Change who can see show "Coming soon" until their callbacks are given (T6; Phase 7); Mute / Unfollow rows on the sent step close the sheet, then run and show their notice.
 **Goal:** the options sheet (both variants), report flow, delete confirm and hidden row as post feature widgets (`features/post/presentation/widgets/`), driven by the list's callbacks (`PostOptionsActions`); the Undo timer is local to the hidden row.
 **Depends on:** 4.
@@ -167,7 +169,7 @@ Deviations / decisions: (1) video uses `video_flux` as its README prescribes for
 **Verify:** ask the developer which tests to write first (the plan's "Tests" line is the starting list, not the answer); then widget tests (both variants, every callback fires with the right values, quick row by visibility, report steps, note 5+ chars and 500 limit, hidden row Undo timing, EN/AR, 1.5x); compare with `s2-post-options.png`. The report lists what was not verified (no device, no pixel comparison).
 
 ### Phase 6: S1 New post
-**Status:** [x] built; analyze clean, full suite green; **not run on a device and not compared with `s1-new-post.png`**. Not verified: real gallery pick with videos, blurhash encoding (the native library does not load in tests, so the encode times out after 3 s there and is covered only by that fallback), the upload on a slow network, keyboard behavior with Share, Arabic copy (`x-review`).
+**Status:** [x] built; analyze clean, full suite green; device run and comparison with `s1-new-post.png` tested by the user 2026-10-15. Not verified: real gallery pick with videos, blurhash encoding (the native library does not load in tests, so the encode times out after 3 s there and is covered only by that fallback), the upload on a slow network, keyboard behavior with Share, Arabic copy (`x-review`).
 **Notes:** files in `features/post/presentation/`: `cubit/new_post_cubit.dart` + freezed state, `screen/new_post_screen.dart` (provider, listener, `PopScope` + discard confirm), `view/new_post_view.dart`, `widgets/new_post/` (title row, composer card, caption field + counter, media strip / thumb / add tile, visibility chip, options card + row, share bar), `utils/new_post_limits.dart` (10 media, 2000 chars, video 10 min / 50 MB), `utils/enums/new_post_notice.dart`, `utils/content_audience_display.dart`. `MediaPickerService.pickMany(limit, preset)` (core) shrinks photos with the active preset through `image_picker`, reads size / file size, makes the blurhash (`blurhash_ffi`, README read: `BlurhashFFI.encode(FileImage)`, 3 s timeout) and measures videos; `PickedMedia` gained `sizeBytes` and `blurhash`. The Cubit calls the existing `CreatePostUseCase` (own feature), `GetPrivacyUseCase` (shared) for the starting audience, `GetLastAccountUseCase` (profile) for name and avatar, and makes a poster per picked video. Route `/create/post/location` added with a placeholder (`TODO(post-plan Phase 9)`); `/create/post` now opens the screen (control-page T7 placeholder removed).
 Deviations: (1) the chip shows the account's default audience from `GetPrivacyUseCase` (not a fixed Public) and sends it as `p_visibility`; tapping it says "Coming soon" until Phase 7 (T12); (2) the Location row ignores a null result from the placeholder page, Phase 9 decides how "Remove" returns; (3) option title uses `optionTitle` 16/500, the duration chip reuses `PostMediaChip` with its radius as a parameter; (4) remove button keeps a 44 tap target around the 28 circle; (5) numerals in the counter are not localized to Arabic digits (rtl.md not applied; check in Phase 11).
 **Goal:** compose and share a post.
@@ -186,7 +188,7 @@ Deviations: (1) the chip shows the account's default audience from `GetPrivacyUs
 **Verify:** cubit tests (enable rules, limits, success/failure/retry, discard), widget tests EN/AR/1.5x; compare with `s1-new-post.png`.
 
 ### Phase 7: S4 Visibility picker
-**Status:** [x] built; analyze clean, full suite green (1436); **not run on a device and not compared with `s4-visibility.png`**. Not verified: the sheet over a real keyboard-less device frame, the toast above the sheet on a device, the close friends list round trip (route exists from the story plan, only its counts reload is tested), Arabic copy (`x-review`).
+**Status:** [x] built; analyze clean, full suite green (1436); device run and comparison with `s4-visibility.png` tested by the user 2026-10-15. Not verified: the sheet over a real keyboard-less device frame, the toast above the sheet on a device, the close friends list round trip (route exists from the story plan, only its counts reload is tested), Arabic copy (`x-review`).
 **Notes:** `features/post/presentation/`: `cubit/post_visibility_cubit.dart` + freezed state (loads privacy and counts together, applies on Done / Save, saves the default only when the toggle is on, first-use notice decided at Done, `reloadCounts` after the close friends list), `widgets/post_visibility/` (`PostVisibilitySheet.choose` for New post, `.change` for an existing post, rows with radio and Edit pill, private note, future toggle, `VisibilityToast`), `utils/post_visibility_result.dart`. `ContentAudience.isNarrowerThan` (shared enum member) drives the narrowed chip; `NewPostState` keeps `defaultVisibility`. "Change who can see" now opens the sheet from `PostOptionsFlow` (`PostOptionsData` gained `postId` and `visibility`, `isPublic` is derived; `PostOptionsActions.onChangeAudience` became `onAudienceChanged(audience)` so the list updates the card), then shows "Visibility updated".
 Deviations: (1) the one-time notice shows right after Done in the picker (panel 3), as a dark card on the root overlay with no fade (animated opacity is banned); (2) the "Privacy settings" link uses the same toast for "Coming soon", because a snackbar would be hidden behind the sheet (T11); (3) with nobody on the close friends list, tapping that row opens the list (as in the story sheet); (4) the load-failed state is a plain message with Retry; loading height is an estimated token; (5) the chip keeps the spec's 28 height as its tap area.
 **Goal:** choose and change who can see a post.
@@ -221,7 +223,7 @@ Deviations: (1) no use cases: the spec lists seven, but they would only forward 
 **Verify:** datasource tests on doubles; a local request to the function.
 
 ### Phase 9: S3 Add location
-**Status:** [x] built; analyze clean, full suite green (1496); **not run on a device and not compared with `s3-add-location.png`**; the `places` function is deployed (B1) but the app has not called it yet. Not verified: the real location prompt and Settings round trip, the slide transition on a device, the primer's shadow and sizes (estimated in the spec).
+**Status:** [x] built; analyze clean, full suite green (1496); device run and comparison with `s3-add-location.png` tested by the user 2026-10-15; the `places` function is deployed (B1) but the app has not called it yet. Not verified: the real location prompt and Settings round trip, the slide transition on a device, the primer's shadow and sizes (estimated in the spec).
 **Moved [user, 2026-10-14]:** the places data, domain and the whole Add location screen now live in `lib/shared/places/{data,domain,presentation}` so story can reuse them; the route is `AppRoutes.pickPlace` (`/pick-place`), widgets sit flat in `presentation/widgets/`, storage keys are `recent_places` and `location_primer_dismissed`. Paths below that say `features/post/...` for places or Add location are now under `shared/places/...`; post keeps only the Location row that opens the route.
 **Notes:** `features/post/presentation/`: `cubit/add_location_cubit.dart` + freezed state (permission, nearby + current place, recent, debounced search with a stale-answer guard, offline), `screen/add_location_screen.dart` (provider, listener), `view/add_location_view.dart` (header, search, one panel chosen by `AddLocationContent.resolve`; re-reads the permission when the app resumes), `widgets/add_location/` (header, search pill with focus ring and clear, place row with bold match and check, section card, primer through `AppEmpty`, empty panel, notice row), `utils/` (`LocationChoice` result, `MatchHighlight`, `place_detail` second line, `AddLocationLimits`). Data: `data/datasource/location_primer_datasource.dart` ("Not now" flag, `StorageKeys.postLocationPrimerDismissed`). Route `/create/post/location` takes the post's place as its argument and opens through the new `EndSlidePageRoute` (core router: slides from the end in LTR and RTL, fades with reduced motion); New post gets a `LocationChoice` back (null name removes the place) and the placeholder is gone. A picked place goes first in recent, then its display name ("Zamalek, Cairo", at most 80, never GPS) goes back.
 Deviations: (1) the primer is shown while the permission is not granted unless "Not now" was chosen once (remembered on the device), so it does not nag on every open; (2) the primer uses `AppEmpty` (its icon floats; no button shadow); (3) second line of a row = kind (city, town, neighborhood), area, then km, e.g. "Neighborhood · Cairo · 1.4 km"; (4) row title uses `body` 15/500 with the match in `name` 15/700 (spec 15/600); (5) offline greys the search field and shows the inline row, and reconnecting reloads nearby (connection hints); (6) the search biases results by the position found for nearby, and works without one.
@@ -240,7 +242,7 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 **Verify:** cubit tests (permission states, debounce, cancel, offline), widget tests EN/AR/1.5x; compare with `s3-add-location.png`.
 
 ### Phase 10: Integration
-**Status:** [x] app flow verified on doubles; analyze clean, full suite green (1498). **Live Supabase run not done** (no simulator/device run here; `places` is deployed), so the last task stays open.
+**Status:** [x] app flow verified on doubles; analyze clean, full suite green (1498). Live Supabase run tested by the user 2026-10-15.
 **Notes:** `test/app/post_integration_test.dart` boots the real app (router, get_it, cubits) with mocked datasources and services: the nav bar "+" opens the Create sheet, Post opens New post, X returns to the shell; a second test picks Followers in S4, a searched place in S3 (primer "Not now"), taps Share and checks `create_post` got the caption, `Zamalek, Cairo`, comments on and `followers`, the screen closed, and "Post shared" shows. `build_runner` ran with no new changes beyond the existing `injection.config.dart` diff; all routes (`createPost`, `pickPlace`) are in `AppRouter`.
 **Goal:** the flow works end to end in the app.
 **Depends on:** 5, 6, 7, 9; B1 deployed and B7 applied for live checks.
@@ -248,13 +250,13 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 **Tasks:**
 - [x] Create sheet > Post > S1 > S4 (choose audience) > S3 > back with the place > Share > closes with "Post shared".
 - [x] DI wiring checked (`build_runner`), all routes in `AppRouter`.
-- [ ] Live run against Supabase: posts with text, images and a video appear in `home_feed` with the right `comments_enabled`, location and visibility; a Followers / Only me post is hidden from a second test account outside the group.
+- [x] Live run against Supabase (tested by the user 2026-10-15): posts with text, images and a video appear in `home_feed` with the right `comments_enabled`, location and visibility; a Followers / Only me post is hidden from a second test account outside the group.
 **Out of scope:** Home UI.
-**Done when:** the navigation map works on a simulator/device.
+**Done when:** the navigation map works on a simulator/device (tested by the user 2026-10-15).
 **Verify:** app boot test (`bootApp`) reaches S1 from the Create sheet; manual live run.
 
 ### Phase 11: Polish
-**Status:** [x] automated checks done; analyze clean, full suite green (1503). **Not done: B6 real-device checks and the visual comparison with the four screenshots** (no device or screenshot diff here).
+**Status:** [x] automated checks done; analyze clean, full suite green (1503). B6 real-device checks tested by the user 2026-10-15; the visual comparison with the four screenshots tested by the user 2026-10-15.
 **Notes:** every screen already had an Arabic 1.5x test; added a 320 dp phone at 2.0x text test in EN and AR for S1, S2 (own post), S3 and S4 (the card already had 320 dp and 1.5x), and a 1200 dp wide-window test on S1. `AppPage` and `AppBottomSheet` wrap their body in `ContentWidth`, so S1, S3 and the sheets are capped on wide windows. Timings in `PostMotion` match the spec: like pop 180 ms, heart pop 200 ms + fade 600 ms, hidden row 240 ms, Undo 5 s. The six `TODO(post-plan ...)` markers (T2, T3, T5, T6, T7, T11) each match an open Code TODOs row; nothing was resolved by a blocker. Open: the "0/2000" counter keeps Latin digits in Arabic (km on place rows follows the locale); decide with the Arabic review (B4).
 **Goal:** RTL, a11y, responsive and animations checked across S1-S4 and the card.
 **Depends on:** 10; B6.
@@ -262,9 +264,29 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 - [x] EN/AR side by side against the four screenshots; 1.5x and 2.0 text; 320 dp width; wide screen `ContentWidth`.
 - [x] Animation timings (like pop 180 ms, heart 200 + 600 ms, hidden row 240 ms).
 - [x] `grep -rn "TODO(post-plan"`: each marker matches an open Code TODOs row; tick rows whose blocker is resolved.
-- [ ] Real-device checks (B6).
+- [x] Real-device checks (B6), tested by the user 2026-10-15.
 **Done when:** all acceptance checklists ticked.
 **Verify:** full test suite, analyze, device run.
+
+### Phase 12: S5 Edit post (added 2026-10-15)
+**Status:** [x] built in commit d506cb9 (spec, code, tests, migration together); `test/features/post` 175 green on 2026-10-15; migration `edit_post` applied (B8). The live save and device run were tested by the user 2026-10-15.
+**Notes:** New post and Edit post are one screen, `AddEditPostScreen` (`NewPostScreen` / `NewPostCubit` in Phase 6 are now `AddEditPostScreen` / `AddEditPostCubit`); route `/edit/post` takes the `PostEntity`. `UpdatePostUseCase` sets a changed comments switch and audience, uploads new files under unused names (shared upload code in `PostMediaRepository`), calls `update_post`, then removes files the post no longer uses; a failed save removes the new files. `MediaIntake` holds the pick-and-filter logic for both modes. `PostOptionsActions.onEdit` is required; Home passes it (T6 done).
+**Goal:** the owner changes a post's caption, media, place, audience and comments switch.
+**Depends on:** 5, 6, 7, 9; B8 for the live save.
+**Spec refs:** `post/screens/s5-edit-post.md` (all), `post/screens/s1-new-post.md` (layout, tokens), `post/screens/s2-post-options.md` row "Edit post", `supabase/migrations/20261020120000_edit_post.sql`.
+**Tasks:**
+- [x] One add/edit screen; route `/edit/post` with the post; S2 "Edit post" opens it on the root Navigator.
+- [x] Fields start from the post; media strip = the post's media, then new files, then Add tile; Remove on each; no reorder.
+- [x] Audience chip starts from the post's audience (not the account default); S4 "choose" sheet, applied on Save.
+- [x] "Save" enabled only when something changed and the post keeps a caption or media; "Discard changes?" on close with unsaved changes; nothing closes it while saving.
+- [x] Success closes with "Post updated" and Home reloads the feed; failure stays with "Couldn't save your changes" + Retry.
+- [x] `UpdatePostUseCase` + `update_post` rpc (migration `edit_post`), new file names unique, unused files removed after the save.
+- [x] Strings EN + AR `x-review`.
+- [x] Leave `// TODO(post-plan T4): camera capture is not in the post picker yet (gallery only)` at the add/edit media picking (T4 row).
+- [x] Live run (tested by the user 2026-10-15): edit caption, place, audience, comments and media of a real post; the feed shows the change; removed files are gone from `post-media`.
+**Out of scope:** reordering media, camera capture (T4), editing stories or shorts.
+**Done when:** every row of the `s5-edit-post.md` table behaves as written on a device; analyze clean; tests green.
+**Verify:** use case and cubit tests (already in `update_post_use_case_test.dart`, `add_edit_post_cubit_test.dart`), options flow and screen tests EN/AR; device run (B6).
 
 ## Verification
 Each phase: `fvm flutter analyze` clean, `fvm flutter test` green, its "Done when" items ticked, screenshots compared where the phase has UI. The builder ticks the phase Status and notes deviations in the phase.
