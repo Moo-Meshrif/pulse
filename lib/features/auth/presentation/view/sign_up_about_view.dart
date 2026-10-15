@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../profile/data/enums/gender.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/birthday.dart';
 import '../utils/l10n/gender_l10n.dart';
 import '../widgets/auth_header.dart';
@@ -168,14 +169,14 @@ class _SignUpAboutViewState extends State<SignUpAboutView> {
             BlocSelector<SignUpCubit, SignUpState, Gender?>(
               selector: (state) => state.gender,
               builder: (context, selected) => Wrap(
-                spacing: AuthDimens.chipWrapSpacing,
-                runSpacing: AuthDimens.chipWrapSpacing,
+                spacing: ChipDimens.wrapSpacing,
+                runSpacing: ChipDimens.wrapSpacing,
                 children: [
                   for (final gender in Gender.values)
                     SelectableChip(
                       label: gender.l10n(context),
                       selected: selected == gender,
-                      height: AuthDimens.genderChipHeight,
+                      height: ChipDimens.genderHeight,
                       onTap: () => _cubit.genderToggled(gender),
                     ),
                 ],

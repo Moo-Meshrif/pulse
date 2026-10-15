@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 
 /// The X of the reset screen: a 44 tap target around a 24 `textPrimary` cross, labelled "Close"
@@ -20,13 +20,13 @@ class AuthCloseButton extends StatelessWidget {
     excludeSemantics: true,
     child: InkResponse(
       onTap: onPressed,
-      radius: AuthDimens.tapTarget / 2,
+      radius: AppSizes.tapTarget / 2,
       child: SizedBox.square(
-        dimension: AuthDimens.tapTarget,
+        dimension: AppSizes.tapTarget,
         child: Center(
           child: AppSvgIcon(
             AppAssets.close,
-            size: AuthDimens.stepBarIcon,
+            size: AppSizes.topBarIcon,
             color: context.appColors.textPrimary,
           ),
         ),

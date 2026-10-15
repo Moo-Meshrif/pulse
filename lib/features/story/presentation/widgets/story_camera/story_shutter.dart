@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../dimens/story_constants.dart';
+import '../../dimens/story_dimens.dart';
 
 /// The shutter: tap = photo, hold = video. While recording the ring grows to 92, fills with `like` over
 /// 60 seconds and the dot becomes a red rounded square.
@@ -57,10 +58,10 @@ class StoryShutter extends StatelessWidget {
               child: CustomPaint(
                 painter: _RingPainter(
                   trackColor: isRecording
-                      ? colors.storyOnDark.withValues(
+                      ? colors.onDark.withValues(
                           alpha: StoryOpacity.recordTrack,
                         )
-                      : colors.storyOnDark,
+                      : colors.onDark,
                   progressColor: colors.like,
                   progress: isRecording ? progress : 0,
                   width: StoryCameraDimens.shutterRing,
@@ -75,7 +76,7 @@ class StoryShutter extends StatelessWidget {
                         ? StoryCameraDimens.recordStop
                         : StoryCameraDimens.shutterDot,
                     decoration: BoxDecoration(
-                      color: isRecording ? colors.like : colors.storyOnDark,
+                      color: isRecording ? colors.like : colors.onDark,
                       borderRadius: BorderRadius.circular(
                         isRecording
                             ? StoryCameraDimens.recordStopRadius

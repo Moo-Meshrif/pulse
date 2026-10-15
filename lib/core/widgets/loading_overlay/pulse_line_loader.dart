@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../constants/app_assets.dart';
-import '../../theme/app_dimens.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_svg_icon.dart';
 
 /// The app's heartbeat line (taken from the logo) with a soft glowing segment tracing across it, played

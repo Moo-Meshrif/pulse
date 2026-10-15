@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
+import '../../dimens/post_composer_dimens.dart';
 import '../../utils/content_audience_display.dart';
 
 /// Who can see the post: the choice's icon and name with a chevron. Tapping it will open the picker

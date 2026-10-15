@@ -6,10 +6,10 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/bell_dot_cubit.dart';
+import '../dimens/home_dimens.dart';
 import 'home_icon_button.dart';
 
 /// The top of the feed: the logo and "pulse" at the start, Search and the bell at the end.

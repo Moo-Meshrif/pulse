@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/post_card_dimens.dart';
+import '../dimens/post_options_dimens.dart';
 
 /// What a post becomes after "Not interested" (docs/specs/post/screens/s2-post-options.md, panel 5): a row
 /// that grows in over [PostMotion.hiddenCollapse] with an Undo pill for [PostMotion.undoWindow]. When the
@@ -117,7 +119,7 @@ class _UndoPill extends StatelessWidget {
           onTap: onTap,
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              minHeight: AuthButtonDimens.pillHeight,
+              minHeight: ButtonDimens.pillHeight,
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.s16),

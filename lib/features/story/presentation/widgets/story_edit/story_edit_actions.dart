@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/colors/app_colors.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../profile/domain/entity/last_account_entity.dart';
+import '../../dimens/story_dimens.dart';
 import '../story_avatar.dart';
 
 /// The bottom row: the "Your story" pill (who posts it; the audience picker comes later, Q18) and Share.
@@ -38,7 +40,7 @@ class StoryEditActions extends StatelessWidget {
               end: AppSpacing.s16,
             ),
             decoration: BoxDecoration(
-              color: colors.storyControl,
+              color: StoryColors.control,
               borderRadius: BorderRadius.circular(height / 2),
             ),
             child: Row(
@@ -55,7 +57,7 @@ class StoryEditActions extends StatelessWidget {
                   child: AppText(
                     l10n.storyYourStoryPill,
                     style: context.text.name,
-                    color: colors.storyOnDark,
+                    color: colors.onDark,
                     maxLines: 1,
                   ),
                 ),
@@ -73,12 +75,10 @@ class StoryEditActions extends StatelessWidget {
             child: FilledButton(
               onPressed: isSharing ? null : onShare,
               style: FilledButton.styleFrom(
-                backgroundColor: colors.storyOnDark,
-                disabledBackgroundColor: colors.storyOnDark,
+                backgroundColor: colors.onDark,
+                disabledBackgroundColor: colors.onDark,
                 foregroundColor: colors.textPrimary,
                 padding: EdgeInsets.zero,
-                shape: const StadiumBorder(),
-                elevation: 0,
               ),
               child: isSharing
                   ? PulseLineLoader(

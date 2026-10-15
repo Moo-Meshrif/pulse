@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/onboarding_dimens.dart';
 import 'page_dots.dart';
 import 'sign_in_link.dart';
 

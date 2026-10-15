@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_text.dart';
 
 /// A small pill on a dark surface ("Edit", "Fix"): white at 14% behind a [label] in [color].
@@ -20,7 +20,6 @@ class TintedChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Semantics(
       button: true,
       label: label,
@@ -29,11 +28,11 @@ class TintedChip extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: colors.storyOnDark.withValues(
-              alpha: StoryOpacity.secondaryFill,
+            color: context.appColors.onDark.withValues(
+              alpha: DarkOpacity.secondaryFill,
             ),
             borderRadius: BorderRadius.circular(
-              StoryPermissionDimens.fixChipHeight,
+              CameraPermissionDimens.fixChipHeight,
             ),
           ),
           padding: EdgeInsets.symmetric(

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/colors/app_colors.dart';
+import '../dimens/story_dimens.dart';
 
 class StoryShades extends StatelessWidget {
   const StoryShades({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final top = colors.storyShadeTop;
-    final bottom = colors.storyShadeBottom;
+    final top = StoryColors.shadeTop;
+    final bottom = StoryColors.shadeBottom;
     return IgnorePointer(
       child: Stack(
         children: [

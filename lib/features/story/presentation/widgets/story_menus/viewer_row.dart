@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/story_viewer_model.dart';
+import '../../dimens/story_dimens.dart';
 import '../story_avatar.dart';
 
 class ViewerRow extends StatelessWidget {
@@ -37,15 +38,15 @@ class ViewerRow extends StatelessWidget {
                 AppText(
                   name,
                   style: text.name,
-                  color: colors.storyOnDark,
+                  color: colors.onDark,
                   maxLines: 1,
                 ),
                 if (viewer.username != null)
                   AppText(
                     '@${viewer.username}',
                     style: text.caption,
-                    color: colors.storyOnDark.withValues(
-                      alpha: StoryOpacity.subtitle,
+                    color: colors.onDark.withValues(
+                      alpha: DarkOpacity.subtitle,
                     ),
                     maxLines: 1,
                   ),

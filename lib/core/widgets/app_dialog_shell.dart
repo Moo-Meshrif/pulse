@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../enums/sheet_tone.dart';
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_safe_area.dart';
 
 /// The shared dialog route and card (docs/specs/auth/02-components.md C14). Content is up to the caller.
@@ -46,8 +46,8 @@ class AppDialogShell extends StatelessWidget {
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: switch (tone) {
       SheetTone.light => context.appColors.scrim,
-      SheetTone.dark => context.appColors.storyBlack.withValues(
-        alpha: StoryOpacity.dialogScrim,
+      SheetTone.dark => context.appColors.black.withValues(
+        alpha: DarkOpacity.dialogScrim,
       ),
     },
     transitionDuration: DialogDimens.transition,
@@ -87,37 +87,40 @@ class AppDialogShell extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) => Material(
-    type: MaterialType.transparency,
-    child: Semantics(
-      scopesRoute: true,
-      namesRoute: true,
-      explicitChildNodes: true,
-      label: semanticLabel,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: margin ?? DialogDimens.margin,
-        ),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: DialogDimens.maxWidth),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: tone == SheetTone.dark
-                  ? context.appColors.storySheet
-                  : context.appColors.surface,
-              borderRadius: BorderRadius.circular(radius ?? AppRadius.dialog),
-              boxShadow: AppShadows.dialog,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: SingleChildScrollView(
-                padding: padding ?? DialogDimens.padding,
-                child: child,
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Material(
+      type: MaterialType.transparency,
+      child: Semantics(
+        scopesRoute: true,
+        namesRoute: true,
+        explicitChildNodes: true,
+        label: semanticLabel,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: margin ?? DialogDimens.margin,
+          ),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: DialogDimens.maxWidth),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: tone == SheetTone.dark
+                    ? colors.darkSurface
+                    : colors.surface,
+                borderRadius: BorderRadius.circular(radius ?? AppRadius.dialog),
+                boxShadow: AppShadows.dialog,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  padding: padding ?? DialogDimens.padding,
+                  child: child,
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

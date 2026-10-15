@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// The top bar of sign-up steps 1-6 (docs/specs/auth/02-components.md C7). Progress fills from the start
 /// (right to left in RTL); [showSkip] adds a "Skip" button, which ignores taps while [onSkip] is null
@@ -107,10 +108,7 @@ class StepTopBar extends StatelessWidget {
             TextButton(
               onPressed: onSkip,
               style: TextButton.styleFrom(
-                minimumSize: const Size(
-                  AuthDimens.tapTarget,
-                  AuthDimens.tapTarget,
-                ),
+                minimumSize: const Size(AppSizes.tapTarget, AppSizes.tapTarget),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 foregroundColor: colors.textSecondary,
                 disabledForegroundColor: colors.textSecondary,

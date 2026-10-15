@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_text.dart';
 import 'loading_overlay/pulse_line_loader.dart';
 

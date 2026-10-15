@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../constants/app_assets.dart';
 import '../../extensions/context_extensions.dart';
 import '../../extensions/l10n.dart';
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_svg_icon.dart';
 import '../app_text.dart';
 import '../tinted_chip.dart';
@@ -21,14 +21,14 @@ class MicOffPill extends StatelessWidget {
     final colors = context.appColors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.storyMicPill,
+        color: colors.micOffPill,
         borderRadius: BorderRadius.circular(
-          StoryPermissionDimens.micPillHeight,
+          CameraPermissionDimens.micPillHeight,
         ),
       ),
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          minHeight: StoryPermissionDimens.micPillHeight,
+          minHeight: CameraPermissionDimens.micPillHeight,
         ),
         child: Padding(
           padding: EdgeInsetsDirectional.only(
@@ -40,21 +40,21 @@ class MicOffPill extends StatelessWidget {
             children: [
               AppSvgIcon(
                 AppAssets.micOff,
-                size: StoryPermissionDimens.micPillIcon,
-                color: colors.storyWarning,
+                size: CameraPermissionDimens.micPillIcon,
+                color: colors.warningOnDark,
               ),
               SizedBox(width: AppSpacing.s8),
               Flexible(
                 child: AppText(
                   context.l10n.permMicOffPill,
                   style: context.text.label,
-                  color: colors.storyOnDark,
+                  color: colors.onDark,
                 ),
               ),
               SizedBox(width: AppSpacing.s8),
               TintedChip(
                 label: context.l10n.permFix,
-                color: colors.storyFixText,
+                color: colors.fixChipText,
                 onTap: onFix,
               ),
             ],

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../story/domain/entity/story_rail_item_entity.dart';
 import '../../../../story/domain/entity/story_viewer_args.dart';
+import '../../dimens/home_dimens.dart';
 import 'rail_avatar.dart';
 import 'rail_label.dart';
 
@@ -36,7 +36,7 @@ class StoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final inset = StoryDimens.railRing + StoryDimens.railRingGap;
+    final inset = StoryRailDimens.railRing + StoryRailDimens.railRingGap;
     return Semantics(
       button: true,
       excludeSemantics: true,
@@ -50,19 +50,19 @@ class StoryItem extends StatelessWidget {
             _Badged(
               onAdd: onAdd,
               child: Container(
-                width: StoryDimens.railAvatar,
-                height: StoryDimens.railAvatar,
-                padding: EdgeInsets.all(StoryDimens.railRingGap),
+                width: StoryRailDimens.railAvatar,
+                height: StoryRailDimens.railAvatar,
+                padding: EdgeInsets.all(StoryRailDimens.railRingGap),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: person.allSeen ? colors.border : colors.primary,
-                    width: StoryDimens.railRing,
+                    width: StoryRailDimens.railRing,
                   ),
                 ),
                 child: RailAvatar(
                   person: person,
-                  size: StoryDimens.railAvatar - 2 * inset,
+                  size: StoryRailDimens.railAvatar - 2 * inset,
                 ),
               ),
             ),
@@ -95,19 +95,19 @@ class _Badged extends StatelessWidget {
           child: GestureDetector(
             onTap: onAdd,
             child: Container(
-              width: StoryDimens.railBadge,
-              height: StoryDimens.railBadge,
+              width: StoryRailDimens.railBadge,
+              height: StoryRailDimens.railBadge,
               decoration: BoxDecoration(
                 color: colors.primary,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: colors.surface,
-                  width: StoryDimens.railBadgeBorder,
+                  width: StoryRailDimens.railBadgeBorder,
                 ),
               ),
               child: Icon(
                 Icons.add,
-                size: StoryDimens.railBadge - 6,
+                size: StoryRailDimens.railBadge - 6,
                 color: colors.surface,
               ),
             ),

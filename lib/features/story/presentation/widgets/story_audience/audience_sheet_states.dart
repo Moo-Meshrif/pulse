@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_dimens.dart';
 
 /// What the Who can see this sheet shows while its numbers load, and when they could not: one loader, or a
 /// message with Retry, in a space the size of the sheet's rows.
@@ -16,7 +17,7 @@ class AudienceSheetLoading extends StatelessWidget {
     height: StoryDimens.viewersHeight / 2,
     child: Center(
       child: PulseLineLoader(
-        color: context.appColors.storyOnDark,
+        color: context.appColors.onDark,
         width: LoadingDimens.pageWidth,
       ),
     ),
@@ -40,9 +41,7 @@ class AudienceSheetLoadFailed extends StatelessWidget {
             AppText(
               context.l10n.storyAudienceLoadFailed,
               style: context.text.bodySm,
-              color: colors.storyOnDark.withValues(
-                alpha: StoryOpacity.subtitle,
-              ),
+              color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
               textAlign: TextAlign.center,
             ),
             TextButton(
@@ -50,7 +49,7 @@ class AudienceSheetLoadFailed extends StatelessWidget {
               child: AppText(
                 context.l10n.retry,
                 style: context.text.name,
-                color: colors.storyOnDark,
+                color: colors.onDark,
               ),
             ),
           ],

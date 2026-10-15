@@ -3,9 +3,10 @@ import 'package:pinput/pinput.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// The 6-digit verification code on `pinput` (docs/specs/auth/02-components.md C10). Always left-to-right;
 /// boxes shrink on narrow widths, never below 44.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/onboarding_dimens.dart';
 
 /// Page indicator, announced as "Page N of M". Animation is instant when the system asks to reduce motion.
 class PageDots extends StatelessWidget {

@@ -27,7 +27,7 @@ class StoryViewerScreen extends StatelessWidget {
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
-          backgroundColor: context.appColors.storyBlack,
+          backgroundColor: context.appColors.black,
           resizeToAvoidBottomInset: false,
           body: StoryViewerView(authorId: authorId, person: person),
         ),

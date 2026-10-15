@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
+import '../../dimens/story_constants.dart';
+import '../../dimens/story_dimens.dart';
 import 'story_action_button.dart';
 import 'story_like_button.dart';
 
@@ -60,14 +62,14 @@ class _StoryReplyBarState extends State<StoryReplyBar> {
               textInputAction: TextInputAction.send,
               onSubmitted: (_) => widget.onSend(),
               style: text.body.copyWith(
-                color: colors.storyOnDark,
+                color: colors.onDark,
                 textBaseline: TextBaseline.alphabetic, // TextField asserts on it when inherit is false
               ),
-              cursorColor: colors.storyOnDark,
+              cursorColor: colors.onDark,
               decoration: InputDecoration(
                 hintText: context.l10n.storyReplyHint,
                 hintStyle: text.body.copyWith(
-                  color: colors.storyOnDark.withValues(
+                  color: colors.onDark.withValues(
                     alpha: StoryOpacity.replyHint,
                   ),
                   textBaseline: TextBaseline.alphabetic,
@@ -76,11 +78,9 @@ class _StoryReplyBarState extends State<StoryReplyBar> {
                   horizontal: StoryDimens.replyPadding,
                 ),
                 enabledBorder: _border(
-                  colors.storyOnDark.withValues(
-                    alpha: StoryOpacity.replyBorder,
-                  ),
+                  colors.onDark.withValues(alpha: StoryOpacity.replyBorder),
                 ),
-                focusedBorder: _border(colors.storyOnDark),
+                focusedBorder: _border(colors.onDark),
               ),
             ),
           ),

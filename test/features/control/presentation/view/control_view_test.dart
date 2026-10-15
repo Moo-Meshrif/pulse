@@ -4,16 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/router/app_routes.dart';
-import 'package:pulse/core/theme/app_dimens.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
+import 'package:pulse/features/control/presentation/dimens/nav_dimens.dart';
 import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
 import 'package:pulse/features/control/presentation/view/control_view.dart';
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
-
 import 'package:pulse/l10n/app_localizations.dart';
 
 import '../../../../helpers/feed_refresh_mocks.dart';

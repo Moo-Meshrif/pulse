@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import 'audience_check.dart';
 
@@ -38,31 +38,30 @@ class AudienceRow extends StatelessWidget {
     final text = context.text;
     final label = subtitle == null ? title : '$title, $subtitle';
     final tile = Container(
-      width: StoryPermissionDimens.tile,
-      height: StoryPermissionDimens.tile,
+      width: CameraPermissionDimens.tile,
+      height: CameraPermissionDimens.tile,
       decoration: BoxDecoration(
         color:
-            tileColor ??
-            colors.storyOnDark.withValues(alpha: StoryOpacity.tileFill),
-        borderRadius: BorderRadius.circular(StoryPermissionDimens.tileRadius),
+            tileColor ?? colors.onDark.withValues(alpha: DarkOpacity.tileFill),
+        borderRadius: BorderRadius.circular(CameraPermissionDimens.tileRadius),
       ),
       alignment: Alignment.center,
       child: AppSvgIcon(
         icon,
-        size: StorySheetDimens.rowIcon,
-        color: tileIconColor ?? colors.storyOnDark,
+        size: OptionSheetDimens.rowIcon,
+        color: tileIconColor ?? colors.onDark,
       ),
     );
     final words = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppText(title, style: text.name, color: colors.storyOnDark),
+        AppText(title, style: text.name, color: colors.onDark),
         if (subtitle != null)
           AppText(
             subtitle!,
             style: text.caption,
-            color: colors.storyOnDark.withValues(alpha: StoryOpacity.subtitle),
+            color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
           ),
       ],
     );
@@ -70,15 +69,15 @@ class AudienceRow extends StatelessWidget {
         ? AudienceCheck(selected: selected!)
         : AppSvgIcon(
             AppAssets.chevronRight,
-            size: StorySheetDimens.chevron,
-            color: colors.storyOnDark.withValues(alpha: StoryOpacity.chevron),
+            size: OptionSheetDimens.chevron,
+            color: colors.onDark.withValues(alpha: DarkOpacity.chevron),
             directional: true,
           );
     final padding = EdgeInsets.symmetric(
-      horizontal: StorySheetDimens.rowPaddingH,
-      vertical: StorySheetDimens.rowPaddingV,
+      horizontal: OptionSheetDimens.rowPaddingH,
+      vertical: OptionSheetDimens.rowPaddingV,
     );
-    const minHeight = BoxConstraints(minHeight: StorySheetDimens.rowMinHeight);
+    const minHeight = BoxConstraints(minHeight: OptionSheetDimens.rowMinHeight);
 
     Widget tappable(Widget child) => Semantics(
       button: true,
@@ -97,7 +96,7 @@ class AudienceRow extends StatelessWidget {
             child: Row(
               children: [
                 tile,
-                SizedBox(width: StorySheetDimens.rowGap),
+                SizedBox(width: OptionSheetDimens.rowGap),
                 Expanded(child: words),
                 end,
               ],
@@ -116,14 +115,14 @@ class AudienceRow extends StatelessWidget {
             child: tappable(
               Padding(
                 padding: EdgeInsetsDirectional.only(
-                  start: StorySheetDimens.rowPaddingH,
-                  top: StorySheetDimens.rowPaddingV,
-                  bottom: StorySheetDimens.rowPaddingV,
+                  start: OptionSheetDimens.rowPaddingH,
+                  top: OptionSheetDimens.rowPaddingV,
+                  bottom: OptionSheetDimens.rowPaddingV,
                 ),
                 child: Row(
                   children: [
                     tile,
-                    SizedBox(width: StorySheetDimens.rowGap),
+                    SizedBox(width: OptionSheetDimens.rowGap),
                     Expanded(child: words),
                   ],
                 ),
@@ -132,16 +131,16 @@ class AudienceRow extends StatelessWidget {
           ),
           TintedChip(
             label: context.l10n.storyAudienceEdit,
-            color: colors.storyOnDark,
+            color: colors.onDark,
             onTap: onEdit!,
           ),
           tappable(
             Padding(
               padding: EdgeInsetsDirectional.only(
                 start: AppSpacing.s8,
-                end: StorySheetDimens.rowPaddingH,
-                top: StorySheetDimens.rowPaddingV,
-                bottom: StorySheetDimens.rowPaddingV,
+                end: OptionSheetDimens.rowPaddingH,
+                top: OptionSheetDimens.rowPaddingV,
+                bottom: OptionSheetDimens.rowPaddingV,
               ),
               child: end,
             ),

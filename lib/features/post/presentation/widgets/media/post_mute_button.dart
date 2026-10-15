@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/app_svg_icon.dart';
+import '../../dimens/post_card_dimens.dart';
 import '../post_tap_button.dart';
 
 /// The round button on a video that switches the sound for the whole list.

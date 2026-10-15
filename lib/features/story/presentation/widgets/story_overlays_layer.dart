@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/utils/hex_color.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/enums/story_overlay_type.dart';
 import '../../data/model/story_overlay_model.dart';
+import '../dimens/story_dimens.dart';
 
 /// The stickers of a story drawn over its media, from the JSON the story was saved with.
 class StoryOverlaysLayer extends StatelessWidget {
@@ -95,7 +96,6 @@ class StoryTextSticker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.sizeOf(context).width - 2 * AppSpacing.s24,
@@ -104,7 +104,7 @@ class StoryTextSticker extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: context.text.overlayText.copyWith(
-          color: parseHexColor(color) ?? colors.storyOnDark,
+          color: parseHexColor(color) ?? context.appColors.onDark,
           shadows: AppShadows.textOverlay,
         ),
       ),

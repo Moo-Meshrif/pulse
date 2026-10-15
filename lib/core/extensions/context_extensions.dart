@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_breakpoints.dart';
-import '../theme/app_colors.dart';
+import '../theme/colors/app_colors.dart';
 
 extension ThemeContext on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;

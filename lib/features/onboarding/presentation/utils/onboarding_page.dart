@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/colors/app_colors.dart';
 
 /// What differs between the three onboarding pages: panel fill, illustration and copy.
 /// The layout is shared (docs/specs/onboarding/00-overview.md).

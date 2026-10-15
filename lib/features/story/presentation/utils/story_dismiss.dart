@@ -1,4 +1,4 @@
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/story_constants.dart';
 
 bool storyDragCloses({required double distance, required double velocity}) =>
     distance > StoryGestures.closeDistance ||

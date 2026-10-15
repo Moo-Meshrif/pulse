@@ -5,9 +5,10 @@ import '../../../../../core/enums/sheet_tone.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_dimens.dart';
 
 /// A destructive confirmation on the dark story surface (docs/specs/story/screens/s6-viewer-menus.md,
 /// panel 10): the delete dialog and the edit screen's discard dialog. Resolves true when confirmed.
@@ -74,21 +75,21 @@ class _Content extends StatelessWidget {
           child: AppSvgIcon(
             icon,
             size: StorySheetDimens.dialogIcon,
-            color: isDestructive ? colors.dangerOnDark : colors.storyOnDark,
+            color: isDestructive ? colors.dangerOnDark : colors.onDark,
           ),
         ),
         SizedBox(height: StorySheetDimens.dialogTitleTop),
         AppText(
           title,
           style: context.text.titleSm,
-          color: colors.storyOnDark,
+          color: colors.onDark,
           textAlign: TextAlign.center,
         ),
         SizedBox(height: StorySheetDimens.dialogBodyTop),
         AppText(
           body,
           style: context.text.bodySm,
-          color: colors.storyOnDark.withValues(alpha: StoryOpacity.dialogBody),
+          color: colors.onDark.withValues(alpha: DarkOpacity.dialogBody),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: StorySheetDimens.dialogDeleteTop),
@@ -97,14 +98,10 @@ class _Content extends StatelessWidget {
           child: FilledButton(
             onPressed: () => AppNavigator.back(context, true),
             style: FilledButton.styleFrom(
-              backgroundColor: isDestructive
-                  ? colors.danger
-                  : colors.storyOnDark,
+              backgroundColor: isDestructive ? colors.danger : colors.onDark,
               foregroundColor: isDestructive
                   ? colors.textOnPrimary
                   : colors.textPrimary,
-              shape: const StadiumBorder(),
-              elevation: 0,
             ),
             child: AppText(
               confirmLabel,
@@ -121,7 +118,7 @@ class _Content extends StatelessWidget {
             child: AppText(
               cancelLabel,
               style: context.text.name,
-              color: colors.storyOnDark.withValues(alpha: StoryOpacity.link),
+              color: colors.onDark.withValues(alpha: DarkOpacity.link),
             ),
           ),
         ),

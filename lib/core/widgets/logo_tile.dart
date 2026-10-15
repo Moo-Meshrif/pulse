@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/app_assets.dart';
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
+import '../theme/dimens/app_dimens.dart';
 
 /// The app logo on a `primary` tile ([LogoTile.large] for the splash). The logo has its own fills: not
 /// tinted, never flipped in RTL (docs/specs/auth/02-components.md C2).
@@ -21,12 +21,12 @@ class LogoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (size, radius) = switch (_size) {
-      _LogoTileSize.auth => (AuthDimens.logoTile, AppRadius.logoTile),
+      _LogoTileSize.auth => (LogoDimens.authTile, AppRadius.logoTile),
       _LogoTileSize.splash => (
-        SplashDimens.logoTile,
-        SplashDimens.logoTileRadius,
+        LogoDimens.splashTile,
+        LogoDimens.splashTileRadius,
       ),
-      _LogoTileSize.header => (HomeDimens.logoTile, HomeDimens.logoRadius),
+      _LogoTileSize.header => (LogoDimens.homeTile, LogoDimens.homeRadius),
     };
     return ExcludeSemantics(
       child: ClipRRect(

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/story_dimens.dart';
 
 class StoryCountChip extends StatelessWidget {
   const StoryCountChip({super.key, required this.count, required this.onTap});
@@ -30,13 +31,13 @@ class StoryCountChip extends StatelessWidget {
               AppSvgIcon(
                 AppAssets.eye,
                 size: StoryDimens.countIcon,
-                color: colors.storyOnDark,
+                color: colors.onDark,
               ),
               SizedBox(width: AppSpacing.s8),
               AppText(
                 '$count',
                 style: context.text.countLabel,
-                color: colors.storyOnDark,
+                color: colors.onDark,
               ),
             ],
           ),

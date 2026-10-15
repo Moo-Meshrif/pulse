@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/audience_person_model.dart';
+import '../../dimens/story_dimens.dart';
 import '../story_avatar.dart';
 import 'audience_check.dart';
 
@@ -55,15 +56,15 @@ class AudiencePersonRow extends StatelessWidget {
                       AppText(
                         name,
                         style: text.name,
-                        color: colors.storyOnDark,
+                        color: colors.onDark,
                         maxLines: 1,
                       ),
                       if (person.username != null)
                         AppText(
                           '@${person.username}',
                           style: text.caption,
-                          color: colors.storyOnDark.withValues(
-                            alpha: StoryOpacity.subtitle,
+                          color: colors.onDark.withValues(
+                            alpha: DarkOpacity.subtitle,
                           ),
                           maxLines: 1,
                         ),

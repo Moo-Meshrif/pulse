@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/colors/app_colors.dart';
+import '../dimens/story_dimens.dart';
 
 /// One segment per story of the person: finished ones full, the playing one filling with [progress],
 /// the rest empty. They fill from the start side (the right in Arabic).
@@ -33,16 +34,16 @@ class StoryProgressBars extends StatelessWidget {
               child: SizedBox(
                 height: StoryDimens.barHeight,
                 child: ColoredBox(
-                  color: colors.storyTrack,
+                  color: StoryColors.track,
                   child: i == index
                       ? ValueListenableBuilder<double>(
                           valueListenable: progress,
                           builder: (_, value, _) =>
-                              _Fill(fraction: value, color: colors.storyOnDark),
+                              _Fill(fraction: value, color: colors.onDark),
                         )
                       : _Fill(
                           fraction: i < index ? 1 : 0,
-                          color: colors.storyOnDark,
+                          color: colors.onDark,
                         ),
                 ),
               ),

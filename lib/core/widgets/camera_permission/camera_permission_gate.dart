@@ -111,7 +111,7 @@ class _GateState extends State<_Gate> with WidgetsBindingObserver {
           onClose: widget.onClose,
         ),
         CameraPermissionStep.blocked => PermissionPanel(
-          icons: [(asset: AppAssets.cameraOff, color: colors.storyWarning)],
+          icons: [(asset: AppAssets.cameraOff, color: colors.warningOnDark)],
           title: l10n.permCameraOffTitle,
           body: state.isRestricted
               ? l10n.permCameraRestrictedBody

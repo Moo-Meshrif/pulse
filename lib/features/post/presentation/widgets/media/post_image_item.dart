@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/utils/cached_picture.dart';
 import '../../../../../core/widgets/app_image.dart';
+import '../../dimens/post_card_dimens.dart';
 import '../../utils/post_card_media.dart';
 import 'post_blurhash.dart';
 import 'post_retry_badge.dart';

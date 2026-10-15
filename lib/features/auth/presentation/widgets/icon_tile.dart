@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// A 72 `primarySoft` tile (radius 22) with a 32 `primary` icon: the lock on Forgot password, the mail
 /// on Verify email, the key on Set a new password (docs/specs/auth/02-components.md C2). Decorative.

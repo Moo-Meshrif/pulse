@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../dimens/home_dimens.dart';
 
 /// The Stories rail as shapes: "Your story" and a few people. Draw it inside a `Skeletonizer.zone`.
 class RailSkeleton extends StatelessWidget {
@@ -13,12 +13,12 @@ class RailSkeleton extends StatelessWidget {
   Widget build(BuildContext context) => SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     physics: const NeverScrollableScrollPhysics(),
-    padding: StoryDimens.railRowPadding,
+    padding: StoryRailDimens.railRowPadding,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (var i = 0; i <= HomeDimens.skeletonStories; i++) ...[
-          if (i > 0) SizedBox(width: StoryDimens.railGap),
+          if (i > 0) SizedBox(width: StoryRailDimens.railGap),
           const _Person(),
         ],
       ],
@@ -32,8 +32,8 @@ class _Person extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      Bone.circle(size: StoryDimens.railAvatar),
-      SizedBox(height: StoryDimens.railLabelGap),
+      Bone.circle(size: StoryRailDimens.railAvatar),
+      SizedBox(height: StoryRailDimens.railLabelGap),
       Bone.text(
         width: HomeDimens.skeletonLabelWidth,
         style: context.text.caption,

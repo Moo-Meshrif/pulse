@@ -3,9 +3,9 @@ import 'package:video_flux/video_flux.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../../core/constants/app_assets.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/utils/app_video_controller.dart';
 import '../../../../../core/utils/format_countdown.dart';
+import '../../dimens/post_card_dimens.dart';
 import '../../utils/post_card_media.dart';
 import '../post_video_scope.dart';
 import '../visible_fraction.dart';

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/location_dimens.dart';
 
 /// Back arrow, "Add location", and "Remove" at the end while the post has a location.
 class AddLocationHeader extends StatelessWidget {
@@ -48,8 +49,8 @@ class AddLocationHeader extends StatelessWidget {
                 onTap: onRemove,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
-                    minWidth: AuthDimens.tapTarget,
-                    minHeight: AuthDimens.tapTarget,
+                    minWidth: AppSizes.tapTarget,
+                    minHeight: AppSizes.tapTarget,
                   ),
                   child: Center(
                     child: AppText(

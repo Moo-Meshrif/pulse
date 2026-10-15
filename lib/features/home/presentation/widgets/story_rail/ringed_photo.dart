@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../story/domain/entity/story_rail_item_entity.dart';
+import '../../dimens/home_dimens.dart';
 import 'rail_avatar.dart';
 import 'rail_rings.dart';
 
@@ -23,18 +23,18 @@ class RingedPhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inset = StoryDimens.uploadRing + StoryDimens.railRingGap;
-    final photo = StoryDimens.railAvatar - 2 * inset;
+    final inset = StoryRailDimens.uploadRing + StoryRailDimens.railRingGap;
+    final photo = StoryRailDimens.railAvatar - 2 * inset;
     final person = me;
     return CustomPaint(
       painter: ProgressRingPainter(
         progress: progress,
         color: color,
         track: track,
-        width: StoryDimens.uploadRing,
+        width: StoryRailDimens.uploadRing,
       ),
       child: SizedBox.square(
-        dimension: StoryDimens.railAvatar,
+        dimension: StoryRailDimens.railAvatar,
         child: Padding(
           padding: EdgeInsets.all(inset),
           child: person == null
@@ -45,7 +45,7 @@ class RingedPhoto extends StatelessWidget {
                   ),
                 )
               : Opacity(
-                  opacity: StoryDimens.uploadPhotoOpacity,
+                  opacity: StoryRailDimens.uploadPhotoOpacity,
                   child: RailAvatar(person: person, size: photo),
                 ),
         ),

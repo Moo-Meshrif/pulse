@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/location_dimens.dart';
 
 /// An uppercase label over a white card of rows, separated by a hairline. Without a [label] it is only
 /// the card.
@@ -45,12 +46,7 @@ class LocationSection extends StatelessWidget {
             child: Column(
               children: [
                 for (final (i, row) in rows.indexed) ...[
-                  if (i > 0)
-                    Divider(
-                      height: 1, // unscaled: hairline
-                      thickness: 1, // unscaled: hairline
-                      color: colors.divider,
-                    ),
+                  if (i > 0) const Divider(),
                   row,
                 ],
               ],

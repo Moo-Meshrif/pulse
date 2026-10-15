@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/extensions/snack_bar_context.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 // TODO(auth-plan, out of scope for now): real Google / Apple sign-in through Supabase OAuth (keys and
 // redirect URIs are needed first); until then both buttons show "Coming soon".

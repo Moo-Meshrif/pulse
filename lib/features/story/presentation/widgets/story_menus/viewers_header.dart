@@ -5,11 +5,12 @@ import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/story_viewers_cubit.dart';
 import '../../cubit/story_viewers_state.dart';
+import '../../dimens/story_constants.dart';
+import '../../dimens/story_dimens.dart';
 import '../../utils/enums/story_option.dart';
 
 class ViewersHeader extends StatelessWidget {
@@ -23,7 +24,7 @@ class ViewersHeader extends StatelessWidget {
         AppSvgIcon(
           AppAssets.eye,
           size: StoryDimens.viewersHeaderIcon,
-          color: colors.storyOnDark,
+          color: colors.onDark,
         ),
         SizedBox(width: StoryDimens.viewersHeaderGap),
         Expanded(
@@ -34,7 +35,7 @@ class ViewersHeader extends StatelessWidget {
               child: AppText(
                 context.l10n.storyViewers(total),
                 style: context.text.stat,
-                color: colors.storyOnDark,
+                color: colors.onDark,
                 maxLines: 1,
               ),
             ),
@@ -51,8 +52,8 @@ class ViewersHeader extends StatelessWidget {
         _CircleButton(
           label: context.l10n.storySaveToDevice,
           asset: AppAssets.download,
-          fill: colors.storySheetRow,
-          color: colors.storyOnDark,
+          fill: colors.darkSurfaceRow,
+          color: colors.onDark,
           onTap: () => AppNavigator.back(context, StoryOption.save),
         ),
       ],

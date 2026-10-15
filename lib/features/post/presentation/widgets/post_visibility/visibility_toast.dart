@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_options_dimens.dart';
 
 /// A dark card at the top of the screen for a few seconds ("Sharing with close friends"). It sits on the
 /// root overlay, so it shows above a bottom sheet, where a snackbar would be hidden.
@@ -64,7 +65,7 @@ class _ToastCard extends StatelessWidget {
                   margin: EdgeInsets.all(AppSpacing.s16),
                   padding: EdgeInsets.all(AppSpacing.s12),
                   decoration: BoxDecoration(
-                    color: colors.storySheet,
+                    color: colors.darkSurface,
                     borderRadius: BorderRadius.circular(
                       VisibilityDimens.noteRadius,
                     ),
@@ -77,7 +78,7 @@ class _ToastCard extends StatelessWidget {
                           width: VisibilityDimens.tile,
                           height: VisibilityDimens.tile,
                           decoration: BoxDecoration(
-                            color: colors.storySuccess,
+                            color: colors.successOnDark,
                             borderRadius: BorderRadius.circular(
                               VisibilityDimens.tileRadius,
                             ),
@@ -99,14 +100,14 @@ class _ToastCard extends StatelessWidget {
                             AppText(
                               title,
                               style: context.text.name,
-                              color: colors.storyOnDark,
+                              color: colors.onDark,
                             ),
                             if (body != null)
                               AppText(
                                 body!,
                                 style: context.text.caption,
-                                color: colors.storyOnDark.withValues(
-                                  alpha: StoryOpacity.subtitle,
+                                color: colors.onDark.withValues(
+                                  alpha: DarkOpacity.subtitle,
                                 ),
                               ),
                           ],

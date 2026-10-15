@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../enums/photo_choice.dart';
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_safe_area.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
@@ -78,7 +78,7 @@ class _Option extends StatelessWidget {
         borderRadius: radius,
         onTap: () => Navigator.of(context).pop(choice),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AuthDimens.tapTarget),
+          constraints: const BoxConstraints(minHeight: AppSizes.tapTarget),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.s12,

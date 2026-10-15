@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../extensions/context_extensions.dart';
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_text.dart';
 
 /// The footer after the last page.

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// The account Sign in is for after its session ended (docs/specs/auth/02-components.md C18): label,
 /// then a card with the avatar, name, @username and "Not you?". [onNotYou] is null while busy.

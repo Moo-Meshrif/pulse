@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router/app_navigator.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/control_cubit.dart';
 import '../cubit/control_state.dart';
+import '../dimens/nav_dimens.dart';
 import '../utils/enums/main_tab.dart';
 import '../utils/enums/shell_back_action.dart';
 import '../utils/tab_handle.dart';

@@ -6,11 +6,11 @@ import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../story/domain/entity/story_upload_status.dart';
 import '../../cubit/story_rail_cubit.dart';
 import '../../cubit/story_rail_state.dart';
+import '../../dimens/home_dimens.dart';
 import 'rail_label.dart';
 import 'rail_rings.dart';
 import 'ringed_photo.dart';
@@ -123,11 +123,11 @@ class _DashedPlus extends StatelessWidget {
     return CustomPaint(
       painter: DashedRingPainter(
         color: colors.primary,
-        width: StoryDimens.emptyRingDash,
+        width: StoryRailDimens.emptyRingDash,
       ),
       child: Container(
-        width: StoryDimens.railAvatar,
-        height: StoryDimens.railAvatar,
+        width: StoryRailDimens.railAvatar,
+        height: StoryRailDimens.railAvatar,
         decoration: BoxDecoration(
           color: colors.primarySoft,
           shape: BoxShape.circle,
@@ -135,7 +135,7 @@ class _DashedPlus extends StatelessWidget {
         alignment: Alignment.center,
         child: AppSvgIcon(
           AppAssets.plus,
-          size: StoryDimens.plusIcon,
+          size: StoryRailDimens.plusIcon,
           color: colors.primary,
         ),
       ),

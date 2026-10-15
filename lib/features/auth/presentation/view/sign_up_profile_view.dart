@@ -7,10 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/enums/photo_choice.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/services/photo_picker_service.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
+import '../dimens/auth_dimens.dart';
 import '../widgets/auth_header.dart';
 
 /// Sign-up step 4, Profile (docs/specs/auth/screens/s6-signup-profile.md); everything is optional. The

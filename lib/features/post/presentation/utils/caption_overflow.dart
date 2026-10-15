@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/post_card_dimens.dart';
 
 bool doesCaptionOverflow(
   BuildContext context, {

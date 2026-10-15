@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/bold_spans.dart';
 
 /// Title + subtitle with an optional [leading] tile (docs/specs/auth/02-components.md C1). [emphasis] is

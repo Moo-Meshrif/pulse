@@ -3,11 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/story_viewers_cubit.dart';
 import '../../cubit/story_viewers_state.dart';
+import '../../dimens/story_dimens.dart';
 import '../../utils/enums/story_viewers_status.dart';
 import 'viewer_row.dart';
 
@@ -18,6 +19,7 @@ class ViewersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     final cubit = context.read<StoryViewersCubit>();
     return BlocBuilder<StoryViewersCubit, StoryViewersState>(
       builder: (context, state) {
@@ -25,7 +27,7 @@ class ViewersList extends StatelessWidget {
           case StoryViewersStatus.loading:
             return Center(
               child: PulseLineLoader(
-                color: context.appColors.storyOnDark,
+                color: colors.onDark,
                 width: LoadingDimens.loadMoreWidth,
               ),
             );
@@ -37,9 +39,7 @@ class ViewersList extends StatelessWidget {
                 child: AppText(
                   context.l10n.storyViewersEmpty,
                   style: context.text.bodySm,
-                  color: context.appColors.storyOnDark.withValues(
-                    alpha: StoryOpacity.subtitle,
-                  ),
+                  color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
                 ),
               );
             }
@@ -77,7 +77,7 @@ class _Footer extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: AppSpacing.s16),
         child: Center(
           child: PulseLineLoader(
-            color: context.appColors.storyOnDark,
+            color: context.appColors.onDark,
             width: LoadingDimens.loadMoreWidth,
           ),
         ),
@@ -93,26 +93,27 @@ class _Retry extends StatelessWidget {
   final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AppText(
-          context.l10n.storyViewersLoadFailed,
-          style: context.text.bodySm,
-          color: context.appColors.storyOnDark.withValues(
-            alpha: StoryOpacity.subtitle,
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppText(
+            context.l10n.storyViewersLoadFailed,
+            style: context.text.bodySm,
+            color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
           ),
-        ),
-        TextButton(
-          onPressed: onRetry,
-          child: AppText(
-            context.l10n.retry,
-            style: context.text.name,
-            color: context.appColors.storyOnDark,
+          TextButton(
+            onPressed: onRetry,
+            child: AppText(
+              context.l10n.retry,
+              style: context.text.name,
+              color: colors.onDark,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

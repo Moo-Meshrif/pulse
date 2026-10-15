@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../enums/pill_button_variant.dart';
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_text.dart';
 import 'loading_overlay/pulse_line_loader.dart';
 
@@ -103,11 +103,10 @@ class PillButton extends StatelessWidget {
                 ? BorderSide.none
                 : BorderSide(
                     color: borderColor,
-                    width: AuthButtonDimens.outlineBorderWidth,
+                    width: ButtonDimens.outlineBorderWidth,
                   ),
           ),
         ),
-        elevation: const WidgetStatePropertyAll(0),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStatePropertyAll(foreground),
@@ -120,11 +119,11 @@ class PillButton extends StatelessWidget {
               label: label,
               child: PulseLineLoader(
                 color: context.appColors.primary,
-                width: AuthButtonDimens.loaderWidth,
+                width: ButtonDimens.loaderWidth,
               ),
             )
           : Opacity(
-              opacity: onPressed != null ? 1 : AuthButtonDimens.disabledOpacity,
+              opacity: onPressed != null ? 1 : ButtonDimens.disabledOpacity,
               child: AppText(
                 label,
                 style: context.text.button,

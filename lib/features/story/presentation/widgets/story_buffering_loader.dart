@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/loading_overlay/pulse_line_loader.dart';
+import '../dimens/story_constants.dart';
+import '../dimens/story_dimens.dart';
 
 /// The heartbeat line, centered, once [waiting] has lasted [StoryTiming.bufferLoaderDelay]: a short wait
 /// shows nothing.
@@ -54,7 +55,7 @@ class _StoryBufferingLoaderState extends State<StoryBufferingLoader> {
   Widget build(BuildContext context) => _isVisible
       ? Center(
           child: PulseLineLoader(
-            color: context.appColors.storyOnDark,
+            color: context.appColors.onDark,
             width: StoryDimens.loaderWidth,
           ),
         )

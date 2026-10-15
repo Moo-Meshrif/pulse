@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// A checkbox + [label] (docs/specs/auth/02-components.md C9). The whole row toggles it. [compact] is the
 /// reset screen's smaller box.
@@ -30,7 +31,7 @@ class LabeledCheckbox extends StatelessWidget {
       child: InkWell(
         onTap: () => onChanged(!checked),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: AuthDimens.tapTarget),
+          constraints: const BoxConstraints(minHeight: AppSizes.tapTarget),
           child: Row(
             children: [
               AnimatedContainer(

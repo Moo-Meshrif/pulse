@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/onboarding_dimens.dart';
 import '../utils/enums/onboarding_top_bar_leading.dart';
 import '../utils/onboarding_page.dart';
 import '../widgets/onboarding_footer.dart';

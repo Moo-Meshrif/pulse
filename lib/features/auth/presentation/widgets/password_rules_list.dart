@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/password_rule.dart';
 
 /// The reset screen's rule rows (docs/specs/auth/02-components.md C8b). Each row reads "RULE, met" or

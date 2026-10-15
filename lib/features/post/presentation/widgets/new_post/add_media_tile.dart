@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_composer_dimens.dart';
 
 /// The dashed "+ Add" tile at the end of the media strip.
 class AddMediaTile extends StatelessWidget {
@@ -34,7 +34,7 @@ class AddMediaTile extends StatelessWidget {
             width: PostComposerDimens.thumb,
             height: PostComposerDimens.thumb,
             decoration: BoxDecoration(
-              color: PostComposerDimens.addFill,
+              color: colors.addFill,
               borderRadius: BorderRadius.circular(
                 PostComposerDimens.thumbRadius,
               ),

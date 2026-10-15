@@ -30,10 +30,7 @@ class StoryAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: ringWidth == 0
             ? null
-            : Border.all(
-                color: context.appColors.storyOnDark,
-                width: ringWidth,
-              ),
+            : Border.all(color: context.appColors.onDark, width: ringWidth),
       ),
       child: ClipOval(
         child: imageUrl == null

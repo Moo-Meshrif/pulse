@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/nav_dimens.dart';
 import 'nav_badge.dart';
 
 /// One slot of the nav bar: an icon (the filled variant while selected) with no label, pressed = 90%

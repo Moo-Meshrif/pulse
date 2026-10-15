@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../cubit/new_post_cubit.dart';
 import '../../cubit/new_post_state.dart';
+import '../../dimens/post_composer_dimens.dart';
 import '../../utils/content_audience_display.dart';
 import '../post_visibility/post_visibility_sheet.dart';
 import '../post_visibility/visibility_toast.dart';

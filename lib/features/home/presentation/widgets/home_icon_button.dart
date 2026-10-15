@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/home_dimens.dart';
 
 /// A 44 circle with an icon: Search and the bell in the header.
 class HomeIconButton extends StatelessWidget {

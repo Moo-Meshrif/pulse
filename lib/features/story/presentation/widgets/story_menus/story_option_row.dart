@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 
 /// A rounded card of option rows on the dark story sheet, rows separated by a hairline.
@@ -16,20 +16,16 @@ class StoryOptionGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(StorySheetDimens.groupRadius),
+      borderRadius: BorderRadius.circular(OptionSheetDimens.groupRadius),
       child: DecoratedBox(
-        decoration: BoxDecoration(color: colors.storySheetRow),
+        decoration: BoxDecoration(color: colors.darkSurfaceRow),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final (i, row) in rows.indexed) ...[
               if (i > 0)
                 Divider(
-                  height: StorySheetDimens.separator,
-                  thickness: StorySheetDimens.separator,
-                  color: colors.storyOnDark.withValues(
-                    alpha: StoryOpacity.separator,
-                  ),
+                  color: colors.onDark.withValues(alpha: DarkOpacity.separator),
                 ),
               row,
             ],
@@ -66,7 +62,7 @@ class StoryOptionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final text = context.text;
-    final color = isDanger ? colors.dangerOnDark : colors.storyOnDark;
+    final color = isDanger ? colors.dangerOnDark : colors.onDark;
     return Semantics(
       button: onTap != null,
       excludeSemantics: true,
@@ -75,17 +71,17 @@ class StoryOptionRow extends StatelessWidget {
         onTap: onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            minHeight: StorySheetDimens.rowMinHeight,
+            minHeight: OptionSheetDimens.rowMinHeight,
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: StorySheetDimens.rowPaddingH,
-              vertical: StorySheetDimens.rowPaddingV,
+              horizontal: OptionSheetDimens.rowPaddingH,
+              vertical: OptionSheetDimens.rowPaddingV,
             ),
             child: Row(
               children: [
-                AppSvgIcon(icon, size: StorySheetDimens.rowIcon, color: color),
-                SizedBox(width: StorySheetDimens.rowGap),
+                AppSvgIcon(icon, size: OptionSheetDimens.rowIcon, color: color),
+                SizedBox(width: OptionSheetDimens.rowGap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,8 +92,8 @@ class StoryOptionRow extends StatelessWidget {
                         AppText(
                           subtitle!,
                           style: text.caption,
-                          color: colors.storyOnDark.withValues(
-                            alpha: StoryOpacity.subtitle,
+                          color: colors.onDark.withValues(
+                            alpha: DarkOpacity.subtitle,
                           ),
                         ),
                     ],
@@ -106,10 +102,8 @@ class StoryOptionRow extends StatelessWidget {
                 if (showsChevron)
                   AppSvgIcon(
                     AppAssets.chevronRight,
-                    size: StorySheetDimens.chevron,
-                    color: colors.storyOnDark.withValues(
-                      alpha: StoryOpacity.chevron,
-                    ),
+                    size: OptionSheetDimens.chevron,
+                    color: colors.onDark.withValues(alpha: DarkOpacity.chevron),
                     directional: true,
                   ),
               ],

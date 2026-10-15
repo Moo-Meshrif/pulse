@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/theme/app_colors.dart';
+import 'package:pulse/core/theme/colors/app_colors.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';
 

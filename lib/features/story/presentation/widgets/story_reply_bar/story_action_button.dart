@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_dimens.dart';
 
 class StoryActionButton extends StatelessWidget {
   const StoryActionButton({
@@ -36,7 +36,7 @@ class StoryActionButton extends StatelessWidget {
           child: AppSvgIcon(
             asset,
             size: size,
-            color: color ?? context.appColors.storyOnDark,
+            color: color ?? context.appColors.onDark,
             directional: isDirectional,
           ),
         ),

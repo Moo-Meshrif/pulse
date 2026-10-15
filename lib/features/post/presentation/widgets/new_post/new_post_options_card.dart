@@ -7,10 +7,10 @@ import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/extensions/snack_bar_context.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/utils/location_choice.dart';
 import '../../cubit/new_post_cubit.dart';
 import '../../cubit/new_post_state.dart';
+import '../../dimens/post_composer_dimens.dart';
 import 'new_post_option_row.dart';
 
 /// The "Add to your post" card: photo / video, tag people, location, feeling and the comments switch.
@@ -83,13 +83,6 @@ class NewPostOptionsCard extends StatelessWidget {
                 trailing: Switch(
                   value: enabled,
                   onChanged: cubit.commentsChanged,
-                  activeTrackColor: colors.primary,
-                  activeThumbColor: colors.surface,
-                  inactiveTrackColor: colors.switchOff,
-                  inactiveThumbColor: colors.surface,
-                  trackOutlineColor: const WidgetStatePropertyAll(
-                    Colors.transparent,
-                  ),
                 ),
               ),
             ),

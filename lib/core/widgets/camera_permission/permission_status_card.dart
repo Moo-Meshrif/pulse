@@ -4,8 +4,8 @@ import '../../constants/app_assets.dart';
 import '../../enums/permission_access.dart';
 import '../../extensions/context_extensions.dart';
 import '../../extensions/l10n.dart';
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_svg_icon.dart';
 import '../app_text.dart';
 
@@ -25,11 +25,15 @@ class PermissionStatusCard extends StatelessWidget {
     final colors = context.appColors;
     final l10n = context.l10n;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: StoryPermissionDimens.cardMaxWidth),
+      constraints: BoxConstraints(
+        maxWidth: CameraPermissionDimens.cardMaxWidth,
+      ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: colors.storyOnDark.withValues(alpha: StoryOpacity.cardFill),
-          borderRadius: BorderRadius.circular(StoryPermissionDimens.cardRadius),
+          color: colors.onDark.withValues(alpha: DarkOpacity.cardFill),
+          borderRadius: BorderRadius.circular(
+            CameraPermissionDimens.cardRadius,
+          ),
         ),
         child: Column(
           children: [
@@ -39,11 +43,7 @@ class PermissionStatusCard extends StatelessWidget {
               access: camera,
             ),
             Divider(
-              height: StorySheetDimens.separator,
-              thickness: StorySheetDimens.separator,
-              color: colors.storyOnDark.withValues(
-                alpha: StoryOpacity.separator,
-              ),
+              color: colors.onDark.withValues(alpha: DarkOpacity.separator),
             ),
             _Row(
               icon: AppAssets.mic,
@@ -72,16 +72,16 @@ class _Row extends StatelessWidget {
       PermissionAccess.granted => (
         l10n.permAllowed,
         Container(
-          width: StoryPermissionDimens.okCircle,
-          height: StoryPermissionDimens.okCircle,
+          width: CameraPermissionDimens.okCircle,
+          height: CameraPermissionDimens.okCircle,
           decoration: BoxDecoration(
-            color: colors.storySuccess,
+            color: colors.successOnDark,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
           child: AppSvgIcon(
             AppAssets.check,
-            size: StoryPermissionDimens.okCircle * 0.6,
+            size: CameraPermissionDimens.okCircle * 0.6,
             color: colors.textPrimary,
           ),
         ),
@@ -91,7 +91,7 @@ class _Row extends StatelessWidget {
         AppText(
           l10n.permOff,
           style: context.text.countLabel,
-          color: colors.storyWarning,
+          color: colors.warningOnDark,
         ),
       ),
       PermissionAccess.denied => (
@@ -99,7 +99,7 @@ class _Row extends StatelessWidget {
         AppText(
           l10n.permNeeded,
           style: context.text.countLabel,
-          color: colors.storyOnDark.withValues(alpha: StoryOpacity.subtitle),
+          color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
         ),
       ),
     };
@@ -107,27 +107,25 @@ class _Row extends StatelessWidget {
       label: '$label, $state',
       excludeSemantics: true,
       child: SizedBox(
-        height: StoryPermissionDimens.cardRow,
+        height: CameraPermissionDimens.cardRow,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.s12),
           child: Row(
             children: [
               Container(
-                width: StoryPermissionDimens.tile,
-                height: StoryPermissionDimens.tile,
+                width: CameraPermissionDimens.tile,
+                height: CameraPermissionDimens.tile,
                 decoration: BoxDecoration(
-                  color: colors.storyOnDark.withValues(
-                    alpha: StoryOpacity.tileFill,
-                  ),
+                  color: colors.onDark.withValues(alpha: DarkOpacity.tileFill),
                   borderRadius: BorderRadius.circular(
-                    StoryPermissionDimens.tileRadius,
+                    CameraPermissionDimens.tileRadius,
                   ),
                 ),
                 alignment: Alignment.center,
                 child: AppSvgIcon(
                   icon,
-                  size: StorySheetDimens.rowIcon,
-                  color: colors.storyOnDark,
+                  size: OptionSheetDimens.rowIcon,
+                  color: colors.onDark,
                 ),
               ),
               SizedBox(width: AppSpacing.s12),
@@ -135,7 +133,7 @@ class _Row extends StatelessWidget {
                 child: AppText(
                   label,
                   style: context.text.name,
-                  color: colors.storyOnDark,
+                  color: colors.onDark,
                 ),
               ),
               trailing,

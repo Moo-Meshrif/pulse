@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import '../utils/country_codes.dart';
 import 'app_text.dart';
 import 'app_text_field.dart';
@@ -128,7 +128,7 @@ class _Row extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.of(context).pop(country),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: AuthDimens.tapTarget),
+        constraints: const BoxConstraints(minHeight: AppSizes.tapTarget),
         child: Container(
           color: selected ? colors.primarySoft : null,
           padding: EdgeInsets.symmetric(

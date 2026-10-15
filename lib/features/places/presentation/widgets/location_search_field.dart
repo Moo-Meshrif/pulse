@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/location_dimens.dart';
 
 /// The white search pill: a ring in `primary` while it has focus and a clear button once it has text.
 /// It keeps its own controller and focus node; [onChanged] reports every change, clearing included.
@@ -89,7 +90,6 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
               enabled: widget.enabled,
               onChanged: widget.onChanged,
               textInputAction: TextInputAction.search,
-              cursorColor: colors.primary,
               style: textStyle.copyWith(color: colors.textPrimary),
               decoration: InputDecoration.collapsed(
                 hintText: hint,

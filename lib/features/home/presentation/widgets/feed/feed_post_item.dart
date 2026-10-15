@@ -6,7 +6,6 @@ import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/extensions/snack_bar_context.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../post/domain/entity/post_entity.dart';
 import '../../../../post/presentation/cubit/post_actions_cubit.dart';
 import '../../../../post/presentation/cubit/post_actions_state.dart';
@@ -17,6 +16,7 @@ import '../../../../post/presentation/widgets/hidden_post_row.dart';
 import '../../../../post/presentation/widgets/post_card.dart';
 import '../../../../post/presentation/widgets/post_options/post_options_flow.dart';
 import '../../cubit/feed_cubit.dart';
+import '../../dimens/home_dimens.dart';
 import '../../utils/feed_post.dart';
 import '../../utils/post_card_mapper.dart';
 

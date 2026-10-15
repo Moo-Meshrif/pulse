@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/enums/story_media_type.dart';
 import '../cubit/story_edit_cubit.dart';
 import '../cubit/story_edit_state.dart';
+import '../dimens/story_dimens.dart';
 import '../utils/story_snapshot.dart';
 import '../utils/story_sticker.dart';
 import '../widgets/story_edit/story_edit_actions.dart';
@@ -59,7 +60,6 @@ class StoryEditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final media = MediaQuery.of(context);
     final cubit = context.read<StoryEditCubit>();
     final actionsBottom =
@@ -91,12 +91,12 @@ class StoryEditView extends StatelessWidget {
               child: InkResponse(
                 onTap: onClose,
                 child: SizedBox.square(
-                  dimension: StoryCameraDimens.roundControl,
+                  dimension: CameraPermissionDimens.roundControl,
                   child: Center(
                     child: AppSvgIcon(
                       AppAssets.close,
-                      size: StoryCameraDimens.closeIcon,
-                      color: colors.storyOnDark,
+                      size: CameraPermissionDimens.closeIcon,
+                      color: context.appColors.onDark,
                     ),
                   ),
                 ),

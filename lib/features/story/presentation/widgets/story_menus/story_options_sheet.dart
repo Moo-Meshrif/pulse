@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
 import '../../utils/enums/story_option.dart';
@@ -35,7 +35,7 @@ class StoryOptionsSheet extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: StorySheetDimens.gap,
+      spacing: OptionSheetDimens.gap,
       children: person.isMe
           ? [
               StoryOptionGroup(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/post_card_dimens.dart';
 
 /// Pops its child when [isLiked] turns true.
 class PostLikePop extends StatefulWidget {

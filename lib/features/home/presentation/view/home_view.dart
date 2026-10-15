@@ -5,13 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../post/presentation/widgets/post_video_scope.dart';
 import '../cubit/bell_dot_cubit.dart';
 import '../cubit/feed_cubit.dart';
 import '../cubit/feed_state.dart';
 import '../cubit/story_rail_cubit.dart';
+import '../dimens/home_dimens.dart';
 import '../utils/enums/feed_mode.dart';
 import '../utils/feed_videos.dart';
 import '../widgets/feed/feed_empty.dart';

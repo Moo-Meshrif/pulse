@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_safe_area.dart';
 
 /// Backend HTML as native widgets, styled with the app's text styles and colors (h1-h3, p, lists,

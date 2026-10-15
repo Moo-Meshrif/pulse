@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/story_constants.dart';
+import '../dimens/story_dimens.dart';
 
 /// "Paused" under the header while a sheet or dialog holds the story still.
 class StoryPausedChip extends StatelessWidget {
@@ -16,7 +17,7 @@ class StoryPausedChip extends StatelessWidget {
     final colors = context.appColors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.storyBlack.withValues(alpha: StoryOpacity.pausedChip),
+        color: colors.black.withValues(alpha: StoryOpacity.pausedChip),
         borderRadius: BorderRadius.circular(StorySheetDimens.pausedChipHeight),
       ),
       child: SizedBox(
@@ -31,13 +32,13 @@ class StoryPausedChip extends StatelessWidget {
               AppSvgIcon(
                 AppAssets.pause,
                 size: StorySheetDimens.pausedChipIcon,
-                color: colors.storyOnDark,
+                color: colors.onDark,
               ),
               SizedBox(width: StorySheetDimens.pausedChipGap),
               AppText(
                 context.l10n.storyPaused,
                 style: context.text.chipLabel,
-                color: colors.storyOnDark,
+                color: colors.onDark,
               ),
             ],
           ),

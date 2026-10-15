@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../follow/data/enums/follow_status.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/enums/follow_tab.dart';
 import '../utils/enums/load_status.dart';
 import '../widgets/auth_header.dart';
@@ -122,7 +123,7 @@ class SignUpFollowView extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.formSide),
       child: Row(
-        spacing: AuthDimens.chipWrapSpacing,
+        spacing: ChipDimens.wrapSpacing,
         children: [
           for (final tab in FollowTab.values)
             SelectableChip(
@@ -163,13 +164,6 @@ class SignUpFollowView extends StatelessWidget {
           if (_canFollowAll(state))
             TextButton(
               onPressed: context.read<SignUpCubit>().followAll,
-              style: TextButton.styleFrom(
-                minimumSize: const Size(
-                  AuthDimens.tapTarget,
-                  AuthDimens.tapTarget,
-                ),
-                foregroundColor: colors.primary,
-              ),
               child: AppText(
                 l10n.followAll,
                 style: context.text.action,
@@ -239,13 +233,6 @@ class _Message extends StatelessWidget {
           if (onRetry != null)
             TextButton(
               onPressed: onRetry,
-              style: TextButton.styleFrom(
-                minimumSize: const Size(
-                  AuthDimens.tapTarget,
-                  AuthDimens.tapTarget,
-                ),
-                foregroundColor: colors.primary,
-              ),
               child: AppText(
                 context.l10n.retry,
                 style: context.text.name,
@@ -266,10 +253,7 @@ class _SkeletonRow extends StatelessWidget {
     padding: EdgeInsets.all(AppSpacing.cardMargin),
     child: Row(
       children: [
-        SkeletonPill(
-          width: AuthDimens.avatarList,
-          height: AuthDimens.avatarList,
-        ),
+        SkeletonPill(width: AvatarDimens.list, height: AvatarDimens.list),
         SizedBox(width: AppSpacing.s12),
         Expanded(
           child: Column(

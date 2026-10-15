@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/story_constants.dart';
 import 'enums/story_tap_action.dart';
 
 /// The first third of the screen at its start side goes back, the rest goes on. "Start" is the right in

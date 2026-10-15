@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// "Forgot password?": end-aligned, `primary` 14/700, 44 tap target.
 class ForgotPasswordLink extends StatelessWidget {

@@ -5,8 +5,8 @@ import '../enums/sheet_tone.dart';
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
 import '../theme/app_breakpoints.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_safe_area.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
@@ -32,8 +32,8 @@ abstract final class AppBottomSheet {
     elevation: 0,
     barrierColor: switch (tone) {
       SheetTone.light => context.appColors.scrim,
-      SheetTone.dark => context.appColors.storyBlack.withValues(
-        alpha: StoryOpacity.sheetScrim,
+      SheetTone.dark => context.appColors.black.withValues(
+        alpha: DarkOpacity.sheetScrim,
       ),
     },
     constraints: const BoxConstraints(maxWidth: AppBreakpoints.maxContentWidth),
@@ -50,10 +50,10 @@ abstract final class AppBottomSheet {
       MediaQuery.disableAnimationsOf(context)
       ? AnimationStyle.noAnimation
       : AnimationStyle(
-          duration: StoryMotion.sheetIn,
-          reverseDuration: StoryMotion.sheetOut,
-          curve: StoryMotion.curve,
-          reverseCurve: StoryMotion.curve,
+          duration: SheetMotion.enter,
+          reverseDuration: SheetMotion.exit,
+          curve: SheetMotion.curve,
+          reverseCurve: SheetMotion.curve,
         );
 }
 
@@ -78,7 +78,7 @@ class AppBottomSheetShell extends StatelessWidget {
     final dark = tone == SheetTone.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: dark ? colors.storySheet : colors.surface,
+        color: dark ? colors.darkSurface : colors.surface,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppRadius.bottomSheetTop),
         ),
@@ -104,9 +104,7 @@ class AppBottomSheetShell extends StatelessWidget {
                   height: BottomSheetDimens.grabberHeight,
                   decoration: BoxDecoration(
                     color: dark
-                        ? colors.storyOnDark.withValues(
-                            alpha: StoryOpacity.grabber,
-                          )
+                        ? colors.onDark.withValues(alpha: DarkOpacity.grabber)
                         : colors.border,
                     borderRadius: BorderRadius.circular(
                       BottomSheetDimens.grabberRadius,

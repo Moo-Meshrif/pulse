@@ -3,7 +3,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../dimens/home_dimens.dart';
 import '../post_card_skeleton.dart';
 import '../story_rail/rail_skeleton.dart';
 

@@ -7,12 +7,13 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/extensions/snack_bar_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/utils/format_countdown.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/forgot_password_cubit.dart';
 import '../cubit/forgot_password_state.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/bold_spans.dart';
 import '../utils/email_mask.dart';
 
@@ -104,7 +105,7 @@ class _ResetLinkSentCard extends StatelessWidget {
               PrimaryButton(
                 label: l10n.openEmailApp,
                 expand: true,
-                buttonHeight: AuthButtonDimens.pillHeight,
+                buttonHeight: ButtonDimens.pillHeight,
                 onPressed: cubit.openEmailApp,
               ),
               SizedBox(height: DialogDimens.stackedActionGap),

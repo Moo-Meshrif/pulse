@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../enums/report_reason.dart';
 import '../../enums/sheet_tone.dart';
 import '../../error/failures.dart';
-import '../../theme/app_dimens.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_bottom_sheet.dart';
 import 'report_copy.dart';
 import 'report_palette.dart';
@@ -122,12 +122,12 @@ class _ReportFlowState extends State<_ReportFlow> {
     return SingleChildScrollView(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: AnimatedSize(
-        duration: StoryMotion.sheetIn,
-        curve: StoryMotion.curve,
+        duration: SheetMotion.enter,
+        curve: SheetMotion.curve,
         alignment: Alignment.topCenter,
         child: AnimatedSwitcher(
-          duration: StoryMotion.sheetIn,
-          switchInCurve: StoryMotion.curve,
+          duration: SheetMotion.enter,
+          switchInCurve: SheetMotion.curve,
           transitionBuilder: (child, animation) => SlideTransition(
             position: Tween(
               begin: Offset(fromEnd, 0),

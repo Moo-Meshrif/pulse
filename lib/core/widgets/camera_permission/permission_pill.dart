@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_text.dart';
 
 /// A full-width pill of a permission panel (Allow access, Open settings, Choose from gallery): [fill] behind
@@ -22,17 +22,17 @@ class PermissionPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ConstrainedBox(
-    constraints: BoxConstraints(maxWidth: StoryPermissionDimens.buttonMaxWidth),
+    constraints: BoxConstraints(
+      maxWidth: CameraPermissionDimens.buttonMaxWidth,
+    ),
     child: SizedBox(
       width: double.infinity,
-      height: StoryPermissionDimens.buttonHeight,
+      height: CameraPermissionDimens.buttonHeight,
       child: FilledButton(
         onPressed: onTap,
         style: FilledButton.styleFrom(
           backgroundColor: fill,
           foregroundColor: textColor,
-          shape: const StadiumBorder(),
-          elevation: 0,
         ),
         child: AppText(
           label,

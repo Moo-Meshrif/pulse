@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/app_image.dart';
 import '../../../../core/widgets/avatar_initials.dart';
+import '../dimens/post_card_dimens.dart';
 
 /// The author picture inside the story ring; initials when there is no picture or it fails.
 class PostRingedAvatar extends StatelessWidget {

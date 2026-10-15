@@ -6,8 +6,8 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/failure_l10n.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/legal_cubit.dart';
 import '../cubit/legal_state.dart';
@@ -61,13 +61,6 @@ class _LoadError extends StatelessWidget {
           ),
           TextButton(
             onPressed: onRetry,
-            style: TextButton.styleFrom(
-              minimumSize: const Size(
-                AuthDimens.tapTarget,
-                AuthDimens.tapTarget,
-              ),
-              foregroundColor: context.appColors.primary,
-            ),
             child: AppText(
               context.l10n.retry,
               style: context.text.name,

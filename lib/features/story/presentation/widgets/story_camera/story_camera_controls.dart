@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/colors/app_colors.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_constants.dart';
+import '../../dimens/story_dimens.dart';
 import 'story_shutter.dart';
 
 /// Gallery at the start, shutter in the middle, flip camera at the end.
@@ -52,18 +55,18 @@ class StoryCameraControls extends StatelessWidget {
                   StoryCameraDimens.galleryRadius,
                 ),
                 child: SizedBox.square(
-                  dimension: StoryCameraDimens.roundControl,
+                  dimension: CameraPermissionDimens.roundControl,
                   child: Center(
                     child: Container(
                       width: StoryCameraDimens.galleryThumb,
                       height: StoryCameraDimens.galleryThumb,
                       decoration: BoxDecoration(
-                        color: colors.storyControl,
+                        color: StoryColors.control,
                         borderRadius: BorderRadius.circular(
                           StoryCameraDimens.galleryRadius,
                         ),
                         border: Border.all(
-                          color: colors.storyOnDark,
+                          color: colors.onDark,
                           width: StoryCameraDimens.galleryBorder,
                         ),
                       ),
@@ -71,7 +74,7 @@ class StoryCameraControls extends StatelessWidget {
                       child: AppSvgIcon(
                         AppAssets.image,
                         size: StoryCameraDimens.controlIcon,
-                        color: colors.storyOnDark,
+                        color: colors.onDark,
                       ),
                     ),
                   ),
@@ -95,17 +98,17 @@ class StoryCameraControls extends StatelessWidget {
               child: InkResponse(
                 onTap: isRecording ? null : onFlip,
                 child: Container(
-                  width: StoryCameraDimens.roundControl,
-                  height: StoryCameraDimens.roundControl,
+                  width: CameraPermissionDimens.roundControl,
+                  height: CameraPermissionDimens.roundControl,
                   decoration: BoxDecoration(
-                    color: colors.storyControl,
+                    color: StoryColors.control,
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
                   child: AppSvgIcon(
                     AppAssets.cameraFlip,
                     size: StoryCameraDimens.controlIcon,
-                    color: colors.storyOnDark,
+                    color: colors.onDark,
                   ),
                 ),
               ),

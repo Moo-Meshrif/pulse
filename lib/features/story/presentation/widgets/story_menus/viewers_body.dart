@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_dimens.dart';
 import 'viewers_header.dart';
 import 'viewers_list.dart';
 
@@ -24,7 +25,7 @@ class ViewersBody extends StatelessWidget {
       maxChildSize: StoryDimens.viewersMaxFraction,
       builder: (context, controller) => DecoratedBox(
         decoration: BoxDecoration(
-          color: colors.storySheet,
+          color: colors.darkSurface,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppRadius.bottomSheetTop),
           ),
@@ -39,9 +40,7 @@ class ViewersBody extends StatelessWidget {
                 width: BottomSheetDimens.grabberWidth,
                 height: BottomSheetDimens.grabberHeight,
                 decoration: BoxDecoration(
-                  color: colors.storyOnDark.withValues(
-                    alpha: StoryOpacity.grabber,
-                  ),
+                  color: colors.onDark.withValues(alpha: DarkOpacity.grabber),
                   borderRadius: BorderRadius.circular(
                     BottomSheetDimens.grabberRadius,
                   ),

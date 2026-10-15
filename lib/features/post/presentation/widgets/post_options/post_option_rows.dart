@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_options_dimens.dart';
 import '../../utils/enums/post_option.dart';
 import '../../utils/post_options_data.dart';
 
@@ -86,12 +87,7 @@ class PostOptionGroup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final (i, option) in options.indexed) ...[
-              if (i > 0)
-                Divider(
-                  height: 1, // unscaled: hairline
-                  thickness: 1, // unscaled: hairline
-                  color: colors.divider,
-                ),
+              if (i > 0) const Divider(),
               _PostOptionRow(
                 option: option,
                 data: data,

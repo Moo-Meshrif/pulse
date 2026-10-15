@@ -9,8 +9,8 @@ import '../../../../../core/extensions/failure_l10n.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../cubit/story_audience_cubit.dart';
@@ -88,11 +88,11 @@ class _Body extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: StorySheetDimens.gap,
+          spacing: OptionSheetDimens.gap,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: StorySheetDimens.titlePadding,
+                horizontal: OptionSheetDimens.titlePadding,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,15 +103,13 @@ class _Body extends StatelessWidget {
                     child: AppText(
                       l10n.storyWhoCanSee,
                       style: context.text.stat,
-                      color: colors.storyOnDark,
+                      color: colors.onDark,
                     ),
                   ),
                   AppText(
                     l10n.storyAudienceBody,
                     style: context.text.bodySm,
-                    color: colors.storyOnDark.withValues(
-                      alpha: StoryOpacity.helper,
-                    ),
+                    color: colors.onDark.withValues(alpha: DarkOpacity.helper),
                   ),
                 ],
               ),
@@ -127,7 +125,7 @@ class _Body extends StatelessWidget {
                 ),
                 AudienceRow(
                   icon: AppAssets.star,
-                  tileColor: colors.storySuccess,
+                  tileColor: colors.successOnDark,
                   tileIconColor: colors.textPrimary,
                   title: l10n.storyAudienceCloseFriends,
                   subtitle: people(state.summary.closeFriends),

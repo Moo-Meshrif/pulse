@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/new_post_cubit.dart';
 import '../../cubit/new_post_state.dart';
+import '../../dimens/post_composer_dimens.dart';
 
 /// The "Share post" pill pinned under the scroll area.
 class NewPostShareBar extends StatelessWidget {

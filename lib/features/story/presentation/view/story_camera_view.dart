@@ -4,11 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/router/app_navigator.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/colors/app_colors.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/story_camera_cubit.dart';
 import '../cubit/story_camera_state.dart';
+import '../dimens/story_constants.dart';
+import '../dimens/story_dimens.dart';
 import '../utils/enums/story_camera_status.dart';
 import '../widgets/story_camera/story_camera_controls.dart';
 import '../widgets/story_camera/story_camera_top_bar.dart';
@@ -79,7 +82,6 @@ class _StoryCameraViewState extends State<StoryCameraView>
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final media = MediaQuery.of(context);
     return BlocBuilder<StoryCameraCubit, StoryCameraState>(
       builder: (context, state) {
@@ -102,7 +104,7 @@ class _StoryCameraViewState extends State<StoryCameraView>
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [colors.storyCameraStart, colors.storyCameraEnd],
+                    colors: [StoryColors.cameraStart, StoryColors.cameraEnd],
                   ),
                 ),
               ),
@@ -111,8 +113,8 @@ class _StoryCameraViewState extends State<StoryCameraView>
             PositionedDirectional(
               key: const ValueKey('top-bar'),
               top: media.viewPadding.top + StoryCameraDimens.topBarBelowInset,
-              start: StoryCameraDimens.topBarSide,
-              end: StoryCameraDimens.topBarSide,
+              start: CameraPermissionDimens.topBarSide,
+              end: CameraPermissionDimens.topBarSide,
               child: StoryCameraTopBar(
                 isRecording: state.isRecording,
                 elapsed: state.elapsed,
@@ -127,7 +129,7 @@ class _StoryCameraViewState extends State<StoryCameraView>
                 key: const ValueKey('mic-pill'),
                 top:
                     media.viewPadding.top +
-                    StoryPermissionDimens.micPillBelowInset,
+                    CameraPermissionDimens.micPillBelowInset,
                 start: 0,
                 end: 0,
                 child: Center(child: MicOffPill(onFix: widget.onFixMic)),
@@ -142,7 +144,7 @@ class _StoryCameraViewState extends State<StoryCameraView>
                   child: AppText(
                     context.l10n.storyHint,
                     style: context.text.bodyXs,
-                    color: colors.storyOnDark.withValues(
+                    color: context.appColors.onDark.withValues(
                       alpha: StoryOpacity.hint,
                     ),
                     textAlign: TextAlign.center,

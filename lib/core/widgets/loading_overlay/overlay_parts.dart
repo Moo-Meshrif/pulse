@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../extensions/context_extensions.dart';
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_text.dart';
 import 'loading_overlay.dart';
 

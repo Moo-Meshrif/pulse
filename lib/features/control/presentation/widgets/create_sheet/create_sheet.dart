@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../utils/enums/create_option.dart';
 import 'create_option_row.dart';

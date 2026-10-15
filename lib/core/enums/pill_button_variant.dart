@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
+import '../theme/dimens/app_dimens.dart';
 
 /// The looks of a [PillButton] (docs/specs/auth/02-components.md C4). Each variant owns its facts
 /// (sizing) and its theme colors.
@@ -20,10 +20,10 @@ enum PillButtonVariant {
   /// Fixed 48 high, or sized by its vertical padding.
   final bool fixedHeight;
 
-  double? get height => fixedHeight ? AuthButtonDimens.pillHeight : null;
+  double? get height => fixedHeight ? ButtonDimens.pillHeight : null;
 
   double get verticalPadding =>
-      fixedHeight ? 0 : AuthButtonDimens.outlineVerticalPadding;
+      fixedHeight ? 0 : ButtonDimens.outlineVerticalPadding;
 
   Color fill(BuildContext context) => switch (this) {
     PillButtonVariant.outline => context.appColors.surface,

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../follow/data/enums/follow_status.dart';
 import '../../../follow/data/model/suggested_profile_model.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/l10n/suggested_profile_l10n.dart';
 
 /// One person on the Follow step: avatar, name, meta line and the Follow / Requested / Following pill
@@ -72,7 +73,7 @@ class FollowRow extends StatelessWidget {
               onTap: onToggle,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
-                  minHeight: AuthDimens.tapTarget,
+                  minHeight: AppSizes.tapTarget,
                 ),
                 child: Center(
                   child: DecoratedBox(
@@ -81,7 +82,7 @@ class FollowRow extends StatelessWidget {
                       border: following
                           ? Border.all(
                               color: colors.border,
-                              width: AuthDimens.inputBorderWidth,
+                              width: InputDimens.borderWidth,
                             )
                           : null,
                       borderRadius: BorderRadius.circular(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/colors/app_colors.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
+import '../../dimens/nav_dimens.dart';
 import 'glass_border_painter.dart';
 import 'outside_shadow_painter.dart';
 

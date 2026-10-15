@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../extensions/l10n.dart';
-import '../../theme/app_dimens.dart';
+import '../../theme/dimens/app_dimens.dart';
 import 'overlay_parts.dart';
 
 // The folder's public surface: the overlay and how to show it, plus the heartbeat line it draws.

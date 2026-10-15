@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/post_card_dimens.dart';
 
 /// Decides which video of a list plays: the one that is at least [PostCardDimens.playVisibleFraction]
 /// visible, the most visible when several are, and the same one for as long as it stays visible enough.

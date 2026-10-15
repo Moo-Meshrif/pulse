@@ -4,9 +4,10 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// "You've been signed out" with the reason (docs/specs/auth/02-components.md C17): a soft banner, not
 /// dismissible, announced once when it appears.

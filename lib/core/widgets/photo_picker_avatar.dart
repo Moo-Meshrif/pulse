@@ -6,8 +6,8 @@ import '../constants/app_assets.dart';
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
 import '../services/photo_picker_service.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_image.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
@@ -33,7 +33,7 @@ class PhotoPickerAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final l10n = context.l10n;
-    final size = AuthDimens.avatarUpload;
+    final size = AvatarDimens.upload;
     return Semantics(
       button: true,
       label: l10n.addPhoto,
@@ -54,12 +54,12 @@ class PhotoPickerAvatar extends StatelessWidget {
                         ? CustomPaint(
                             painter: _DashedCirclePainter(
                               color: colors.border,
-                              width: AuthDimens.avatarDashedWidth,
+                              width: AvatarDimens.dashedWidth,
                             ),
                             child: Center(
                               child: AppSvgIcon(
                                 AppAssets.camera,
-                                size: AuthDimens.avatarCameraIcon,
+                                size: AvatarDimens.cameraIcon,
                                 color: colors.textSecondary,
                               ),
                             ),
@@ -70,7 +70,7 @@ class PhotoPickerAvatar extends StatelessWidget {
                               shape: BoxShape.circle,
                               border: Border.all(
                                 color: colors.border,
-                                width: AuthDimens.avatarDashedWidth,
+                                width: AvatarDimens.dashedWidth,
                               ),
                             ),
                             child: ClipOval(
@@ -90,20 +90,20 @@ class PhotoPickerAvatar extends StatelessWidget {
                     end: 0,
                     bottom: 0,
                     child: Container(
-                      width: AuthDimens.avatarBadge,
-                      height: AuthDimens.avatarBadge,
+                      width: AvatarDimens.badge,
+                      height: AvatarDimens.badge,
                       decoration: BoxDecoration(
                         color: colors.primary,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: colors.background,
-                          width: AuthDimens.avatarBadgeRing,
+                          width: AvatarDimens.badgeRing,
                         ),
                       ),
                       alignment: Alignment.center,
                       child: AppSvgIcon(
                         AppAssets.plus,
-                        size: AuthDimens.avatarBadgePlus,
+                        size: AvatarDimens.badgePlus,
                         color: colors.textOnPrimary,
                       ),
                     ),

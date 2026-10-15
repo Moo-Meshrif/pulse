@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/enums/audience_tab.dart';
 import '../../cubit/audience_list_cubit.dart';
@@ -60,9 +60,9 @@ class _Tab extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: active ? colors.storyOnDark : colors.storySheetRow,
+            color: active ? colors.onDark : colors.darkSurfaceRow,
             borderRadius: BorderRadius.circular(
-              StoryPermissionDimens.fixChipHeight,
+              CameraPermissionDimens.fixChipHeight,
             ),
           ),
           padding: EdgeInsets.symmetric(
@@ -73,7 +73,7 @@ class _Tab extends StatelessWidget {
             label,
             style: context.text.label,
             maxLines: 1,
-            color: active ? colors.textPrimary : colors.storyOnDark,
+            color: active ? colors.textPrimary : colors.onDark,
           ),
         ),
       ),

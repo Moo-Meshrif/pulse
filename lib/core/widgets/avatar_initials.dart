@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import '../utils/avatar_initials.dart';
 import 'app_text.dart';
 
@@ -28,8 +28,8 @@ class AvatarInitials extends StatelessWidget {
     final palette = colors.avatarBackgrounds;
     return ExcludeSemantics(
       child: Container(
-        width: size ?? AuthDimens.avatarList,
-        height: size ?? AuthDimens.avatarList,
+        width: size ?? AvatarDimens.list,
+        height: size ?? AvatarDimens.list,
         decoration: BoxDecoration(
           color: palette[stablePaletteIndex(seed, palette.length)],
           shape: BoxShape.circle,

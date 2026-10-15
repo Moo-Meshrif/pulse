@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/splash_dimens.dart';
 
 /// The splash while it decides: the 72 logo tile with the wordmark under it, and the heartbeat line under
 /// that (docs/specs/auth/screens/s13-splash.md). The tile and wordmark stay centered in the screen: a

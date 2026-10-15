@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/auth_dimens.dart';
 
 /// "──── or continue with ────": 1 px `divider` lines around a `bodySm` label, gap 12
 /// (docs/specs/auth/02-components.md C6).

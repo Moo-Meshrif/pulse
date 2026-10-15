@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_options_dimens.dart';
 import '../../utils/enums/post_option.dart';
 import '../../utils/post_option_layout.dart';
 import '../../utils/post_options_data.dart';

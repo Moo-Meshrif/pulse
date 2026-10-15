@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 
 /// A rounded card of rows on the dark sheet, rows separated by a hairline.
 class AudienceGroup extends StatelessWidget {
@@ -13,20 +13,16 @@ class AudienceGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(StorySheetDimens.groupRadius),
+      borderRadius: BorderRadius.circular(OptionSheetDimens.groupRadius),
       child: DecoratedBox(
-        decoration: BoxDecoration(color: colors.storySheetRow),
+        decoration: BoxDecoration(color: colors.darkSurfaceRow),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final (i, child) in children.indexed) ...[
               if (i > 0)
                 Divider(
-                  height: StorySheetDimens.separator,
-                  thickness: StorySheetDimens.separator,
-                  color: colors.storyOnDark.withValues(
-                    alpha: StoryOpacity.separator,
-                  ),
+                  color: colors.onDark.withValues(alpha: DarkOpacity.separator),
                 ),
               child,
             ],

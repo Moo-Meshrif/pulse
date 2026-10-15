@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../profile/data/model/interest_model.dart';
 import '../cubit/sign_up_cubit.dart';
 import '../cubit/sign_up_state.dart';
+import '../dimens/auth_dimens.dart';
 import '../utils/enums/load_status.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/skeleton_pill.dart';
@@ -99,15 +100,15 @@ class SignUpInterestsView extends StatelessWidget {
     final language = Localizations.localeOf(context).languageCode;
     final cubit = context.read<SignUpCubit>();
     return Wrap(
-      spacing: AuthDimens.chipWrapSpacing,
-      runSpacing: AuthDimens.interestChipRunSpacing,
+      spacing: ChipDimens.wrapSpacing,
+      runSpacing: ChipDimens.interestRunSpacing,
       children: [
         for (final InterestModel interest in state.interests)
           if (interest.id != null)
             SelectableChip(
               label: interest.nameFor(language) ?? '',
               selected: state.selectedInterests.contains(interest.id),
-              height: AuthDimens.interestChipHeight,
+              height: ChipDimens.interestHeight,
               onTap: () => cubit.interestToggled(interest.id!),
             ),
       ],
@@ -115,13 +116,13 @@ class SignUpInterestsView extends StatelessWidget {
   }
 
   Widget _skeletons() => Wrap(
-    spacing: AuthDimens.chipWrapSpacing,
-    runSpacing: AuthDimens.interestChipRunSpacing,
+    spacing: ChipDimens.wrapSpacing,
+    runSpacing: ChipDimens.interestRunSpacing,
     children: [
       for (var i = 0; i < _skeletonCount; i++)
         SkeletonPill(
           width: AuthDimens.interestSkeletonWidth + (i % 3) * AppSpacing.s16,
-          height: AuthDimens.interestChipHeight,
+          height: ChipDimens.interestHeight,
         ),
     ],
   );
@@ -145,10 +146,6 @@ class _LoadError extends StatelessWidget {
       ),
       TextButton(
         onPressed: onRetry,
-        style: TextButton.styleFrom(
-          minimumSize: const Size(AuthDimens.tapTarget, AuthDimens.tapTarget),
-          foregroundColor: context.appColors.primary,
-        ),
         child: AppText(
           context.l10n.retry,
           style: context.text.name,

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../post/presentation/dimens/post_card_dimens.dart';
+import '../dimens/home_dimens.dart';
 
 /// A post card as shapes: the author row, two lines of caption, the picture and the action bar. Draw it
 /// inside a `Skeletonizer.zone`.

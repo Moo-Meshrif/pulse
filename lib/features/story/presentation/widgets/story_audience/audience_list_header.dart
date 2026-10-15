@@ -5,11 +5,12 @@ import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/audience_list_cubit.dart';
 import '../../cubit/audience_list_state.dart';
+import '../../dimens/story_dimens.dart';
 
 /// The title row of a list screen: back, the name of the list, and how many are selected.
 class AudienceListHeader extends StatelessWidget {
@@ -32,12 +33,12 @@ class AudienceListHeader extends StatelessWidget {
               onTap: () => AppNavigator.back(context),
               radius: StoryDimens.headerButton / 2,
               child: SizedBox.square(
-                dimension: StoryCameraDimens.roundControl,
+                dimension: CameraPermissionDimens.roundControl,
                 child: Center(
                   child: AppSvgIcon(
                     AppAssets.arrowBack,
-                    size: StoryCameraDimens.closeIcon,
-                    color: colors.storyOnDark,
+                    size: CameraPermissionDimens.closeIcon,
+                    color: colors.onDark,
                     directional: true,
                   ),
                 ),
@@ -50,7 +51,7 @@ class AudienceListHeader extends StatelessWidget {
               child: AppText(
                 title,
                 style: context.text.stat,
-                color: colors.storyOnDark,
+                color: colors.onDark,
                 maxLines: 1,
               ),
             ),
@@ -62,9 +63,7 @@ class AudienceListHeader extends StatelessWidget {
               builder: (context, count) => AppText(
                 context.l10n.storyAudienceSelected(count),
                 style: context.text.caption,
-                color: colors.storyOnDark.withValues(
-                  alpha: StoryOpacity.subtitle,
-                ),
+                color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
               ),
             ),
           ),

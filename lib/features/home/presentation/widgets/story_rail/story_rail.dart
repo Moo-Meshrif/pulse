@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/theme/app_dimens.dart';
 import '../../cubit/story_rail_cubit.dart';
 import '../../cubit/story_rail_state.dart';
+import '../../dimens/home_dimens.dart';
 import 'story_item.dart';
 import 'your_story_item.dart';
 
@@ -17,7 +17,7 @@ class StoryRail extends StatelessWidget {
     behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
     child: SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: StoryDimens.railRowPadding,
+      padding: StoryRailDimens.railRowPadding,
       child: const _People(),
     ),
   );
@@ -35,7 +35,7 @@ class _People extends StatelessWidget {
           children: [
             const YourStoryItem(),
             for (final person in state.items.where((item) => !item.isMe)) ...[
-              SizedBox(width: StoryDimens.railGap),
+              SizedBox(width: StoryRailDimens.railGap),
               StoryItem(key: ValueKey(person.authorId), person: person),
             ],
           ],

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/services/media_picker_service.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../cubit/new_post_cubit.dart';
 import '../../cubit/new_post_state.dart';
+import '../../dimens/post_composer_dimens.dart';
 import '../../utils/new_post_limits.dart';
 import 'add_media_tile.dart';
 import 'media_thumb.dart';

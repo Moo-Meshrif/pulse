@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/post_card_dimens.dart';
 import '../utils/post_card_media.dart';
 import '../utils/post_media_aspect.dart';
 import '../utils/post_video_ids.dart';

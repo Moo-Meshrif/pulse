@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/theme/app_dimens.dart';
 import 'package:pulse/core/widgets/widgets.dart';
+import 'package:pulse/features/onboarding/presentation/dimens/onboarding_dimens.dart';
 import 'package:pulse/features/onboarding/presentation/utils/enums/onboarding_top_bar_leading.dart';
 import 'package:pulse/features/onboarding/presentation/view/onboarding_view.dart';
 import 'package:pulse/features/onboarding/presentation/widgets/onboarding_panel.dart';

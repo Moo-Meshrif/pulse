@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/theme/app_dimens.dart';
+import 'package:pulse/features/post/presentation/dimens/post_card_dimens.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 
 import '../../../../helpers/pump_app.dart';

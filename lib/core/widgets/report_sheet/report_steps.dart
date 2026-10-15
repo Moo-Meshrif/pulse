@@ -6,8 +6,8 @@ import '../../enums/report_reason.dart';
 import '../../error/failures.dart';
 import '../../extensions/failure_l10n.dart';
 import '../../extensions/l10n.dart';
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../../utils/report_note.dart';
 import '../app_svg_icon.dart';
 import '../app_text.dart';
@@ -79,7 +79,7 @@ class _Header extends StatelessWidget {
       Expanded(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: StorySheetDimens.titlePadding,
+            horizontal: OptionSheetDimens.titlePadding,
           ),
           child: AppText(
             title,
@@ -134,7 +134,7 @@ class ReportReasonsStep extends StatelessWidget {
       SizedBox(height: AppSpacing.s8),
       Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: StorySheetDimens.titlePadding,
+          horizontal: OptionSheetDimens.titlePadding,
         ),
         child: AppText(
           copy.body,
@@ -142,21 +142,16 @@ class ReportReasonsStep extends StatelessWidget {
           color: palette.body,
         ),
       ),
-      SizedBox(height: StorySheetDimens.gap),
+      SizedBox(height: OptionSheetDimens.gap),
       DecoratedBox(
         decoration: BoxDecoration(
           color: palette.group,
-          borderRadius: BorderRadius.circular(StorySheetDimens.groupRadius),
+          borderRadius: BorderRadius.circular(OptionSheetDimens.groupRadius),
         ),
         child: Column(
           children: [
             for (final (i, reason) in ReportReason.values.indexed) ...[
-              if (i > 0)
-                Divider(
-                  height: StorySheetDimens.separator,
-                  thickness: StorySheetDimens.separator,
-                  color: palette.separator,
-                ),
+              if (i > 0) Divider(color: palette.separator),
               _ReasonRow(
                 palette: palette,
                 reason: reason,
@@ -196,12 +191,12 @@ class _ReasonRow extends StatelessWidget {
       onTap: enabled ? onTap : null,
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          minHeight: StorySheetDimens.reasonRowHeight,
+          minHeight: OptionSheetDimens.reasonRowHeight,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: StorySheetDimens.rowPaddingH,
-            vertical: StorySheetDimens.rowPaddingV,
+            horizontal: OptionSheetDimens.rowPaddingH,
+            vertical: OptionSheetDimens.rowPaddingV,
           ),
           child: Row(
             children: [
@@ -212,10 +207,10 @@ class _ReasonRow extends StatelessWidget {
                   color: palette.title,
                 ),
               ),
-              SizedBox(width: StorySheetDimens.rowGap),
+              SizedBox(width: OptionSheetDimens.rowGap),
               if (busy)
                 SizedBox.square(
-                  dimension: StorySheetDimens.chevron,
+                  dimension: OptionSheetDimens.chevron,
                   child: CircularProgressIndicator(
                     strokeWidth: 2, // unscaled: spinner stroke
                     color: palette.title,
@@ -224,7 +219,7 @@ class _ReasonRow extends StatelessWidget {
               else
                 AppSvgIcon(
                   AppAssets.chevronRight,
-                  size: StorySheetDimens.chevron,
+                  size: OptionSheetDimens.chevron,
                   color: palette.chevron,
                   directional: true,
                 ),
@@ -244,7 +239,7 @@ class _ErrorLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(top: StorySheetDimens.gap),
+    padding: EdgeInsets.only(top: OptionSheetDimens.gap),
     child: Semantics(
       liveRegion: true,
       child: AppText(
@@ -310,7 +305,7 @@ class _ReportNoteStepState extends State<ReportNoteStep> {
         SizedBox(height: AppSpacing.s8),
         Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: StorySheetDimens.titlePadding,
+            horizontal: OptionSheetDimens.titlePadding,
           ),
           child: AppText(
             context.l10n.reportElseBody,
@@ -318,7 +313,7 @@ class _ReportNoteStepState extends State<ReportNoteStep> {
             color: palette.body,
           ),
         ),
-        SizedBox(height: StorySheetDimens.gap),
+        SizedBox(height: OptionSheetDimens.gap),
         _NoteField(
           palette: palette,
           controller: _controller,
@@ -327,13 +322,13 @@ class _ReportNoteStepState extends State<ReportNoteStep> {
         ),
         if (widget.error != null)
           _ErrorLine(palette: palette, failure: widget.error!),
-        SizedBox(height: StorySheetDimens.gap),
+        SizedBox(height: OptionSheetDimens.gap),
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: _controller,
           builder: (context, value, _) => PrimaryButton(
             label: context.l10n.reportSend,
             expand: true,
-            buttonHeight: AuthButtonDimens.pillHeight,
+            buttonHeight: ButtonDimens.pillHeight,
             loading: widget.submitting,
             onPressed: ReportNote.canSend(value.text)
                 ? () => widget.onSend(value.text.trim())
@@ -456,7 +451,7 @@ class ReportSentStep extends StatelessWidget {
       Center(
         child: AppSvgIcon(
           AppAssets.check,
-          size: StoryPermissionDimens.icon,
+          size: CameraPermissionDimens.icon,
           color: palette.success,
         ),
       ),
@@ -479,17 +474,12 @@ class ReportSentStep extends StatelessWidget {
         DecoratedBox(
           decoration: BoxDecoration(
             color: palette.group,
-            borderRadius: BorderRadius.circular(StorySheetDimens.groupRadius),
+            borderRadius: BorderRadius.circular(OptionSheetDimens.groupRadius),
           ),
           child: Column(
             children: [
               for (final (i, row) in rows.indexed) ...[
-                if (i > 0)
-                  Divider(
-                    height: StorySheetDimens.separator,
-                    thickness: StorySheetDimens.separator,
-                    color: palette.separator,
-                  ),
+                if (i > 0) Divider(color: palette.separator),
                 _SentRowTile(
                   palette: palette,
                   row: row,
@@ -504,7 +494,7 @@ class ReportSentStep extends StatelessWidget {
       PrimaryButton(
         label: context.l10n.reportDone,
         expand: true,
-        buttonHeight: AuthButtonDimens.pillHeight,
+        buttonHeight: ButtonDimens.pillHeight,
         onPressed: onDone,
       ),
     ],
@@ -531,21 +521,21 @@ class _SentRowTile extends StatelessWidget {
       onTap: onTap,
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          minHeight: StorySheetDimens.reasonRowHeight,
+          minHeight: OptionSheetDimens.reasonRowHeight,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: StorySheetDimens.rowPaddingH,
-            vertical: StorySheetDimens.rowPaddingV,
+            horizontal: OptionSheetDimens.rowPaddingH,
+            vertical: OptionSheetDimens.rowPaddingV,
           ),
           child: Row(
             children: [
               AppSvgIcon(
                 row.icon,
-                size: StorySheetDimens.rowIcon,
+                size: OptionSheetDimens.rowIcon,
                 color: palette.title,
               ),
-              SizedBox(width: StorySheetDimens.rowGap),
+              SizedBox(width: OptionSheetDimens.rowGap),
               Expanded(
                 child: AppText(
                   row.title,

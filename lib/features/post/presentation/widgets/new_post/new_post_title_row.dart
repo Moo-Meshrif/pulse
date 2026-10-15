@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_composer_dimens.dart';
 
 /// "New post" at the start and the close button at the end.
 class NewPostTitleRow extends StatelessWidget {

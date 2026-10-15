@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
+import 'colors/app_colors.dart';
+import 'dimens/app_dimens.dart';
 
 abstract final class AppTheme {
   /// Light only for now. A dark theme needs dark tokens first (docs/specs/_theme/colors.md).
@@ -29,6 +30,33 @@ abstract final class AppTheme {
       fontFamily: 'NotoSans',
       fontFamilyFallback: const ['NotoSansArabic'],
       extensions: [c],
+      // Defaults of the Material widgets the app uses, so a screen only sets what differs.
+      dividerTheme: DividerThemeData(
+        color: c.divider,
+        space: 1, // unscaled: hairline
+        thickness: 1,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStatePropertyAll(c.surface),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) =>
+              states.contains(WidgetState.selected) ? c.primary : c.switchOff,
+        ),
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+      ),
+      textSelectionTheme: TextSelectionThemeData(cursorColor: c.primary),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: c.primary,
+          minimumSize: const Size(AppSizes.tapTarget, AppSizes.tapTarget),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          shape: const StadiumBorder(),
+          elevation: 0,
+        ),
+      ),
     );
   }
 }

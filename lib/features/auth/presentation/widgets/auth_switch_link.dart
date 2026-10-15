@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../dimens/auth_dimens.dart';
 
 /// "New to Pulse? **Create account**": a centered 44-high row, the prompt in `textSecondary` and the
 /// action in `primary` bold. The whole row is the hit area (docs/specs/auth/screens/s1-signin.md footer).

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../extensions/context_extensions.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
 import 'loading_overlay/pulse_line_loader.dart';
@@ -43,7 +43,7 @@ class PrimaryButton extends StatelessWidget {
   /// Shows the heartbeat line instead of the label and ignores taps; the fill stays `primary`.
   final bool loading;
 
-  /// 56 by default; dialogs and sheets use the 48 pill (`AuthButtonDimens.pillHeight`).
+  /// 56 by default; dialogs and sheets use the 48 pill (`ButtonDimens.pillHeight`).
   final double buttonHeight;
 
   @override
@@ -61,8 +61,6 @@ class PrimaryButton extends StatelessWidget {
         padding: WidgetStatePropertyAll(
           EdgeInsetsDirectional.symmetric(horizontal: horizontalPadding),
         ),
-        shape: const WidgetStatePropertyAll(StadiumBorder()),
-        elevation: const WidgetStatePropertyAll(0),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         foregroundColor: WidgetStatePropertyAll(colors.textOnPrimary),
@@ -71,7 +69,7 @@ class PrimaryButton extends StatelessWidget {
             return loading
                 ? colors.primary
                 : colors.primary.withValues(
-                    alpha: AuthButtonDimens.disabledOpacity,
+                    alpha: ButtonDimens.disabledOpacity,
                   );
           }
           return states.contains(WidgetState.pressed)
@@ -84,7 +82,7 @@ class PrimaryButton extends StatelessWidget {
               label: label,
               child: PulseLineLoader(
                 color: colors.textOnPrimary,
-                width: AuthButtonDimens.loaderWidth,
+                width: ButtonDimens.loaderWidth,
               ),
             )
           : Row(

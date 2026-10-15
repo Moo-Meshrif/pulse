@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/theme/app_colors.dart';
+import 'package:pulse/core/theme/colors/app_colors.dart';
 import 'package:pulse/core/widgets/confirmation_dialog/confirmation_strategy.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 

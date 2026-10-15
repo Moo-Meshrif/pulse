@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/colors/app_colors.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_constants.dart';
+import '../../dimens/story_dimens.dart';
 import '../../utils/story_sticker.dart';
 import '../story_overlays_layer.dart';
 
@@ -140,14 +143,14 @@ class _StoryStickerCanvasState extends State<StoryStickerCanvas> {
                       width: StoryCameraDimens.deleteZone,
                       height: StoryCameraDimens.deleteZone,
                       decoration: BoxDecoration(
-                        color: _overZone ? colors.danger : colors.storyTool,
+                        color: _overZone ? colors.danger : StoryColors.tool,
                         shape: BoxShape.circle,
                       ),
                       alignment: Alignment.center,
                       child: AppSvgIcon(
                         AppAssets.trash,
                         size: StoryCameraDimens.toolIcon,
-                        color: colors.storyOnDark,
+                        color: colors.onDark,
                       ),
                     ),
                   ),

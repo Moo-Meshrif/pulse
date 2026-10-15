@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../dimens/onboarding_dimens.dart';
 
 /// "I already have an account **Sign in**": a centered 44-high row. The whole row is the
 /// hit area; the pressed state is the platform ripple only.

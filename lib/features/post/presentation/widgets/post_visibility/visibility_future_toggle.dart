@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_options_dimens.dart';
 
 /// "Use for future posts": saves the choice as the audience new posts start with.
 class VisibilityFutureToggle extends StatelessWidget {
@@ -51,17 +52,7 @@ class VisibilityFutureToggle extends StatelessWidget {
             width: VisibilityDimens.toggleWidth,
             height: VisibilityDimens.toggleHeight,
             child: FittedBox(
-              child: Switch(
-                value: value,
-                onChanged: onChanged,
-                activeTrackColor: colors.primary,
-                activeThumbColor: colors.surface,
-                inactiveTrackColor: colors.switchOff,
-                inactiveThumbColor: colors.surface,
-                trackOutlineColor: const WidgetStatePropertyAll(
-                  Colors.transparent,
-                ),
-              ),
+              child: Switch(value: value, onChanged: onChanged),
             ),
           ),
         ],

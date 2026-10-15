@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/di/injection.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/theme/app_breakpoints.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/story_viewers_cubit.dart';
+import '../../dimens/story_constants.dart';
 import '../../utils/enums/story_option.dart';
 import 'viewers_body.dart';
 
@@ -24,7 +24,7 @@ abstract final class StoryViewersSheet {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     elevation: 0,
-    barrierColor: context.appColors.storyBlack.withValues(
+    barrierColor: context.appColors.black.withValues(
       alpha: StoryOpacity.viewersDim,
     ),
     constraints: const BoxConstraints(maxWidth: AppBreakpoints.maxContentWidth),

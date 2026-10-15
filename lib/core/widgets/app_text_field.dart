@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import '../constants/app_assets.dart';
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_svg_icon.dart';
 import 'app_text.dart';
 
@@ -118,7 +118,6 @@ class _AppTextFieldState extends State<AppTextField> {
           textBaseline: TextBaseline
               .alphabetic, // TextField asserts on it when inherit is false
         ),
-        cursorColor: colors.primary,
         inputFormatters: [
           ...?widget.inputFormatters,
           if (widget.counterMax != null)
@@ -132,7 +131,7 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
           filled: true,
           fillColor: colors.surface,
-          contentPadding: AuthDimens.inputPadding,
+          contentPadding: InputDimens.padding,
           prefixIcon: widget.prefix,
           prefix: widget.prefix != null || widget.prefixText == null
               ? null
@@ -143,21 +142,19 @@ class _AppTextFieldState extends State<AppTextField> {
                 ),
           suffixIcon: widget.isPassword ? _eyeButton(context) : null,
           suffixIconConstraints: BoxConstraints(
-            minWidth: AuthDimens.eyeTapTarget,
-            minHeight: AuthDimens.eyeTapTarget,
+            minWidth: InputDimens.eyeTapTarget,
+            minHeight: InputDimens.eyeTapTarget,
           ),
           enabledBorder: border(
             hasError ? colors.danger : colors.border,
-            hasError
-                ? AuthDimens.inputActiveBorderWidth
-                : AuthDimens.inputBorderWidth,
+            hasError ? InputDimens.activeBorderWidth : InputDimens.borderWidth,
           ),
-          disabledBorder: border(colors.border, AuthDimens.inputBorderWidth),
+          disabledBorder: border(colors.border, InputDimens.borderWidth),
           focusedBorder: border(
             hasError ? colors.danger : colors.primary,
-            AuthDimens.inputActiveBorderWidth,
+            InputDimens.activeBorderWidth,
           ),
-          border: border(colors.border, AuthDimens.inputBorderWidth),
+          border: border(colors.border, InputDimens.borderWidth),
         ),
       ),
     );
@@ -218,13 +215,13 @@ class _AppTextFieldState extends State<AppTextField> {
     excludeSemantics: true,
     child: InkResponse(
       onTap: () => setState(() => _obscured = !_obscured),
-      radius: AuthDimens.eyeTapTarget / 2,
+      radius: InputDimens.eyeTapTarget / 2,
       child: SizedBox.square(
-        dimension: AuthDimens.eyeTapTarget,
+        dimension: InputDimens.eyeTapTarget,
         child: Center(
           child: AppSvgIcon(
             _obscured ? AppAssets.eye : AppAssets.eyeOff,
-            size: AuthDimens.eyeIcon,
+            size: InputDimens.eyeIcon,
             color: context.appColors.textSecondary,
           ),
         ),

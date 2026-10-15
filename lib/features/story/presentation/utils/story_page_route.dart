@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
+import '../dimens/story_constants.dart';
 
 /// How the story viewer opens and closes (docs/specs/story/source-tokens.md §8): it grows out of the place
 /// that was tapped (the rail avatar) while it fades in, and shrinks back into it on close, like the
@@ -21,7 +22,7 @@ class StoryPageRoute<T> extends PageRoute<T> {
   Duration get transitionDuration => StoryMotion.heroOpen;
 
   @override
-  Duration get reverseTransitionDuration => StoryMotion.sheetOut;
+  Duration get reverseTransitionDuration => SheetMotion.exit;
 
   @override
   Color? get barrierColor => null;
@@ -62,7 +63,7 @@ class StoryPageRoute<T> extends PageRoute<T> {
           );
     final curved = CurvedAnimation(
       parent: animation,
-      curve: StoryMotion.curve,
+      curve: SheetMotion.curve,
       reverseCurve: Curves.easeInCubic,
     );
     return FadeTransition(

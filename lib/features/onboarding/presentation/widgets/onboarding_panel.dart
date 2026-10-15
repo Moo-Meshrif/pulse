@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../dimens/onboarding_dimens.dart';
 
 /// The illustration panel. The PNG has square corners (the radius comes from the `ClipRRect`) and shows the
 /// bare fill while the file is missing. Decorative: excluded from semantics.

@@ -6,9 +6,9 @@ import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/services/media_picker_service.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/utils/format_countdown.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_composer_dimens.dart';
 import '../media/post_media_chip.dart';
 
 /// A picked photo or video in the strip, with its remove button and, for a video, its length.

@@ -40,7 +40,7 @@ class StoryEditScreen extends StatelessWidget {
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.light,
             child: Scaffold(
-              backgroundColor: context.appColors.storyBlack,
+              backgroundColor: context.appColors.black,
               resizeToAvoidBottomInset: false,
               body: StoryEditView(onClose: () => _discard(context)),
             ),

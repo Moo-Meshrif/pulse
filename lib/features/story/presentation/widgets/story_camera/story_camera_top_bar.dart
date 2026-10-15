@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_dimens.dart';
 import '../../utils/format_story_timer.dart';
 
 /// X at the start, "Story" in the middle (the red timer chip while recording), flash at the end.
@@ -36,9 +37,9 @@ class StoryCameraTopBar extends StatelessWidget {
         children: [
           _RoundIcon(
             asset: AppAssets.close,
-            size: StoryCameraDimens.closeIcon,
+            size: CameraPermissionDimens.closeIcon,
             label: context.l10n.close,
-            color: colors.storyOnDark,
+            color: colors.onDark,
             onTap: onClose,
           ),
           Expanded(
@@ -48,7 +49,7 @@ class StoryCameraTopBar extends StatelessWidget {
                   : AppText(
                       context.l10n.storyCameraTitle,
                       style: context.text.cameraTitle,
-                      color: colors.storyOnDark,
+                      color: colors.onDark,
                       maxLines: 1,
                     ),
             ),
@@ -61,11 +62,11 @@ class StoryCameraTopBar extends StatelessWidget {
               label: isFlashOn
                   ? context.l10n.storyFlashOn
                   : context.l10n.storyFlash,
-              color: isFlashOn ? colors.storyWarning : colors.storyOnDark,
+              color: isFlashOn ? colors.warningOnDark : colors.onDark,
               onTap: onFlash,
             )
           else
-            const SizedBox(width: StoryCameraDimens.roundControl),
+            const SizedBox(width: CameraPermissionDimens.roundControl),
         ],
       ),
     );
@@ -95,9 +96,9 @@ class _RoundIcon extends StatelessWidget {
     excludeSemantics: true,
     child: InkResponse(
       onTap: onTap,
-      radius: StoryCameraDimens.roundControl / 2,
+      radius: CameraPermissionDimens.roundControl / 2,
       child: SizedBox.square(
-        dimension: StoryCameraDimens.roundControl,
+        dimension: CameraPermissionDimens.roundControl,
         child: Center(
           child: AppSvgIcon(asset, size: size, color: color),
         ),
@@ -137,16 +138,12 @@ class _TimerChip extends StatelessWidget {
                   width: StoryCameraDimens.timerDot,
                   height: StoryCameraDimens.timerDot,
                   decoration: BoxDecoration(
-                    color: colors.storyOnDark,
+                    color: colors.onDark,
                     shape: BoxShape.circle,
                   ),
                 ),
                 SizedBox(width: AppSpacing.s8),
-                AppText(
-                  time,
-                  style: context.text.action,
-                  color: colors.storyOnDark,
-                ),
+                AppText(time, style: context.text.action, color: colors.onDark),
               ],
             ),
           ),

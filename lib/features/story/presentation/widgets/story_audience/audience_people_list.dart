@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/enums/audience_list.dart';
 import '../../../data/model/audience_person_model.dart';
 import '../../cubit/audience_list_cubit.dart';
 import '../../cubit/audience_list_state.dart';
+import '../../dimens/story_dimens.dart';
 import '../../utils/enums/audience_list_status.dart';
 import '../story_menus/story_confirm_dialog.dart';
 import 'audience_person_row.dart';
@@ -59,7 +60,6 @@ class AudiencePeopleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final cubit = context.read<AudienceListCubit>();
     final l10n = context.l10n;
     return BlocBuilder<AudienceListCubit, AudienceListState>(
@@ -68,7 +68,7 @@ class AudiencePeopleList extends StatelessWidget {
           case AudienceListStatus.loading:
             return Center(
               child: PulseLineLoader(
-                color: colors.storyOnDark,
+                color: context.appColors.onDark,
                 width: LoadingDimens.loadMoreWidth,
               ),
             );
@@ -127,7 +127,7 @@ class _Message extends StatelessWidget {
           AppText(
             text,
             style: context.text.bodySm,
-            color: colors.storyOnDark.withValues(alpha: StoryOpacity.subtitle),
+            color: colors.onDark.withValues(alpha: DarkOpacity.subtitle),
             textAlign: TextAlign.center,
           ),
           if (action != null)
@@ -136,7 +136,7 @@ class _Message extends StatelessWidget {
               child: AppText(
                 action!,
                 style: context.text.name,
-                color: colors.storyOnDark,
+                color: colors.onDark,
               ),
             ),
         ],

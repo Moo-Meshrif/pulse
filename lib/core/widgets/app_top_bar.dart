@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../features/auth/presentation/widgets/auth_close_button.dart';
 import '../extensions/context_extensions.dart';
 import '../router/app_navigator.dart';
-import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_back_button.dart';
 
 /// The top bar of every screen: the back arrow of the sign-up steps (shown when there is a screen to go
@@ -26,7 +26,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize =>
-      Size.fromHeight(AppSpacing.headerSide + AuthDimens.tapTarget);
+      Size.fromHeight(AppSpacing.headerSide + AppSizes.tapTarget);
 
   @override
   Widget build(BuildContext context) {

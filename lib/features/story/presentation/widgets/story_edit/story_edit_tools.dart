@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../../../../core/theme/colors/app_colors.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/story_dimens.dart';
 
 /// The tool column at the end: text, (location, once post's Add location exists), mute for a video, save.
 class StoryEditTools extends StatelessWidget {
@@ -57,7 +58,6 @@ class _Tool extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     return Semantics(
       button: true,
       label: label,
@@ -69,14 +69,14 @@ class _Tool extends StatelessWidget {
           width: StoryCameraDimens.tool,
           height: StoryCameraDimens.tool,
           decoration: BoxDecoration(
-            color: colors.storyTool,
+            color: StoryColors.tool,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
           child: AppSvgIcon(
             asset,
             size: StoryCameraDimens.toolIcon,
-            color: colors.storyOnDark,
+            color: context.appColors.onDark,
           ),
         ),
       ),

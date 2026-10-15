@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_assets.dart';
 import '../extensions/context_extensions.dart';
 import '../extensions/l10n.dart';
-import '../theme/app_dimens.dart';
+import '../theme/dimens/app_dimens.dart';
 import 'app_svg_icon.dart';
 
 /// The back arrow of every screen: a 44 tap target around a 24 `textPrimary` arrow that mirrors in
@@ -20,13 +20,13 @@ class AppBackButton extends StatelessWidget {
     excludeSemantics: true,
     child: InkResponse(
       onTap: onPressed,
-      radius: AuthDimens.tapTarget / 2,
+      radius: AppSizes.tapTarget / 2,
       child: SizedBox.square(
-        dimension: AuthDimens.tapTarget,
+        dimension: AppSizes.tapTarget,
         child: Center(
           child: AppSvgIcon(
             AppAssets.arrowBack,
-            size: AuthDimens.stepBarIcon,
+            size: AppSizes.topBarIcon,
             color: context.appColors.textPrimary,
             directional: true,
           ),

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/story_edit_cubit.dart';
+import '../../dimens/story_constants.dart';
 
 /// Typing a text sticker over the dimmed edit screen. Resolves with the words (the "Done" button, or
 /// tapping outside), or null when nothing was typed.
@@ -17,8 +18,8 @@ abstract final class StoryTextEditor {
         useRootNavigator: true,
         barrierDismissible: false,
         barrierLabel: context.l10n.storyToolText,
-        barrierColor: context.appColors.storyBlack.withValues(
-          alpha: StoryOpacity.dialogScrim,
+        barrierColor: context.appColors.black.withValues(
+          alpha: DarkOpacity.dialogScrim,
         ),
         transitionDuration: StoryMotion.uiFade,
         pageBuilder: (_, _, _) => _Editor(initial: initial),
@@ -66,7 +67,7 @@ class _EditorState extends State<_Editor> {
                     child: AppText(
                       context.l10n.storyTextDone,
                       style: context.text.button,
-                      color: colors.storyOnDark,
+                      color: colors.onDark,
                     ),
                   ),
                 ),
@@ -84,11 +85,11 @@ class _EditorState extends State<_Editor> {
                     textAlign: TextAlign.center,
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) => _done(),
-                    cursorColor: colors.storyOnDark,
+                    cursorColor: colors.onDark,
                     style: context.text.overlayText.copyWith(
                       // A TextField needs a baseline from a style that does not inherit.
                       textBaseline: TextBaseline.alphabetic,
-                      color: colors.storyOnDark,
+                      color: colors.onDark,
                       shadows: AppShadows.textOverlay,
                     ),
                     decoration: InputDecoration(
@@ -96,8 +97,8 @@ class _EditorState extends State<_Editor> {
                       counterText: '',
                       hintText: context.l10n.storyTextHint,
                       hintStyle: context.text.overlayText.copyWith(
-                        color: colors.storyOnDark.withValues(
-                          alpha: StoryOpacity.subtitle,
+                        color: colors.onDark.withValues(
+                          alpha: DarkOpacity.subtitle,
                         ),
                       ),
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/post_card_dimens.dart';
 import '../utils/post_card_callbacks.dart';
 import '../utils/post_card_data.dart';
 import 'expandable_caption.dart';

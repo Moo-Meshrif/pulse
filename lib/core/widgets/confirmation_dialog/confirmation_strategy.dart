@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../extensions/context_extensions.dart';
 import '../../router/app_navigator.dart';
-import '../../theme/app_dimens.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../pill_button.dart';
 import '../primary_button.dart';
 
@@ -27,7 +27,7 @@ sealed class ConfirmationStrategy {
     label: label,
     onPressed: () => AppNavigator.back(context, true),
     expand: true,
-    buttonHeight: AuthButtonDimens.pillHeight,
+    buttonHeight: ButtonDimens.pillHeight,
   );
 
   Widget _dangerConfirm(BuildContext context, String label) =>

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/story_model.dart';
+import '../../dimens/story_constants.dart';
 import '../../utils/story_picture.dart';
 import '../story_buffering_loader.dart';
 

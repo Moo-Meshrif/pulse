@@ -1,4 +1,4 @@
-import '../../../../core/theme/app_dimens.dart';
+import '../dimens/post_card_dimens.dart';
 import 'post_card_media.dart';
 
 /// The media's width over height, kept inside the allowed range.

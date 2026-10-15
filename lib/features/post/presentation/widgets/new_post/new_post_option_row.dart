@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../dimens/post_composer_dimens.dart';
 
 /// One row of the "Add to your post" card: an icon tile, a title, an optional value and a chevron, or a
 /// [trailing] widget (the comments switch) instead of the chevron.

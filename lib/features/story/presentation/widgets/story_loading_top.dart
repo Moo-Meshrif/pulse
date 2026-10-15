@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/story_rail_item_entity.dart';
+import '../dimens/story_dimens.dart';
 import 'story_header.dart';
 import 'story_progress_bars.dart';
 
@@ -79,7 +79,7 @@ class _CloseOnly extends StatelessWidget {
                 child: AppSvgIcon(
                   AppAssets.close,
                   size: StoryDimens.closeIcon,
-                  color: context.appColors.storyOnDark,
+                  color: context.appColors.onDark,
                 ),
               ),
             ),

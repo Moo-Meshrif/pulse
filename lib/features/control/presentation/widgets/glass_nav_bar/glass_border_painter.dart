@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_dimens.dart';
+import '../../dimens/nav_dimens.dart';
 
 /// A 1 px outline with a vertical gradient: the glass edge and its inner highlights, which a plain
 /// `Border` cannot draw (one colour per side, none for a circle).

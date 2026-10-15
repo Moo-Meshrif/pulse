@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../enums/sheet_tone.dart';
 import '../../extensions/context_extensions.dart';
-import '../../theme/app_dimens.dart';
+import '../../theme/dimens/app_dimens.dart';
 
 /// The colors of the report sheet for a [SheetTone]: the story screens use the dark ones, the post feature
 /// the light ones.
@@ -21,19 +21,20 @@ class ReportPalette {
   });
 
   factory ReportPalette.of(BuildContext context, SheetTone tone) {
-    final c = context.appColors;
+    final colors = context.appColors;
+    final c = colors;
     return switch (tone) {
       SheetTone.dark => ReportPalette._(
-        title: c.storyOnDark,
-        body: c.storyOnDark.withValues(alpha: StoryOpacity.helper),
-        group: c.storySheetRow,
-        separator: c.storyOnDark.withValues(alpha: StoryOpacity.separator),
-        chevron: c.storyOnDark.withValues(alpha: StoryOpacity.chevron),
-        danger: c.dangerOnDark,
-        fieldBorder: c.storyOnDark.withValues(alpha: StoryOpacity.fieldBorder),
-        fieldFocus: c.storyOnDark,
-        success: c.storySuccess,
-        closeFill: c.storyOnDark.withValues(alpha: StoryOpacity.secondaryFill),
+        title: colors.onDark,
+        body: colors.onDark.withValues(alpha: DarkOpacity.helper),
+        group: colors.darkSurfaceRow,
+        separator: colors.onDark.withValues(alpha: DarkOpacity.separator),
+        chevron: colors.onDark.withValues(alpha: DarkOpacity.chevron),
+        danger: colors.dangerOnDark,
+        fieldBorder: colors.onDark.withValues(alpha: DarkOpacity.fieldBorder),
+        fieldFocus: colors.onDark,
+        success: colors.successOnDark,
+        closeFill: colors.onDark.withValues(alpha: DarkOpacity.secondaryFill),
       ),
       SheetTone.light => ReportPalette._(
         title: c.textPrimary,

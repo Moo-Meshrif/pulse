@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../dimens/story_constants.dart';
+import '../../dimens/story_dimens.dart';
 import 'story_action_button.dart';
 
 class StoryLikeButton extends StatefulWidget {

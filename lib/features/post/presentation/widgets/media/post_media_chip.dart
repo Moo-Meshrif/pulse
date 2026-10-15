@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/app_text.dart';
+import '../../dimens/post_card_dimens.dart';
 
 /// A small label on the media: the "1/4" counter and the video duration.
 class PostMediaChip extends StatelessWidget {

@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/story_rail_item_entity.dart';
+import '../dimens/story_constants.dart';
+import '../dimens/story_dimens.dart';
 import '../utils/story_age.dart';
 import 'story_avatar.dart';
 
@@ -65,7 +66,7 @@ class StoryHeader extends StatelessWidget {
                           ? context.l10n.storyYourStory
                           : person.username,
                       style: text.name,
-                      color: colors.storyOnDark,
+                      color: colors.onDark,
                       maxLines: 1,
                     ),
                   ),
@@ -74,9 +75,7 @@ class StoryHeader extends StatelessWidget {
                     AppText(
                       age,
                       style: text.bodyXs,
-                      color: colors.storyOnDark.withValues(
-                        alpha: StoryOpacity.time,
-                      ),
+                      color: colors.onDark.withValues(alpha: StoryOpacity.time),
                       maxLines: 1,
                     ),
                   ],
@@ -127,11 +126,7 @@ class _IconButton extends StatelessWidget {
       child: SizedBox.square(
         dimension: StoryDimens.headerButton,
         child: Center(
-          child: AppSvgIcon(
-            asset,
-            size: size,
-            color: context.appColors.storyOnDark,
-          ),
+          child: AppSvgIcon(asset, size: size, color: context.appColors.onDark),
         ),
       ),
     ),

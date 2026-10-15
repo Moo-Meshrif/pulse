@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../constants/app_assets.dart';
 import '../../extensions/context_extensions.dart';
 import '../../extensions/l10n.dart';
-import '../../theme/app_dimens.dart';
 import '../../theme/app_text_styles.dart';
+import '../../theme/dimens/app_dimens.dart';
 import '../app_safe_area.dart';
 import '../app_svg_icon.dart';
 import '../app_text.dart';
@@ -48,54 +48,54 @@ class PermissionPanel extends StatelessWidget {
     return Material(
       color: colors.textPrimary,
       child: AppSafeArea(
-        bottomSpace: StoryPermissionDimens.bottomOffset,
+        bottomSpace: CameraPermissionDimens.bottomOffset,
         child: Stack(
           children: [
             Center(
               child: SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(
-                  StoryPermissionDimens.sidePadding,
-                  StoryCameraDimens.roundControl,
-                  StoryPermissionDimens.sidePadding,
-                  StoryPermissionDimens.bottomOffset,
+                  CameraPermissionDimens.sidePadding,
+                  CameraPermissionDimens.roundControl,
+                  CameraPermissionDimens.sidePadding,
+                  CameraPermissionDimens.bottomOffset,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       mainAxisSize: MainAxisSize.min,
-                      spacing: StoryPermissionDimens.pairGap,
+                      spacing: CameraPermissionDimens.pairGap,
                       children: [
                         for (final icon in icons)
                           AppSvgIcon(
                             icon.asset,
                             size: single
-                                ? StoryPermissionDimens.icon
-                                : StoryPermissionDimens.pairIcon,
-                            color: icon.color ?? colors.storyOnDark,
+                                ? CameraPermissionDimens.icon
+                                : CameraPermissionDimens.pairIcon,
+                            color: icon.color ?? colors.onDark,
                           ),
                       ],
                     ),
-                    SizedBox(height: StoryPermissionDimens.titleTop),
+                    SizedBox(height: CameraPermissionDimens.titleTop),
                     Semantics(
                       header: true,
                       child: AppText(
                         title,
                         style: context.text.title,
-                        color: colors.storyOnDark,
+                        color: colors.onDark,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: StoryPermissionDimens.bodyTop),
+                    SizedBox(height: CameraPermissionDimens.bodyTop),
                     ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxWidth: StoryPermissionDimens.bodyMaxWidth,
+                        maxWidth: CameraPermissionDimens.bodyMaxWidth,
                       ),
                       child: AppText(
                         body,
                         style: context.text.subtitle,
-                        color: colors.storyOnDark.withValues(
-                          alpha: StoryOpacity.dialogBody,
+                        color: colors.onDark.withValues(
+                          alpha: DarkOpacity.dialogBody,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -109,7 +109,7 @@ class PermissionPanel extends StatelessWidget {
                       PermissionPill(
                         label: primaryLabel!,
                         onTap: onPrimary,
-                        fill: colors.storyOnDark,
+                        fill: colors.onDark,
                         textColor: colors.textPrimary,
                       ),
                     if (secondaryLabel != null) ...[
@@ -117,10 +117,10 @@ class PermissionPanel extends StatelessWidget {
                       PermissionPill(
                         label: secondaryLabel!,
                         onTap: onSecondary,
-                        fill: colors.storyOnDark.withValues(
-                          alpha: StoryOpacity.secondaryFill,
+                        fill: colors.onDark.withValues(
+                          alpha: DarkOpacity.secondaryFill,
                         ),
-                        textColor: colors.storyOnDark,
+                        textColor: colors.onDark,
                       ),
                     ],
                     if (linkLabel != null)
@@ -131,13 +131,13 @@ class PermissionPanel extends StatelessWidget {
                         child: InkWell(
                           onTap: onLink,
                           child: SizedBox(
-                            height: StoryPermissionDimens.linkHeight,
+                            height: CameraPermissionDimens.linkHeight,
                             child: Center(
                               child: AppText(
                                 linkLabel!,
                                 style: context.text.name,
-                                color: colors.storyOnDark.withValues(
-                                  alpha: StoryOpacity.link,
+                                color: colors.onDark.withValues(
+                                  alpha: DarkOpacity.link,
                                 ),
                               ),
                             ),
@@ -150,7 +150,7 @@ class PermissionPanel extends StatelessWidget {
             ),
             PositionedDirectional(
               top: 0,
-              start: StoryCameraDimens.topBarSide,
+              start: CameraPermissionDimens.topBarSide,
               child: Semantics(
                 button: true,
                 label: context.l10n.close,
@@ -158,12 +158,12 @@ class PermissionPanel extends StatelessWidget {
                 child: InkResponse(
                   onTap: onClose,
                   child: SizedBox.square(
-                    dimension: StoryCameraDimens.roundControl,
+                    dimension: CameraPermissionDimens.roundControl,
                     child: Center(
                       child: AppSvgIcon(
                         AppAssets.close,
-                        size: StoryCameraDimens.closeIcon,
-                        color: colors.storyOnDark,
+                        size: CameraPermissionDimens.closeIcon,
+                        color: colors.onDark,
                       ),
                     ),
                   ),

@@ -1,42 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/theme/app_colors.dart';
-import 'package:pulse/core/theme/app_dimens.dart';
 import 'package:pulse/core/theme/app_text_styles.dart';
+import 'package:pulse/core/theme/colors/app_colors.dart';
+import 'package:pulse/core/theme/dimens/app_dimens.dart';
+import 'package:pulse/features/story/presentation/dimens/story_constants.dart';
+import 'package:pulse/features/story/presentation/dimens/story_dimens.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const colors = AppColors.light;
-
   group('story colors (source-tokens.md §9)', () {
     test('dark surfaces and states', () {
-      expect(colors.storySheet, const Color(0xFF1F2423));
-      expect(colors.storySheetRow, const Color(0xFF2A302F));
-      expect(colors.dangerOnDark, const Color(0xFFFF7A7F));
-      expect(colors.storyWarning, const Color(0xFFF2B45A));
-      expect(colors.storySuccess, const Color(0xFF5FD39A));
+      expect(AppColors.light.darkSurface, const Color(0xFF1F2423));
+      expect(AppColors.light.darkSurfaceRow, const Color(0xFF2A302F));
+      expect(AppColors.light.dangerOnDark, const Color(0xFFFF7A7F));
+      expect(AppColors.light.warningOnDark, const Color(0xFFF2B45A));
+      expect(AppColors.light.successOnDark, const Color(0xFF5FD39A));
     });
 
     test('white and black alphas', () {
-      expect(colors.storyTrack, const Color(0x59FFFFFF));
-      expect(colors.storyShadeTop, const Color(0x73000000));
-      expect(colors.storyShadeBottom, const Color(0x8C000000));
-      expect(colors.storyControl, const Color(0x2EFFFFFF));
-      expect(colors.storyTool, const Color(0x59000000));
+      expect(StoryColors.track, const Color(0x59FFFFFF));
+      expect(StoryColors.shadeTop, const Color(0x73000000));
+      expect(StoryColors.shadeBottom, const Color(0x8C000000));
+      expect(StoryColors.control, const Color(0x2EFFFFFF));
+      expect(StoryColors.tool, const Color(0x59000000));
     });
 
     test('single-use values', () {
-      expect(colors.storyCameraStart, const Color(0xFF1F2A2C));
-      expect(colors.storyCameraEnd, const Color(0xFF3D4C4F));
-      expect(colors.storyMicPill, const Color(0xDB1B201F));
-      expect(colors.storyFixText, const Color(0xFF9ED3C9));
-    });
-
-    test('copyWith and lerp carry the story tokens', () {
-      const red = Color(0xFFFF0000);
-      expect(colors.copyWith(storySheet: red).storySheet, red);
-      expect(colors.lerp(colors, 0.5).storyFixText, colors.storyFixText);
+      expect(StoryColors.cameraStart, const Color(0xFF1F2A2C));
+      expect(StoryColors.cameraEnd, const Color(0xFF3D4C4F));
+      expect(AppColors.light.micOffPill, const Color(0xDB1B201F));
+      expect(AppColors.light.fixChipText, const Color(0xFF9ED3C9));
     });
   });
 
@@ -78,14 +72,14 @@ void main() {
       expect(StoryDimens.barTop, 54);
       expect(StoryCameraDimens.shutter, 80);
       expect(StoryCameraDimens.recordRing, 92);
-      expect(StorySheetDimens.groupRadius, 18);
-      expect(StoryPermissionDimens.buttonHeight, 52);
+      expect(OptionSheetDimens.groupRadius, 18);
+      expect(CameraPermissionDimens.buttonHeight, 52);
     });
 
     test('tap targets stay fixed', () {
       expect(StoryDimens.headerButton, 44);
-      expect(StorySheetDimens.rowMinHeight, 56);
-      expect(StoryCameraDimens.roundControl, 48);
+      expect(OptionSheetDimens.rowMinHeight, 56);
+      expect(CameraPermissionDimens.roundControl, 48);
     });
 
     test('timings', () {

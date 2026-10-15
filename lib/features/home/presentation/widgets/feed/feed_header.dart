@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_dimens.dart';
+import '../../dimens/home_dimens.dart';
 import '../home_header.dart';
 
 /// Floats in on any scroll up and snaps back out of the way.
