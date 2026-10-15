@@ -20,7 +20,6 @@ import 'package:pulse/features/story/data/model/story_rail_item_model.dart';
 import 'package:pulse/features/story/data/model/story_viewer_model.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
-import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
 import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
 import 'package:pulse/features/story/presentation/screen/story_camera_screen.dart';
 import 'package:pulse/features/story/presentation/screen/story_edit_screen.dart';
@@ -51,18 +50,9 @@ class _Permissions extends Mock implements CameraPermissionService {}
 
 class _Device extends Mock implements CameraDevice {}
 
-/// The upload as the app sees it: records what was posted, and lets the test drive the status.
+/// The upload as the app sees it: records what was posted.
 class _Uploads implements StoryUploadRepository {
   final posted = <NewStoryModel>[];
-  final changes = StreamController<StoryUploadStatus>.broadcast();
-  StoryUploadStatus current = const StoryUploadIdle();
-
-  @override
-  Stream<StoryUploadStatus> get status async* {
-    yield current;
-    yield* changes.stream;
-  }
-
   @override
   bool enqueue(NewStoryModel story) {
     posted.add(story);
@@ -71,11 +61,6 @@ class _Uploads implements StoryUploadRepository {
 
   @override
   void retry() {}
-
-  void emit(StoryUploadStatus status) {
-    current = status;
-    changes.add(status);
-  }
 }
 
 /// The whole story flow through the real router, DI and cubits over mocked datasources: Home's rail opens
@@ -108,8 +93,6 @@ void main() {
     auth = MockAuthDatasource();
     profiles = MockProfileDatasource();
     stories = _Stories();
-    when(() => stories.railChanges)
-        .thenAnswer((_) => const Stream<void>.empty());
     permissions = _Permissions();
     device = _Device();
     uploads = _Uploads();

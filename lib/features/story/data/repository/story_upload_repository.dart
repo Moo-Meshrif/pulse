@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/guard.dart';
+import '../../../../core/events/event_bus.dart';
 import '../../../../core/utils/uuid_v4.dart';
 import '../../domain/entity/story_upload_status.dart';
 import '../datasource/stories_datasource.dart';
@@ -12,11 +13,10 @@ import '../datasource/story_media_uploader.dart';
 import '../model/new_story_model.dart';
 
 /// Posts one story at a time in the background and tells how it is going. It is a repository because it
-/// holds state across screens: Home's rail watches [status] while the camera flow has already closed.
+/// holds state across screens: Home's rail shows how it goes while the camera flow has already closed. Each
+/// status (idle, uploading with progress, failed or done) is sent on the `EventBus` as `StoryUploadStatus`; a
+/// screen that starts later reads `latest<StoryUploadStatus>()`.
 abstract interface class StoryUploadRepository {
-  /// Idle, uploading with progress, failed or done. A new listener gets the current status first.
-  Stream<StoryUploadStatus> get status;
-
   /// Starts posting [story]; returns false (and does nothing) when another story is still going out.
   bool enqueue(NewStoryModel story);
 
@@ -26,20 +26,14 @@ abstract interface class StoryUploadRepository {
 
 @LazySingleton(as: StoryUploadRepository)
 final class StoryUploadRepositoryImpl implements StoryUploadRepository {
-  StoryUploadRepositoryImpl(this._stories, this._uploader);
+  StoryUploadRepositoryImpl(this._stories, this._uploader, this._events);
 
   final StoriesDatasource _stories;
   final StoryMediaUploader _uploader;
+  final EventBus _events;
 
-  final _changes = StreamController<StoryUploadStatus>.broadcast();
   StoryUploadStatus _current = const StoryUploadIdle();
   _Attempt? _attempt;
-
-  @override
-  Stream<StoryUploadStatus> get status async* {
-    yield _current;
-    yield* _changes.stream;
-  }
 
   @override
   bool enqueue(NewStoryModel story) {
@@ -56,7 +50,7 @@ final class StoryUploadRepositoryImpl implements StoryUploadRepository {
 
   void _emit(StoryUploadStatus status) {
     _current = status;
-    _changes.add(status);
+    _events.fireLatest<StoryUploadStatus>(status);
   }
 
   void _start() {

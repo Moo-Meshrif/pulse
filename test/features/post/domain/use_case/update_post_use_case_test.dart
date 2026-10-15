@@ -6,7 +6,6 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
-import 'package:pulse/features/post/data/repository/feed_refresh_repository.dart';
 import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
@@ -26,11 +25,8 @@ class _MockSetComments extends Mock implements SetCommentsEnabledUseCase {}
 
 class _MockSetAudience extends Mock implements SetContentAudienceUseCase {}
 
-class _MockFeedRefresh extends Mock implements FeedRefreshRepository {}
-
 void main() {
   late _MockPosts posts;
-  late _MockFeedRefresh feedRefresh;
   late _MockSetComments setComments;
   late _MockSetAudience setAudience;
   late UpdatePostUseCase useCase;
@@ -62,7 +58,6 @@ void main() {
 
   setUp(() {
     posts = _MockPosts();
-    feedRefresh = _MockFeedRefresh();
     setComments = _MockSetComments();
     setAudience = _MockSetAudience();
     when(() => setComments(any(), enabled: any(named: 'enabled')))
@@ -71,7 +66,6 @@ void main() {
     useCase = UpdatePostUseCase(
       posts,
       PostMediaRepository(posts, _MockThumbnails()),
-      feedRefresh,
       setComments,
       setAudience,
     );
@@ -121,7 +115,7 @@ void main() {
   test(
     'saves the kept media then the added one, and removes the dropped file',
     () async {
-      await useCase(edited, before: before);
+      final saved = await useCase(edited, before: before);
 
       final media =
           verify(
@@ -136,14 +130,10 @@ void main() {
       expect(media.map((m) => m.path).first, 'u1/p1/0.jpg');
       expect(media.last.path, startsWith('u1/p1/e'));
       verify(() => posts.removeFiles(['u1/p1/1.jpg'])).called(1);
-      final saved =
-          verify(() => feedRefresh.postSaved(captureAny())).captured.single
-              as PostEntity;
       expect(saved.id, 'p1');
       expect(saved.caption, 'New');
       expect(saved.media.first.path, 'u1/p1/0.jpg');
       expect(saved.media.last.path, startsWith('u1/p1/e'));
-      verifyNever(() => feedRefresh.request());
     },
   );
 
@@ -168,7 +158,6 @@ void main() {
           verify(() => posts.removeFiles(captureAny())).captured.single
               as List<String>;
       expect(removed.single, startsWith('u1/p1/e'));
-      verifyNever(() => feedRefresh.postSaved(any()));
     },
   );
 

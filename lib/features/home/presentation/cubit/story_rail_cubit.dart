@@ -3,38 +3,36 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/events/event_bus.dart';
+import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../shared/content/domain/event/content_delete_event.dart';
-import '../../../post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import '../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../story/domain/entity/story_rail_item_entity.dart';
 import '../../../story/domain/entity/story_upload_status.dart';
+import '../../../story/domain/event/story_rail_changed.dart';
 import '../../../story/domain/use_case/get_story_rail_use_case.dart';
 import '../../../story/domain/use_case/retry_story_upload_use_case.dart';
-import '../../../story/domain/use_case/watch_story_rail_changes_use_case.dart';
-import '../../../story/domain/use_case/watch_story_upload_use_case.dart';
 import 'story_rail_state.dart';
 
 /// The Stories rail of Home: the people with a story, and how posting your own is going.
 @injectable
-class StoryRailCubit extends BaseCubit<StoryRailState> {
-  StoryRailCubit(
-    this._rail,
-    this._railChanges,
-    this._events,
-    this._uploadStatus,
-    this._retryUpload,
-    this._refreshRequests,
-  ) : super(const StoryRailState());
+class StoryRailCubit extends BaseCubit<StoryRailState>
+    with EventCubitMixin<StoryRailState> {
+  StoryRailCubit(this._rail, this._events, this._retryUpload)
+    : super(
+        StoryRailState(
+          upload:
+              _events.latest<StoryUploadStatus>() ?? const StoryUploadIdle(),
+        ),
+      );
 
   final GetStoryRailUseCase _rail;
-  final WatchStoryRailChangesUseCase _railChanges;
   final EventBus _events;
-  final WatchStoryUploadUseCase _uploadStatus;
   final RetryStoryUploadUseCase _retryUpload;
-  final WatchFeedRefreshRequestsUseCase _refreshRequests;
 
-  final _subscriptions = <StreamSubscription<Object?>>[];
+  @override
+  EventBus get events => _events;
 
   /// The rail as the server sent it; the state shows it without the stories being deleted.
   List<StoryRailItemEntity> _loaded = const [];
@@ -47,11 +45,10 @@ class StoryRailCubit extends BaseCubit<StoryRailState> {
   /// Loads the rail and keeps it current: a mute or delete reloads it, and so does a story that finished
   /// posting or a refresh of Home.
   Future<void> start() {
-    _subscriptions
-      ..add(_railChanges().listen((_) => load()))
-      ..add(_events.on<ContentDeleteEvent>().listen(_onDelete))
-      ..add(_uploadStatus().listen(_onUpload))
-      ..add(_refreshRequests().listen((_) => load()));
+    listenTo<StoryRailChanged>((_) => load());
+    listenTo<ContentDeleteEvent>(_onDelete);
+    listenTo<FeedRefreshRequested>((_) => load());
+    listenTo<StoryUploadStatus>(_onUpload);
     return load();
   }
 
@@ -109,13 +106,5 @@ class StoryRailCubit extends BaseCubit<StoryRailState> {
   void _onUpload(StoryUploadStatus status) {
     emit(state.copyWith(upload: status));
     if (status is StoryUploadDone) load();
-  }
-
-  @override
-  Future<void> close() async {
-    for (final subscription in _subscriptions) {
-      await subscription.cancel();
-    }
-    return super.close();
   }
 }

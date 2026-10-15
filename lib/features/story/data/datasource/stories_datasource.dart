@@ -41,13 +41,6 @@ abstract interface class StoriesDatasource {
   /// Deletes your story's row. Its files go through core's `RemoveMediaFilesUseCase`.
   Future<void> deleteStory(StoryModel story);
 
-  /// Fires after something changed who is on your rail (a mute or an undo, a deleted story), so a rail on
-  /// screen elsewhere reloads.
-  Stream<void> get railChanges;
-
-  /// Tells [railChanges] listeners the rail changed (after a mute, which core's `SetMuteUseCase` does).
-  void notifyRailChanged();
-
   /// Your followers for a list screen: the [tab], those matching [query], [limit] from [offset].
   Future<List<AudiencePersonModel>> getAudiencePeople(
     AudienceList list, {
@@ -86,10 +79,6 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
   static const signedUrlSeconds = 3600;
 
   final SupabaseClient _client;
-  final _railChanges = StreamController<void>.broadcast();
-
-  @override
-  Stream<void> get railChanges => _railChanges.stream;
 
   @override
   String get currentUserId =>
@@ -185,11 +174,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
     final id = story.id;
     if (id == null) throw const NotFoundException('story id');
     await _client.from('stories').delete().eq('id', id);
-    _railChanges.add(null);
   });
-
-  @override
-  void notifyRailChanged() => _railChanges.add(null);
 
   @override
   Future<List<AudiencePersonModel>> getAudiencePeople(

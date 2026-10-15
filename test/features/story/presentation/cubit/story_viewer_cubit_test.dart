@@ -10,6 +10,7 @@ import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
+import 'package:pulse/features/story/domain/event/story_rail_changed.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart';
 import 'package:pulse/features/story/presentation/utils/enums/story_pause_reason.dart';
@@ -44,6 +45,7 @@ void main() {
   late MockSetMute setMute;
   late MockReportContent reportContent;
   late MockRemoveMediaFiles removeFiles;
+  late EventBus bus;
 
   StoryViewerCubit build() => StoryViewerCubit(
     rail,
@@ -52,10 +54,11 @@ void main() {
     setMute,
     reportContent,
     removeFiles,
-    EventBus(),
+    bus,
   );
 
   setUp(() {
+    bus = EventBus();
     rail = _Rail();
     stories = _Stories();
     gallery = _Gallery();
@@ -350,9 +353,13 @@ void main() {
       });
       final cubit = build();
       await cubit.load('a');
+      final railChanges = expectLater(
+        bus.on<StoryRailChanged>(),
+        emits(const StoryRailChanged()),
+      );
       final failure = await cubit.muteCurrent();
       expect(failure, isNull);
-      verify(() => stories.notifyRailChanged()).called(1);
+      await railChanges;
       verify(() => setMute('a', muted: true, scope: MuteScope.stories))
           .called(1);
       expect(cubit.state.people.map((p) => p.authorId), ['b', 'c']);

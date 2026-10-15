@@ -225,42 +225,6 @@ void main() {
     });
   });
 
-  group('railChanges', () {
-    test('notifyRailChanged fires it', () async {
-      final backend = await signedIn((_) async => BackendDouble.json(true));
-      final datasource = SupabaseStoriesDatasource(backend.client);
-      var events = 0;
-      final sub = datasource.railChanges.listen((_) => events++);
-      datasource.notifyRailChanged();
-      datasource.notifyRailChanged();
-      await Future<void>.delayed(Duration.zero);
-      expect(events, 2);
-      await sub.cancel();
-    });
-
-    test('deleting a story fires it, a failed delete does not', () async {
-      final backend = await signedIn((_) async => BackendDouble.json([]));
-      final datasource = SupabaseStoriesDatasource(backend.client);
-      var events = 0;
-      final sub = datasource.railChanges.listen((_) => events++);
-      await datasource.deleteStory(const StoryModel(id: 's1'));
-      await Future<void>.delayed(Duration.zero);
-      expect(events, 1);
-
-      final failing = await signedIn(
-        (_) async => BackendDouble.postgrestError(500, 'XX000'),
-      );
-      final other = SupabaseStoriesDatasource(failing.client);
-      var failedEvents = 0;
-      final sub2 = other.railChanges.listen((_) => failedEvents++);
-      await failureOf(other.deleteStory(const StoryModel(id: 's1')));
-      await Future<void>.delayed(Duration.zero);
-      expect(failedEvents, 0);
-      await sub.cancel();
-      await sub2.cancel();
-    });
-  });
-
   group('audience', () {
     test('getAudiencePeople sends list, tab, query and the page', () async {
       final backend = await signedIn(

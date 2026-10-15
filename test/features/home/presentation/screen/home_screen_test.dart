@@ -27,6 +27,7 @@ import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
@@ -36,9 +37,6 @@ import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_cas
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_post_publish_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
@@ -46,8 +44,6 @@ import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_c
 import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_rail_changes_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case.dart';
 
 import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
@@ -73,17 +69,7 @@ class _Delete extends Mock implements DeletePostUseCase {}
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _RailChanges extends Mock implements WatchStoryRailChangesUseCase {}
-
-class _UploadStatus extends Mock implements WatchStoryUploadUseCase {}
-
 class _RetryUpload extends Mock implements RetryStoryUploadUseCase {}
-
-class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
-
-class _Saved extends Mock implements WatchSavedPostsUseCase {}
-
-class _WatchPublish extends Mock implements WatchPostPublishUseCase {}
 
 class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
 
@@ -106,9 +92,7 @@ void main() {
   late _Like like;
   late _Hide hide;
   late _RetryUpload retryUpload;
-  late StreamController<StoryUploadStatus> uploads;
-  late StreamController<void> refreshRequests;
-  late StreamController<PostPublishStatus> publishing;
+  late EventBus bus;
   late _RetryPublish retryPublish;
   late _DiscardPublish discardPublish;
 
@@ -146,26 +130,11 @@ void main() {
     like = _Like();
     hide = _Hide();
     final getRail = _GetRail();
-    final railChanges = _RailChanges();
-    final uploadStatus = _UploadStatus();
     when(getRail.call).thenAnswer((_) async => []);
-    when(railChanges.call).thenAnswer((_) => const Stream<void>.empty());
-    uploads = StreamController<StoryUploadStatus>.broadcast();
-    addTearDown(uploads.close);
     retryUpload = _RetryUpload();
-    when(uploadStatus.call).thenAnswer((_) => uploads.stream);
-    refreshRequests = StreamController<void>.broadcast();
-    addTearDown(refreshRequests.close);
-    final refresh = _Refresh();
-    when(refresh.call).thenAnswer((_) => refreshRequests.stream);
-    publishing = StreamController<PostPublishStatus>.broadcast();
-    addTearDown(publishing.close);
+    bus = EventBus();
     retryPublish = _RetryPublish();
     discardPublish = _DiscardPublish();
-    final watchPublish = _WatchPublish();
-    when(watchPublish.call).thenAnswer((_) => publishing.stream);
-    final saved = _Saved();
-    when(saved.call).thenAnswer((_) => const Stream.empty());
     final sign = _Sign();
     final currentUser = _CurrentUser();
     when(currentUser.call).thenReturn('me');
@@ -179,9 +148,7 @@ void main() {
     when(() => hide(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
     getIt
-      ..registerFactory(
-        () => FeedCubit(getFeed, sign, refresh, saved, currentUser),
-      )
+      ..registerFactory(() => FeedCubit(getFeed, sign, bus, currentUser))
       ..registerFactory(
         () => PostActionsCubit(
           like,
@@ -195,19 +162,10 @@ void main() {
         ),
       )
       ..registerFactory(
-        () => PostPublishCubit(watchPublish, retryPublish, discardPublish),
+        () => PostPublishCubit(bus, retryPublish, discardPublish),
       )
-      ..registerFactory(() => BellDotCubit(requestCount, refresh))
-      ..registerFactory(
-        () => StoryRailCubit(
-          getRail,
-          railChanges,
-          EventBus(),
-          uploadStatus,
-          retryUpload,
-          refresh,
-        ),
-      );
+      ..registerFactory(() => BellDotCubit(requestCount, bus))
+      ..registerFactory(() => StoryRailCubit(getRail, bus, retryUpload));
     addTearDown(getIt.reset);
   });
 
@@ -274,7 +232,9 @@ void main() {
   group('story posting', () {
     testView('a failed post says so and Retry sends it again', (tester) async {
       await show(tester);
-      uploads.add(const StoryUploadFailed(NetworkFailure()));
+      bus.fireLatest<StoryUploadStatus>(
+        const StoryUploadFailed(NetworkFailure()),
+      );
       await tester.pump();
       await tester.pump();
       await tester.pump(const Duration(seconds: 1)); // the notice slides in
@@ -294,14 +254,14 @@ void main() {
       tester,
     ) async {
       await show(tester);
-      publishing.add(const PostPublishing(isEdit: false));
+      bus.fireLatest<PostPublishStatus>(const PostPublishing(isEdit: false));
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.postPublishing), findsOneWidget);
 
-      publishing
-        ..add(const PostPublishDone(isEdit: false))
-        ..add(const PostPublishIdle());
+      bus
+        ..fireLatest<PostPublishStatus>(const PostPublishDone(isEdit: false))
+        ..fireLatest<PostPublishStatus>(const PostPublishIdle());
       await tester.pump();
       await tester.pump();
       await tester.pump(const Duration(seconds: 1)); // the notice slides in
@@ -315,7 +275,7 @@ void main() {
       await show(tester, settle: false);
       await tester.pump();
       await tester.pump();
-      publishing.add(const PostPublishing(isEdit: false));
+      bus.fireLatest<PostPublishStatus>(const PostPublishing(isEdit: false));
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.homeEmptyTitle), findsOneWidget);
@@ -324,7 +284,7 @@ void main() {
 
     testView('a failed post offers Retry and Discard', (tester) async {
       await show(tester);
-      publishing.add(
+      bus.fireLatest<PostPublishStatus>(
         const PostPublishFailed(failure: NetworkFailure(), isEdit: false),
       );
       await tester.pump();
@@ -608,7 +568,7 @@ void main() {
       when(() => getFeed(cursor: null)).thenAnswer(
         (_) async => FeedPageEntity(posts: [post('p9'), post('p1')]),
       );
-      refreshRequests.add(null);
+      bus.fire(const FeedRefreshRequested());
       await tester.pumpAndSettle();
       expect(find.text('Nour p9'), findsOneWidget);
       verify(requestCount.call).called(2);

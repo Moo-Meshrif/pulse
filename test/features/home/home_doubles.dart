@@ -17,20 +17,13 @@ import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_cas
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_post_publish_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_rail_changes_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case.dart';
 
 import '../../helpers/content_mocks.dart';
 import '../post/post_fixtures.dart';
-
-class _WatchPublish extends Mock implements WatchPostPublishUseCase {}
 
 class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
 
@@ -46,15 +39,7 @@ class _Unread extends Mock implements GetUnreadActivityCountUseCase {}
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _RailChanges extends Mock implements WatchStoryRailChangesUseCase {}
-
-class _UploadStatus extends Mock implements WatchStoryUploadUseCase {}
-
 class _Retry extends Mock implements RetryStoryUploadUseCase {}
-
-class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
-
-class _Saved extends Mock implements WatchSavedPostsUseCase {}
 
 class _Like extends Mock implements SetPostLikeUseCase {}
 
@@ -76,24 +61,14 @@ void registerHomeDoubles() {
   final currentUser = _CurrentUser();
   final unread = _Unread();
   final getRail = _GetRail();
-  final railChanges = _RailChanges();
-  final uploadStatus = _UploadStatus();
-  final refresh = _Refresh();
   when(() => getFeed(cursor: any(named: 'cursor')))
       .thenAnswer((_) async => FeedPageEntity(posts: [testPost('p1')]));
   when(currentUser.call).thenReturn('me');
   when(unread.call).thenAnswer((_) async => 0);
   when(getRail.call).thenAnswer((_) async => []);
-  when(railChanges.call).thenAnswer((_) => const Stream<void>.empty());
-  when(uploadStatus.call).thenAnswer((_) => const Stream.empty());
-  when(refresh.call).thenAnswer((_) => const Stream<void>.empty());
-  final watchPublish = _WatchPublish();
-  when(watchPublish.call).thenAnswer((_) => const Stream.empty());
-  final saved = _Saved();
-  when(saved.call).thenAnswer((_) => const Stream.empty());
   getIt
     ..registerFactory(
-      () => FeedCubit(getFeed, _Sign(), refresh, saved, currentUser),
+      () => FeedCubit(getFeed, _Sign(), EventBus(), currentUser),
     )
     ..registerFactory(
       () => PostActionsCubit(
@@ -108,17 +83,8 @@ void registerHomeDoubles() {
       ),
     )
     ..registerFactory(
-      () => PostPublishCubit(watchPublish, _RetryPublish(), _DiscardPublish()),
+      () => PostPublishCubit(EventBus(), _RetryPublish(), _DiscardPublish()),
     )
-    ..registerFactory(() => BellDotCubit(unread, refresh))
-    ..registerFactory(
-      () => StoryRailCubit(
-        getRail,
-        railChanges,
-        EventBus(),
-        uploadStatus,
-        _Retry(),
-        refresh,
-      ),
-    );
+    ..registerFactory(() => BellDotCubit(unread, EventBus()))
+    ..registerFactory(() => StoryRailCubit(getRail, EventBus(), _Retry()));
 }

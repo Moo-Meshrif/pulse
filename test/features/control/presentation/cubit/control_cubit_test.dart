@@ -1,31 +1,34 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
 import 'package:pulse/features/control/presentation/cubit/control_state.dart';
 import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
-
-import '../../../../helpers/feed_refresh_mocks.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
 void main() {
   late MockIsRecoveryPending recovery;
-  late MockRequestFeedRefresh feedRefresh;
+  late EventBus bus;
 
   setUp(() {
     recovery = MockIsRecoveryPending();
-    feedRefresh = MockRequestFeedRefresh();
+    bus = EventBus();
     when(() => recovery()).thenReturn(false);
   });
 
-  ControlCubit build() => ControlCubit(recovery, feedRefresh);
+  ControlCubit build() => ControlCubit(recovery, bus);
 
   test('refreshHome asks the home feed to load again', () {
+    expectLater(
+      bus.on<FeedRefreshRequested>(),
+      emits(const FeedRefreshRequested()),
+    );
     build().refreshHome();
-    verify(() => feedRefresh()).called(1);
   });
 
   test('starts on Home with the hardcoded chat badge of 4', () {

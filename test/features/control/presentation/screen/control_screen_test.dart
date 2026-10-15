@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
@@ -11,7 +12,6 @@ import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_
 import 'package:pulse/features/home/presentation/screen/home_screen.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 
-import '../../../../helpers/feed_refresh_mocks.dart';
 import '../../../home/home_doubles.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
@@ -24,7 +24,7 @@ void main() {
     recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
     getIt.registerFactory<ControlCubit>(
-      () => ControlCubit(recovery, MockRequestFeedRefresh()),
+      () => ControlCubit(recovery, EventBus()),
     );
     registerHomeDoubles();
   });

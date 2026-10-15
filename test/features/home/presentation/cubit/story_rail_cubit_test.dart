@@ -5,25 +5,18 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
-import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
+import 'package:pulse/features/story/domain/event/story_rail_changed.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_rail_changes_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/domain/event/content_delete_event.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _Changes extends Mock implements WatchStoryRailChangesUseCase {}
-
-class _Upload extends Mock implements WatchStoryUploadUseCase {}
-
 class _Retry extends Mock implements RetryStoryUploadUseCase {}
-
-class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
 
 StoryRailItemEntity person(String id, {bool isMe = false}) =>
     StoryRailItemEntity(
@@ -36,37 +29,18 @@ StoryRailItemEntity person(String id, {bool isMe = false}) =>
 
 void main() {
   late _GetRail getRail;
-  late _Changes changes;
-  late _Upload upload;
   late EventBus bus;
   late _Retry retry;
-  late _Refresh refresh;
-  late StreamController<void> requests;
-  late StreamController<void> railChanges;
-  late StreamController<StoryUploadStatus> uploadStatus;
 
   setUp(() {
     getRail = _GetRail();
-    changes = _Changes();
-    upload = _Upload();
     bus = EventBus();
     addTearDown(bus.dispose);
     retry = _Retry();
-    refresh = _Refresh();
-    requests = StreamController<void>.broadcast();
-    when(refresh.call).thenAnswer((_) => requests.stream);
-    addTearDown(requests.close);
-    railChanges = StreamController<void>.broadcast();
-    uploadStatus = StreamController<StoryUploadStatus>.broadcast();
     when(getRail.call).thenAnswer((_) async => [person('a')]);
-    when(changes.call).thenAnswer((_) => railChanges.stream);
-    when(upload.call).thenAnswer((_) => uploadStatus.stream);
-    addTearDown(railChanges.close);
-    addTearDown(uploadStatus.close);
   });
 
-  StoryRailCubit build() =>
-      StoryRailCubit(getRail, changes, bus, upload, retry, refresh);
+  StoryRailCubit build() => StoryRailCubit(getRail, bus, retry);
 
   Future<void> flush() => Future<void>.delayed(Duration.zero);
 
@@ -185,7 +159,7 @@ void main() {
     final cubit = build();
     await cubit.start();
     when(getRail.call).thenAnswer((_) async => [person('a'), person('b')]);
-    railChanges.add(null);
+    bus.fire(const StoryRailChanged());
     await flush();
     expect(cubit.state.items, hasLength(2));
     await cubit.close();
@@ -196,8 +170,8 @@ void main() {
     when(getRail.call).thenAnswer((_) => first.future);
     final cubit = build();
     final started = cubit.start();
-    railChanges.add(null);
-    railChanges.add(null);
+    bus.fire(const StoryRailChanged());
+    bus.fire(const StoryRailChanged());
     await flush();
     when(getRail.call).thenAnswer((_) async => [person('b')]);
     first.complete([person('a')]);
@@ -211,17 +185,19 @@ void main() {
   test('follows how posting goes and reloads once it is done', () async {
     final cubit = build();
     await cubit.start();
-    uploadStatus.add(const StoryUploading(0.4));
+    bus.fireLatest<StoryUploadStatus>(const StoryUploading(0.4));
     await flush();
     expect(cubit.state.upload, const StoryUploading(0.4));
 
     when(getRail.call).thenAnswer((_) async => [person('me', isMe: true)]);
-    uploadStatus.add(const StoryUploadDone());
+    bus.fireLatest<StoryUploadStatus>(const StoryUploadDone());
     await flush();
     expect(cubit.state.me?.authorId, 'me');
     verify(getRail.call).called(2);
 
-    uploadStatus.add(const StoryUploadFailed(NetworkFailure()));
+    bus.fireLatest<StoryUploadStatus>(
+      const StoryUploadFailed(NetworkFailure()),
+    );
     await flush();
     expect(cubit.state.upload, const StoryUploadFailed(NetworkFailure()));
     await cubit.close();
@@ -239,8 +215,8 @@ void main() {
     final cubit = build();
     await cubit.start();
     await cubit.close();
-    railChanges.add(null);
-    uploadStatus.add(const StoryUploading(0.5));
+    bus.fire(const StoryRailChanged());
+    bus.fireLatest<StoryUploadStatus>(const StoryUploading(0.5));
     await flush();
     verify(getRail.call).called(1);
   });
@@ -249,7 +225,7 @@ void main() {
     final cubit = build();
     await cubit.start();
     when(getRail.call).thenAnswer((_) async => [person('a'), person('b')]);
-    requests.add(null);
+    bus.fire(const FeedRefreshRequested());
     await flush();
     expect(cubit.state.items, hasLength(2));
     await cubit.close();

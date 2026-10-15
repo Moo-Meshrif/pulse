@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
@@ -55,6 +56,7 @@ void main() {
   setUp(() async {
     await getIt.reset();
     createPost = _CreatePost();
+    final bus = EventBus();
     picker = _Picker();
     final privacy = _Privacy();
     final account = _Account();
@@ -65,12 +67,13 @@ void main() {
         defaultVisibility: ContentAudience.public,
       ),
     );
-    when(() => createPost(any())).thenAnswer((_) async {});
+    when(() => createPost(any())).thenAnswer((_) async => null);
     getIt.registerFactoryParam<AddEditPostCubit, PostEntity?, dynamic>(
       (post, _) => AddEditPostCubit(
         createPost,
         _UpdatePost(),
-        PostPublishRepositoryImpl(),
+        PostPublishRepositoryImpl(bus),
+        bus,
         _SignUrls(),
         picker,
         privacy,

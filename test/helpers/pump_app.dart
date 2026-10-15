@@ -248,8 +248,6 @@ Future<void> setUpRealWiring({
   getIt.registerSingleton<LegalDatasource>(legal ?? MockLegalDatasource());
   // Home's story rail loads on open: an empty rail.
   final emptyRail = MockStoriesDatasource();
-  when(() => emptyRail.railChanges)
-      .thenAnswer((_) => const Stream<void>.empty());
   when(() => emptyRail.getStoryRail(limit: any(named: 'limit')))
       .thenAnswer((_) async => []);
   getIt.registerSingleton<StoriesDatasource>(stories ?? emptyRail);

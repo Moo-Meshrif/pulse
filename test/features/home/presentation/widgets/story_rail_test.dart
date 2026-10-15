@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,26 +11,17 @@ import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_item.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
-import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
 import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_rail_changes_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/watch_story_upload_use_case.dart';
 
 import '../../../../helpers/pump_app.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _Changes extends Mock implements WatchStoryRailChangesUseCase {}
-
-class _Upload extends Mock implements WatchStoryUploadUseCase {}
-
 class _Retry extends Mock implements RetryStoryUploadUseCase {}
-
-class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
 
 StoryRailItemEntity person(
   String id, {
@@ -50,31 +40,17 @@ void main() {
   late StoryRailCubit cubit;
   late _GetRail getRail;
   late _Retry retry;
-  late StreamController<StoryUploadStatus> uploadStatus;
+  late EventBus bus;
   late List<RouteSettings> pushed;
 
   setUp(() {
     getRail = _GetRail();
     retry = _Retry();
-    uploadStatus = StreamController<StoryUploadStatus>.broadcast();
+    bus = EventBus();
     pushed = [];
-    final changes = _Changes();
-    final upload = _Upload();
     when(getRail.call).thenAnswer((_) async => []);
-    when(changes.call).thenAnswer((_) => const Stream<void>.empty());
-    when(upload.call).thenAnswer((_) => uploadStatus.stream);
-    final refresh = _Refresh();
-    when(refresh.call).thenAnswer((_) => const Stream<void>.empty());
-    cubit = StoryRailCubit(
-      getRail,
-      changes,
-      EventBus(),
-      upload,
-      retry,
-      refresh,
-    );
+    cubit = StoryRailCubit(getRail, bus, retry);
     addTearDown(cubit.close);
-    addTearDown(uploadStatus.close);
   });
 
   Future<void> show(
@@ -173,7 +149,7 @@ void main() {
   group('posting', () {
     testView('shows progress, then goes back to "Your story"', (tester) async {
       await show(tester);
-      uploadStatus.add(const StoryUploading(0.5));
+      bus.fireLatest<StoryUploadStatus>(const StoryUploading(0.5));
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.storyPosting), findsOneWidget);
       expect(find.text(l10nEn.storyYourStory), findsNothing);
@@ -188,8 +164,8 @@ void main() {
       await tester.pump();
       expect(pushed, isEmpty);
 
-      uploadStatus.add(const StoryUploadDone());
-      uploadStatus.add(const StoryUploadIdle());
+      bus.fireLatest<StoryUploadStatus>(const StoryUploadDone());
+      bus.fireLatest<StoryUploadStatus>(const StoryUploadIdle());
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.storyYourStory), findsOneWidget);
     });
@@ -198,7 +174,9 @@ void main() {
       tester,
     ) async {
       await show(tester);
-      uploadStatus.add(const StoryUploadFailed(NetworkFailure()));
+      bus.fireLatest<StoryUploadStatus>(
+        const StoryUploadFailed(NetworkFailure()),
+      );
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.retry), findsOneWidget);
       await tester.tap(find.text(l10nEn.retry));

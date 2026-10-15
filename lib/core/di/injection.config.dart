@@ -79,8 +79,6 @@ import '../../features/post/data/datasource/post_actions_datasource.dart'
 import '../../features/post/data/datasource/posts_datasource.dart' as _i141;
 import '../../features/post/data/datasource/visibility_notice_datasource.dart'
     as _i722;
-import '../../features/post/data/repository/feed_refresh_repository.dart'
-    as _i113;
 import '../../features/post/data/repository/post_media_repository.dart'
     as _i599;
 import '../../features/post/data/repository/post_publish_repository.dart'
@@ -93,8 +91,6 @@ import '../../features/post/domain/use_case/discard_post_publish_use_case.dart'
 import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i280;
 import '../../features/post/domain/use_case/hide_post_use_case.dart' as _i856;
-import '../../features/post/domain/use_case/request_feed_refresh_use_case.dart'
-    as _i187;
 import '../../features/post/domain/use_case/retry_post_publish_use_case.dart'
     as _i175;
 import '../../features/post/domain/use_case/set_comments_enabled_use_case.dart'
@@ -106,12 +102,6 @@ import '../../features/post/domain/use_case/set_post_save_use_case.dart'
 import '../../features/post/domain/use_case/sign_post_media_urls_use_case.dart'
     as _i600;
 import '../../features/post/domain/use_case/update_post_use_case.dart' as _i908;
-import '../../features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart'
-    as _i558;
-import '../../features/post/domain/use_case/watch_post_publish_use_case.dart'
-    as _i999;
-import '../../features/post/domain/use_case/watch_saved_posts_use_case.dart'
-    as _i52;
 import '../../features/post/presentation/cubit/add_edit_post_cubit.dart'
     as _i897;
 import '../../features/post/presentation/cubit/post_actions_cubit.dart' as _i72;
@@ -161,10 +151,6 @@ import '../../features/story/domain/use_case/get_story_rail_use_case.dart'
     as _i849;
 import '../../features/story/domain/use_case/retry_story_upload_use_case.dart'
     as _i850;
-import '../../features/story/domain/use_case/watch_story_rail_changes_use_case.dart'
-    as _i544;
-import '../../features/story/domain/use_case/watch_story_upload_use_case.dart'
-    as _i139;
 import '../../features/story/presentation/cubit/audience_list_cubit.dart'
     as _i117;
 import '../../features/story/presentation/cubit/story_audience_cubit.dart'
@@ -250,14 +236,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i669.LocationService>(
       () => _i669.GeolocatorLocationService(),
     );
-    gh.lazySingleton<_i442.PostPublishRepository>(
-      () => _i442.PostPublishRepositoryImpl(),
-    );
     gh.lazySingleton<_i1016.LaunchService>(
       () => _i1016.UrlLauncherLaunchService(),
-    );
-    gh.lazySingleton<_i113.FeedRefreshRepository>(
-      () => _i113.FeedRefreshRepositoryImpl(),
     );
     gh.factory<_i64.CameraDevice>(() => _i64.PackageCameraDevice());
     gh.lazySingleton<_i841.GalleryService>(
@@ -281,17 +261,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i285.MediaFilesDatasource>(
       () => _i285.SupabaseMediaFilesDatasource(gh<_i454.SupabaseClient>()),
     );
-    gh.factory<_i187.RequestFeedRefreshUseCase>(
-      () => _i187.RequestFeedRefreshUseCase(gh<_i113.FeedRefreshRepository>()),
-    );
-    gh.factory<_i558.WatchFeedRefreshRequestsUseCase>(
-      () => _i558.WatchFeedRefreshRequestsUseCase(
-        gh<_i113.FeedRefreshRepository>(),
-      ),
-    );
-    gh.factory<_i52.WatchSavedPostsUseCase>(
-      () => _i52.WatchSavedPostsUseCase(gh<_i113.FeedRefreshRepository>()),
-    );
     gh.lazySingleton<_i141.PostsDatasource>(
       () => _i141.SupabasePostsDatasource(gh<_i454.SupabaseClient>()),
     );
@@ -300,6 +269,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i152.InterestsDatasource>(
       () => _i152.SupabaseInterestsDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i442.PostPublishRepository>(
+      () => _i442.PostPublishRepositoryImpl(gh<_i557.EventBus>()),
     );
     gh.lazySingleton<_i599.PostMediaRepository>(
       () => _i599.PostMediaRepository(
@@ -323,11 +295,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i618.StoryUploadRepository>(
+      () => _i618.StoryUploadRepositoryImpl(
+        gh<_i474.StoriesDatasource>(),
+        gh<_i967.StoryMediaUploader>(),
+        gh<_i557.EventBus>(),
+      ),
+    );
+    gh.factory<_i592.CreatePostUseCase>(
+      () => _i592.CreatePostUseCase(
+        gh<_i141.PostsDatasource>(),
+        gh<_i599.PostMediaRepository>(),
+      ),
+    );
     gh.factory<_i849.GetStoryRailUseCase>(
       () => _i849.GetStoryRailUseCase(gh<_i474.StoriesDatasource>()),
-    );
-    gh.factory<_i544.WatchStoryRailChangesUseCase>(
-      () => _i544.WatchStoryRailChangesUseCase(gh<_i474.StoriesDatasource>()),
     );
     gh.factory<_i56.StoryViewersCubit>(
       () => _i56.StoryViewersCubit(gh<_i474.StoriesDatasource>()),
@@ -377,24 +359,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i175.RetryPostPublishUseCase>(
       () => _i175.RetryPostPublishUseCase(gh<_i442.PostPublishRepository>()),
     );
-    gh.factory<_i999.WatchPostPublishUseCase>(
-      () => _i999.WatchPostPublishUseCase(gh<_i442.PostPublishRepository>()),
-    );
     gh.factory<_i77.GetAudienceSummaryUseCase>(
       () => _i77.GetAudienceSummaryUseCase(gh<_i61.AudienceDatasource>()),
-    );
-    gh.lazySingleton<_i618.StoryUploadRepository>(
-      () => _i618.StoryUploadRepositoryImpl(
-        gh<_i474.StoriesDatasource>(),
-        gh<_i967.StoryMediaUploader>(),
-      ),
-    );
-    gh.factory<_i592.CreatePostUseCase>(
-      () => _i592.CreatePostUseCase(
-        gh<_i141.PostsDatasource>(),
-        gh<_i599.PostMediaRepository>(),
-        gh<_i113.FeedRefreshRepository>(),
-      ),
     );
     gh.factory<_i856.HidePostUseCase>(
       () => _i856.HidePostUseCase(gh<_i512.PostActionsDatasource>()),
@@ -418,23 +384,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i850.RetryStoryUploadUseCase>(
       () => _i850.RetryStoryUploadUseCase(gh<_i618.StoryUploadRepository>()),
     );
-    gh.factory<_i139.WatchStoryUploadUseCase>(
-      () => _i139.WatchStoryUploadUseCase(gh<_i618.StoryUploadRepository>()),
-    );
     gh.factory<_i898.DeletePostUseCase>(
       () => _i898.DeletePostUseCase(
         gh<_i512.PostActionsDatasource>(),
         gh<_i285.MediaFilesDatasource>(),
-      ),
-    );
-    gh.factory<_i363.StoryRailCubit>(
-      () => _i363.StoryRailCubit(
-        gh<_i849.GetStoryRailUseCase>(),
-        gh<_i544.WatchStoryRailChangesUseCase>(),
-        gh<_i557.EventBus>(),
-        gh<_i139.WatchStoryUploadUseCase>(),
-        gh<_i850.RetryStoryUploadUseCase>(),
-        gh<_i558.WatchFeedRefreshRequestsUseCase>(),
       ),
     );
     gh.factory<_i586.GetInterestsUseCase>(
@@ -474,13 +427,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i76.RemoveMediaFilesUseCase>(
       () => _i76.RemoveMediaFilesUseCase(gh<_i285.MediaFilesDatasource>()),
     );
-    gh.factory<_i704.PostPublishCubit>(
-      () => _i704.PostPublishCubit(
-        gh<_i999.WatchPostPublishUseCase>(),
-        gh<_i175.RetryPostPublishUseCase>(),
-        gh<_i415.DiscardPostPublishUseCase>(),
-      ),
-    );
     gh.factory<_i807.OnboardingCubit>(
       () => _i807.OnboardingCubit(gh<_i834.OnboardingDatasource>()),
     );
@@ -496,15 +442,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i575.GetUnreadActivityCountUseCase>(
       () => _i575.GetUnreadActivityCountUseCase(gh<_i568.ActivityDatasource>()),
-    );
-    gh.factory<_i646.FeedCubit>(
-      () => _i646.FeedCubit(
-        gh<_i280.GetHomeFeedUseCase>(),
-        gh<_i600.SignPostMediaUrlsUseCase>(),
-        gh<_i558.WatchFeedRefreshRequestsUseCase>(),
-        gh<_i52.WatchSavedPostsUseCase>(),
-        gh<_i91.GetCurrentUserIdUseCase>(),
-      ),
     );
     gh.factory<_i660.GetPrivacyUseCase>(
       () => _i660.GetPrivacyUseCase(gh<_i885.PrivacyDatasource>()),
@@ -524,6 +461,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i130.ToggleFollowUseCase>(),
       ),
     );
+    gh.factory<_i704.PostPublishCubit>(
+      () => _i704.PostPublishCubit(
+        gh<_i557.EventBus>(),
+        gh<_i175.RetryPostPublishUseCase>(),
+        gh<_i415.DiscardPostPublishUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i43.AuthDatasource>(
       () => _i43.SupabaseAuthDatasource(
         gh<_i454.SupabaseClient>(),
@@ -531,10 +475,19 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
-    gh.factory<_i472.BellDotCubit>(
-      () => _i472.BellDotCubit(
-        gh<_i575.GetUnreadActivityCountUseCase>(),
-        gh<_i558.WatchFeedRefreshRequestsUseCase>(),
+    gh.factory<_i363.StoryRailCubit>(
+      () => _i363.StoryRailCubit(
+        gh<_i849.GetStoryRailUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i850.RetryStoryUploadUseCase>(),
+      ),
+    );
+    gh.factory<_i646.FeedCubit>(
+      () => _i646.FeedCubit(
+        gh<_i280.GetHomeFeedUseCase>(),
+        gh<_i600.SignPostMediaUrlsUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
       ),
     );
     gh.factory<_i104.ForgotPasswordCubit>(
@@ -554,15 +507,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i508.ProfileRepositoryImpl(
         gh<_i320.ProfileDatasource>(),
         gh<_i126.ProfileLocalDatasource>(),
-      ),
-    );
-    gh.factory<_i908.UpdatePostUseCase>(
-      () => _i908.UpdatePostUseCase(
-        gh<_i141.PostsDatasource>(),
-        gh<_i599.PostMediaRepository>(),
-        gh<_i113.FeedRefreshRepository>(),
-        gh<_i246.SetCommentsEnabledUseCase>(),
-        gh<_i998.SetContentAudienceUseCase>(),
       ),
     );
     gh.factoryParam<_i219.StoryAudienceCubit, String, _i248.ContentAudience>(
@@ -607,6 +551,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ProfileRepository>(),
       ),
     );
+    gh.factory<_i908.UpdatePostUseCase>(
+      () => _i908.UpdatePostUseCase(
+        gh<_i141.PostsDatasource>(),
+        gh<_i599.PostMediaRepository>(),
+        gh<_i246.SetCommentsEnabledUseCase>(),
+        gh<_i998.SetContentAudienceUseCase>(),
+      ),
+    );
     gh.factoryParam<_i490.AddLocationCubit, String?, dynamic>(
       (current, _) => _i490.AddLocationCubit(
         gh<_i974.PlacesRepository>(),
@@ -614,6 +566,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i47.ConnectivityService>(),
         gh<_i234.LocationPrimerDatasource>(),
         current,
+      ),
+    );
+    gh.factory<_i472.BellDotCubit>(
+      () => _i472.BellDotCubit(
+        gh<_i575.GetUnreadActivityCountUseCase>(),
+        gh<_i557.EventBus>(),
       ),
     );
     gh.factory<_i428.ClearLocalProfileUseCase>(
@@ -654,6 +612,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1067.ForgetLastAccountUseCase>(),
       ),
     );
+    gh.factoryParam<_i897.AddEditPostCubit, _i569.PostEntity?, dynamic>(
+      (post, _) => _i897.AddEditPostCubit(
+        gh<_i592.CreatePostUseCase>(),
+        gh<_i908.UpdatePostUseCase>(),
+        gh<_i442.PostPublishRepository>(),
+        gh<_i557.EventBus>(),
+        gh<_i600.SignPostMediaUrlsUseCase>(),
+        gh<_i715.MediaPickerService>(),
+        gh<_i660.GetPrivacyUseCase>(),
+        gh<_i143.VideoThumbnailService>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        post,
+      ),
+    );
     gh.factoryParam<_i144.StoryEditCubit, _i2.CapturedStoryMedia, dynamic>(
       (media, _) => _i144.StoryEditCubit(
         gh<_i618.StoryUploadRepository>(),
@@ -682,19 +654,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i476.ResetPasswordCubit>(
       () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
     );
-    gh.factoryParam<_i897.AddEditPostCubit, _i569.PostEntity?, dynamic>(
-      (post, _) => _i897.AddEditPostCubit(
-        gh<_i592.CreatePostUseCase>(),
-        gh<_i908.UpdatePostUseCase>(),
-        gh<_i442.PostPublishRepository>(),
-        gh<_i600.SignPostMediaUrlsUseCase>(),
-        gh<_i715.MediaPickerService>(),
-        gh<_i660.GetPrivacyUseCase>(),
-        gh<_i143.VideoThumbnailService>(),
-        gh<_i727.GetLastAccountUseCase>(),
-        post,
-      ),
-    );
     gh.factory<_i102.SignUpCubit>(
       () => _i102.SignUpCubit(
         gh<_i43.AuthDatasource>(),
@@ -712,18 +671,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i199.GetSignupDraftUseCase>(),
       ),
     );
+    gh.factory<_i598.ControlCubit>(
+      () => _i598.ControlCubit(
+        gh<_i730.IsRecoveryPendingUseCase>(),
+        gh<_i557.EventBus>(),
+      ),
+    );
     gh.factory<_i127.SplashCubit>(
       () => _i127.SplashCubit(
         gh<_i710.IsSignedInUseCase>(),
         gh<_i730.IsRecoveryPendingUseCase>(),
         gh<_i697.GetSignupStepUseCase>(),
         gh<_i47.ConnectivityService>(),
-      ),
-    );
-    gh.factory<_i598.ControlCubit>(
-      () => _i598.ControlCubit(
-        gh<_i730.IsRecoveryPendingUseCase>(),
-        gh<_i187.RequestFeedRefreshUseCase>(),
       ),
     );
     gh.lazySingleton<_i358.RecoveryLinkHandler>(

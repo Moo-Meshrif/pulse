@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/enums/report_reason.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/events/event_bus.dart';
+import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/services/gallery_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
@@ -19,6 +20,7 @@ import '../../../../shared/content/domain/use_case/set_mute_use_case.dart';
 import '../../data/datasource/stories_datasource.dart';
 import '../../data/model/story_model.dart';
 import '../../domain/entity/story_rail_item_entity.dart';
+import '../../domain/event/story_rail_changed.dart';
 import '../../domain/use_case/get_story_rail_use_case.dart';
 import '../utils/enums/story_pause_reason.dart';
 import '../utils/enums/story_viewer_status.dart';
@@ -29,7 +31,8 @@ import 'story_viewer_state.dart';
 /// video position) belongs to the widgets; this holds where playback is, why it is paused, the like and
 /// the "seen" mark.
 @injectable
-class StoryViewerCubit extends BaseCubit<StoryViewerState> {
+class StoryViewerCubit extends BaseCubit<StoryViewerState>
+    with EventCubitMixin<StoryViewerState> {
   StoryViewerCubit(
     this._rail,
     this._stories,
@@ -49,6 +52,9 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
   final ReportContentUseCase _reportContent;
   final RemoveMediaFilesUseCase _removeFiles;
   final EventBus _events;
+
+  @override
+  EventBus get events => _events;
 
   Timer? _seenTimer;
 
@@ -263,7 +269,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
   void undoDelete(String storyId) => _restoreStory(storyId);
 
   void _announce(String storyId, ContentDeleteStage stage) =>
-      _events.fire(ContentDeleteEvent(ContentKind.story, storyId, stage));
+      fire(ContentDeleteEvent(ContentKind.story, storyId, stage));
 
   void _restoreStory(String storyId) {
     final pending = _deleting.remove(storyId);
@@ -294,7 +300,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState> {
   /// Mutes the person's stories (core), then tells the rail on screen elsewhere to reload.
   Future<void> _mute(String authorId, {required bool muted}) async {
     await _setMute(authorId, muted: muted, scope: MuteScope.stories);
-    _stories.notifyRailChanged();
+    fire(const StoryRailChanged());
   }
 
   /// Deletes the row, then its files (best effort).

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/datasource/story_media_uploader.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
@@ -22,6 +23,7 @@ void main() {
   late _MockStories stories;
   late _MockUploader uploader;
   late StoryUploadRepositoryImpl repository;
+  late EventBus bus;
   late List<StoryUploadStatus> seen;
 
   NewStoryModel video() => NewStoryModel(
@@ -66,21 +68,24 @@ void main() {
       onBytes?.call(file.lengthSync() ~/ 2);
       onBytes?.call(file.lengthSync());
     });
-    repository = StoryUploadRepositoryImpl(stories, uploader);
+    bus = EventBus();
+    repository = StoryUploadRepositoryImpl(stories, uploader, bus);
     seen = [];
-    repository.status.listen(seen.add);
+    bus.on<StoryUploadStatus>().listen(seen.add);
     await pumpEventQueue();
   });
 
   tearDown(() => dir.delete(recursive: true));
 
-  test('starts idle', () {
-    expect(seen, [const StoryUploadIdle()]);
+  test('says nothing before a story is queued', () {
+    expect(seen, isEmpty);
+    expect(bus.latest<StoryUploadStatus>(), isNull);
   });
 
-  test('a late listener gets the current status first', () async {
-    final late = await repository.status.first;
-    expect(late, const StoryUploadIdle());
+  test('a late listener reads the newest status', () async {
+    repository.enqueue(video());
+    await pumpEventQueue();
+    expect(bus.latest<StoryUploadStatus>(), const StoryUploadIdle());
   });
 
   test('uploads the media, then the poster, then inserts the row', () async {
@@ -265,7 +270,7 @@ void main() {
     test('retry does nothing when nothing failed', () async {
       repository.retry();
       await pumpEventQueue();
-      expect(seen, [const StoryUploadIdle()]);
+      expect(seen, isEmpty);
       verifyNever(
         () => uploader.upload(
           path: any(named: 'path'),

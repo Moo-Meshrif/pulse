@@ -4,14 +4,14 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/guard.dart';
+import '../../../../core/events/event_bus.dart';
 import '../../domain/entity/post_publish_status.dart';
 
 /// Sends one post at a time in the background and tells how it is going. It is a repository because it
-/// holds state across screens: Home shows [status] while the composer has already closed.
+/// holds state across screens: Home shows the status while the composer has already closed. Each status is
+/// sent on the `EventBus` as `PostPublishStatus` (idle, publishing, failed or done); a screen that starts
+/// later reads `latest<PostPublishStatus>()`.
 abstract interface class PostPublishRepository {
-  /// Idle, publishing, failed or done. A new listener gets the current status first.
-  Stream<PostPublishStatus> get status;
-
   /// Starts [send]; returns false (and does nothing) while another post is publishing or has failed and
   /// waits for Retry or Discard. [previewPath] is a picked file to show while it goes out.
   bool enqueue({
@@ -29,15 +29,11 @@ abstract interface class PostPublishRepository {
 
 @LazySingleton(as: PostPublishRepository)
 final class PostPublishRepositoryImpl implements PostPublishRepository {
-  final _changes = StreamController<PostPublishStatus>.broadcast();
+  PostPublishRepositoryImpl(this._events);
+
+  final EventBus _events;
   PostPublishStatus _current = const PostPublishIdle();
   _Job? _job;
-
-  @override
-  Stream<PostPublishStatus> get status async* {
-    yield _current;
-    yield* _changes.stream;
-  }
 
   @override
   bool enqueue({
@@ -65,7 +61,7 @@ final class PostPublishRepositoryImpl implements PostPublishRepository {
 
   void _emit(PostPublishStatus status) {
     _current = status;
-    _changes.add(status);
+    _events.fireLatest<PostPublishStatus>(status);
   }
 
   void _start() {

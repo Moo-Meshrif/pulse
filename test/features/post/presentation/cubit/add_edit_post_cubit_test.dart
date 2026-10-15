@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
@@ -11,6 +12,8 @@ import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_media_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
+import 'package:pulse/features/post/domain/event/post_saved.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
@@ -59,6 +62,7 @@ void main() {
   late _Thumbnails thumbnails;
   late _Account account;
   late PostPublishRepositoryImpl publish;
+  late EventBus bus;
 
   setUpAll(() {
     registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
@@ -80,12 +84,13 @@ void main() {
     privacy = _Privacy();
     thumbnails = _Thumbnails();
     account = _Account();
-    publish = PostPublishRepositoryImpl();
+    bus = EventBus();
+    publish = PostPublishRepositoryImpl(bus);
     when(account.call).thenReturn(null);
     when(() => picker.describe(any())).thenAnswer(
       (invocation) async => invocation.positionalArguments.first as PickedMedia,
     );
-    when(() => createPost(any())).thenAnswer((_) async {});
+    when(() => createPost(any())).thenAnswer((_) async => null);
     when(() => thumbnails.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
   });
 
@@ -93,6 +98,7 @@ void main() {
     createPost,
     updatePost,
     publish,
+    bus,
     signUrls,
     picker,
     privacy,
@@ -292,12 +298,12 @@ void main() {
     });
 
     test('closes at once, before the post is sent', () {
-      final done = Completer<void>();
+      final done = Completer<PostEntity?>();
       when(() => createPost(any())).thenAnswer((_) => done.future);
       final cubit = build()..captionChanged('hello');
       cubit.save();
       expect(cubit.state.isSaved, isTrue);
-      done.complete();
+      done.complete(null);
     });
 
     test(
@@ -308,9 +314,9 @@ void main() {
         cubit.save();
         await pumpEventQueue();
         expect(cubit.state.isSaved, isTrue);
-        expect(await publish.status.first, isA<PostPublishFailed>());
+        expect(bus.latest<PostPublishStatus>(), isA<PostPublishFailed>());
 
-        when(() => createPost(any())).thenAnswer((_) async {});
+        when(() => createPost(any())).thenAnswer((_) async => null);
         publish.retry();
         await pumpEventQueue();
         final ids = verify(() => createPost(captureAny())).captured
@@ -318,7 +324,7 @@ void main() {
             .map((p) => p.id)
             .toSet();
         expect(ids, {cubit.state.postId});
-        expect(await publish.status.first, isA<PostPublishIdle>());
+        expect(bus.latest<PostPublishStatus>(), isA<PostPublishIdle>());
       },
     );
 
@@ -333,6 +339,16 @@ void main() {
       second.save();
       expect(second.state.isSaved, isFalse);
       expect(second.state.notice, NewPostNotice.publishBusy);
+    });
+
+    test('tells the feed to load again when the author is unknown', () async {
+      final events = <Object>[];
+      bus.on<FeedRefreshRequested>().listen(events.add);
+      build()
+        ..captionChanged('hello')
+        ..save();
+      await pumpEventQueue();
+      expect(events, [const FeedRefreshRequested()]);
     });
 
     test('an empty post is not sent', () async {
@@ -446,7 +462,7 @@ void main() {
       );
       registerFallbackValue(post);
       when(() => updatePost(any(), before: any(named: 'before')))
-          .thenAnswer((_) async {});
+          .thenAnswer((_) async => post);
       when(() => signUrls(any())).thenAnswer((_) async => {'u/p/0.jpg': 'u0'});
       when(privacy.call).thenAnswer(
         (_) async => const PrivacyEntity(
@@ -495,6 +511,16 @@ void main() {
       final cubit = build(post);
       await cubit.loadUrls();
       expect(cubit.state.urls, {'u/p/0.jpg': 'u0'});
+    });
+
+    test('a saved edit is sent to the feed as it is now', () async {
+      final events = <PostSaved>[];
+      bus.on<PostSaved>().listen(events.add);
+      build(post)
+        ..captionChanged('Changed')
+        ..save();
+      await pumpEventQueue();
+      expect(events, [PostSaved(post)]);
     });
 
     test('save updates the post, not creates it', () async {

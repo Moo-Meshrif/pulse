@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
@@ -13,7 +14,6 @@ import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_ba
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
 import 'package:pulse/features/control/presentation/widgets/tab_placeholder.dart';
 
-import '../../../../helpers/feed_refresh_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
@@ -26,7 +26,7 @@ void main() {
   setUp(() {
     final recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    cubit = ControlCubit(recovery, MockRequestFeedRefresh());
+    cubit = ControlCubit(recovery, EventBus());
   });
 
   tearDown(() => cubit.close());

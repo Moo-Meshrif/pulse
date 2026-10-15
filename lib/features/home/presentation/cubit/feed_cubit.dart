@@ -1,16 +1,16 @@
-import 'dart:async';
-
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/events/event_bus.dart';
+import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../core/state/load_more_status.dart';
 import '../../../post/domain/entity/feed_cursor_entity.dart';
 import '../../../post/domain/entity/feed_page_entity.dart';
 import '../../../post/domain/entity/post_entity.dart';
+import '../../../post/domain/event/feed_refresh_requested.dart';
+import '../../../post/domain/event/post_saved.dart';
 import '../../../post/domain/use_case/get_home_feed_use_case.dart';
 import '../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
-import '../../../post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
-import '../../../post/domain/use_case/watch_saved_posts_use_case.dart';
 import '../../../post/presentation/utils/post_card_media.dart';
 import '../../../profile/domain/use_case/get_current_user_id_use_case.dart';
 import '../utils/enums/feed_status.dart';
@@ -20,27 +20,26 @@ import 'feed_state.dart';
 /// The home feed: first load, pull to refresh and the next pages (docs/specs/home/screens/s1-home-feed.md).
 /// What people do to a post is [PostActionsCubit]'s.
 @injectable
-class FeedCubit extends BaseCubit<FeedState> {
+class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   FeedCubit(
     this._feed,
     this._signMedia,
-    this._refreshRequests,
-    this._savedPosts,
+    this._events,
     GetCurrentUserIdUseCase currentUserId,
   ) : super(FeedState(userId: currentUserId()));
 
   final GetHomeFeedUseCase _feed;
   final SignPostMediaUrlsUseCase _signMedia;
-  final WatchFeedRefreshRequestsUseCase _refreshRequests;
-  final WatchSavedPostsUseCase _savedPosts;
-  StreamSubscription<void>? _requests;
-  StreamSubscription<PostEntity>? _saved;
+  final EventBus _events;
+
+  @override
+  EventBus get events => _events;
 
   /// Loads the feed and loads it again whenever something asks for it (Home was tapped while open). A post
   /// that was shared or edited is put in the feed without loading.
   Future<void> start() {
-    _requests ??= _refreshRequests().listen((_) => _reload());
-    _saved ??= _savedPosts().listen(_postSaved);
+    listenTo<FeedRefreshRequested>((_) => _reload());
+    listenTo<PostSaved>((event) => _postSaved(event.post));
     return load();
   }
 
@@ -145,13 +144,6 @@ class FeedCubit extends BaseCubit<FeedState> {
   /// Posts deleted but not yet committed: the delete's notice can still Undo them.
   void setPendingDeletes(Set<String> ids) =>
       emit(state.copyWith(pendingDeleteIds: ids));
-
-  @override
-  Future<void> close() async {
-    await _requests?.cancel();
-    await _saved?.cancel();
-    return super.close();
-  }
 
   FeedState _replaced(_Page page) => state.copyWith(
     status: FeedStatus.ready,

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/events/event_bus.dart';
+import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/services/media_picker_service.dart';
 import '../../../../core/services/video_thumbnail_service.dart';
 import '../../../../core/state/base_cubit.dart';
@@ -14,6 +16,8 @@ import '../../domain/entity/edit_post_entity.dart';
 import '../../domain/entity/new_post_entity.dart';
 import '../../domain/entity/new_post_media_entity.dart';
 import '../../domain/entity/post_entity.dart';
+import '../../domain/event/feed_refresh_requested.dart';
+import '../../domain/event/post_saved.dart';
 import '../../domain/use_case/create_post_use_case.dart';
 import '../../domain/use_case/sign_post_media_urls_use_case.dart';
 import '../../domain/use_case/update_post_use_case.dart';
@@ -27,11 +31,13 @@ import 'add_edit_post_state.dart';
 /// photos and videos, place, audience, comments switch and Share or Save. It edits [post] when given one.
 /// Editing keeps the post's own media in [AddEditPostState.kept] and sends only what changed.
 @injectable
-class AddEditPostCubit extends BaseCubit<AddEditPostState> {
+class AddEditPostCubit extends BaseCubit<AddEditPostState>
+    with EventCubitMixin<AddEditPostState> {
   AddEditPostCubit(
     this._createPost,
     this._updatePost,
     this._publish,
+    this._events,
     this._signUrls,
     MediaPickerService picker,
     this._privacy,
@@ -52,6 +58,10 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
   final CreatePostUseCase _createPost;
   final UpdatePostUseCase _updatePost;
   final PostPublishRepository _publish;
+  final EventBus _events;
+
+  @override
+  EventBus get events => _events;
   final SignPostMediaUrlsUseCase _signUrls;
   final MediaIntake _intake;
 
@@ -189,34 +199,38 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
         ? _publish.enqueue(
             isEdit: false,
             previewPath: previewPath,
-            send: () async => _createPost(
-              NewPostEntity(
-                id: postId,
-                caption: caption.isEmpty ? null : caption,
-                location: location,
-                commentsEnabled: commentsEnabled,
-                visibility: visibility,
-                media: await _read(picked),
-                authorUsername: me?.username,
-                authorFullName: me?.fullName,
-                authorAvatarUrl: me?.avatarUrl,
+            send: () async => _created(
+              await _createPost(
+                NewPostEntity(
+                  id: postId,
+                  caption: caption.isEmpty ? null : caption,
+                  location: location,
+                  commentsEnabled: commentsEnabled,
+                  visibility: visibility,
+                  media: await _read(picked),
+                  authorUsername: me?.username,
+                  authorFullName: me?.fullName,
+                  authorAvatarUrl: me?.avatarUrl,
+                ),
               ),
             ),
           )
         : _publish.enqueue(
             isEdit: true,
             previewPath: previewPath,
-            send: () async => _updatePost(
-              EditPostEntity(
-                id: postId,
-                caption: caption.isEmpty ? null : caption,
-                location: location,
-                kept: kept,
-                added: await _read(picked),
-                commentsEnabled: commentsEnabled,
-                visibility: visibility,
+            send: () async => _updated(
+              await _updatePost(
+                EditPostEntity(
+                  id: postId,
+                  caption: caption.isEmpty ? null : caption,
+                  location: location,
+                  kept: kept,
+                  added: await _read(picked),
+                  commentsEnabled: commentsEnabled,
+                  visibility: visibility,
+                ),
+                before: original,
               ),
-              before: original,
             ),
           );
     emit(
@@ -225,6 +239,12 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState> {
           : state.copyWith(notice: NewPostNotice.publishBusy),
     );
   }
+
+  /// The feed shows a shared post at once; with no author to show it loads again.
+  void _created(PostEntity? post) =>
+      fire(post == null ? const FeedRefreshRequested() : PostSaved(post));
+
+  void _updated(PostEntity post) => fire(PostSaved(post));
 
   /// The files for the sender: each one once it is fully read, without the ones that cannot go in a post.
   Future<List<NewPostMediaEntity>> _read(List<PickedMedia> picked) async {

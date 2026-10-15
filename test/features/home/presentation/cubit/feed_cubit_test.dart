@@ -1,18 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/state/load_more_status.dart';
 import 'package:pulse/features/home/presentation/cubit/feed_cubit.dart';
 import 'package:pulse/features/home/presentation/utils/enums/feed_status.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
-import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
+import 'package:pulse/features/post/domain/event/post_saved.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_feed_refresh_requests_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/watch_saved_posts_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 
 import '../../../post/post_fixtures.dart';
@@ -23,18 +21,11 @@ class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
 class _CurrentUser extends Mock implements GetCurrentUserIdUseCase {}
 
-class _Refresh extends Mock implements WatchFeedRefreshRequestsUseCase {}
-
-class _Saved extends Mock implements WatchSavedPostsUseCase {}
-
 void main() {
   late _GetFeed getFeed;
   late _Sign sign;
   late _CurrentUser currentUser;
-  late _Refresh refresh;
-  late _Saved savedPosts;
-  late StreamController<void> requests;
-  late StreamController<PostEntity> saved;
+  late EventBus bus;
 
   final cursor = FeedCursorEntity(createdAt: DateTime(2026, 10, 13), id: 'p2');
 
@@ -44,20 +35,12 @@ void main() {
     getFeed = _GetFeed();
     sign = _Sign();
     currentUser = _CurrentUser();
-    refresh = _Refresh();
-    requests = StreamController<void>.broadcast();
-    when(refresh.call).thenAnswer((_) => requests.stream);
-    addTearDown(requests.close);
-    savedPosts = _Saved();
-    saved = StreamController<PostEntity>.broadcast();
-    when(savedPosts.call).thenAnswer((_) => saved.stream);
-    addTearDown(saved.close);
+    bus = EventBus();
     when(currentUser.call).thenReturn('me');
     when(() => sign(any())).thenAnswer((_) async => {});
   });
 
-  FeedCubit build() =>
-      FeedCubit(getFeed, sign, refresh, savedPosts, currentUser);
+  FeedCubit build() => FeedCubit(getFeed, sign, bus, currentUser);
 
   void pages(FeedPageEntity first, [FeedPageEntity? second]) {
     when(() => getFeed(cursor: null)).thenAnswer((_) async => first);
@@ -261,7 +244,7 @@ void main() {
       expect(cubit.state.status, FeedStatus.ready);
 
       pages(FeedPageEntity(posts: [testPost('p9'), testPost('p1')]));
-      requests.add(null);
+      bus.fire(const FeedRefreshRequested());
       await Future<void>.delayed(Duration.zero);
       expect(cubit.state.posts.map((p) => p.id), ['p9', 'p1']);
       await cubit.close();
@@ -274,7 +257,7 @@ void main() {
       expect(cubit.state.status, FeedStatus.failed);
 
       pages(FeedPageEntity(posts: [testPost('p1')]));
-      requests.add(null);
+      bus.fire(const FeedRefreshRequested());
       await Future<void>.delayed(Duration.zero);
       expect(cubit.state.status, FeedStatus.ready);
       await cubit.close();
@@ -285,7 +268,7 @@ void main() {
       final cubit = build();
       await cubit.start();
 
-      saved.add(testPost('p9'));
+      bus.fire(PostSaved(testPost('p9')));
       await Future<void>.delayed(Duration.zero);
       expect(cubit.state.posts.map((p) => p.id), ['p9', 'p1']);
       verify(() => getFeed(cursor: null)).called(1);
@@ -297,7 +280,7 @@ void main() {
       final cubit = build();
       await cubit.start();
 
-      saved.add(testPost('p2'));
+      bus.fire(PostSaved(testPost('p2')));
       await Future<void>.delayed(Duration.zero);
       expect(cubit.state.posts.map((p) => p.id), ['p1', 'p2']);
       await cubit.close();
@@ -308,7 +291,7 @@ void main() {
       final cubit = build();
       await cubit.start();
       await cubit.close();
-      requests.add(null);
+      bus.fire(const FeedRefreshRequested());
       await Future<void>.delayed(Duration.zero);
       verify(() => getFeed(cursor: null)).called(1);
     });

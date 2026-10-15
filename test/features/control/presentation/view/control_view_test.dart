@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
@@ -13,9 +14,9 @@ import 'package:pulse/features/control/presentation/utils/enums/main_tab.dart';
 import 'package:pulse/features/control/presentation/view/control_view.dart';
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/nav_item.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 
-import '../../../../helpers/feed_refresh_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
@@ -60,14 +61,16 @@ class _TestRootState extends State<_TestRoot> {
 
 void main() {
   late ControlCubit cubit;
-  late MockRequestFeedRefresh feedRefresh;
+  late int refreshRequests;
   late List<String> platformCalls;
 
   setUp(() {
     final recovery = MockIsRecoveryPending();
     when(() => recovery()).thenReturn(false);
-    feedRefresh = MockRequestFeedRefresh();
-    cubit = ControlCubit(recovery, feedRefresh);
+    final bus = EventBus();
+    refreshRequests = 0;
+    bus.on<FeedRefreshRequested>().listen((_) => refreshRequests++);
+    cubit = ControlCubit(recovery, bus);
     platformCalls = [];
   });
 
@@ -198,7 +201,7 @@ void main() {
       await pumpShell(tester);
       await tester.tap(item('Home'));
       await tester.pumpAndSettle();
-      verify(() => feedRefresh()).called(1);
+      expect(refreshRequests, 1);
     });
 
     testWidgets('going back to the root does not refresh the feed', (
@@ -209,7 +212,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(item('Home'));
       await tester.pumpAndSettle();
-      verifyNever(() => feedRefresh());
+      expect(refreshRequests, 0);
     });
 
     testWidgets('another tab does not refresh the feed', (tester) async {
@@ -218,7 +221,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(item('Shorts'));
       await tester.pumpAndSettle();
-      verifyNever(() => feedRefresh());
+      expect(refreshRequests, 0);
     });
   });
 

@@ -74,9 +74,6 @@ class _Stories extends Fake implements StoriesDatasource {
   Future<void> deleteStory(StoryModel story) async => deleted.add(story.id);
 
   @override
-  void notifyRailChanged() {}
-
-  @override
   Future<List<StoryViewerModel>> getViewers(
     String storyId, {
     required int limit,

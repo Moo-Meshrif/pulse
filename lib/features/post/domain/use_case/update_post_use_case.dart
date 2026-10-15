@@ -6,7 +6,6 @@ import '../../../../shared/content/domain/use_case/set_content_audience_use_case
 import '../../data/datasource/posts_datasource.dart';
 import '../../data/enums/media_type.dart';
 import '../../data/model/post_media_model.dart';
-import '../../data/repository/feed_refresh_repository.dart';
 import '../../data/repository/post_media_repository.dart';
 import '../entity/edit_post_entity.dart';
 import '../entity/post_entity.dart';
@@ -16,24 +15,25 @@ import 'set_comments_enabled_use_case.dart';
 /// Saves an edited post: applies a changed comments switch and audience first, uploads the added files under names no existing file has (the post keeps showing
 /// its old media until the save succeeds), replaces the post's caption, place and media in one call, then
 /// removes the files the post no longer uses. If the save fails the new files are removed. Once it is
-/// saved the home feed gets the edited post to show at once.
+/// saved it returns the post as it is now.
 @injectable
 class UpdatePostUseCase {
   UpdatePostUseCase(
     this._posts,
     this._media,
-    this._feedRefresh,
     this._setCommentsEnabled,
     this._setAudience,
   );
 
   final PostsDatasource _posts;
   final PostMediaRepository _media;
-  final FeedRefreshRepository _feedRefresh;
   final SetCommentsEnabledUseCase _setCommentsEnabled;
   final SetContentAudienceUseCase _setAudience;
 
-  Future<void> call(EditPostEntity post, {required PostEntity before}) async {
+  Future<PostEntity> call(
+    EditPostEntity post, {
+    required PostEntity before,
+  }) async {
     if (post.commentsEnabled != before.commentsEnabled) {
       await _setCommentsEnabled(post.id, enabled: post.commentsEnabled);
     }
@@ -69,36 +69,34 @@ class UpdatePostUseCase {
         for (final item in before.media) ...[item.path, ?item.thumbPath],
       ].where((path) => !kept.contains(path)).toList(),
     );
-    _feedRefresh.postSaved(
-      PostEntity(
-        id: before.id,
-        authorId: before.authorId,
-        username: before.username,
-        fullName: before.fullName,
-        avatarUrl: before.avatarUrl,
-        caption: post.caption,
-        location: post.location,
-        likeCount: before.likeCount,
-        commentCount: before.commentCount,
-        commentsEnabled: post.commentsEnabled,
-        visibility: post.visibility,
-        createdAt: before.createdAt,
-        likedByMe: before.likedByMe,
-        savedByMe: before.savedByMe,
-        media: [
-          ...post.kept,
-          for (final item in added)
-            PostMediaEntity(
-              isVideo: item.type == MediaType.video,
-              path: item.path!,
-              thumbPath: item.thumbPath,
-              width: item.width!,
-              height: item.height!,
-              durationMs: item.durationMs,
-              blurhash: item.blurhash,
-            ),
-        ],
-      ),
+    return PostEntity(
+      id: before.id,
+      authorId: before.authorId,
+      username: before.username,
+      fullName: before.fullName,
+      avatarUrl: before.avatarUrl,
+      caption: post.caption,
+      location: post.location,
+      likeCount: before.likeCount,
+      commentCount: before.commentCount,
+      commentsEnabled: post.commentsEnabled,
+      visibility: post.visibility,
+      createdAt: before.createdAt,
+      likedByMe: before.likedByMe,
+      savedByMe: before.savedByMe,
+      media: [
+        ...post.kept,
+        for (final item in added)
+          PostMediaEntity(
+            isVideo: item.type == MediaType.video,
+            path: item.path!,
+            thumbPath: item.thumbPath,
+            width: item.width!,
+            height: item.height!,
+            durationMs: item.durationMs,
+            blurhash: item.blurhash,
+          ),
+      ],
     );
   }
 
