@@ -174,33 +174,17 @@ void main() {
     );
   });
 
-  semanticTest('"Tag in photo" shows only with photos and waits for a person', (
-    tester,
-  ) async {
-    await open(tester);
-    expect(find.text(l10nEn.postTagPeopleInPhoto), findsOneWidget);
-    final off = tester.widget<Opacity>(
-      find
-          .ancestor(
-            of: find.text(l10nEn.postTagPeopleInPhoto),
-            matching: find.byType(Opacity),
-          )
-          .first,
-    );
-    expect(off.opacity, lessThan(1));
+  semanticTest(
+    '"Tag in photo" shows only with photos and after a person is chosen',
+    (tester) async {
+      await open(tester);
+      expect(find.text(l10nEn.postTagPeopleInPhoto), findsNothing);
 
-    await tester.tap(find.text('Omar Khaled'));
-    await tester.pump();
-    final on = tester.widget<Opacity>(
-      find
-          .ancestor(
-            of: find.text(l10nEn.postTagPeopleInPhoto),
-            matching: find.byType(Opacity),
-          )
-          .first,
-    );
-    expect(on.opacity, 1);
-  });
+      await tester.tap(find.text('Omar Khaled'));
+      await tester.pump();
+      expect(find.text(l10nEn.postTagPeopleInPhoto), findsOneWidget);
+    },
+  );
 
   semanticTest('no photos, no "Tag in photo"', (tester) async {
     await open(tester, media: const []);

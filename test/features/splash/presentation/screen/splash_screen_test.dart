@@ -10,6 +10,7 @@ import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
+import 'package:pulse/features/auth/domain/use_case/sign_out_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
 import 'package:pulse/features/splash/presentation/cubit/splash_cubit.dart';
@@ -24,6 +25,8 @@ class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
+
+class MockSignOut extends Mock implements SignOutUseCase {}
 
 class MockConnectivity extends Mock implements ConnectivityService {}
 
@@ -50,6 +53,7 @@ void main() {
         isSignedIn,
         isRecoveryPending,
         getSignupStep,
+        MockSignOut(),
         connectivity,
       ),
     );

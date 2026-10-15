@@ -19,7 +19,7 @@ PinnedBottomCta: PrimaryButton "Continue" (expand) + ~12 gap + "Already on Pulse
 ## States
 - Initial: empty fields, checkbox **unchecked**, no meter, Continue disabled [user] (screenshot shows a filled mock).
 - Enabled when email valid, password >= 8, checkbox checked.
-- Loading on Continue; errors: invalid email "Enter a valid email"; short password "Password must be at least 8 characters"; email exists "An account with this email already exists" [estimated copy].
+- Loading on Continue; errors: invalid email "Enter a valid email"; short password "Password must be at least 8 characters". An email that already has an account is never reported: the flow shows the Verify step as for a new address (the person resuming with the same password continues where they stopped), so sign-up does not reveal which emails are registered.
 
 ## Strings
 | Key | en | ar [draft, x-review] |
@@ -40,7 +40,6 @@ PinnedBottomCta: PrimaryButton "Continue" (expand) + ~12 gap + "Already on Pulse
 | alreadyOnPulse | Already on Pulse? | لديك حساب على Pulse؟ |
 | signInLink | Sign in | تسجيل الدخول |
 | errorPasswordShort | Password must be at least 8 characters | يجب ألا تقل كلمة المرور عن 8 أحرف |
-| errorEmailExists | An account with this email already exists | يوجد حساب بهذا البريد بالفعل |
 
 ## Behavior and navigation
 Continue -> Supabase `signUp(email, password)` -> step 2 (code emailed). Back arrow leaves the flow (no dialog). "Sign in" -> S1. TODO: Terms / Privacy -> `/terms`, `/privacy` (backend HTML, Q45) [user]. Social -> "Coming soon".

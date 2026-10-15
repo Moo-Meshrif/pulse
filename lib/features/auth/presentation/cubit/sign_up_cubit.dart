@@ -122,12 +122,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
     );
   }
 
-  void emailChanged(String value) => emit(
-    state.copyWith(
-      email: value,
-      failure: state.emailTaken ? null : state.failure,
-    ),
-  );
+  void emailChanged(String value) => emit(state.copyWith(email: value));
 
   void passwordChanged(String value) => emit(state.copyWith(password: value));
 
@@ -143,29 +138,28 @@ class SignUpCubit extends BaseCubit<SignUpState> {
       prevent: !state.canSubmitAccount,
       loading: state.copyWith(loading: true, failure: null),
       () => _auth.signUp(email: state.email.trim(), password: state.password),
-      onSuccess: (_) {
-        _startCooldown();
-        return state.copyWith(
-          step: verifyStep,
-          email: state.email.trim(),
-          code: '',
-          loading: false,
-        );
+      onSuccess: (alreadyRegistered) {
+        if (alreadyRegistered) return _resumeExistingAccount();
+        return _showVerifyStep();
       },
-      onFailure: (failure) async {
-        if (failure case AuthFailure(reason: AuthFailureReason.emailTaken)) {
-          await _resumeExistingAccount(failure);
-          return;
-        }
-        emit(state.copyWith(loading: false, failure: failure));
-      },
+      onFailure: (failure) => state.copyWith(loading: false, failure: failure),
+    );
+  }
+
+  SignUpState _showVerifyStep() {
+    _startCooldown();
+    return state.copyWith(
+      step: verifyStep,
+      email: state.email.trim(),
+      code: '',
+      loading: false,
     );
   }
 
   /// The email already has an account: when the same email and password sign in, the person is
   /// resuming an unfinished sign-up, so continue at the step still to do (Home when none). Any other
-  /// outcome is the original [taken] failure.
-  Future<void> _resumeExistingAccount(Failure taken) async {
+  /// outcome shows the Verify step like a new sign-up, so the form never says the email is registered.
+  Future<void> _resumeExistingAccount() async {
     final email = state.email.trim();
     await run(
       () => _auth.signIn(identifier: email, password: state.password),
@@ -183,7 +177,7 @@ class SignUpCubit extends BaseCubit<SignUpState> {
           _startCooldown();
           return state.copyWith(step: verifyStep, code: '', loading: false);
         }
-        return state.copyWith(loading: false, failure: taken);
+        return _showVerifyStep();
       },
     );
   }

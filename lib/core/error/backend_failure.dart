@@ -34,7 +34,6 @@ Failure _auth(AuthException error) {
   final reason = switch (error.code) {
     'invalid_credentials' => AuthFailureReason.invalidCredentials,
     'email_not_confirmed' => AuthFailureReason.emailNotConfirmed,
-    'user_already_exists' || 'email_exists' => AuthFailureReason.emailTaken,
     'otp_expired' || 'invalid_otp' => AuthFailureReason.invalidCode,
     'weak_password' => AuthFailureReason.weakPassword,
     'same_password' => AuthFailureReason.samePassword,

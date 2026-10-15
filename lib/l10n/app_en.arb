@@ -254,7 +254,7 @@
   "@sentTitle": {
     "description": "Reset link sent dialog: title"
   },
-  "sentBody": "We sent a reset link to {email}. Open it to set a new password.",
+  "sentBody": "If an account exists for {email}, we sent a reset link. Open it to set a new password.",
   "@sentBody": {
     "description": "Reset link sent dialog: body; {email} is the masked address, set in bold",
     "placeholders": {
@@ -331,14 +331,6 @@
   "errorPasswordShort": "Password must be at least 8 characters",
   "@errorPasswordShort": {
     "description": "Shown under the password field when it is too short"
-  },
-  "errorEmailExists": "An account with this email already exists",
-  "@errorEmailExists": {
-    "description": "Shown under the email field when sign-up finds the address registered"
-  },
-  "errorAccountNotFound": "No account found with this email",
-  "@errorAccountNotFound": {
-    "description": "Shown under the email field when forgot password finds no account with the address"
   },
   "verifyTitle": "Check your email",
   "@verifyTitle": {

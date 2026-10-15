@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:injectable/injectable.dart';
@@ -54,13 +55,34 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   final _likePending = <String>{};
   final _savePending = <String>{};
 
+  /// How long the "Post hidden" row keeps its Undo before the row goes.
+  static const hiddenUndoWindow = Duration(seconds: 5);
+
+  final _hiddenTimers = <String, Timer>{};
+
   /// The post with everything done to it since the feed loaded.
   PostEntity postOf(PostEntity loaded) => state.posts[loaded.id] ?? loaded;
 
   PostRow rowOf(String postId) => state.rows[postId] ?? PostRow.card;
 
   /// The feed loaded again: what was done to its posts is in the new data.
-  void reset() => emit(const PostActionsState());
+  void reset() {
+    _cancelHiddenTimers();
+    emit(const PostActionsState());
+  }
+
+  void _cancelHiddenTimers() {
+    for (final timer in _hiddenTimers.values) {
+      timer.cancel();
+    }
+    _hiddenTimers.clear();
+  }
+
+  @override
+  Future<void> close() {
+    _cancelHiddenTimers();
+    return super.close();
+  }
 
   Future<void> toggleLike(PostEntity loaded) =>
       setLiked(loaded, liked: !postOf(loaded).likedByMe);
@@ -112,9 +134,17 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   Future<void> notInterested(PostEntity loaded) async {
     await _hidePost(loaded.id, hidden: true);
     _emitRow(loaded.id, PostRow.hidden);
+    _hiddenTimers[loaded.id]?.cancel();
+    _hiddenTimers[loaded.id] = Timer(hiddenUndoWindow, () {
+      _hiddenTimers.remove(loaded.id);
+      if (rowOf(loaded.id) == PostRow.hidden) {
+        _emitRow(loaded.id, PostRow.removed);
+      }
+    });
   }
 
   Future<void> undoNotInterested(PostEntity loaded) async {
+    _hiddenTimers.remove(loaded.id)?.cancel();
     await _hidePost(loaded.id, hidden: false);
     _emitRow(loaded.id, PostRow.card);
   }
@@ -126,11 +156,26 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   Future<void> undoUnfollow(PostEntity loaded) =>
       _toggleFollow(loaded.authorId, follow: true);
 
-  Future<void> mute(PostEntity loaded) =>
-      _setMute(loaded.authorId, muted: true, scope: MuteScope.posts);
+  /// Their posts leave the feed at once.
+  Future<void> mute(PostEntity loaded) async {
+    await _setMute(loaded.authorId, muted: true, scope: MuteScope.posts);
+    emit(
+      state.copyWith(
+        mutedAuthors: {...state.mutedAuthors, loaded.authorId},
+        failure: null,
+      ),
+    );
+  }
 
-  Future<void> undoMute(PostEntity loaded) =>
-      _setMute(loaded.authorId, muted: false, scope: MuteScope.posts);
+  Future<void> undoMute(PostEntity loaded) async {
+    await _setMute(loaded.authorId, muted: false, scope: MuteScope.posts);
+    emit(
+      state.copyWith(
+        mutedAuthors: {...state.mutedAuthors}..remove(loaded.authorId),
+        failure: null,
+      ),
+    );
+  }
 
   /// Reported: the server hides the post for the reporter and the card goes.
   Future<void> report(

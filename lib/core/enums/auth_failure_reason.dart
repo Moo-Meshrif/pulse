@@ -7,12 +7,6 @@ enum AuthFailureReason {
   /// The email has not been verified yet: sign-in goes to the verify step.
   emailNotConfirmed,
 
-  /// An account with this email already exists.
-  emailTaken,
-
-  /// No account has this email (forgot password).
-  accountNotFound,
-
   /// The verification code is wrong or expired.
   invalidCode,
 

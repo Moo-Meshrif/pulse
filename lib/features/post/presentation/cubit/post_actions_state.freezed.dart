@@ -17,7 +17,8 @@ mixin _$PostActionsState {
 
 /// The post as changed by like, save, comments or audience; missing while nothing changed.
  Map<String, PostEntity> get posts;/// A post's row; missing means [PostRow.card].
- Map<String, PostRow> get rows;/// One-shot: a like or save did not go through and was rolled back.
+ Map<String, PostRow> get rows;/// Authors muted since the feed loaded: their posts are hidden until the feed loads again.
+ Set<String> get mutedAuthors;/// One-shot: a like or save did not go through and was rolled back.
  Failure? get failure;
 /// Create a copy of PostActionsState
 /// with the given fields replaced by the non-null parameter values.
@@ -30,20 +31,20 @@ $PostActionsStateCopyWith<PostActionsState> get copyWith => _$PostActionsStateCo
 @override
 bool operator ==(Object other) {
   final _this = this as PostActionsState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostActionsState&&const DeepCollectionEquality().equals(other.posts, _this.posts)&&const DeepCollectionEquality().equals(other.rows, _this.rows)&&(identical(other.failure, _this.failure) || other.failure == _this.failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostActionsState&&const DeepCollectionEquality().equals(other.posts, _this.posts)&&const DeepCollectionEquality().equals(other.rows, _this.rows)&&const DeepCollectionEquality().equals(other.mutedAuthors, _this.mutedAuthors)&&(identical(other.failure, _this.failure) || other.failure == _this.failure));
 }
 
 
 @override
 int get hashCode {
   final _this = this as PostActionsState;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.posts),const DeepCollectionEquality().hash(_this.rows),_this.failure);
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.posts),const DeepCollectionEquality().hash(_this.rows),const DeepCollectionEquality().hash(_this.mutedAuthors),_this.failure);
 }
 
 @override
 String toString() {
   final _this = this as PostActionsState;
-  return 'PostActionsState(posts: ${_this.posts}, rows: ${_this.rows}, failure: ${_this.failure})';
+  return 'PostActionsState(posts: ${_this.posts}, rows: ${_this.rows}, mutedAuthors: ${_this.mutedAuthors}, failure: ${_this.failure})';
 }
 
 
@@ -54,7 +55,7 @@ abstract mixin class $PostActionsStateCopyWith<$Res>  {
   factory $PostActionsStateCopyWith(PostActionsState value, $Res Function(PostActionsState) _then) = _$PostActionsStateCopyWithImpl;
 @useResult
 $Res call({
- Map<String, PostEntity> posts, Map<String, PostRow> rows, Failure? failure
+ Map<String, PostEntity> posts, Map<String, PostRow> rows, Set<String> mutedAuthors, Failure? failure
 });
 
 
@@ -71,11 +72,12 @@ class _$PostActionsStateCopyWithImpl<$Res>
 
 /// Create a copy of PostActionsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? posts = null,Object? rows = null,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? posts = null,Object? rows = null,Object? mutedAuthors = null,Object? failure = freezed,}) {
   return _then(PostActionsState(
 posts: null == posts ? _self.posts : posts // ignore: cast_nullable_to_non_nullable
 as Map<String, PostEntity>,rows: null == rows ? _self.rows : rows // ignore: cast_nullable_to_non_nullable
-as Map<String, PostRow>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as Map<String, PostRow>,mutedAuthors: null == mutedAuthors ? _self.mutedAuthors : mutedAuthors // ignore: cast_nullable_to_non_nullable
+as Set<String>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
 }
@@ -161,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, PostEntity> posts,  Map<String, PostRow> rows,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, PostEntity> posts,  Map<String, PostRow> rows,  Set<String> mutedAuthors,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostActionsState() when $default != null:
-return $default(_that.posts,_that.rows,_that.failure);case _:
+return $default(_that.posts,_that.rows,_that.mutedAuthors,_that.failure);case _:
   return orElse();
 
 }
@@ -182,10 +184,10 @@ return $default(_that.posts,_that.rows,_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, PostEntity> posts,  Map<String, PostRow> rows,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, PostEntity> posts,  Map<String, PostRow> rows,  Set<String> mutedAuthors,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _PostActionsState():
-return $default(_that.posts,_that.rows,_that.failure);case _:
+return $default(_that.posts,_that.rows,_that.mutedAuthors,_that.failure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +204,10 @@ return $default(_that.posts,_that.rows,_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, PostEntity> posts,  Map<String, PostRow> rows,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, PostEntity> posts,  Map<String, PostRow> rows,  Set<String> mutedAuthors,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _PostActionsState() when $default != null:
-return $default(_that.posts,_that.rows,_that.failure);case _:
+return $default(_that.posts,_that.rows,_that.mutedAuthors,_that.failure);case _:
   return null;
 
 }
@@ -217,7 +219,7 @@ return $default(_that.posts,_that.rows,_that.failure);case _:
 
 
 class _PostActionsState implements PostActionsState {
-  const _PostActionsState({ Map<String, PostEntity> posts = const <String, PostEntity>{},  Map<String, PostRow> rows = const <String, PostRow>{}, this.failure}): _posts = posts,_rows = rows;
+  const _PostActionsState({ Map<String, PostEntity> posts = const <String, PostEntity>{},  Map<String, PostRow> rows = const <String, PostRow>{},  Set<String> mutedAuthors = const <String>{}, this.failure}): _posts = posts,_rows = rows,_mutedAuthors = mutedAuthors;
   
 
 /// The post as changed by like, save, comments or audience; missing while nothing changed.
@@ -238,6 +240,15 @@ class _PostActionsState implements PostActionsState {
   return EqualUnmodifiableMapView(_rows);
 }
 
+/// Authors muted since the feed loaded: their posts are hidden until the feed loads again.
+ final  Set<String> _mutedAuthors;
+/// Authors muted since the feed loaded: their posts are hidden until the feed loads again.
+@override@JsonKey() Set<String> get mutedAuthors {
+  if (_mutedAuthors is EqualUnmodifiableSetView) return _mutedAuthors;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_mutedAuthors);
+}
+
 /// One-shot: a like or save did not go through and was rolled back.
 @override final  Failure? failure;
 
@@ -251,18 +262,18 @@ _$PostActionsStateCopyWith<_PostActionsState> get copyWith => __$PostActionsStat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostActionsState&&const DeepCollectionEquality().equals(other.posts, _posts)&&const DeepCollectionEquality().equals(other.rows, _rows)&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostActionsState&&const DeepCollectionEquality().equals(other.posts, _posts)&&const DeepCollectionEquality().equals(other.rows, _rows)&&const DeepCollectionEquality().equals(other.mutedAuthors, _mutedAuthors)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts),const DeepCollectionEquality().hash(_rows),failure);
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts),const DeepCollectionEquality().hash(_rows),const DeepCollectionEquality().hash(_mutedAuthors),failure);
 }
 
 @override
 String toString() {
-    return 'PostActionsState(posts: $posts, rows: $rows, failure: $failure)';
+    return 'PostActionsState(posts: $posts, rows: $rows, mutedAuthors: $mutedAuthors, failure: $failure)';
 }
 
 
@@ -273,7 +284,7 @@ abstract mixin class _$PostActionsStateCopyWith<$Res> implements $PostActionsSta
   factory _$PostActionsStateCopyWith(_PostActionsState value, $Res Function(_PostActionsState) _then) = __$PostActionsStateCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, PostEntity> posts, Map<String, PostRow> rows, Failure? failure
+ Map<String, PostEntity> posts, Map<String, PostRow> rows, Set<String> mutedAuthors, Failure? failure
 });
 
 
@@ -290,11 +301,12 @@ class __$PostActionsStateCopyWithImpl<$Res>
 
 /// Create a copy of PostActionsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? posts = null,Object? rows = null,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? posts = null,Object? rows = null,Object? mutedAuthors = null,Object? failure = freezed,}) {
   return _then(_PostActionsState(
 posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
 as Map<String, PostEntity>,rows: null == rows ? _self._rows : rows // ignore: cast_nullable_to_non_nullable
-as Map<String, PostRow>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as Map<String, PostRow>,mutedAuthors: null == mutedAuthors ? _self._mutedAuthors : mutedAuthors // ignore: cast_nullable_to_non_nullable
+as Set<String>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
 }

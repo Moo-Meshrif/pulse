@@ -42,9 +42,12 @@ class _FeedPostItemState extends State<FeedPostItem> {
 
   /// Only what the cubit changed is selected: the post itself comes from the widget at build time, so an
   /// edited post is never drawn from a copy the selector kept.
-  ({PostEntity? changed, PostRow row}) _current(PostActionsState state) => (
+  ({PostEntity? changed, PostRow row, bool muted}) _current(
+    PostActionsState state,
+  ) => (
     changed: state.posts[_loaded.id],
     row: state.rows[_loaded.id] ?? PostRow.card,
+    muted: state.mutedAuthors.contains(_loaded.authorId),
   );
 
   PostCardCallbacks _callbacks() => PostCardCallbacks(
@@ -157,27 +160,29 @@ class _FeedPostItemState extends State<FeedPostItem> {
       BlocSelector<
         PostActionsCubit,
         PostActionsState,
-        ({PostEntity? changed, PostRow row})
+        ({PostEntity? changed, PostRow row, bool muted})
       >(
         selector: _current,
-        builder: (context, current) => switch (current.row) {
-          PostRow.deleting || PostRow.removed => const SizedBox.shrink(),
-          PostRow.hidden => Padding(
-            padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
-            child: HiddenPostRow(onUndo: _undoNotInterested),
-          ),
-          PostRow.card => Padding(
-            padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
-            child: PostCard(
-              data: postCardData(
-                current.changed ?? widget.post.entity,
-                widget.post.media,
-                userId: context.read<FeedCubit>().state.userId,
-              ),
-              callbacks: _callbacks(),
-              isOptionsOpen: _isOptionsOpen,
-            ),
-          ),
-        },
+        builder: (context, current) => current.muted
+            ? const SizedBox.shrink()
+            : switch (current.row) {
+                PostRow.deleting || PostRow.removed => const SizedBox.shrink(),
+                PostRow.hidden => Padding(
+                  padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
+                  child: HiddenPostRow(onUndo: _undoNotInterested),
+                ),
+                PostRow.card => Padding(
+                  padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
+                  child: PostCard(
+                    data: postCardData(
+                      current.changed ?? widget.post.entity,
+                      widget.post.media,
+                      userId: context.read<FeedCubit>().state.userId,
+                    ),
+                    callbacks: _callbacks(),
+                    isOptionsOpen: _isOptionsOpen,
+                  ),
+                ),
+              },
       );
 }

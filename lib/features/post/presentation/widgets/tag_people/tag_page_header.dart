@@ -14,11 +14,13 @@ class TagPageHeader extends StatelessWidget {
     required this.title,
     required this.onBack,
     required this.onDone,
+    this.isDoneEnabled = true,
   });
 
   final String title;
   final VoidCallback onBack;
   final VoidCallback onDone;
+  final bool isDoneEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +47,12 @@ class TagPageHeader extends StatelessWidget {
           Semantics(
             button: true,
             excludeSemantics: true,
+            enabled: isDoneEnabled,
             label: done,
-            onTap: onDone,
+            onTap: isDoneEnabled ? onDone : null,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: onDone,
+              onTap: isDoneEnabled ? onDone : null,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
                   minHeight: AppSizes.tapTarget,
@@ -62,7 +65,11 @@ class TagPageHeader extends StatelessWidget {
                       horizontal: TagPeopleDimens.doneSide,
                     ),
                     decoration: BoxDecoration(
-                      color: colors.primary,
+                      color: isDoneEnabled
+                          ? colors.primary
+                          : colors.primary.withValues(
+                              alpha: TagPeopleDimens.disabledOpacity,
+                            ),
                       borderRadius: BorderRadius.circular(
                         AppRadius.pill(TagPeopleDimens.doneHeight),
                       ),

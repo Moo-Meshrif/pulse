@@ -17,6 +17,9 @@ abstract class PostActionsState with _$PostActionsState {
     /// A post's row; missing means [PostRow.card].
     @Default(<String, PostRow>{}) Map<String, PostRow> rows,
 
+    /// Authors muted since the feed loaded: their posts are hidden until the feed loads again.
+    @Default(<String>{}) Set<String> mutedAuthors,
+
     /// One-shot: a like or save did not go through and was rolled back.
     Failure? failure,
   }) = _PostActionsState;

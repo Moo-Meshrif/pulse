@@ -539,7 +539,7 @@ abstract class AppLocalizations {
   /// Reset link sent dialog: body; {email} is the masked address, set in bold
   ///
   /// In en, this message translates to:
-  /// **'We sent a reset link to {email}. Open it to set a new password.'**
+  /// **'If an account exists for {email}, we sent a reset link. Open it to set a new password.'**
   String sentBody(String email);
 
   /// Reset link sent dialog: opens the mail app
@@ -637,18 +637,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password must be at least 8 characters'**
   String get errorPasswordShort;
-
-  /// Shown under the email field when sign-up finds the address registered
-  ///
-  /// In en, this message translates to:
-  /// **'An account with this email already exists'**
-  String get errorEmailExists;
-
-  /// Shown under the email field when forgot password finds no account with the address
-  ///
-  /// In en, this message translates to:
-  /// **'No account found with this email'**
-  String get errorAccountNotFound;
 
   /// Sign-up Verify email step: title
   ///

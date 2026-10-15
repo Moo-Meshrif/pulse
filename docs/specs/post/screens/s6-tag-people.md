@@ -20,7 +20,7 @@ Search state (panel 2): the Suggested row and chip row stay as they are; the lis
 | Element | Text | Size | Token | Notes |
 |---|---|---|---|---|
 | Back | | 44 target | `ic_arrow_back` textPrimary | returns without saving; confirm only if the list changed ("Discard changes?" reuse S1 dialog) [estimated] |
-| Done | "Done" | 36 high | primary pill | always enabled; returns the list (may be empty = clears tags) |
+| Done | "Done" | 36 high | primary pill | enabled once someone is chosen or the list changed (so clearing still works); returns the list |
 | Chip | name (full name first word or username) | 36 | primarySoft | tap × removes the person |
 | Check | | 24 | on: primary fill + white `ic_check`; off: 2 px #9AA6A2 circle | [seen] |
 | Disabled row | "Doesn't allow tags" | row opacity 50% | `ic_block` 12 + 12 textSecondary under the name | no check shown; tap does nothing [seen] |

@@ -42,10 +42,14 @@ class TagPeopleView extends StatelessWidget {
       backgroundColor: context.appColors.background,
       child: Column(
         children: [
-          TagPageHeader(
-            title: context.l10n.postTagPeopleTitle,
-            onBack: onBack,
-            onDone: onDone,
+          BlocSelector<TagPeopleCubit, TagPeopleState, bool>(
+            selector: (state) => state.chosen.isNotEmpty || cubit.hasChanges,
+            builder: (context, enabled) => TagPageHeader(
+              title: context.l10n.postTagPeopleTitle,
+              onBack: onBack,
+              onDone: onDone,
+              isDoneEnabled: enabled,
+            ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.cardMargin),
@@ -233,60 +237,62 @@ class _TagInPhotoButton extends StatelessWidget {
     final colors = context.appColors;
     return BlocSelector<TagPeopleCubit, TagPeopleState, bool>(
       selector: (state) => state.chosen.isNotEmpty,
-      builder: (context, enabled) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          TagPeopleDimens.buttonSide,
-          AppSpacing.s8,
-          TagPeopleDimens.buttonSide,
-          AppSpacing.s12,
-        ),
-        child: Semantics(
-          button: true,
-          enabled: enabled,
-          excludeSemantics: true,
-          label: context.l10n.postTagPeopleInPhoto,
-          onTap: enabled ? onTap : null,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: enabled ? onTap : null,
-            child: Opacity(
-              opacity: enabled ? 1 : TagPeopleDimens.disabledOpacity,
-              child: Container(
-                height: TagPeopleDimens.buttonHeight,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    AppRadius.pill(TagPeopleDimens.buttonHeight),
-                  ),
-                  border: Border.all(
-                    color: colors.primary,
-                    width: TagPeopleDimens.buttonBorder,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppSvgIcon(
-                      AppAssets.image,
-                      size: TagPeopleDimens.buttonIcon,
+      builder: (context, enabled) {
+        if (enabled) {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(
+              TagPeopleDimens.buttonSide,
+              AppSpacing.s8,
+              TagPeopleDimens.buttonSide,
+              AppSpacing.s12,
+            ),
+            child: Semantics(
+              button: true,
+              enabled: true,
+              excludeSemantics: true,
+              label: context.l10n.postTagPeopleInPhoto,
+              onTap: onTap,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onTap,
+                child: Container(
+                  height: TagPeopleDimens.buttonHeight,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      AppRadius.pill(TagPeopleDimens.buttonHeight),
+                    ),
+                    border: Border.all(
                       color: colors.primary,
+                      width: TagPeopleDimens.buttonBorder,
                     ),
-                    SizedBox(width: AppSpacing.s8),
-                    Flexible(
-                      child: AppText(
-                        context.l10n.postTagPeopleInPhoto,
-                        style: context.text.name,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AppSvgIcon(
+                        AppAssets.image,
+                        size: TagPeopleDimens.buttonIcon,
                         color: colors.primary,
-                        maxLines: 1,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: AppSpacing.s8),
+                      Flexible(
+                        child: AppText(
+                          context.l10n.postTagPeopleInPhoto,
+                          style: context.text.name,
+                          color: colors.primary,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
+          );
+        }
+        return SizedBox.shrink();
+      },
     );
   }
 }

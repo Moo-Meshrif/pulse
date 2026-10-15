@@ -111,7 +111,7 @@ void main() {
     getDraft,
   );
 
-  void signUpReturns([Failure? failure]) =>
+  void signUpReturns([Failure? failure, bool alreadyRegistered = false]) =>
       when(
         () => auth.signUp(
           email: any(named: 'email'),
@@ -119,6 +119,7 @@ void main() {
         ),
       ).thenAnswer((_) async {
         if (failure != null) throw failure;
+        return alreadyRegistered;
       });
 
   void verifyReturns([Failure? failure]) =>
@@ -212,29 +213,7 @@ void main() {
       await c.close();
     });
 
-    test('a taken email stays on Account until the email is edited', () async {
-      signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
-      when(
-        () => auth.signIn(
-          identifier: any(named: 'identifier'),
-          password: any(named: 'password'),
-        ),
-      ).thenThrow(const AuthFailure(AuthFailureReason.invalidCredentials));
-      final c = filled();
-      await c.submitAccount();
-
-      expect(c.state.step, SignUpCubit.firstStep);
-      expect(c.state.emailTaken, isTrue);
-      expect(c.state.toastFailure, isNotNull);
-      expect(c.state.loading, isFalse);
-
-      c.passwordChanged('password12');
-      expect(c.state.emailTaken, isTrue);
-      c.emailChanged('ada2@example.com');
-      expect(c.state.emailTaken, isFalse);
-    });
-
-    group('a taken email', () {
+    group('an already registered email', () {
       void signInReturns([Failure? failure]) =>
           when(
             () => auth.signIn(
@@ -246,7 +225,7 @@ void main() {
           });
 
       test('with the same password resumes at the step still to do', () async {
-        signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
+        signUpReturns(null, true);
         signInReturns();
         when(() => getSignupStep()).thenAnswer((_) async => SignupStep.profile);
         final c = filled();
@@ -259,7 +238,7 @@ void main() {
       });
 
       test('with a finished sign-up goes Home', () async {
-        signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
+        signUpReturns(null, true);
         signInReturns();
         when(() => getSignupStep())
             .thenAnswer((_) async => SignupStep.complete);
@@ -273,14 +252,14 @@ void main() {
         await c.close();
       });
 
-      test('with another password stays taken', () async {
-        signUpReturns(const AuthFailure(AuthFailureReason.emailTaken));
+      test('with another password looks like a new sign-up', () async {
+        signUpReturns(null, true);
         signInReturns(const AuthFailure(AuthFailureReason.invalidCredentials));
         final c = filled();
         await c.submitAccount();
 
-        expect(c.state.step, SignUpCubit.firstStep);
-        expect(c.state.emailTaken, isTrue);
+        expect(c.state.step, SignUpCubit.verifyStep);
+        expect(c.state.failure, isNull);
         expect(c.state.loading, isFalse);
         await c.close();
       });

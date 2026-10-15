@@ -98,11 +98,6 @@ abstract class SignUpState with _$SignUpState {
       password.isNotEmpty &&
       !PasswordPolicy.hasMinLength(password);
 
-  bool get emailTaken => switch (failure) {
-    AuthFailure(reason: AuthFailureReason.emailTaken) => true,
-    _ => false,
-  };
-
   bool get wrongCode => switch (failure) {
     AuthFailure(reason: AuthFailureReason.invalidCode) => true,
     _ => false,

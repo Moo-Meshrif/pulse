@@ -301,7 +301,7 @@ void main() {
         email: any(named: 'email'),
         password: any(named: 'password'),
       ),
-    ).thenAnswer((_) async {});
+    ).thenAnswer((_) async => false);
     when(
       () => auth.verifySignUpCode(
         email: any(named: 'email'),

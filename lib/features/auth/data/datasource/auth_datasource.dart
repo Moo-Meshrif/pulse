@@ -4,10 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/app_config.dart';
-import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/enums/recovery_signal.dart';
 import '../../../../core/enums/signed_out_reason.dart';
-import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
 import 'password_recovery_tracker.dart';
 
@@ -43,26 +41,22 @@ abstract interface class AuthDatasource {
   /// [identifier] is an email, or a username (anything without an "@").
   ///
   /// The backend must resolve a username on the server, in the same call that checks the password, so the
-  /// app never learns an email before a correct password. Wrong password and unknown username are the same
-  /// `AuthFailure(invalidCredentials)`; `emailNotConfirmed` comes only after the right password. A backend
-  /// that cannot do this must not offer username sign-in.
+  /// app never learns an email before a correct password. Wrong password and unknown email or username are
+  /// the same `AuthFailure(invalidCredentials)`; `emailNotConfirmed` comes only after the right password. A
+  /// backend that cannot do this must not offer username sign-in.
   Future<void> signIn({required String identifier, required String password});
 
-  /// Creates the account and emails the 6-digit code. An email that already has an account is
-  /// `AuthFailure(emailTaken)`.
-  ///
-  /// This reveals which emails are registered (the form must say the address is in use), so it is only as
-  /// safe as the backend's throttling of sign-up calls.
-  Future<void> signUp({required String email, required String password});
+  /// Creates the account and emails the 6-digit code. Returns true when the email already had an account
+  /// (nothing was created and no code was sent). The screen must not tell the user: it shows the same next
+  /// step either way, so sign-up never reveals which emails are registered.
+  Future<bool> signUp({required String email, required String password});
 
   Future<void> verifySignUpCode({required String email, required String code});
 
   Future<void> resendSignUpCode(String email);
 
-  /// Emails the password-reset link. An email with no account is `AuthFailure(accountNotFound)`.
-  ///
-  /// This reveals which emails are registered (a typo shows at once), so it is only as safe as the
-  /// backend's throttling.
+  /// Emails the password-reset link. An email with no account succeeds too (nothing is sent), so this
+  /// never reveals which emails are registered.
   Future<void> sendPasswordReset(String email);
 
   Future<void> updatePassword(String newPassword);
@@ -162,16 +156,22 @@ final class SupabaseAuthDatasource implements AuthDatasource {
       });
 
   @override
-  Future<void> signUp({required String email, required String password}) =>
+  Future<bool> signUp({required String email, required String password}) =>
       Guard.run(() async {
-        final response = await _auth.signUp(
-          email: email.trim(),
-          password: password,
-        );
-        // With email confirmation on, Supabase hides an existing address as a user with no identities,
-        // not as an error.
-        if (response.user?.identities?.isEmpty ?? false) {
-          throw const AuthRejectedException(AuthFailureReason.emailTaken);
+        try {
+          final response = await _auth.signUp(
+            email: email.trim(),
+            password: password,
+          );
+          // With email confirmation on, Supabase hides an existing address as a user with no identities,
+          // not as an error.
+          return response.user?.identities?.isEmpty ?? false;
+        } on AuthException catch (error) {
+          if (error.code == 'user_already_exists' ||
+              error.code == 'email_exists') {
+            return true;
+          }
+          rethrow;
         }
       });
 
@@ -194,15 +194,7 @@ final class SupabaseAuthDatasource implements AuthDatasource {
 
   @override
   Future<void> sendPasswordReset(String email) => Guard.run(() async {
-    // Supabase answers success for an unknown email, so ask the `email_exists` function first (callable
-    // with the public key, so it needs throttling).
-    final exists = await _client.rpc<bool>(
-      'email_exists',
-      params: {'p_email': email.trim()},
-    );
-    if (!exists) {
-      throw const AuthRejectedException(AuthFailureReason.accountNotFound);
-    }
+    // Supabase answers success for an unknown email and sends nothing: keep it that way.
     await _auth.resetPasswordForEmail(
       email.trim(),
       redirectTo: AppConfig.recoveryRedirectUrl,

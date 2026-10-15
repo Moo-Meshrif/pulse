@@ -282,7 +282,7 @@
   "@sentTitle": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "sentBody": "أرسلنا رابط إعادة التعيين إلى {email}. افتحه لتعيين كلمة مرور جديدة.",
+  "sentBody": "إذا كان هناك حساب لـ {email}، فقد أرسلنا رابط إعادة التعيين. افتحه لتعيين كلمة مرور جديدة.",
   "@sentBody": {
     "x-review": "Arabic draft: pending user approval",
     "placeholders": {
@@ -358,14 +358,6 @@
   },
   "errorPasswordShort": "يجب ألا تقل كلمة المرور عن 8 أحرف",
   "@errorPasswordShort": {
-    "x-review": "Arabic draft: pending user approval"
-  },
-  "errorEmailExists": "يوجد حساب بهذا البريد بالفعل",
-  "@errorEmailExists": {
-    "x-review": "Arabic draft: pending user approval"
-  },
-  "errorAccountNotFound": "لا يوجد حساب بهذا البريد",
-  "@errorAccountNotFound": {
     "x-review": "Arabic draft: pending user approval"
   },
   "verifyTitle": "تحقق من بريدك",

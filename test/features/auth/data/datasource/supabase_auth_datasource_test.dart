@@ -76,23 +76,26 @@ void main() {
       expect(datasource.hasSession, isTrue);
     });
 
-    test('never calls the username RPC or a password grant', () async {
-      final backend = signInBackend();
-      await SupabaseAuthDatasource(
-        backend.client,
-        tracker,
-      ).signIn(identifier: 'dip.roy', password: 'secret');
+    test(
+      'never resolves the username to an email or grants a password',
+      () async {
+        final backend = signInBackend();
+        await SupabaseAuthDatasource(
+          backend.client,
+          tracker,
+        ).signIn(identifier: 'dip.roy', password: 'secret');
 
-      expect(backend.to('get_email_for_username'), isEmpty);
-      expect(
-        backend.to('/token').map((r) => r.url.queryParameters['grant_type']),
-        isNot(contains('password')),
-      );
-      expect(
-        backend.requests.where((r) => r.url.path.contains('/rpc/')),
-        isEmpty,
-      );
-    });
+        expect(backend.to('get_email_for_username'), isEmpty);
+        expect(
+          backend.to('/token').map((r) => r.url.queryParameters['grant_type']),
+          isNot(contains('password')),
+        );
+        expect(
+          backend.requests.where((r) => r.url.path.contains('/rpc/')),
+          isEmpty,
+        );
+      },
+    );
 
     test(
       'a wrong password or unknown user is invalidCredentials, no session',
@@ -202,30 +205,24 @@ void main() {
           ),
         ),
       );
-      await SupabaseAuthDatasource(
+      final alreadyRegistered = await SupabaseAuthDatasource(
         backend.client,
         tracker,
       ).signUp(email: 'new@example.com', password: 'Passw0rd!');
+      expect(alreadyRegistered, isFalse);
       expect(body(backend.to('/signup').single)['email'], 'new@example.com');
     });
 
-    test(
-      'an existing address (a user with no identities) is emailTaken',
-      () async {
-        final backend = BackendDouble(
-          (_) async =>
-              BackendDouble.json(BackendDouble.userJson(identities: [])),
-        );
-        final result = SupabaseAuthDatasource(
-          backend.client,
-          tracker,
-        ).signUp(email: 'taken@example.com', password: 'Passw0rd!');
-        expect(
-          await failureOf(result),
-          const AuthFailure(AuthFailureReason.emailTaken),
-        );
-      },
-    );
+    test('an existing address (a user with no identities) is reported, not refused', () async {
+      final backend = BackendDouble(
+        (_) async => BackendDouble.json(BackendDouble.userJson(identities: [])),
+      );
+      final alreadyRegistered = await SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+      ).signUp(email: 'taken@example.com', password: 'Passw0rd!');
+      expect(alreadyRegistered, isTrue);
+    });
 
     test('a weak password is weakPassword', () async {
       final backend = BackendDouble(
@@ -303,14 +300,8 @@ void main() {
   });
 
   group('password reset', () {
-    BackendDouble resetBackend({required bool exists}) => BackendDouble(
-      (request) async => request.url.path.endsWith('/rpc/email_exists')
-          ? BackendDouble.json(exists)
-          : BackendDouble.json({}),
-    );
-
     test('the reset email links back to the app', () async {
-      final backend = resetBackend(exists: true);
+      final backend = BackendDouble((_) async => BackendDouble.json({}));
       await SupabaseAuthDatasource(
         backend.client,
         tracker,
@@ -323,24 +314,9 @@ void main() {
       expect(body(request)['email'], 'dip@example.com');
     });
 
-    test('an email with no account is refused and nothing is sent', () async {
-      final backend = resetBackend(exists: false);
-      final result = SupabaseAuthDatasource(
-        backend.client,
-        tracker,
-      ).sendPasswordReset('ghost@example.com');
-      expect(
-        await failureOf(result),
-        const AuthFailure(AuthFailureReason.accountNotFound),
-      );
-      expect(backend.to('/recover'), isEmpty);
-    });
-
     test('too many reset emails is rateLimited', () async {
       final backend = BackendDouble(
-        (request) async => request.url.path.endsWith('/rpc/email_exists')
-            ? BackendDouble.json(true)
-            : BackendDouble.authError(429, 'over_email_send_rate_limit'),
+        (_) async => BackendDouble.authError(429, 'over_email_send_rate_limit'),
       );
       final result = SupabaseAuthDatasource(
         backend.client,

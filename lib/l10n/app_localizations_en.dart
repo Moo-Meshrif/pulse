@@ -259,7 +259,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String sentBody(String email) {
-    return 'We sent a reset link to $email. Open it to set a new password.';
+    return 'If an account exists for $email, we sent a reset link. Open it to set a new password.';
   }
 
   @override
@@ -311,12 +311,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPasswordShort => 'Password must be at least 8 characters';
-
-  @override
-  String get errorEmailExists => 'An account with this email already exists';
-
-  @override
-  String get errorAccountNotFound => 'No account found with this email';
 
   @override
   String get verifyTitle => 'Check your email';

@@ -255,7 +255,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String sentBody(String email) {
-    return 'أرسلنا رابط إعادة التعيين إلى $email. افتحه لتعيين كلمة مرور جديدة.';
+    return 'إذا كان هناك حساب لـ $email، فقد أرسلنا رابط إعادة التعيين. افتحه لتعيين كلمة مرور جديدة.';
   }
 
   @override
@@ -307,12 +307,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorPasswordShort => 'يجب ألا تقل كلمة المرور عن 8 أحرف';
-
-  @override
-  String get errorEmailExists => 'يوجد حساب بهذا البريد بالفعل';
-
-  @override
-  String get errorAccountNotFound => 'لا يوجد حساب بهذا البريد';
 
   @override
   String get verifyTitle => 'تحقق من بريدك';

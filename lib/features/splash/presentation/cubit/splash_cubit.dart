@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/enums/auth_failure_reason.dart';
@@ -9,6 +11,7 @@ import '../../../../core/services/connectivity_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../auth/domain/use_case/is_recovery_pending_use_case.dart';
 import '../../../auth/domain/use_case/is_signed_in_use_case.dart';
+import '../../../auth/domain/use_case/sign_out_use_case.dart';
 import '../../../profile/data/enums/signup_step.dart';
 import '../../../profile/domain/use_case/get_signup_step_use_case.dart';
 import '../utils/enums/splash_problem.dart';
@@ -23,12 +26,14 @@ class SplashCubit extends BaseCubit<SplashState> {
     this._isSignedIn,
     this._isRecoveryPending,
     this._getSignupStep,
+    this._signOut,
     this._connectivity,
   ) : super(const SplashState.deciding());
 
   final IsSignedInUseCase _isSignedIn;
   final IsRecoveryPendingUseCase _isRecoveryPending;
   final GetSignupStepUseCase _getSignupStep;
+  final SignOutUseCase _signOut;
   final ConnectivityService _connectivity;
 
   /// The most the start-up decision may take: a slower answer counts as a lost connection.
@@ -69,6 +74,11 @@ class SplashCubit extends BaseCubit<SplashState> {
         return SplashState.go(AppRoutes.signInWith(SignedOutReason.expired));
       case AuthFailure(reason: AuthFailureReason.sessionRevoked):
         return SplashState.go(AppRoutes.signInWith(SignedOutReason.revoked));
+      // A session whose profile is gone (the account was deleted): end it and tell the user it expired.
+      case NotFoundFailure():
+        // Not awaited: the stored session is cleared locally and a failure changes nothing here.
+        unawaited(_signOut().catchError((Object _) {}));
+        return SplashState.go(AppRoutes.signInWith(SignedOutReason.expired));
       case NetworkFailure() || TimeoutFailure():
         return SplashState.failed(await _connectionProblem(failure));
       default:

@@ -92,9 +92,9 @@ void main() {
     test('AuthRejectedException keeps its reason', () async {
       expect(
         await failureOf(
-          const AuthRejectedException(AuthFailureReason.emailTaken),
+          const AuthRejectedException(AuthFailureReason.invalidCode),
         ),
-        const AuthFailure(AuthFailureReason.emailTaken),
+        const AuthFailure(AuthFailureReason.invalidCode),
       );
     });
 
@@ -122,8 +122,6 @@ void main() {
     final cases = <String, AuthFailureReason>{
       'invalid_credentials': AuthFailureReason.invalidCredentials,
       'email_not_confirmed': AuthFailureReason.emailNotConfirmed,
-      'user_already_exists': AuthFailureReason.emailTaken,
-      'email_exists': AuthFailureReason.emailTaken,
       'otp_expired': AuthFailureReason.invalidCode,
       'weak_password': AuthFailureReason.weakPassword,
       'same_password': AuthFailureReason.samePassword,

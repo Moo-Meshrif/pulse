@@ -147,7 +147,7 @@ void main() {
         email: any(named: 'email'),
         password: any(named: 'password'),
       ),
-    ).thenAnswer((_) async {});
+    ).thenAnswer((_) async => false);
     when(
       () => auth.verifySignUpCode(
         email: any(named: 'email'),
@@ -279,13 +279,15 @@ void main() {
       expect(find.text(l10nEn.errorPasswordShort), findsOneWidget);
     });
 
-    testView('a taken email is flagged under the field', (tester) async {
+    testView('an already registered email shows the Verify step', (
+      tester,
+    ) async {
       when(
         () => auth.signUp(
           email: any(named: 'email'),
           password: any(named: 'password'),
         ),
-      ).thenThrow(const AuthFailure(AuthFailureReason.emailTaken));
+      ).thenAnswer((_) async => true);
       when(
         () => auth.signIn(
           identifier: any(named: 'identifier'),
@@ -295,14 +297,11 @@ void main() {
       await open(tester);
       await fillAccount(tester);
       await tester.tap(find.text(l10nEn.continueButton));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
-      expect(
-        find.text(l10nEn.errorEmailExists),
-        findsOneWidget,
-      ); // snackbar only
-      expect(find.byType(NoticeCard), findsOneWidget);
-      expect(find.text(l10nEn.signUpTitle), findsOneWidget);
+      expect(find.byType(NoticeCard), findsNothing);
+      expect(find.text(l10nEn.verifyTitle), findsOneWidget);
     });
 
     testView('the Terms and Privacy Policy links open their pages', (

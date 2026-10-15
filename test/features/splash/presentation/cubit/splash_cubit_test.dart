@@ -11,6 +11,7 @@ import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/features/auth/domain/use_case/is_recovery_pending_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
+import 'package:pulse/features/auth/domain/use_case/sign_out_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
 import 'package:pulse/features/splash/presentation/cubit/splash_cubit.dart';
@@ -23,6 +24,8 @@ class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
+class MockSignOut extends Mock implements SignOutUseCase {}
+
 class MockConnectivity extends Mock implements ConnectivityService {}
 
 void main() {
@@ -31,6 +34,7 @@ void main() {
   late MockIsSignedIn isSignedIn;
   late MockIsRecoveryPending isRecoveryPending;
   late MockGetSignupStep getSignupStep;
+  late MockSignOut signOut;
   late MockConnectivity connectivity;
 
   setUp(() {
@@ -38,13 +42,20 @@ void main() {
     isRecoveryPending = MockIsRecoveryPending();
     when(() => isRecoveryPending()).thenReturn(false);
     getSignupStep = MockGetSignupStep();
+    signOut = MockSignOut();
+    when(() => signOut()).thenAnswer((_) async {});
     connectivity = MockConnectivity();
     when(() => connectivity.diagnose(any()))
         .thenAnswer((_) async => ConnectionProblem.offline);
   });
 
-  SplashCubit cubit() =>
-      SplashCubit(isSignedIn, isRecoveryPending, getSignupStep, connectivity);
+  SplashCubit cubit() => SplashCubit(
+    isSignedIn,
+    isRecoveryPending,
+    getSignupStep,
+    signOut,
+    connectivity,
+  );
 
   void stepIs(SignupStep step) =>
       when(() => getSignupStep()).thenAnswer((_) async => step);
@@ -175,9 +186,19 @@ void main() {
     },
   );
 
+  blocTest<SplashCubit, SplashState>(
+    'a session whose profile is gone is signed out and Sign in says it expired',
+    setUp: () => stepFails(const NotFoundFailure()),
+    build: cubit,
+    act: (c) => c.decide(),
+    expect: () => [
+      SplashState.go(AppRoutes.signInWith(SignedOutReason.expired)),
+    ],
+    verify: (_) => verify(() => signOut()).called(1),
+  );
+
   for (final failure in <Failure>[
     const ServerFailure(statusCode: 500),
-    const NotFoundFailure(),
     const ParseFailure(),
     const UnexpectedFailure(),
     const AuthFailure(AuthFailureReason.rateLimited),
