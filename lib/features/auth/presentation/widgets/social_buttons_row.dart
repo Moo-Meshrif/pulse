@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../dimens/auth_dimens.dart';
 
@@ -19,13 +19,13 @@ class SocialButtonsRow extends StatelessWidget {
       Expanded(
         child: PillButton.outline(
           label: context.l10n.google,
-          onPressed: () => context.showSnackBar(context.l10n.comingSoon),
+          onPressed: () => Notices.info(context.l10n.comingSoon),
         ),
       ),
       Expanded(
         child: PillButton.outline(
           label: context.l10n.apple,
-          onPressed: () => context.showSnackBar(context.l10n.comingSoon),
+          onPressed: () => Notices.info(context.l10n.comingSoon),
         ),
       ),
     ],

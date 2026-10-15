@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/extensions/snack_bar_context.dart';
+import '../../../../../core/extensions/notice_context.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../post/domain/entity/post_entity.dart';
@@ -82,7 +83,7 @@ class _FeedPostItemState extends State<FeedPostItem> {
 
   void _share() {
     // TODO(home-plan H6): the system share sheet waits for post links and share_plus (post-plan T7).
-    context.showSnackBar(context.l10n.comingSoon);
+    Notices.info(context.l10n.comingSoon);
   }
 
   Future<void> _openOptions() async {
@@ -97,11 +98,10 @@ class _FeedPostItemState extends State<FeedPostItem> {
   }
 
   Future<void> _undoNotInterested() async {
-    final messenger = ScaffoldMessenger.of(context);
     try {
       await _actions.undoNotInterested(_loaded);
     } on Failure catch (failure) {
-      if (messenger.mounted) messenger.context.showFailure(failure);
+      if (mounted) context.showFailure(failure);
     }
   }
 

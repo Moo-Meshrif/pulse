@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/failure_l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../data/enums/audience_list.dart';
 import '../cubit/audience_list_cubit.dart';
@@ -31,7 +30,7 @@ class AudienceListScreen extends StatelessWidget {
           AppNavigator.back(context, true);
           return;
         }
-        context.showSnackBar(state.failure!.l10n(context));
+        context.showFailure(state.failure);
         context.read<AudienceListCubit>().clearFailure();
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(

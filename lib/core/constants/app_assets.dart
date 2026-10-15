@@ -88,6 +88,9 @@ abstract final class AppAssets {
   static const inbox = '$_icons/ic_inbox.svg';
   static const listLines = '$_icons/ic_list_lines.svg';
   static const alertCircle = '$_icons/ic_alert_circle.svg';
+  static const noticeError = '$_icons/ic_notice_error.svg';
+  static const noticeSuccess = '$_icons/ic_notice_success.svg';
+  static const noticeInfo = '$_icons/ic_notice_info.svg';
   static const globeOff = '$_icons/ic_globe_off.svg';
   static const chatBubble = '$_icons/ic_chat_bubble.svg';
   static const userAdd = '$_icons/ic_user_add.svg';

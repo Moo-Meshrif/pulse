@@ -36,6 +36,7 @@ void main() {
     await tester.pumpWidget(
       AppScaleScope(
         builder: (context) => MaterialApp(
+          builder: noticeBuilder,
           theme: AppTheme.light,
           locale: locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

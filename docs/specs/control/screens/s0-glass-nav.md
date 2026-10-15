@@ -41,7 +41,7 @@ Visible / hidden (keyboard open or full-screen route: slides down 200 ms). Badge
 - Re-tap active tab: pop to root, else scroll to top (+ refresh on Home).
 - Nav hides when the keyboard is open and on full-screen routes (story viewer, create, comments) [user]; tab sub-pages keep it.
 - Always blur (sigma 22); flat fallback constant kept, no detection [user].
-- Every tab scroll view reserves bottom padding 104 + viewPadding.bottom.
+- Every tab scroll view reserves bottom padding 92 + viewPadding.bottom.
 
 ## Data mapping
 Chat badge: `ShellCubit.unreadChat`, hardcoded 4 for now [user]; later supplied by the chat feature. No other data.

@@ -29,4 +29,4 @@ Slots: 0 Home, 1 Shorts, 2 Create (not a tab), 3 Chat, 4 Profile. Tab Navigators
 ## Structure advice for the plan (not code)
 - `features/control_page` (name per repo convention) owns `MainShell`, nav widget, a small `ShellCubit` (selected tab, unread chat badge, nav visibility). Other features expose their root page via a use-case-free public screen widget registered with the shell; shell never imports their data/domain.
 - Keyboard + full-screen hiding via a `NavVisibility` notifier the shell listens to; full-screen routes live on the root Navigator.
-- Wrap each tab body in `AppSafeArea` with `bottomSpace` = nav clearance (104).
+- Wrap each tab body in `AppSafeArea` with `bottomSpace` = nav clearance (92).

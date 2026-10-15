@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/error/failures.dart';
-import '../../../../../core/extensions/failure_l10n.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/extensions/snack_bar_context.dart';
+import '../../../../../core/extensions/notice_context.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../utils/enums/post_option.dart';
 import '../../utils/post_options_actions.dart';
@@ -38,7 +38,7 @@ abstract final class PostOptionsFlow {
       case PostOption.copyLink:
       case PostOption.share:
         // TODO(post-plan T7): Copy link and Share are coming soon until post links and share_plus exist.
-        context.showSnackBar(context.l10n.comingSoon);
+        Notices.info(context.l10n.comingSoon);
         return Future.value();
       case PostOption.notInterested:
         return _attempt(context, actions.onNotInterested);
@@ -65,7 +65,6 @@ abstract final class PostOptionsFlow {
     PostOptionsData data,
     PostOptionsActions actions,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final audience = await PostVisibilitySheet.change(
       context,
@@ -74,7 +73,7 @@ abstract final class PostOptionsFlow {
     );
     if (audience == null) return;
     actions.onAudienceChanged(audience);
-    messenger.showNotice(l10n.postVisibilityUpdated);
+    Notices.success(l10n.postVisibilityUpdated);
   }
 
   /// Runs [action] and shows the failure it throws, if any. Returns whether it succeeded.
@@ -82,14 +81,11 @@ abstract final class PostOptionsFlow {
     BuildContext context,
     Future<void> Function() action,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
     try {
       await action();
       return true;
     } on Failure catch (failure) {
-      if (messenger.mounted) {
-        messenger.showNotice(failure.l10n(messenger.context));
-      }
+      if (context.mounted) context.showFailure(failure);
       return false;
     }
   }
@@ -99,10 +95,9 @@ abstract final class PostOptionsFlow {
     PostOptionsData data,
     PostOptionsActions actions,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     if (!await _attempt(context, actions.onUnfollow)) return;
-    messenger.showNotice(
+    Notices.info(
       l10n.postUnfollowed(data.username),
       actionLabel: l10n.undo,
       onAction: actions.onUndoUnfollow,
@@ -114,10 +109,9 @@ abstract final class PostOptionsFlow {
     PostOptionsData data,
     PostOptionsActions actions,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     if (!await _attempt(context, actions.onMute)) return;
-    messenger.showNotice(
+    Notices.info(
       l10n.postMuted(data.username),
       actionLabel: l10n.undo,
       onAction: actions.onUndoMute,
@@ -129,7 +123,6 @@ abstract final class PostOptionsFlow {
     PostOptionsData data,
     PostOptionsActions actions,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     await ReportSheet.show(
       context,
@@ -144,8 +137,8 @@ abstract final class PostOptionsFlow {
         ReportSentRow(
           icon: AppAssets.volumeOff,
           title: l10n.postMute(data.username),
-          onTap: () => _afterReport(messenger, actions.onMute, () {
-            messenger.showNotice(
+          onTap: () => _afterReport(context, actions.onMute, () {
+            Notices.info(
               l10n.postMuted(data.username),
               actionLabel: l10n.undo,
               onAction: actions.onUndoMute,
@@ -155,8 +148,8 @@ abstract final class PostOptionsFlow {
         ReportSentRow(
           icon: AppAssets.userMinus,
           title: l10n.postUnfollow(data.username),
-          onTap: () => _afterReport(messenger, actions.onUnfollow, () {
-            messenger.showNotice(
+          onTap: () => _afterReport(context, actions.onUnfollow, () {
+            Notices.info(
               l10n.postUnfollowed(data.username),
               actionLabel: l10n.undo,
               onAction: actions.onUndoUnfollow,
@@ -168,16 +161,14 @@ abstract final class PostOptionsFlow {
   }
 
   static Future<void> _afterReport(
-    ScaffoldMessengerState messenger,
+    BuildContext context,
     Future<void> Function() action,
     VoidCallback onDone,
   ) async {
     try {
       await action();
     } on Failure catch (failure) {
-      if (messenger.mounted) {
-        messenger.showNotice(failure.l10n(messenger.context));
-      }
+      if (context.mounted) context.showFailure(failure);
       return;
     }
     onDone();
@@ -187,7 +178,6 @@ abstract final class PostOptionsFlow {
     BuildContext context,
     PostOptionsActions actions,
   ) async {
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final confirmed = await ConfirmationDialog.destructive(
       context,
@@ -199,7 +189,7 @@ abstract final class PostOptionsFlow {
     );
     if (confirmed != true || !context.mounted) return;
     if (await _attempt(context, actions.onDelete)) {
-      messenger.showNotice(l10n.postDeleted);
+      Notices.success(l10n.postDeleted);
     }
   }
 }

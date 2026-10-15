@@ -25,6 +25,7 @@ export 'loading_overlay/loading_overlay.dart';
 export 'logo_lockup.dart';
 export 'logo_tile.dart';
 export 'nav_clearance.dart';
+export 'notice/notice_host.dart';
 export 'paged_scroll_view/paged_scroll_view.dart';
 export 'phone_field.dart';
 export 'photo_picker_avatar.dart';

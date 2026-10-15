@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -16,6 +16,7 @@ import '../cubit/forgot_password_state.dart';
 import '../dimens/auth_dimens.dart';
 import '../utils/bold_spans.dart';
 import '../utils/email_mask.dart';
+import '../utils/enums/reset_link_message.dart';
 
 /// S9 (docs/specs/auth/screens/s9-forgot-password-sent-dialog.md): "Check your email", shown over
 /// Forgot password once the link was sent. Custom content in the shared [AppDialogShell].
@@ -36,11 +37,9 @@ class _ResetLinkSentBody extends StatelessWidget {
   const _ResetLinkSentBody();
 
   @override
-  Widget build(BuildContext context) => const ScaffoldMessenger(
-    child: Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(child: _ResetLinkSentCard()),
-    ),
+  Widget build(BuildContext context) => const Scaffold(
+    backgroundColor: Colors.transparent,
+    body: Center(child: _ResetLinkSentCard()),
   );
 }
 
@@ -52,8 +51,16 @@ class _ResetLinkSentCard extends StatelessWidget {
     final l10n = context.l10n;
     return BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
       listenWhen: (_, state) => state.message != null,
-      listener: (context, state) =>
-          context.showSnackBar(state.message?.l10n(context)),
+      listener: (context, state) {
+        final message = state.message;
+        if (message == null) return;
+        final text = message.l10n(context);
+        if (message == ResetLinkMessage.resent) {
+          Notices.success(text);
+        } else {
+          Notices.error(text);
+        }
+      },
       builder: (context, state) {
         final colors = context.appColors;
         final masked = maskEmail(state.email.trim());

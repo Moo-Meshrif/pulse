@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/enums/signed_out_reason.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../cubit/sign_in_cubit.dart';
 import '../cubit/sign_in_state.dart';

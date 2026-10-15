@@ -5,6 +5,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_theme.dart';
+import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_in_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_in_screen.dart';
@@ -52,6 +53,7 @@ void main() {
   Future<void> open(WidgetTester tester, {Locale? locale}) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: noticeBuilder,
         theme: AppTheme.light,
         locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -124,7 +126,7 @@ void main() {
 
     expect(
       find.descendant(
-        of: find.byType(SnackBar),
+        of: find.byType(NoticeCard),
         matching: find.text(l10nEn.errorCredentials),
       ),
       findsOneWidget,

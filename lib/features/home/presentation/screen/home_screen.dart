@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/extensions/notice_context.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../post/presentation/cubit/post_actions_cubit.dart';
 import '../../../post/presentation/cubit/post_actions_state.dart';
 import '../../../post/presentation/utils/enums/post_row.dart';
@@ -53,7 +54,7 @@ class HomeScreen extends StatelessWidget {
       state.upload is StoryUploadFailed && before.upload is! StoryUploadFailed;
 
   void _showUploadFailedWithRetry(BuildContext context, StoryRailState state) {
-    context.showSnackBar(
+    Notices.error(
       context.l10n.storyPostFailed,
       actionLabel: context.l10n.retry,
       onAction: context.read<StoryRailCubit>().retryUpload,

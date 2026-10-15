@@ -26,7 +26,7 @@ class AddMediaTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: CustomPaint(
-          painter: _DashedRoundedRectPainter(
+          foregroundPainter: _DashedRoundedRectPainter(
             color: colors.dashed,
             radius: PostComposerDimens.thumbRadius,
           ),

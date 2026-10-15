@@ -10,6 +10,7 @@ export 'dialog_dimens.dart';
 export 'form_dimens.dart';
 export 'loading_dimens.dart';
 export 'logo_dimens.dart';
+export 'notice_dimens.dart';
 
 /// Spacing scale (dp) from docs/specs/_theme/spacing-radius-shadows.md. Getters over [AppScale.scale],
 /// never `const`: the factor changes with the window.
@@ -79,6 +80,15 @@ abstract final class AppShadows {
     BoxShadow(
       color: AppPalette.ink.withAlpha(0x1F),
       blurRadius: AppScale.scale(8),
+    ),
+  ];
+
+  /// Notice card: 0 14 36 #161A19 @ 28%.
+  static List<BoxShadow> get notice => [
+    BoxShadow(
+      color: AppPalette.ink.withAlpha(0x47),
+      offset: Offset(0, AppScale.scale(14)),
+      blurRadius: AppScale.scale(36),
     ),
   ];
 

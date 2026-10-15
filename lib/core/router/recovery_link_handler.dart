@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../enums/recovery_signal.dart';
 import '../extensions/l10n.dart';
-import '../extensions/snack_bar_context.dart';
+import '../notice/notices.dart';
 import 'app_navigator.dart';
 import 'app_routes.dart';
 
@@ -45,7 +45,7 @@ class RecoveryLinkHandler {
     if (_disposed) return;
     final context = _navigatorKey.currentContext;
     if (context != null) {
-      context.showSnackBar(context.l10n.linkExpiredSnackBar);
+      Notices.error(context.l10n.linkExpiredSnackBar);
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) => _showLinkExpired());
     }

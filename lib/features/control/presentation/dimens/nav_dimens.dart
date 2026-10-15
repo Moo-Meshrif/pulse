@@ -8,7 +8,7 @@ abstract final class NavDimens {
   static double get sideInset => AppScale.scale(16);
 
   /// Gap above the bottom system inset (add `MediaQuery.viewPadding.bottom`).
-  static double get bottomInset => AppScale.scale(18);
+  static double get bottomInset => AppScale.scale(6);
   static double get height => AppScale.scale(68);
   static double get radius => AppScale.scale(34);
   static double get padding => AppScale.scale(6);
@@ -21,8 +21,8 @@ abstract final class NavDimens {
   static const double borderWidth = 1;
   static const double highlightHeight = 1;
 
-  /// Bottom padding every tab's scroll view reserves: height 68 + bottom 18 + 18 (add the bottom inset).
-  static double get contentClearance => AppScale.scale(104);
+  /// Bottom padding every tab's scroll view reserves: height 68 + bottom 6 + 18 (add the bottom inset).
+  static double get contentClearance => AppScale.scale(92);
   // Count badge on the Chat item.
   static double get badgeMin => AppScale.scale(18);
   static double get badgeRadius => AppScale.scale(9);

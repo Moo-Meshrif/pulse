@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/extensions/snack_bar_context.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../data/model/story_model.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
@@ -111,8 +111,7 @@ class StoryChrome extends StatelessWidget {
                       isLiked: story.likedByMe ?? false,
                       onLike: cubit.toggleLike,
                       // TODO(story-plan B3): replies go to Chat when it exists.
-                      onSend: () =>
-                          context.showSnackBar(context.l10n.storyReplySoon),
+                      onSend: () => Notices.info(context.l10n.storyReplySoon),
                       onFocusChanged: (focused) => focused
                           ? cubit.pause(StoryPauseReason.keyboard)
                           : cubit.resume(StoryPauseReason.keyboard),

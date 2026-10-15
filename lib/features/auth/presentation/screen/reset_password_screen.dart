@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/widgets/confirmation_dialog/confirmation_dialog.dart';
 import '../cubit/reset_password_cubit.dart';

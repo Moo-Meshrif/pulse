@@ -39,6 +39,7 @@ void main() {
   Future<void> open(WidgetTester tester, {Locale? locale}) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: noticeBuilder,
         theme: AppTheme.light,
         locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,

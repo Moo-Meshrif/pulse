@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/post_entity.dart';
@@ -71,12 +71,11 @@ class AddEditPostScreen extends StatelessWidget {
   void _closeOrShowNotice(BuildContext context, AddEditPostState state) {
     final cubit = context.read<AddEditPostCubit>();
     if (state.isSaved) {
-      final messenger = ScaffoldMessenger.of(context);
       final message = state.isEditing
           ? context.l10n.postUpdated
           : context.l10n.newPostShared;
       AppNavigator.back(context);
-      messenger.showNotice(message);
+      Notices.success(message);
       return;
     }
     final notice = state.notice;
@@ -84,11 +83,16 @@ class AddEditPostScreen extends StatelessWidget {
     final isSendFailure =
         notice == NewPostNotice.shareFailed ||
         notice == NewPostNotice.saveFailed;
-    context.showSnackBar(
-      notice.message(context),
-      actionLabel: isSendFailure ? context.l10n.retry : null,
-      onAction: isSendFailure ? cubit.save : null,
-    );
+    final message = notice.message(context);
+    if (isSendFailure) {
+      Notices.error(
+        message,
+        actionLabel: context.l10n.retry,
+        onAction: cubit.save,
+      );
+    } else {
+      Notices.info(message);
+    }
     cubit.clearNotice();
   }
 }

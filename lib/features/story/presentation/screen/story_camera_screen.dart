@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -59,10 +59,12 @@ class StoryCameraScreen extends StatelessWidget {
     final notice = state.notice;
     if (notice == null) return;
     final l10n = context.l10n;
-    context.showSnackBar(switch (notice) {
-      StoryCameraNotice.videoTooLong => l10n.storyVideoTooLong,
-      StoryCameraNotice.captureFailed => l10n.storyCaptureFailed,
-    });
+    switch (notice) {
+      case StoryCameraNotice.videoTooLong:
+        Notices.info(l10n.storyVideoTooLong);
+      case StoryCameraNotice.captureFailed:
+        Notices.error(l10n.storyCaptureFailed);
+    }
     cubit.clearNotice();
   }
 }

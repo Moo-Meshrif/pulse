@@ -43,6 +43,8 @@ class AppTextStyles {
     required this.moreLink,
     required this.optionTitle,
     required this.sheetTitle,
+    required this.noticeTitle,
+    required this.noticeAction,
   });
 
   static const _sora = 'Sora';
@@ -111,6 +113,10 @@ class AppTextStyles {
 
   /// Visibility picker sheet title.
   final TextStyle sheetTitle;
+
+  /// Notice card title (14/600) and its action pill (13/700).
+  final TextStyle noticeTitle;
+  final TextStyle noticeAction;
 
   static final latin = _build(arabic: false);
   static final arabic = _build(arabic: true);
@@ -193,6 +199,8 @@ class AppTextStyles {
       moreLink: s(14, FontWeight.w600, spacing: 0),
       optionTitle: s(16, FontWeight.w500, spacing: 0),
       sheetTitle: s(18, FontWeight.w700, sora: true, spacing: -0.2),
+      noticeTitle: s(14, FontWeight.w600, spacing: 0),
+      noticeAction: s(13, FontWeight.w700, spacing: 0),
     );
   }
 
@@ -232,6 +240,8 @@ class AppTextStyles {
       moreLink: f(moreLink),
       optionTitle: f(optionTitle),
       sheetTitle: f(sheetTitle),
+      noticeTitle: f(noticeTitle),
+      noticeAction: f(noticeAction),
     );
   }
 

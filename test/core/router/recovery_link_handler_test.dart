@@ -36,6 +36,7 @@ void main() {
   Future<void> pumpShell(WidgetTester tester, {String initial = '/home'}) =>
       tester.pumpWidget(
         MaterialApp(
+          builder: noticeBuilder,
           navigatorKey: key,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

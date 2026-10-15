@@ -103,6 +103,7 @@ void main() {
       setUpView(tester, textScale: textScale);
       await tester.pumpWidget(
         MaterialApp(
+          builder: noticeBuilder,
           theme: AppTheme.light,
           locale: locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -392,6 +393,7 @@ void main() {
       setUpView(tester, textScale: textScale);
       await tester.pumpWidget(
         MaterialApp(
+          builder: noticeBuilder,
           theme: AppTheme.light,
           locale: locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

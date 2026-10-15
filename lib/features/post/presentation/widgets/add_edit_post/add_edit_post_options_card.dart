@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/extensions/snack_bar_context.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/utils/location_choice.dart';
@@ -58,7 +58,7 @@ class AddEditPostOptionsCard extends StatelessWidget {
             AddEditPostOptionRow(
               icon: AppAssets.tagPerson,
               title: l10n.newPostTag,
-              onTap: () => context.showSnackBar(l10n.comingSoon),
+              onTap: () => Notices.info(l10n.comingSoon),
             ),
             BlocSelector<AddEditPostCubit, AddEditPostState, String?>(
               selector: (state) => state.location,
@@ -73,11 +73,12 @@ class AddEditPostOptionsCard extends StatelessWidget {
             AddEditPostOptionRow(
               icon: AppAssets.smile,
               title: l10n.newPostFeeling,
-              onTap: () => context.showSnackBar(l10n.comingSoon),
+              onTap: () => Notices.info(l10n.comingSoon),
             ),
             BlocSelector<AddEditPostCubit, AddEditPostState, bool>(
               selector: (state) => state.commentsEnabled,
               builder: (context, enabled) => AddEditPostOptionRow(
+                padding: PostComposerDimens.optionRowPadding.copyWith(top: 0),
                 icon: AppAssets.comment,
                 title: l10n.newPostAllowComments,
                 onTap: () => cubit.commentsChanged(!enabled),

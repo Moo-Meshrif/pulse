@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_palette.dart';
 
 export 'app_palette.dart';
+export 'notice_colors.dart';
 export 'story_colors.dart';
 
 /// Light color tokens (docs/specs/_theme/colors.md). Read them with `context.appColors.<token>`. Dark

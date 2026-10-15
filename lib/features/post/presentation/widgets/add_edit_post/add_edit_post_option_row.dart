@@ -17,6 +17,7 @@ class AddEditPostOptionRow extends StatelessWidget {
     this.value,
     this.trailing,
     this.onTap,
+    this.padding,
   });
 
   final String icon;
@@ -24,6 +25,7 @@ class AddEditPostOptionRow extends StatelessWidget {
   final String? value;
   final Widget? trailing;
   final VoidCallback? onTap;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class AddEditPostOptionRow extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: PostComposerDimens.optionRowPadding,
+          padding: padding ?? PostComposerDimens.optionRowPadding,
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight:
@@ -70,11 +72,16 @@ class AddEditPostOptionRow extends StatelessWidget {
                   ),
                 ),
                 if (value != null) ...[
-                  AppText(
-                    value!,
-                    style: context.text.bodySm,
-                    color: colors.textSecondary,
-                    maxLines: 1,
+                  Flexible(
+                    child: Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: AppText(
+                        value!,
+                        style: context.text.bodySm,
+                        color: colors.textSecondary,
+                        maxLines: 2,
+                      ),
+                    ),
                   ),
                   SizedBox(width: AppSpacing.s8),
                 ],

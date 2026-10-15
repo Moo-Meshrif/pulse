@@ -10,6 +10,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
+import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/activity/domain/use_case/get_unread_activity_count_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
@@ -248,7 +249,7 @@ void main() {
       expect(find.text(l10nEn.storyPostFailed), findsOneWidget);
       await tester.tap(
         find.descendant(
-          of: find.byType(SnackBar),
+          of: find.byType(NoticeCard),
           matching: find.text(l10nEn.retry),
         ),
       );
@@ -273,7 +274,7 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(_icon(AppAssets.heartFilled), findsNothing);
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(NoticeCard), findsOneWidget);
     });
 
     testView(
@@ -339,7 +340,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byType(PostCard), findsNWidgets(2));
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(NoticeCard), findsOneWidget);
     });
 
     testView('a refresh forgets what was done to the old posts', (

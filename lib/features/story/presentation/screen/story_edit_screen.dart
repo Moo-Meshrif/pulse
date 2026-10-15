@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/extensions/snack_bar_context.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../data/model/story_overlay_model.dart';
@@ -72,15 +72,18 @@ class StoryEditScreen extends StatelessWidget {
     final l10n = context.l10n;
     final notice = state.notice;
     if (notice == null) return;
-    context.showSnackBar(switch (notice) {
-      StoryEditNotice.uploadBusy => l10n.storyUploadBusy,
-      StoryEditNotice.shareFailed => l10n.storyShareFailed,
-      StoryEditNotice.saved => l10n.storySaved,
-      StoryEditNotice.saveFailed => l10n.errorGeneric,
-      StoryEditNotice.stickerLimit => l10n.storyStickerLimit(
-        StoryOverlayModel.maxPerStory,
-      ),
-    });
+    switch (notice) {
+      case StoryEditNotice.uploadBusy:
+        Notices.info(l10n.storyUploadBusy);
+      case StoryEditNotice.shareFailed:
+        Notices.error(l10n.storyShareFailed);
+      case StoryEditNotice.saved:
+        Notices.success(l10n.storySaved);
+      case StoryEditNotice.saveFailed:
+        Notices.error(l10n.errorGeneric);
+      case StoryEditNotice.stickerLimit:
+        Notices.info(l10n.storyStickerLimit(StoryOverlayModel.maxPerStory));
+    }
     cubit.clearNotice();
   }
 }

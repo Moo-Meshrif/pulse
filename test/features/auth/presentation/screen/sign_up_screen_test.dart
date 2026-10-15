@@ -14,6 +14,7 @@ import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/theme/colors/app_colors.dart';
 import 'package:pulse/core/utils/country_names_delegate.dart';
+import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/auth/presentation/cubit/sign_up_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_up_screen.dart';
@@ -184,6 +185,7 @@ void main() {
     await tester.pumpWidget(
       AppScaleScope(
         builder: (context) => MaterialApp(
+          builder: noticeBuilder,
           theme: AppTheme.light,
           locale: locale,
           localizationsDelegates: const [
@@ -299,7 +301,7 @@ void main() {
         find.text(l10nEn.errorEmailExists),
         findsOneWidget,
       ); // snackbar only
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(NoticeCard), findsOneWidget);
       expect(find.text(l10nEn.signUpTitle), findsOneWidget);
     });
 
@@ -395,7 +397,7 @@ void main() {
       await flush(tester);
 
       expect(find.text(l10nEn.errorWrongCode), findsOneWidget); // snackbar only
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(NoticeCard), findsOneWidget);
     });
 
     testView('"Resend code" works after the cooldown', (tester) async {
@@ -597,7 +599,7 @@ void main() {
         find.text(l10nEn.errorUsernameTaken),
         findsOneWidget,
       ); // snackbar only
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(NoticeCard), findsOneWidget);
       expect(find.text(l10nEn.aboutTitle), findsOneWidget);
     });
   });

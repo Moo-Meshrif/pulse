@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/app/app.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/extensions/l10n.dart';
+import 'package:pulse/core/notice/notices.dart';
 import 'package:pulse/core/services/photo_picker_service.dart';
 import 'package:pulse/core/theme/app_scale.dart';
 import 'package:pulse/core/theme/app_scroll_behavior.dart';
@@ -100,6 +101,12 @@ class MockAudienceDatasource extends Mock implements AudienceDatasource {}
 
 class MockMediaFilesDatasource extends Mock implements MediaFilesDatasource {}
 
+/// `MaterialApp.builder` for a test that builds its own app: hosts the notice card and keeps it up.
+Widget noticeBuilder(BuildContext context, Widget? child) {
+  Notices.autoDismiss = false;
+  return NoticeHost(child: child!);
+}
+
 final l10nEn = lookupAppLocalizations(const Locale('en'));
 final l10nAr = lookupAppLocalizations(const Locale('ar'));
 
@@ -145,12 +152,13 @@ extension PumpApp on WidgetTester {
     /// Resolves the named routes the widget pushes.
     RouteFactory? onGenerateRoute,
   }) async {
+    Notices.autoDismiss = false;
     await pumpWidget(
       AppScaleScope(
         builder: (context) => MaterialApp(
           builder: (context, child) => MediaQuery.withClampedTextScaling(
             maxScaleFactor: AppScale.maxSystemTextScale,
-            child: child!,
+            child: NoticeHost(child: child!),
           ),
           scrollBehavior: const AppScrollBehavior(),
           theme: AppTheme.light,
@@ -192,6 +200,7 @@ extension PumpApp on WidgetTester {
     );
     addTearDown(getIt.reset);
     await configure?.call();
+    Notices.autoDismiss = false;
     await pumpWidget(App(key: UniqueKey()));
     await pumpAndSettle();
   }

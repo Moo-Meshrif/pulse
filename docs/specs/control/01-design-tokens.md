@@ -18,13 +18,13 @@ Shadows: bar `0 12 32` #161A19 @ 16%; bubble `0 0 8` #161A19 @ 12%, no offset, f
 ## Dimensions (`NavDimens`; scaled with AppScale except tap targets)
 | Token | Value |
 |---|---|
-| position | start 16, end 16, bottom 18 + viewPadding.bottom |
+| position | start 16, end 16, bottom 6 + viewPadding.bottom |
 | height / radius / padding | 68 / 34 / 6 |
 | blur | `BackdropFilter` sigma 22 (blur only on Flutter) |
 | item | flex 1, height 56, gap 4, tap target >= 56 x 56 |
 | icon / plus icon | 22 stroke 1.8 / 26 stroke 1.9 |
 | bubble | 44 circle |
-| content clearance | 104 + viewPadding.bottom |
+| content clearance | 92 + viewPadding.bottom |
 | count badge | min 18 x 18, r9, `like`, text 10/700 white, h-padding 4, border 2 white @ 90%, top 9, start 50% + 3 of the item (RTL: 50% − 3 from the end); "99+" above 99 |
 | header dot (Home bell, in home spec) | 9, `like`, border 2 `background` |
 

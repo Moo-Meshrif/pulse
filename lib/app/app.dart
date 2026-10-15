@@ -54,7 +54,7 @@ class _AppState extends State<App> {
         value: SystemUiOverlayStyle.dark,
         child: MediaQuery.withClampedTextScaling(
           maxScaleFactor: AppScale.maxSystemTextScale,
-          child: child!,
+          child: NoticeHost(child: child!),
         ),
       ),
       onGenerateTitle: (context) => context.l10n.appTitle,

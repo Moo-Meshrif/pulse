@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/features/post/presentation/utils/post_options_actions.dart';
 import 'package:pulse/features/post/presentation/utils/post_options_data.dart';
 import 'package:pulse/features/post/presentation/widgets/post_options/post_options_flow.dart';
@@ -199,7 +200,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(calls, ['mute']);
       expect(find.text(l10nEn.postMuted('sara')), findsNothing);
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(NoticeCard), findsOneWidget);
     });
 
     testWidgets('Delete asks first; Cancel calls nothing', (tester) async {

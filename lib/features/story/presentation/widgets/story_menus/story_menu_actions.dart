@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/enums/sheet_tone.dart';
 import '../../../../../core/error/failures.dart';
-import '../../../../../core/extensions/failure_l10n.dart';
 import '../../../../../core/extensions/l10n.dart';
-import '../../../../../core/extensions/snack_bar_context.dart';
+import '../../../../../core/extensions/notice_context.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/utils/cached_picture.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/enums/story_media_type.dart';
@@ -19,14 +19,13 @@ abstract final class StoryMenuActions {
   static Future<void> mute(BuildContext context, StoryViewerCubit cubit) async {
     final person = cubit.state.person;
     if (person == null) return;
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final failure = await cubit.muteCurrent();
     if (failure != null) {
       if (context.mounted) context.showFailure(failure);
       return;
     }
-    messenger.showNotice(
+    Notices.info(
       l10n.storyMuted(person.username),
       actionLabel: l10n.undo,
       onAction: () => cubit.unmute(person.authorId),
@@ -57,7 +56,6 @@ abstract final class StoryMenuActions {
   static Future<void> save(BuildContext context, StoryViewerCubit cubit) async {
     final story = cubit.state.story;
     if (story == null) return;
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final Failure? failure;
     if (story.type == StoryMediaType.video) {
@@ -80,9 +78,11 @@ abstract final class StoryMenuActions {
           : await cubit.saveImage(bytes);
     }
     if (!context.mounted) return;
-    messenger.showNotice(
-      failure == null ? l10n.storySaved : failure.l10n(context),
-    );
+    if (failure == null) {
+      Notices.success(l10n.storySaved);
+    } else {
+      context.showFailure(failure);
+    }
   }
 
   static Future<void> delete(
@@ -91,7 +91,6 @@ abstract final class StoryMenuActions {
   ) async {
     final story = cubit.state.story;
     if (story == null) return;
-    final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final confirmed = await StoryDeleteDialog.show(
       context,
@@ -99,12 +98,10 @@ abstract final class StoryMenuActions {
     );
     if (!confirmed) return;
     final failure = await cubit.deleteCurrent();
-    messenger.showNotice(
-      failure == null
-          ? l10n.storyDeleted
-          : context.mounted
-          ? failure.l10n(context)
-          : null,
-    );
+    if (failure == null) {
+      Notices.success(l10n.storyDeleted);
+    } else if (context.mounted) {
+      context.showFailure(failure);
+    }
   }
 }
