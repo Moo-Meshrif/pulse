@@ -3,105 +3,66 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_svg_icon.dart';
-import '../../../../core/widgets/app_text.dart';
 import '../dimens/post_card_dimens.dart';
-import '../utils/post_author_meta.dart';
+import '../utils/post_card_callbacks.dart';
+import '../utils/post_card_data.dart';
+import 'post_headline.dart';
+import 'post_meta_line.dart';
 import 'post_ringed_avatar.dart';
 import 'post_tap_button.dart';
 
-/// The top of a post card: avatar, name, `{city} · {time}` with an audience icon for a post that is not
-/// public, and the options button, highlighted while its sheet is open.
+/// The top of a post card: avatar, the headline (name, feeling, tagged people), the meta line (place, time,
+/// audience icon) and the options button, highlighted while its sheet is open.
 class PostAuthorRow extends StatelessWidget {
   const PostAuthorRow({
     super.key,
-    required this.authorId,
-    required this.name,
-    this.avatarUrl,
-    this.city,
-    required this.createdAt,
-    this.audienceIcon,
+    required this.data,
+    required this.callbacks,
     this.isOptionsOpen = false,
-    this.onProfile,
-    this.onOptions,
   });
 
-  final String authorId;
-  final String name;
-  final String? avatarUrl;
-  final String? city;
-  final DateTime createdAt;
-  final String? audienceIcon;
+  final PostCardData data;
+  final PostCardCallbacks callbacks;
   final bool isOptionsOpen;
-  final VoidCallback? onProfile;
-  final VoidCallback? onOptions;
 
   @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-    final meta = postAuthorMeta(context, city: city, createdAt: createdAt);
-    return Row(
-      children: [
-        Expanded(
-          child: Semantics(
-            button: onProfile != null,
-            label: name,
-            excludeSemantics: true,
-            onTap: onProfile,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: onProfile,
-              child: Row(
-                children: [
-                  PostRingedAvatar(
-                    authorId: authorId,
-                    name: name,
-                    avatarUrl: avatarUrl,
-                  ),
-                  SizedBox(width: PostCardDimens.authorGap),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(
-                          name,
-                          style: context.text.name,
-                          color: colors.textPrimary,
-                          maxLines: 1,
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: AppText(
-                                meta,
-                                style: context.text.caption,
-                                color: colors.textSecondary,
-                                maxLines: 1,
-                              ),
-                            ),
-                            if (audienceIcon != null) ...[
-                              SizedBox(width: PostCardDimens.dotGap),
-                              AppSvgIcon(
-                                audienceIcon!,
-                                size: PostCardDimens.visibilityIcon,
-                                color: colors.textSecondary,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Semantics(
+        button: callbacks.onProfile != null,
+        label: data.authorName,
+        excludeSemantics: true,
+        onTap: callbacks.onProfile,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: callbacks.onProfile,
+          child: PostRingedAvatar(
+            authorId: data.authorId,
+            name: data.authorName,
+            avatarUrl: data.authorAvatarUrl,
           ),
         ),
-        _MoreButton(isOpen: isOptionsOpen, onTap: onOptions),
-      ],
-    );
-  }
+      ),
+      SizedBox(width: PostCardDimens.authorGap),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PostHeadline(data: data, callbacks: callbacks),
+            PostMetaLine(
+              location: data.city,
+              createdAt: data.createdAt,
+              audienceIcon: data.audienceIcon,
+              onLocation: callbacks.onLocation,
+            ),
+          ],
+        ),
+      ),
+      _MoreButton(isOpen: isOptionsOpen, onTap: callbacks.onOptions),
+    ],
+  );
 }
 
 class _MoreButton extends StatelessWidget {

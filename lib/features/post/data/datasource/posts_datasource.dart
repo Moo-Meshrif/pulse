@@ -7,9 +7,11 @@ import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
+import '../enums/mood_kind.dart';
 import '../model/feed_page_model.dart';
 import '../model/post_media_model.dart';
 import '../model/post_model.dart';
+import '../model/post_tag_model.dart';
 
 /// Posts: the home feed, signed links to their media, and creating and editing one. What people do to a post
 /// (like, save, hide, report, delete...) is the core `PostActionsDatasource`.
@@ -48,15 +50,23 @@ abstract interface class PostsDatasource {
     required bool commentsEnabled,
     required ContentAudience visibility,
     required List<PostMediaModel> media,
+    MoodKind? moodKind,
+    String? moodKey,
+    String? moodText,
+    List<PostTagModel> tags = const [],
   });
 
-  /// Replaces the caption, place and media list of the signed-in user's post [id]; the [media] files
-  /// are already uploaded.
+  /// Replaces the caption, place, media list, mood and tags of the signed-in user's post [id]; the
+  /// [media] files are already uploaded.
   Future<void> updatePost({
     required String id,
     String? caption,
     String? location,
     required List<PostMediaModel> media,
+    MoodKind? moodKind,
+    String? moodKey,
+    String? moodText,
+    List<PostTagModel> tags = const [],
   });
 }
 
@@ -152,6 +162,10 @@ final class SupabasePostsDatasource implements PostsDatasource {
     required bool commentsEnabled,
     required ContentAudience visibility,
     required List<PostMediaModel> media,
+    MoodKind? moodKind,
+    String? moodKey,
+    String? moodText,
+    List<PostTagModel> tags = const [],
   }) => Guard.run(
     () => _client.rpc<dynamic>(
       'create_post',
@@ -163,6 +177,10 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_media': [for (final item in media) item.toJson()],
         'p_comments_enabled': commentsEnabled,
         'p_visibility': visibility.wire,
+        'p_mood_kind': moodKind?.wire,
+        'p_mood_key': moodKey,
+        'p_mood_text': moodText,
+        'p_tags': [for (final tag in tags) tag.toJson()],
       },
     ),
   );
@@ -173,6 +191,10 @@ final class SupabasePostsDatasource implements PostsDatasource {
     String? caption,
     String? location,
     required List<PostMediaModel> media,
+    MoodKind? moodKind,
+    String? moodKey,
+    String? moodText,
+    List<PostTagModel> tags = const [],
   }) => Guard.run(
     () => _client.rpc<dynamic>(
       'update_post',
@@ -181,6 +203,10 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_caption': caption,
         'p_location': location,
         'p_media': [for (final item in media) item.toJson()],
+        'p_mood_kind': moodKind?.wire,
+        'p_mood_key': moodKey,
+        'p_mood_text': moodText,
+        'p_tags': [for (final tag in tags) tag.toJson()],
       },
     ),
   );

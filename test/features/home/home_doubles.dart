@@ -12,6 +12,7 @@ import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/retry_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
@@ -53,6 +54,8 @@ class _Delete extends Mock implements DeletePostUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
+class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
+
 /// Home's cubits in get_it over use cases that answer a one-post feed (the empty page floats forever and
 /// would never settle), an empty rail and nothing unread, for
 /// tests that mount the Home screen without caring about it (the shell).
@@ -80,6 +83,7 @@ void registerHomeDoubles() {
         MockReportContent(),
         MockSetMute(),
         _Follow(),
+        _RemoveTag(),
       ),
     )
     ..registerFactory(

@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
+import '../../domain/entity/post_tag_entity.dart';
 import '../dimens/post_card_dimens.dart';
 import '../utils/post_card_media.dart';
 import '../utils/post_media_aspect.dart';
@@ -10,6 +13,8 @@ import '../utils/post_video_ids.dart';
 import 'media/post_heart_burst.dart';
 import 'media/post_image_item.dart';
 import 'media/post_media_chip.dart';
+import 'media/post_tag_badge.dart';
+import 'media/post_tag_labels.dart';
 import 'media/post_video_item.dart';
 
 /// The pictures and videos of a post, shaped by the first item. Several swipe, with dots and a "1/4" counter.
@@ -20,11 +25,26 @@ class PostMedia extends StatefulWidget {
     required this.postId,
     required this.items,
     this.onDoubleTap,
+    this.tags = const [],
+    this.viewerId,
+    this.onTaggedPerson,
+    this.onTaggedPeople,
+    this.onRemoveMyTag,
   });
 
   final String postId;
   final List<PostCardMedia> items;
   final VoidCallback? onDoubleTap;
+
+  /// The people tagged on the post: a person badge shows on each photo, and a tap puts their names at the
+  /// spots they were tagged on that photo.
+  final List<PostTagEntity> tags;
+
+  /// The signed-in user: their own label can remove their tag.
+  final String? viewerId;
+  final ValueChanged<String>? onTaggedPerson;
+  final VoidCallback? onTaggedPeople;
+  final VoidCallback? onRemoveMyTag;
 
   @override
   State<PostMedia> createState() => _PostMediaState();
@@ -37,12 +57,36 @@ class _PostMediaState extends State<PostMedia> {
 
   final _heart = GlobalKey<PostHeartBurstState>();
   final _page = ValueNotifier<int>(0);
+  final _labelsVisible = ValueNotifier<bool>(false);
+  Timer? _hideLabels;
   DateTime? _lastTap;
 
   @override
   void dispose() {
+    _hideLabels?.cancel();
+    _labelsVisible.dispose();
     _page.dispose();
     super.dispose();
+  }
+
+  /// Shows the labels for a few seconds, or hides them. A double tap (a like) leaves them as they were.
+  void _toggleLabels() {
+    if (widget.tags.isEmpty) return;
+    _hideLabels?.cancel();
+    final show = !_labelsVisible.value;
+    _labelsVisible.value = show;
+    if (show) {
+      _hideLabels = Timer(
+        PostCardDimens.tagLabelsVisible,
+        () => _labelsVisible.value = false,
+      );
+    }
+  }
+
+  void _onPageChanged(int page) {
+    _page.value = page;
+    _hideLabels?.cancel();
+    _labelsVisible.value = false;
   }
 
   void _onTap() {
@@ -50,10 +94,12 @@ class _PostMediaState extends State<PostMedia> {
     final last = _lastTap;
     if (last != null && now.difference(last) <= _doubleTapWindow) {
       _lastTap = null;
+      _toggleLabels();
       _heart.currentState?.play();
       widget.onDoubleTap?.call();
     } else {
       _lastTap = now;
+      _toggleLabels();
     }
   }
 
@@ -75,7 +121,7 @@ class _PostMediaState extends State<PostMedia> {
                 children: [
                   PageView.builder(
                     itemCount: items.length,
-                    onPageChanged: (page) => _page.value = page,
+                    onPageChanged: _onPageChanged,
                     itemBuilder: (context, index) => ValueListenableBuilder(
                       valueListenable: _page,
                       builder: (context, page, _) => _Item(
@@ -104,6 +150,33 @@ class _PostMediaState extends State<PostMedia> {
                         ),
                       ),
                     ),
+                  if (widget.tags.isNotEmpty) ...[
+                    ValueListenableBuilder(
+                      valueListenable: _labelsVisible,
+                      builder: (context, visible, _) => visible
+                          ? _TagLabelsOfPage(
+                              page: _page,
+                              tags: widget.tags,
+                              viewerId: widget.viewerId,
+                              onPerson: widget.onTaggedPerson,
+                              onRemoveMe: widget.onRemoveMyTag,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    PositionedDirectional(
+                      bottom: PostCardDimens.mediaInset,
+                      start: PostCardDimens.mediaInset,
+                      child: ValueListenableBuilder(
+                        valueListenable: _page,
+                        builder: (context, page, _) => items[page].isVideo
+                            ? const SizedBox.shrink()
+                            : PostTagBadge(
+                                onTap: _toggleLabels,
+                                onLongPress: widget.onTaggedPeople,
+                              ),
+                      ),
+                    ),
+                  ],
                   PostHeartBurst(key: _heart),
                 ],
               ),
@@ -122,6 +195,37 @@ class _PostMediaState extends State<PostMedia> {
       ],
     );
   }
+}
+
+/// The labels of the photo on screen: the tags with a spot on it.
+class _TagLabelsOfPage extends StatelessWidget {
+  const _TagLabelsOfPage({
+    required this.page,
+    required this.tags,
+    this.viewerId,
+    this.onPerson,
+    this.onRemoveMe,
+  });
+
+  final ValueNotifier<int> page;
+  final List<PostTagEntity> tags;
+  final String? viewerId;
+  final ValueChanged<String>? onPerson;
+  final VoidCallback? onRemoveMe;
+
+  @override
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: page,
+    builder: (context, index, _) => PostTagLabels(
+      tags: [
+        for (final tag in tags)
+          if (tag.mediaPosition == index && tag.x != null && tag.y != null) tag,
+      ],
+      viewerId: viewerId,
+      onPerson: onPerson,
+      onRemoveMe: onRemoveMe,
+    ),
+  );
 }
 
 class _Item extends StatelessWidget {

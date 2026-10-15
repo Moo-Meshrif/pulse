@@ -15,7 +15,6 @@ import '../widgets/add_location_results.dart';
 import '../widgets/location_empty.dart';
 import '../widgets/location_notice_row.dart';
 import '../widgets/location_primer.dart';
-import '../widgets/location_search_field.dart';
 
 /// The Add location layout (docs/specs/post/screens/s3-add-location.md): header, search, and the panel
 /// the state asks for. It reads the permission again when the app comes back from Settings.
@@ -91,8 +90,10 @@ class _SearchArea extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.cardMargin),
               child: Column(
                 children: [
-                  LocationSearchField(
+                  SearchPillField(
                     onChanged: cubit.queryChanged,
+                    hint: context.l10n.locationSearchHint,
+                    clearLabel: context.l10n.locationClearSearch,
                     autofocus: search.autofocus,
                     enabled: search.enabled,
                   ),

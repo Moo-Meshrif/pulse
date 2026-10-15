@@ -5,7 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
+import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../../../helpers/backend_double.dart';
@@ -230,4 +232,94 @@ void main() {
       });
     },
   );
+
+  test('a feed row carries the mood, the tags and who tagged you', () async {
+    final backend = await signedIn(
+      (_) async => BackendDouble.json([
+        {
+          ...row(1),
+          'mood_kind': 'feeling',
+          'mood_key': 'happy',
+          'mood_text': null,
+          'tag_count': 3,
+          'i_am_tagged': true,
+          'tags': [
+            {
+              'user_id': 'u2',
+              'username': 'sara',
+              'full_name': 'Sara Ali',
+              'media_position': 1,
+              'x': 0.25,
+              'y': 1,
+            },
+            {'user_id': 'u3', 'username': 'omar'},
+          ],
+        },
+      ]),
+    );
+    final posts = SupabasePostsDatasource(backend.client);
+
+    final post = (await posts.getHomeFeed(limit: 20)).posts.single;
+
+    expect(post.moodKind, MoodKind.feeling);
+    expect(post.moodKey, 'happy');
+    expect(post.moodText, isNull);
+    expect(post.tagCount, 3);
+    expect(post.iAmTagged, isTrue);
+    expect(post.tags, const [
+      PostTagModel(
+        userId: 'u2',
+        username: 'sara',
+        fullName: 'Sara Ali',
+        mediaPosition: 1,
+        x: 0.25,
+        y: 1,
+      ),
+      PostTagModel(userId: 'u3', username: 'omar'),
+    ]);
+  });
+
+  test('a row without the new columns reads as no mood and no tags', () async {
+    final backend = await signedIn((_) async => BackendDouble.json([row(1)]));
+    final posts = SupabasePostsDatasource(backend.client);
+
+    final post = (await posts.getHomeFeed(limit: 20)).posts.single;
+
+    expect(post.moodKind, isNull);
+    expect(post.tags, isNull);
+    expect(post.iAmTagged, isNull);
+  });
+
+  test('createPost and updatePost send the mood and the tags', () async {
+    final backend = await signedIn((_) async => BackendDouble.json(null));
+    final posts = SupabasePostsDatasource(backend.client);
+    const tags = [
+      PostTagModel(userId: 'u2', username: 'ignored'),
+      PostTagModel(userId: 'u3', mediaPosition: 0, x: 0.5, y: 0.4),
+    ];
+
+    await posts.createPost(
+      id: 'p1',
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      media: const [],
+      moodKind: MoodKind.activity,
+      moodKey: 'watching',
+      moodText: 'a film',
+      tags: tags,
+    );
+    await posts.updatePost(id: 'p1', media: const []);
+
+    final created = body(backend.to('/rpc/create_post').single);
+    expect(created['p_mood_kind'], 'activity');
+    expect(created['p_mood_key'], 'watching');
+    expect(created['p_mood_text'], 'a film');
+    expect(created['p_tags'], [
+      {'user_id': 'u2', 'media_position': null, 'x': null, 'y': null},
+      {'user_id': 'u3', 'media_position': 0, 'x': 0.5, 'y': 0.4},
+    ]);
+    final updated = body(backend.to('/rpc/update_post').single);
+    expect(updated['p_mood_kind'], isNull);
+    expect(updated['p_tags'], isEmpty);
+  });
 }

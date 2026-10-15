@@ -8,7 +8,8 @@ Sheet (shell = Create sheet: surface, top radius 28, padding 10 16 34, grabber 4
 ├─ Quick row: 3 tiles Save | Copy link | Share  (76 high, r18, `background` fill, icon 24, label 13/600, gap between 12)
 ├─ Group A (r18, `background`, rows >= 56, icon 22, label 15/600, sub 12 textSecondary, divider `divider`)
 │    others: Not interested (sub "See fewer posts like this") · Unfollow @user · Mute @user (sub "Hide their posts without unfollowing")
-│    own:    Edit post · Change who can see (S4, board s4-visibility panel 4) · Turn off comments
+│    own:    Edit post (sub "Caption, feeling, location, tags") · Turn off comments / Turn on comments (sub "Comments are off for this post", row `primarySoft` while off) · Change who can see (S4, sub = current audience, e.g. Public)
+     tagged (not owner): a line "You're tagged in this post" on top, then "Remove me from this post" first in the group, see `s11-remove-tag.md`
 └─ Group B (own group, danger #C42B34 icon + label)
      others: Report post (ic_flag)     own: Delete post (ic_trash)
 gap between groups 12
@@ -39,7 +40,8 @@ Opens from the post's "···": button turns `primarySoft` while open (44 button
 | Report | reasons step, then sent step ("Something else" adds the note step) |
 | Edit post | Edit post screen (`s5-edit-post.md`) |
 | Change who can see | opens S4 panel 4 ("Currently: X", Save -> shared `SetContentAudienceUseCase` (`set_content_audience`), notice "Visibility updated") |
-| Turn off comments | toggles; label becomes "Turn on comments" |
+| Turn off comments | toggles; label becomes "Turn on comments" (row highlighted `primarySoft` while comments are off; sub "Comments are off for this post") [user, board 2 panel 6] |
+| Remove me from this post | tagged viewer only; confirm dialog, then notice "Tag removed" (`s11-remove-tag.md`) |
 | Delete | confirm dialog |
 
 ## Strings (en | ar draft `x-review`)

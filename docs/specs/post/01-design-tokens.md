@@ -85,3 +85,30 @@ Primer (panel 4): large crosshair icon, title Sora bold, body textSecondary cent
 | toggle | 48 x 28 (S1's comments switch is 52 x 32) |
 | Done / Save | 52 primary pill |
 | card meta icon | 12 (users / star / lock) for non-public posts |
+
+## Tags, mood and comments-off (boards of 2026-10-15) [seen, board Tokens notes]
+Pages (S6-S9) follow Add location: header 56 + back 44 + title Sora 20/700, search 48 r24 white, lists white r22, rows 64, avatar 44.
+| Token | Value |
+|---|---|
+| Done pill | h 36, r18, `primary`, white 14/700 (S6, S7) |
+| Remove (S8 header) | 15/700 `danger` |
+| selected chip (S6) | h 36, r18, `primarySoft`; avatar 28; name 13/700 `primary`; × 22 white circle |
+| counter (S6) | 12 `textSecondary` |
+| check (S6) | 24; on = `primary` + white check; off = 2 px #9AA6A2 circle; disabled row = 50% opacity + `ic_block` 12 |
+| feeling tile (S8) | h 52, r16, white, emoji 22, word 15/600; selected = `primarySoft` + 1.5 inset `primary` |
+| segmented (S8) | h 44, r22, `divider` fill, white thumb |
+| activity row (S8) | white card r22, rows 64, emoji tile 44, chevron 18 |
+| headline (card) | 14 / h 1.35, max 2 lines; names 700 `textPrimary`; connectors 400 `textSecondary` |
+| feeling emoji + label | same 14, `textSecondary` after "is feeling" |
+| meta (card) | 12 `textSecondary`, gap 5, "·" separators; location pin 12 + text 600 `primary` |
+| audience icon | 12: globe Public, users Followers, star Close friends, lock Only me |
+| tag badge | 32 circle, #161A19 @ 55%, `ic_user` 16 white, bottom-start |
+| tag label | h 30, r10, #161A19 @ 82%, 13/700 white, 7 px pointer |
+| own tag label | white card r12, shadow 0 8 24 @ 25%, name row 34 (avatar 22), action row 38 13/700 `danger` + `ic_user_minus` 16 |
+| comments-off icon | `ic_comment_off` 24 at 45%, still a 44 target |
+| comments-off line | `ic_comment_off` 14 + 12 `textSecondary`, padding 2 4 6 |
+| post page bar | 14/600 `textSecondary` on `surface`, top border `divider`, padding 14 16 34 |
+| remove-tag dialog | icon 44 stroke 1.5 `danger`, title Sora 20/700, body 14 `textSecondary`, Remove 52 `danger` pill, Cancel 44 link |
+| tagged line (S2) | `ic_user` 16 `primary` + 13 `textSecondary`; "Remove me" row = `primarySoft` fill, icon `primary` |
+[user, Q29] S7: thumbs 56 r12, selected = 2 `primary` ring offset 2, count badge 20 `primary` + 11/700 white; info card r18 padding 10 16, `ic_user` 18 `primary`, text 14; hint 14 `textSecondary` padding 0 24. S6: counter 12 `textSecondary`, `danger` at 20 (rows drop to 50%); empty state = existing `AppEmpty` + `ic_search` (no `CompactStateView` / `ic_not_found` in the project); "Tag in photo" button outlined 48, pinned bottom, photos only.
+[estimated] S9 (deferred): row 56 / emoji tile 32.

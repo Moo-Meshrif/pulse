@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/l10n.dart';
+import '../content_audience_display.dart';
 import '../post_options_data.dart';
 
 /// What the person picked in the post options sheet; the flow that opened the sheet carries it out.
@@ -13,6 +14,7 @@ enum PostOption {
   unfollow,
   mute,
   report,
+  removeMyTag,
   edit,
   changeAudience,
   toggleComments,
@@ -28,6 +30,7 @@ enum PostOption {
     unfollow => AppAssets.userMinus,
     mute => AppAssets.volumeOff,
     report => AppAssets.flag,
+    removeMyTag => AppAssets.userMinus,
     edit => AppAssets.edit,
     changeAudience => AppAssets.audience,
     toggleComments => AppAssets.comment,
@@ -44,6 +47,7 @@ enum PostOption {
       unfollow => l10n.postUnfollow(data.username),
       mute => l10n.postMute(data.username),
       report => l10n.postReportTitle,
+      removeMyTag => l10n.postTagRemoveMe,
       edit => l10n.postEditPost,
       changeAudience => l10n.postChangeWhoCanSee,
       toggleComments =>
@@ -52,9 +56,18 @@ enum PostOption {
     };
   }
 
-  String? hint(BuildContext context) => switch (this) {
+  String? hint(BuildContext context, PostOptionsData data) => switch (this) {
     notInterested => context.l10n.postNotInterestedHint,
     mute => context.l10n.postMuteHint,
+    edit => context.l10n.postEditHint,
+    removeMyTag => context.l10n.postTagRemoveMeHint,
+    changeAudience => data.visibility.label(context),
+    toggleComments when !data.commentsEnabled =>
+      context.l10n.postCommentsOffHint,
     _ => null,
   };
+
+  /// The row you came for stands out: remove your tag, or turn comments back on.
+  bool isHighlighted(PostOptionsData data) =>
+      this == removeMyTag || (this == toggleComments && !data.commentsEnabled);
 }

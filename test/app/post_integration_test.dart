@@ -7,6 +7,7 @@ import 'package:http/testing.dart' as http_testing;
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/permission_access.dart';
+import 'package:pulse/core/notice/notices.dart';
 import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/services/location_service.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
@@ -16,8 +17,21 @@ import 'package:pulse/features/places/data/datasource/places_datasource.dart';
 import 'package:pulse/features/places/data/enums/place_kind.dart';
 import 'package:pulse/features/places/data/model/place_model.dart';
 import 'package:pulse/features/places/presentation/screen/add_location_screen.dart';
+import 'package:pulse/features/post/data/datasource/post_tags_datasource.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
+import 'package:pulse/features/post/data/enums/media_type.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
+import 'package:pulse/features/post/data/model/feed_page_model.dart';
+import 'package:pulse/features/post/data/model/post_media_model.dart';
+import 'package:pulse/features/post/data/model/post_model.dart';
+import 'package:pulse/features/post/data/model/post_tag_model.dart';
+import 'package:pulse/features/post/data/model/tag_person_model.dart';
 import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
+import 'package:pulse/features/post/presentation/screen/feeling_screen.dart';
+import 'package:pulse/features/post/presentation/screen/tag_in_photo_screen.dart';
+import 'package:pulse/features/post/presentation/screen/tag_people_screen.dart';
+import 'package:pulse/features/post/presentation/widgets/post_card.dart';
+import 'package:pulse/features/post/presentation/widgets/tag_in_photo/tag_photo_canvas.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
@@ -26,6 +40,7 @@ import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/model/audience_summary_model.dart';
 import 'package:pulse/shared/content/data/model/privacy_model.dart';
 
+import '../helpers/png_http_overrides.dart';
 import '../helpers/pump_app.dart';
 
 class _Posts extends Mock implements PostsDatasource {}
@@ -59,6 +74,8 @@ void main() {
     registerFallbackValue(File(''));
     registerFallbackValue(ContentAudience.public);
     registerFallbackValue(<dynamic>[]);
+    registerFallbackValue(MoodKind.feeling);
+    registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
   });
 
   setUp(() {
@@ -128,6 +145,10 @@ void main() {
         commentsEnabled: any(named: 'commentsEnabled'),
         visibility: any(named: 'visibility'),
         media: any(named: 'media'),
+        moodKind: any(named: 'moodKind'),
+        moodKey: any(named: 'moodKey'),
+        moodText: any(named: 'moodText'),
+        tags: any(named: 'tags'),
       ),
     ).thenAnswer((_) async {});
   });
@@ -262,6 +283,236 @@ void main() {
           beforeId: any(named: 'beforeId'),
         ),
       ).called(2);
+    },
+  );
+
+  testWidgets(
+    'people tagged with spots on a photo and a feeling are sent when the post is shared',
+    (tester) async {
+      await boot(tester);
+      final photo = File('${Directory.systemTemp.path}/pulse_tag_flow.png')
+        ..writeAsBytesSync(transparentPng);
+      addTearDown(() {
+        if (photo.existsSync()) photo.deleteSync();
+      });
+      when(() => picker.pickMany(limit: any(named: 'limit'))).thenAnswer(
+        (_) async => [
+          PickedMedia(
+            path: photo.path,
+            isVideo: false,
+            width: 400,
+            height: 400,
+          ),
+        ],
+      );
+      when(() => picker.describe(any())).thenAnswer(
+        (invocation) async =>
+            invocation.positionalArguments.first as PickedMedia,
+      );
+      final tags = getIt<PostTagsDatasource>();
+      when(() => tags.searchPeople(any(), limit: any(named: 'limit')))
+          .thenAnswer(
+            (_) async => const [
+              TagPersonModel(
+                id: 'u2',
+                username: 'omarkh',
+                fullName: 'Omar Khaled',
+                canTag: true,
+              ),
+              TagPersonModel(
+                id: 'u3',
+                username: 'laila',
+                fullName: 'Laila Fouad',
+                canTag: true,
+              ),
+              TagPersonModel(
+                id: 'u4',
+                username: 'sam',
+                fullName: 'Sam Private',
+                canTag: false,
+              ),
+            ],
+          );
+      await openNewPost(tester);
+      await tester.enterText(find.byType(TextField), 'Sunset run');
+      await tester.pump();
+      await tester.tap(find.text(l10nEn.newPostPhotoVideo));
+      await settle(tester);
+
+      // S6: two people, one who does not allow tags is dimmed.
+      await tester.tap(find.text(l10nEn.newPostTag));
+      await settle(tester);
+      expect(find.byType(TagPeopleScreen), findsOneWidget);
+      expect(find.text(l10nEn.postTagPeopleNoTags), findsOneWidget);
+      await tester.tap(find.text('Omar Khaled'));
+      await tester.pump();
+      await tester.tap(find.text('Laila Fouad'));
+      await tester.pump();
+
+      // S7: Omar goes on the photo, Laila stays in the post only.
+      await tester.tap(find.text(l10nEn.postTagPeopleInPhoto));
+      await settle(tester);
+      expect(find.byType(TagInPhotoScreen), findsOneWidget);
+      await tester.tapAt(tester.getCenter(find.byType(TagPhotoCanvas)));
+      await settle(tester);
+      await tester.tap(find.text('@omarkh'));
+      await settle(tester);
+      expect(find.text('omarkh'), findsOneWidget);
+      expect(
+        find.text(l10nEn.postTagInPhotoNoSpot('Laila Fouad')),
+        findsOneWidget,
+      );
+      await tester.tap(find.text(l10nEn.postTagPeopleDone));
+      await settle(tester);
+      expect(find.byType(TagPeopleScreen), findsOneWidget);
+      await tester.tap(find.text(l10nEn.postTagPeopleDone));
+      await settle(tester);
+      expect(find.byType(AddEditPostScreen), findsOneWidget);
+      expect(
+        find.text(l10nEn.postTagValueTwo('Omar Khaled', 'Laila Fouad')),
+        findsOneWidget,
+      );
+
+      // S8: a feeling, and the composer previews the headline.
+      await tester.tap(find.text(l10nEn.newPostFeeling));
+      await settle(tester);
+      expect(find.byType(FeelingScreen), findsOneWidget);
+      await tester.tap(find.text(l10nEn.postFeelingExcited));
+      await settle(tester);
+      expect(find.byType(FeelingScreen), findsNothing);
+      expect(find.text('🥳feeling excited'), findsOneWidget);
+
+      await tester.tap(find.text(l10nEn.newPostShare));
+      await settle(tester);
+
+      final sent =
+          verify(
+                () => posts.createPost(
+                  id: any(named: 'id'),
+                  caption: 'Sunset run',
+                  location: any(named: 'location'),
+                  commentsEnabled: true,
+                  visibility: any(named: 'visibility'),
+                  media: any(named: 'media'),
+                  moodKind: MoodKind.feeling,
+                  moodKey: 'excited',
+                  moodText: null,
+                  tags: captureAny(named: 'tags'),
+                ),
+              ).captured.single
+              as List<PostTagModel>;
+      expect(sent.map((t) => t.userId), ['u2', 'u3']);
+      expect(sent.first.mediaPosition, 0);
+      expect(sent.first.x, closeTo(0.5, 0.05));
+      expect(sent.first.y, closeTo(0.5, 0.05));
+      expect(sent.last.mediaPosition, isNull);
+      expect(find.byType(AddEditPostScreen), findsNothing);
+      expect(find.text(l10nEn.newPostShared), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'the feed card shows the headline, the badge and labels; you remove your own tag',
+    (tester) async {
+      final previous = HttpOverrides.current;
+      HttpOverrides.global = PngHttpOverrides();
+      addTearDown(() => HttpOverrides.global = previous);
+      when(
+        () => posts.getHomeFeed(
+          limit: any(named: 'limit'),
+          beforeCreated: any(named: 'beforeCreated'),
+          beforeId: any(named: 'beforeId'),
+        ),
+      ).thenAnswer(
+        (_) async => FeedPageModel(
+          posts: [
+            PostModel(
+              id: 'feed-post',
+              authorId: 'someone-else',
+              username: 'nour.adel',
+              fullName: 'Nour Adel',
+              caption: 'Race day',
+              likeCount: 3,
+              commentCount: 1,
+              commentsEnabled: false,
+              visibility: ContentAudience.public,
+              createdAt: DateTime(2026, 10, 14),
+              likedByMe: false,
+              savedByMe: false,
+              media: const [
+                PostMediaModel(
+                  type: MediaType.image,
+                  path: 'someone-else/feed-post/0.jpg',
+                  width: 400,
+                  height: 400,
+                ),
+              ],
+              moodKind: MoodKind.feeling,
+              moodKey: 'happy',
+              tagCount: 3,
+              iAmTagged: true,
+              tags: const [
+                PostTagModel(
+                  userId: 'u2',
+                  username: 'omarkh',
+                  fullName: 'Omar Khaled',
+                  mediaPosition: 0,
+                  x: 0.3,
+                  y: 0.5,
+                ),
+                PostTagModel(
+                  userId: 'u3',
+                  username: 'laila',
+                  fullName: 'Laila Fouad',
+                ),
+                PostTagModel(
+                  userId: 'me',
+                  username: 'me',
+                  mediaPosition: 0,
+                  x: 0.7,
+                  y: 0.5,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      when(() => posts.signMediaUrls(any())).thenAnswer(
+        (_) async => {'someone-else/feed-post/0.jpg': 'https://x.test/0.jpg'},
+      );
+      await boot(tester);
+      final tags = getIt<PostTagsDatasource>();
+      when(() => tags.removeMyTag('feed-post')).thenAnswer((_) async => true);
+
+      Finder rich(String text) => find.textContaining(text, findRichText: true);
+      expect(
+        rich('Nour Adel is feeling 😊happy with Omar Khaled and 2 others'),
+        findsOneWidget,
+      );
+
+      // The comment button of a post with comments off explains itself.
+      await tester.tap(find.bySemanticsLabel(l10nEn.postComment));
+      await tester.pump();
+      expect(Notices.current.value?.title, l10nEn.postCommentsOffTitle);
+      Notices.clear();
+
+      // The badge shows each person where they were tagged; mine is the white card.
+      await tester.tap(find.bySemanticsLabel(l10nEn.postTagBadge));
+      await tester.pump();
+      expect(find.text('omarkh'), findsOneWidget);
+      expect(find.text(l10nEn.postTagRemoveLabel), findsOneWidget);
+
+      await tester.tap(find.text(l10nEn.postTagRemoveLabel));
+      await settle(tester);
+      expect(find.text(l10nEn.postTagRemoveTitle), findsOneWidget);
+      await tester.tap(find.text(l10nEn.postTagRemoveConfirm));
+      await settle(tester);
+
+      verify(() => tags.removeMyTag('feed-post')).called(1);
+      expect(Notices.current.value?.title, l10nEn.postTagRemoved);
+      expect(rich('with Omar Khaled and Laila Fouad'), findsOneWidget);
+      expect(find.byType(PostCard), findsOneWidget);
+      Notices.clear();
     },
   );
 }

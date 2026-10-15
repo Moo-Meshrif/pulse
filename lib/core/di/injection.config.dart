@@ -76,6 +76,7 @@ import '../../features/places/presentation/cubit/add_location_cubit.dart'
     as _i490;
 import '../../features/post/data/datasource/post_actions_datasource.dart'
     as _i512;
+import '../../features/post/data/datasource/post_tags_datasource.dart' as _i518;
 import '../../features/post/data/datasource/posts_datasource.dart' as _i141;
 import '../../features/post/data/datasource/visibility_notice_datasource.dart'
     as _i722;
@@ -90,9 +91,15 @@ import '../../features/post/domain/use_case/discard_post_publish_use_case.dart'
     as _i415;
 import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i280;
+import '../../features/post/domain/use_case/get_tagged_people_use_case.dart'
+    as _i846;
 import '../../features/post/domain/use_case/hide_post_use_case.dart' as _i856;
+import '../../features/post/domain/use_case/remove_my_tag_use_case.dart'
+    as _i491;
 import '../../features/post/domain/use_case/retry_post_publish_use_case.dart'
     as _i175;
+import '../../features/post/domain/use_case/search_tag_people_use_case.dart'
+    as _i983;
 import '../../features/post/domain/use_case/set_comments_enabled_use_case.dart'
     as _i246;
 import '../../features/post/domain/use_case/set_post_like_use_case.dart'
@@ -107,6 +114,12 @@ import '../../features/post/presentation/cubit/add_edit_post_cubit.dart'
 import '../../features/post/presentation/cubit/post_actions_cubit.dart' as _i72;
 import '../../features/post/presentation/cubit/post_visibility_cubit.dart'
     as _i264;
+import '../../features/post/presentation/cubit/tag_in_photo_cubit.dart'
+    as _i962;
+import '../../features/post/presentation/cubit/tag_people_cubit.dart' as _i443;
+import '../../features/post/presentation/cubit/tagged_people_cubit.dart'
+    as _i932;
+import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
 import '../../features/profile/data/datasource/profile_datasource.dart'
@@ -223,6 +236,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i815.SessionEvents>(
       () => _i815.SessionEvents(),
       dispose: (i) => i.dispose(),
+    );
+    gh.factoryParam<_i962.TagInPhotoCubit, _i425.TagPeopleArgs, dynamic>(
+      (args, _) => _i962.TagInPhotoCubit(args),
     );
     gh.lazySingleton<_i94.PhotoPickerService>(
       () => _i94.ImagePickerPhotoPickerService(),
@@ -344,6 +360,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i885.PrivacyDatasource>(
       () => _i885.SupabasePrivacyDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i518.PostTagsDatasource>(
+      () => _i518.SupabasePostTagsDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i61.AudienceDatasource>(
       () => _i61.SupabaseAudienceDatasource(gh<_i454.SupabaseClient>()),
     );
@@ -421,6 +440,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i996.StoryCameraHintDatasource>(
       () => _i996.StoryCameraHintDatasource(gh<_i527.LocalStorageService>()),
     );
+    gh.factory<_i846.GetTaggedPeopleUseCase>(
+      () => _i846.GetTaggedPeopleUseCase(gh<_i518.PostTagsDatasource>()),
+    );
+    gh.factory<_i491.RemoveMyTagUseCase>(
+      () => _i491.RemoveMyTagUseCase(gh<_i518.PostTagsDatasource>()),
+    );
+    gh.factory<_i983.SearchTagPeopleUseCase>(
+      () => _i983.SearchTagPeopleUseCase(gh<_i518.PostTagsDatasource>()),
+    );
     gh.factory<_i91.GetCurrentUserIdUseCase>(
       () => _i91.GetCurrentUserIdUseCase(gh<_i320.ProfileDatasource>()),
     );
@@ -429,6 +457,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i807.OnboardingCubit>(
       () => _i807.OnboardingCubit(gh<_i834.OnboardingDatasource>()),
+    );
+    gh.factoryParam<_i443.TagPeopleCubit, _i425.TagPeopleArgs, dynamic>(
+      (args, _) =>
+          _i443.TagPeopleCubit(gh<_i983.SearchTagPeopleUseCase>(), args),
     );
     gh.factory<_i1021.ReportContentUseCase>(
       () => _i1021.ReportContentUseCase(gh<_i719.ContentActionsDatasource>()),
@@ -459,6 +491,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1021.ReportContentUseCase>(),
         gh<_i71.SetMuteUseCase>(),
         gh<_i130.ToggleFollowUseCase>(),
+        gh<_i491.RemoveMyTagUseCase>(),
       ),
     );
     gh.factory<_i704.PostPublishCubit>(
@@ -532,6 +565,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1021.ReportContentUseCase>(),
         gh<_i76.RemoveMediaFilesUseCase>(),
         gh<_i557.EventBus>(),
+      ),
+    );
+    gh.factoryParam<_i932.TaggedPeopleCubit, String, dynamic>(
+      (postId, _) => _i932.TaggedPeopleCubit(
+        gh<_i846.GetTaggedPeopleUseCase>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        postId,
       ),
     );
     gh.factoryParam<_i264.PostVisibilityCubit, String?, _i248.ContentAudience>(

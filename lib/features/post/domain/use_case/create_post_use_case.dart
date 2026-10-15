@@ -37,6 +37,10 @@ class CreatePostUseCase {
         commentsEnabled: post.commentsEnabled,
         visibility: post.visibility,
         media: media,
+        moodKind: post.mood?.kind,
+        moodKey: post.mood?.key,
+        moodText: post.mood?.text,
+        tags: [for (final tag in post.tags) tag.toModel()],
       );
     } catch (_) {
       await _media.removeQuietly([
@@ -61,6 +65,9 @@ class CreatePostUseCase {
       createdAt: clock.now(),
       likedByMe: false,
       savedByMe: false,
+      mood: post.mood,
+      tags: post.tags,
+      tagCount: post.tags.length,
       media: [
         for (final item in media)
           PostMediaEntity(

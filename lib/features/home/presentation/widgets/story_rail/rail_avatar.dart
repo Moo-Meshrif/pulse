@@ -25,6 +25,7 @@ class RailAvatar extends StatelessWidget {
               url,
               width: size,
               height: size,
+              fit: BoxFit.cover,
               cacheWidth: (size * 2).round(),
               errorBuilder: (_) => initials,
             ),

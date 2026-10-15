@@ -55,6 +55,10 @@ class UpdatePostUseCase {
         caption: post.caption,
         location: post.location,
         media: [for (final item in post.kept) _model(item), ...added],
+        moodKind: post.mood?.kind,
+        moodKey: post.mood?.key,
+        moodText: post.mood?.text,
+        tags: [for (final tag in post.tags) tag.toModel()],
       );
     } catch (_) {
       await _media.removeQuietly(_paths(added));
@@ -84,6 +88,10 @@ class UpdatePostUseCase {
       createdAt: before.createdAt,
       likedByMe: before.likedByMe,
       savedByMe: before.savedByMe,
+      mood: post.mood,
+      tags: post.tags,
+      tagCount: post.tags.length,
+      iAmTagged: before.iAmTagged,
       media: [
         ...post.kept,
         for (final item in added)

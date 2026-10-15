@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
@@ -6,16 +7,21 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/add_edit_post_cubit.dart';
 import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
+import 'package:pulse/features/post/presentation/utils/tag_choice.dart';
+import 'package:pulse/features/post/presentation/view/add_edit_post_view.dart';
 import 'package:pulse/features/post/presentation/widgets/add_edit_post/add_media_tile.dart';
+import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
@@ -40,6 +46,7 @@ class _Account extends Mock implements GetLastAccountUseCase {}
 void main() {
   late _CreatePost createPost;
   late _Picker picker;
+  late _Account account;
 
   setUpAll(() {
     registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
@@ -59,7 +66,7 @@ void main() {
     final bus = EventBus();
     picker = _Picker();
     final privacy = _Privacy();
-    final account = _Account();
+    account = _Account();
     when(account.call).thenReturn(null);
     when(privacy.call).thenAnswer(
       (_) async => const PrivacyEntity(
@@ -147,15 +154,68 @@ void main() {
     expect(find.bySemanticsLabel(l10nEn.newPostRemoveMedia(1)), findsOneWidget);
   });
 
-  testWidgets('Tag people and Feeling say coming soon', (tester) async {
-    await open(tester);
-    await tester.tap(find.text(l10nEn.newPostTag));
-    await tester.pump();
-    expect(find.text(l10nEn.comingSoon), findsOneWidget);
+  group('the headline preview and the feeling row', () {
+    const me = LastAccountEntity(id: 'me', username: 'nour', fullName: 'Nour');
 
-    await tester.tap(find.text(l10nEn.newPostFeeling));
-    await tester.pump();
-    expect(find.text(l10nEn.comingSoon), findsOneWidget);
+    AddEditPostCubit cubitOf(WidgetTester tester) =>
+        tester.element(find.byType(AddEditPostView)).read<AddEditPostCubit>();
+
+    Finder rich(String text) => find.textContaining(text, findRichText: true);
+
+    testWidgets('the card says the name alone, then what is chosen', (
+      tester,
+    ) async {
+      when(account.call).thenReturn(me);
+      await open(tester);
+      expect(rich('Nour'), findsOneWidget);
+      expect(rich('feeling'), findsNothing);
+
+      final cubit = cubitOf(tester);
+      cubit
+        ..moodChanged(
+          const PostMoodEntity(kind: MoodKind.feeling, key: 'happy'),
+        )
+        ..tagsChanged([
+          const TagChoice(id: 'u2', username: 'om', fullName: 'Om'),
+        ])
+        ..locationChanged('Cairo');
+      await tester.pumpAndSettle();
+
+      expect(rich('Nour is feeling 😊happy with Om'), findsOneWidget);
+      expect(find.text('Cairo'), findsNWidgets(2)); // the preview and the row
+    });
+
+    testWidgets('the Feeling row shows the value in the primary colour', (
+      tester,
+    ) async {
+      await open(tester);
+      expect(find.text(l10nEn.postFeelingValue('😊', 'happy')), findsNothing);
+
+      cubitOf(
+        tester,
+      ).moodChanged(const PostMoodEntity(kind: MoodKind.feeling, key: 'happy'));
+      await tester.pumpAndSettle();
+
+      final value = find.text(
+        l10nEn.postFeelingValue('😊', l10nEn.postFeelingHappy),
+      );
+      expect(value, findsOneWidget);
+      expect(tester.widget<Text>(value).style?.color, const Color(0xFF2E6B63));
+    });
+
+    testWidgets('Arabic shows the noun with the emoji', (tester) async {
+      await open(tester, locale: const Locale('ar'));
+
+      cubitOf(
+        tester,
+      ).moodChanged(const PostMoodEntity(kind: MoodKind.feeling, key: 'happy'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10nAr.postFeelingValue('😊', l10nAr.postFeelingHappy)),
+        findsOneWidget,
+      );
+    });
   });
 
   testWidgets('the comments switch starts on and toggles', (tester) async {

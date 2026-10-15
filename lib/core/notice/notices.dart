@@ -28,16 +28,26 @@ abstract final class Notices {
 
   static void success(
     String? message, {
+    String? body,
     String? actionLabel,
     ValueChanged<bool>? onResult,
-  }) => _show(NoticeKind.success, message, actionLabel, onResult);
+  }) => _show(NoticeKind.success, message, actionLabel, onResult, body: body);
 
   /// A neutral message; with an action it is the reversible-action notice ("Undo").
   static void info(
     String? message, {
+    String? body,
+    String? icon,
     String? actionLabel,
     ValueChanged<bool>? onResult,
-  }) => _show(NoticeKind.info, message, actionLabel, onResult);
+  }) => _show(
+    NoticeKind.info,
+    message,
+    actionLabel,
+    onResult,
+    body: body,
+    icon: icon,
+  );
 
   /// Takes [notice] off the screen (timer, swipe, tap or its action, [acted]) and shows the next one
   /// waiting.
@@ -64,12 +74,16 @@ abstract final class Notices {
     NoticeKind kind,
     String? message,
     String? actionLabel,
-    ValueChanged<bool>? onResult,
-  ) {
+    ValueChanged<bool>? onResult, {
+    String? body,
+    String? icon,
+  }) {
     if (message == null) return;
     final notice = Notice(
       kind,
       message,
+      message: body,
+      icon: icon,
       actionLabel: actionLabel,
       onResult: onResult,
     );

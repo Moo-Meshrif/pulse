@@ -56,6 +56,21 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     return state.status == FeedStatus.failed ? load() : refresh();
   }
 
+  /// Waits for a load or refresh that is running, since its page may have been read before the post was
+  /// saved and would replace it with the old version. False if the Cubit closed meanwhile.
+  Future<bool> _settled() async {
+    bool isReplacing(FeedState s) =>
+        s.status == FeedStatus.loading || s.isRefreshing;
+    if (isReplacing(state)) {
+      try {
+        await stream.firstWhere((s) => !isReplacing(s));
+      } on StateError {
+        return false;
+      }
+    }
+    return !isClosed;
+  }
+
   bool _isBusy(FeedState state) =>
       state.status == FeedStatus.loading ||
       state.isRefreshing ||
@@ -120,7 +135,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     } on Object {
       return _reload();
     }
-    if (isClosed) return;
+    if (!await _settled()) return;
     final index = state.posts.indexWhere((item) => item.id == post.id);
     if (index >= 0) {
       emit(state.copyWith(posts: [...state.posts]..[index] = post));

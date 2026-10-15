@@ -9,6 +9,7 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../utils/enums/post_option.dart';
 import '../../utils/post_options_actions.dart';
 import '../../utils/post_options_data.dart';
+import '../../utils/post_tag_removal.dart';
 import '../post_visibility/post_visibility_sheet.dart';
 import 'post_options_sheet.dart';
 
@@ -55,6 +56,12 @@ abstract final class PostOptionsFlow {
         return _changeAudience(context, data, actions);
       case PostOption.toggleComments:
         return _attempt(context, actions.onToggleComments);
+      case PostOption.removeMyTag:
+        return PostTagRemoval.confirmAndRemove(
+          context,
+          ownerName: data.username,
+          remove: actions.onRemoveMyTag,
+        );
       case PostOption.delete:
         return _delete(context, actions);
     }

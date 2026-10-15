@@ -6,11 +6,15 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
+import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
@@ -88,6 +92,10 @@ void main() {
         commentsEnabled: any(named: 'commentsEnabled'),
         visibility: any(named: 'visibility'),
         media: any(named: 'media'),
+        moodKind: any(named: 'moodKind'),
+        moodKey: any(named: 'moodKey'),
+        moodText: any(named: 'moodText'),
+        tags: any(named: 'tags'),
       ),
     ).thenAnswer((_) async {});
     when(() => thumbnails.thumbnail(any()))
@@ -140,6 +148,50 @@ void main() {
       ),
     ]);
     verifyNever(() => posts.removeFiles(any()));
+  });
+
+  test('sends the mood and the tags and returns them on the post', () async {
+    const tagged = NewPostEntity(
+      id: 'p1',
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      media: [photo],
+      mood: PostMoodEntity(kind: MoodKind.feeling, key: 'happy'),
+      tags: [
+        PostTagEntity(
+          userId: 'u2',
+          username: 'sara',
+          mediaPosition: 0,
+          x: 0.5,
+          y: 0.5,
+        ),
+        PostTagEntity(userId: 'u3'),
+      ],
+      authorUsername: 'omar',
+    );
+
+    final created = await useCase(tagged);
+
+    verify(
+      () => posts.createPost(
+        id: 'p1',
+        caption: null,
+        location: null,
+        commentsEnabled: true,
+        visibility: ContentAudience.public,
+        media: any(named: 'media'),
+        moodKind: MoodKind.feeling,
+        moodKey: 'happy',
+        moodText: null,
+        tags: const [
+          PostTagModel(userId: 'u2', mediaPosition: 0, x: 0.5, y: 0.5),
+          PostTagModel(userId: 'u3'),
+        ],
+      ),
+    ).called(1);
+    expect(created!.mood, tagged.mood);
+    expect(created.tags, tagged.tags);
+    expect(created.tagCount, 2);
   });
 
   test('sends the content type of each file', () async {

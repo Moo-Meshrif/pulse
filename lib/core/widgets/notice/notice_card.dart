@@ -105,14 +105,26 @@ class _NoticeCardState extends State<NoticeCard>
                         ),
                         child: Row(
                           children: [
-                            _NoticeIcon(kind: notice.kind),
+                            _NoticeIcon(kind: notice.kind, icon: notice.icon),
                             SizedBox(width: NoticeDimens.gap),
                             Expanded(
-                              child: AppText(
-                                notice.title,
-                                style: context.text.noticeTitle,
-                                color: NoticeColors.title,
-                                maxLines: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AppText(
+                                    notice.title,
+                                    style: context.text.noticeTitle,
+                                    color: NoticeColors.title,
+                                    maxLines: 3,
+                                  ),
+                                  if (notice.message != null)
+                                    AppText(
+                                      notice.message!,
+                                      style: context.text.caption,
+                                      color: NoticeColors.message,
+                                      maxLines: 3,
+                                    ),
+                                ],
                               ),
                             ),
                             if (notice.hasAction) ...[
@@ -155,9 +167,10 @@ class _NoticeCardState extends State<NoticeCard>
 }
 
 class _NoticeIcon extends StatelessWidget {
-  const _NoticeIcon({required this.kind});
+  const _NoticeIcon({required this.kind, this.icon});
 
   final NoticeKind kind;
+  final String? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +188,7 @@ class _NoticeIcon extends StatelessWidget {
           shape: BoxShape.circle,
           color: color.withAlpha(0x26),
         ),
-        child: AppSvgIcon(asset, size: NoticeDimens.icon, color: color),
+        child: AppSvgIcon(icon ?? asset, size: NoticeDimens.icon, color: color),
       ),
     );
   }

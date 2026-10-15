@@ -22,6 +22,7 @@ abstract final class AppAssets {
   static const clock = '$_icons/ic_clock.svg';
   static const close = '$_icons/ic_close.svg';
   static const comment = '$_icons/ic_comment.svg';
+  static const commentOff = '$_icons/ic_comment_off.svg';
   static const crosshair = '$_icons/ic_crosshair.svg';
   static const crosshairThin = '$_icons/ic_crosshair_thin.svg';
   static const createPost = '$_icons/ic_create_post.svg';

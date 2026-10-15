@@ -16,6 +16,7 @@ import '../../domain/entity/edit_post_entity.dart';
 import '../../domain/entity/new_post_entity.dart';
 import '../../domain/entity/new_post_media_entity.dart';
 import '../../domain/entity/post_entity.dart';
+import '../../domain/entity/post_mood_entity.dart';
 import '../../domain/event/feed_refresh_requested.dart';
 import '../../domain/event/post_saved.dart';
 import '../../domain/use_case/create_post_use_case.dart';
@@ -25,6 +26,9 @@ import '../utils/enums/new_post_notice.dart';
 import '../utils/media_intake.dart';
 import '../utils/new_post_limits.dart';
 import '../utils/post_visibility_result.dart';
+import '../utils/tag_choice.dart';
+import '../utils/tag_people_args.dart';
+import '../utils/tag_photo.dart';
 import 'add_edit_post_state.dart';
 
 /// The Add post and Edit post screen (docs/specs/post/screens/s1-new-post.md, s5-edit-post.md): caption,
@@ -115,12 +119,58 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
   void locationChanged(String? location) =>
       emit(state.copyWith(location: location));
 
+  /// The Feeling page closed with [mood]; null clears it.
+  void moodChanged(PostMoodEntity? mood) => emit(state.copyWith(mood: mood));
+
+  /// The Tag people page closed with [tags] (their spots included).
+  void tagsChanged(List<TagChoice> tags) => emit(state.copyWith(tags: tags));
+
+  /// What the tag pages open with: who is tagged and the post's media in the order it will have.
+  TagPeopleArgs get tagArgs => TagPeopleArgs(
+    chosen: state.tags,
+    photos: [
+      for (final (i, item) in state.kept.indexed)
+        TagPhoto(
+          position: i,
+          isVideo: item.isVideo,
+          url: state.urls[item.isVideo ? item.thumbPath : item.path],
+          aspect: item.width / item.height,
+        ),
+      for (final (i, item) in state.media.indexed)
+        TagPhoto(
+          position: state.kept.length + i,
+          isVideo: item.isVideo,
+          filePath: item.isVideo ? null : item.path,
+          aspect: _aspectOf(item),
+        ),
+    ],
+  );
+
+  double _aspectOf(PickedMedia item) {
+    final width = item.width;
+    final height = item.height;
+    return width == null || height == null || height == 0 ? 1 : width / height;
+  }
+
+  /// The tags once the media at [index] is gone: its spots are off (those people stay tagged in the post)
+  /// and the photos after it move up one.
+  List<TagChoice> _tagsWithoutMedia(int index) => [
+    for (final tag in state.tags)
+      if (tag.mediaPosition == index)
+        tag.withoutSpot()
+      else if (tag.mediaPosition != null && tag.mediaPosition! > index)
+        tag.withSpot(tag.mediaPosition! - 1, tag.x ?? 0, tag.y ?? 0)
+      else
+        tag,
+  ];
+
   /// Removes the item at [index] of the strip: the post's own media first, then the picked files.
   void removeMedia(int index) {
     final keptCount = state.kept.length;
     if (index < keptCount) {
       emit(
         state.copyWith(
+          tags: _tagsWithoutMedia(index),
           kept: [
             for (final (i, item) in state.kept.indexed)
               if (i != index) item,
@@ -131,6 +181,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     }
     emit(
       state.copyWith(
+        tags: _tagsWithoutMedia(index),
         media: [
           for (final (i, item) in state.media.indexed)
             if (i != index - keptCount) item,
@@ -165,6 +216,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     if (described.rejection != null) {
       emit(
         state.copyWith(
+          tags: _tagsWithoutMedia(state.kept.length + index),
           media: media..removeAt(index),
           notice: described.rejection,
         ),
@@ -194,6 +246,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     final commentsEnabled = state.commentsEnabled;
     final visibility = state.visibility;
     final kept = state.kept;
+    final tags = [for (final tag in state.tags) tag.toTag()];
+    final mood = state.mood;
     final previewPath = picked.firstOrNull?.path;
     final isStarted = original == null
         ? _publish.enqueue(
@@ -207,6 +261,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
                   location: location,
                   commentsEnabled: commentsEnabled,
                   visibility: visibility,
+                  mood: mood,
+                  tags: tags,
                   media: await _read(picked),
                   authorUsername: me?.username,
                   authorFullName: me?.fullName,
@@ -228,6 +284,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
                   added: await _read(picked),
                   commentsEnabled: commentsEnabled,
                   visibility: visibility,
+                  mood: mood,
+                  tags: tags,
                 ),
                 before: original,
               ),

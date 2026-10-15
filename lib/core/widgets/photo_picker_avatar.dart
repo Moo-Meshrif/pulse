@@ -77,10 +77,12 @@ class PhotoPickerAvatar extends StatelessWidget {
                               child: photo != null
                                   ? AppImage.memory(
                                       photo!.bytes,
+                                      fit: BoxFit.cover,
                                       cacheWidth: (size * 2).round(),
                                     )
                                   : AppImage.network(
                                       avatarUrl!,
+                                      fit: BoxFit.cover,
                                       cacheWidth: (size * 2).round(),
                                     ),
                             ),

@@ -14,6 +14,7 @@ import '../../../follow/domain/use_case/toggle_follow_use_case.dart';
 import '../../domain/entity/post_entity.dart';
 import '../../domain/use_case/delete_post_use_case.dart';
 import '../../domain/use_case/hide_post_use_case.dart';
+import '../../domain/use_case/remove_my_tag_use_case.dart';
 import '../../domain/use_case/set_comments_enabled_use_case.dart';
 import '../../domain/use_case/set_post_like_use_case.dart';
 import '../../domain/use_case/set_post_save_use_case.dart';
@@ -36,6 +37,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     this._report,
     this._setMute,
     this._toggleFollow,
+    this._removeMyTag,
   ) : super(const PostActionsState());
 
   final SetPostLikeUseCase _setLike;
@@ -46,6 +48,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   final ReportContentUseCase _report;
   final SetMuteUseCase _setMute;
   final ToggleFollowUseCase _toggleFollow;
+  final RemoveMyTagUseCase _removeMyTag;
 
   /// Posts with a like or save request in flight: a second tap on the same post waits for the first.
   final _likePending = <String>{};
@@ -164,6 +167,19 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
       failure: failure,
     ),
   );
+
+  /// Takes [userId]'s own tag off the post: the headline and labels change at once and come back when the
+  /// request fails (the `Failure` is thrown for the flow to show). A tag that was already gone counts as removed.
+  Future<void> removeMyTag(PostEntity loaded, {required String userId}) async {
+    final before = postOf(loaded);
+    _emitPost(before.withoutTag(userId));
+    try {
+      await _removeMyTag(loaded.id);
+    } catch (_) {
+      _emitPost(before);
+      rethrow;
+    }
+  }
 
   /// The audience picker saved a new audience for the post.
   void audienceChanged(PostEntity loaded, ContentAudience audience) =>

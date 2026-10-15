@@ -5,12 +5,16 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
+import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_media_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
@@ -84,6 +88,10 @@ void main() {
         caption: any(named: 'caption'),
         location: any(named: 'location'),
         media: any(named: 'media'),
+        moodKind: any(named: 'moodKind'),
+        moodKey: any(named: 'moodKey'),
+        moodText: any(named: 'moodText'),
+        tags: any(named: 'tags'),
       ),
     ).thenAnswer((_) async {});
   });
@@ -136,6 +144,42 @@ void main() {
       expect(saved.media.last.path, startsWith('u1/p1/e'));
     },
   );
+
+  test('saves the mood and the tags, and the post carries them', () async {
+    const withMood = EditPostEntity(
+      id: 'p1',
+      caption: 'New',
+      kept: [old0],
+      added: [],
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      mood: PostMoodEntity(
+        kind: MoodKind.activity,
+        key: 'watching',
+        text: 'a film',
+      ),
+      tags: [PostTagEntity(userId: 'u2', username: 'sara')],
+    );
+
+    final saved = await useCase(withMood, before: before);
+
+    verify(
+      () => posts.updatePost(
+        id: 'p1',
+        caption: 'New',
+        location: null,
+        media: any(named: 'media'),
+        moodKind: MoodKind.activity,
+        moodKey: 'watching',
+        moodText: 'a film',
+        tags: const [PostTagModel(userId: 'u2')],
+      ),
+    ).called(1);
+    expect(saved.mood, withMood.mood);
+    expect(saved.tags, withMood.tags);
+    expect(saved.tagCount, 1);
+    expect(saved.iAmTagged, before.iAmTagged);
+  });
 
   test(
     'a failed save removes the new files, keeps the old ones and rethrows',

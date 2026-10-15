@@ -1572,4 +1572,271 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get newPostPublishBusy =>
       'Your previous post is still being sent. Try again in a moment.';
+
+  @override
+  String get postHeadlineYou => 'You';
+
+  @override
+  String postHeadlineFeeling(String emoji, String word) {
+    return 'is feeling $emoji$word';
+  }
+
+  @override
+  String get postHeadlineWith => 'with ';
+
+  @override
+  String get postHeadlineAnd => ' and ';
+
+  @override
+  String postHeadlineOthers(int count) {
+    return '$count others';
+  }
+
+  @override
+  String get postCommentsOffTitle => 'Comments are off';
+
+  @override
+  String postCommentsOffNotice(String name) {
+    return '$name turned off comments for this post.';
+  }
+
+  @override
+  String get postCommentsOffLine => 'Comments are turned off';
+
+  @override
+  String get postCommentsOffHint => 'Comments are off for this post';
+
+  @override
+  String get postEditHint => 'Caption, feeling, location, tags';
+
+  @override
+  String get postFeelingHappy => 'happy';
+
+  @override
+  String get postFeelingExcited => 'excited';
+
+  @override
+  String get postFeelingLoved => 'loved';
+
+  @override
+  String get postFeelingRelaxed => 'relaxed';
+
+  @override
+  String get postFeelingGrateful => 'grateful';
+
+  @override
+  String get postFeelingMotivated => 'motivated';
+
+  @override
+  String get postFeelingCool => 'cool';
+
+  @override
+  String get postFeelingAmazed => 'amazed';
+
+  @override
+  String get postFeelingTired => 'tired';
+
+  @override
+  String get postFeelingSad => 'sad';
+
+  @override
+  String get postFeelingDetermined => 'determined';
+
+  @override
+  String get postFeelingSick => 'sick';
+
+  @override
+  String get postFeelingFunny => 'funny';
+
+  @override
+  String get postFeelingBlessed => 'blessed';
+
+  @override
+  String get postTagYoureTagged => 'You\'re tagged in this post';
+
+  @override
+  String get postTagRemoveMe => 'Remove me from this post';
+
+  @override
+  String get postTagRemoveMeHint => 'You won\'t be tagged anymore';
+
+  @override
+  String get postTagRemoveLabel => 'Remove tag';
+
+  @override
+  String get postTagRemoveTitle => 'Remove your tag?';
+
+  @override
+  String postTagRemoveBody(String name) {
+    return 'You\'ll no longer be tagged in $name\'s post or its photos. The post itself stays.';
+  }
+
+  @override
+  String get postTagRemoveConfirm => 'Remove';
+
+  @override
+  String get postTagRemoved => 'Tag removed';
+
+  @override
+  String get postTagRemovedBody => 'You\'re no longer tagged in this post.';
+
+  @override
+  String get postTagRemoveError => 'Couldn\'t remove your tag';
+
+  @override
+  String get postTaggedPeopleTitle => 'Tagged people';
+
+  @override
+  String get postTaggedFollow => 'Follow';
+
+  @override
+  String get postTaggedFollowing => 'Following';
+
+  @override
+  String get postTaggedRequested => 'Requested';
+
+  @override
+  String get postTaggedLoadError => 'Couldn\'t load people';
+
+  @override
+  String get postTagBadge => 'People tagged in this photo';
+
+  @override
+  String postTaggedPerson(String name, String state) {
+    return '$name, $state';
+  }
+
+  @override
+  String get postTagPeopleTitle => 'Tag people';
+
+  @override
+  String get postTagPeopleSearch => 'Search people';
+
+  @override
+  String get postTagPeopleClear => 'Clear search';
+
+  @override
+  String get postTagPeopleSuggested => 'Suggested';
+
+  @override
+  String get postTagPeopleDone => 'Done';
+
+  @override
+  String get postTagPeopleNoTags => 'Doesn\'t allow tags';
+
+  @override
+  String postTagPeopleMax(int max) {
+    return 'You can tag up to $max people';
+  }
+
+  @override
+  String get postTagPeopleEmpty => 'No people found';
+
+  @override
+  String get postTagPeopleInPhoto => 'Tag in photo';
+
+  @override
+  String get postTagPeopleError => 'Couldn\'t load people. Retry';
+
+  @override
+  String postTagPeopleCounter(int count, int max) {
+    return '$count / $max';
+  }
+
+  @override
+  String postTagPeopleRemoveChip(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String postTagPersonTagged(String name) {
+    return '$name, tagged';
+  }
+
+  @override
+  String postTagPersonNotTagged(String name) {
+    return '$name, not tagged';
+  }
+
+  @override
+  String get postTagInPhotoTitle => 'Tag in photo';
+
+  @override
+  String get postTagInPhotoHint =>
+      'Tap where someone is, then pick them. Drag a label to move it.';
+
+  @override
+  String postTagInPhotoNoSpot(String name) {
+    return '$name tagged in the post, not in a photo';
+  }
+
+  @override
+  String postTagInPhotoNoSpotMany(int count) {
+    return '$count people tagged in the post, not in a photo';
+  }
+
+  @override
+  String get postTagInPhotoAllPlaced => 'Everyone is placed';
+
+  @override
+  String postTagInPhotoLabel(String name) {
+    return 'Tag $name, drag to move';
+  }
+
+  @override
+  String postTagInPhotoRemoveSpot(String name) {
+    return 'Remove $name\'s spot';
+  }
+
+  @override
+  String postTagInPhotoThumb(int number, int count) {
+    return 'Photo $number, $count tagged';
+  }
+
+  @override
+  String postTagValueTwo(String a, String b) {
+    return '$a, $b';
+  }
+
+  @override
+  String postTagValueMore(String a, String b, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count others',
+      one: '1 other',
+    );
+    return '$a, $b and $_temp0';
+  }
+
+  @override
+  String get postFeelingTitle => 'How are you feeling?';
+
+  @override
+  String get postFeelingRemove => 'Remove';
+
+  @override
+  String get postFeelingTabFeelings => 'Feelings';
+
+  @override
+  String get postFeelingTabActivities => 'Activities';
+
+  @override
+  String get postFeelingSearch => 'Search feelings';
+
+  @override
+  String get postFeelingClear => 'Clear search';
+
+  @override
+  String get postFeelingNoMatches => 'No matches';
+
+  @override
+  String postFeelingSelected(String word) {
+    return '$word, selected';
+  }
+
+  @override
+  String postFeelingValue(String emoji, String word) {
+    return '${emoji}feeling $word';
+  }
 }

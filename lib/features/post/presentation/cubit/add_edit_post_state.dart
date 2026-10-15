@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/services/media_picker_service.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
 import '../../domain/entity/post_entity.dart';
 import '../../domain/entity/post_media_entity.dart';
+import '../../domain/entity/post_mood_entity.dart';
 import '../utils/enums/new_post_notice.dart';
 import '../utils/new_post_limits.dart';
+import '../utils/tag_choice.dart';
 
 part 'add_edit_post_state.freezed.dart';
 
@@ -22,6 +25,8 @@ abstract class AddEditPostState with _$AddEditPostState {
     kept: post.media,
     commentsEnabled: post.commentsEnabled,
     visibility: post.visibility,
+    tags: [for (final tag in post.tags) TagChoice.tag(tag)],
+    mood: post.mood,
   );
 
   const factory AddEditPostState({
@@ -47,6 +52,12 @@ abstract class AddEditPostState with _$AddEditPostState {
     @Default(true) bool commentsEnabled,
     @Default(ContentAudience.public) ContentAudience visibility,
 
+    /// The people tagged, with the spot each has on a photo when one was set.
+    @Default(<TagChoice>[]) List<TagChoice> tags,
+
+    /// How the author feels, shown in the headline.
+    PostMoodEntity? mood,
+
     /// The audience the account starts new posts with; a narrower choice looks different on the chip.
     @Default(ContentAudience.public) ContentAudience defaultVisibility,
 
@@ -64,7 +75,11 @@ abstract class AddEditPostState with _$AddEditPostState {
   /// Something to lose when closing: written content when adding, any edit when editing.
   bool get hasContent => isEditing
       ? hasChanges
-      : caption.trim().isNotEmpty || media.isNotEmpty || location != null;
+      : caption.trim().isNotEmpty ||
+            media.isNotEmpty ||
+            location != null ||
+            tags.isNotEmpty ||
+            mood != null;
 
   /// Edit only: anything differs from the post as it was.
   bool get hasChanges {
@@ -75,7 +90,9 @@ abstract class AddEditPostState with _$AddEditPostState {
         kept.length != post.media.length ||
         media.isNotEmpty ||
         commentsEnabled != post.commentsEnabled ||
-        visibility != post.visibility;
+        visibility != post.visibility ||
+        mood != post.mood ||
+        !listEquals(tags, [for (final tag in post.tags) TagChoice.tag(tag)]);
   }
 
   /// Text or at least one photo or video, and something to save when editing.

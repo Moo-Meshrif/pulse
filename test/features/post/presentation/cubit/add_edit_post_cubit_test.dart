@@ -6,12 +6,15 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_media_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
+import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/event/post_saved.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
@@ -21,6 +24,7 @@ import 'package:pulse/features/post/presentation/cubit/add_edit_post_cubit.dart'
 import 'package:pulse/features/post/presentation/utils/enums/new_post_notice.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
 import 'package:pulse/features/post/presentation/utils/post_visibility_result.dart';
+import 'package:pulse/features/post/presentation/utils/tag_choice.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
@@ -534,6 +538,200 @@ void main() {
       expect(edited.kept, [m0, m1]);
       verifyNever(() => createPost(any()));
       expect(cubit.state.isSaved, isTrue);
+    });
+  });
+
+  group('tags', () {
+    const omar = TagChoice(id: 'u1', username: 'omar');
+    const laila = TagChoice(id: 'u2', username: 'laila');
+
+    Future<AddEditPostCubit> withPhotos(int count) async {
+      when(() => picker.pickMany(limit: any(named: 'limit'))).thenAnswer(
+        (_) async => [for (var i = 0; i < count; i++) photo('/p$i.jpg')],
+      );
+      final cubit = build();
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      return cubit;
+    }
+
+    test('what is chosen is something to lose, and goes in the post', () async {
+      when(() => createPost(any())).thenAnswer((_) async => null);
+      final cubit = build()
+        ..captionChanged('hi')
+        ..tagsChanged([omar.withSpot(0, 0.5, 0.25), laila]);
+      expect(cubit.state.hasContent, isTrue);
+
+      cubit.save();
+      await pumpEventQueue();
+
+      final sent =
+          verify(() => createPost(captureAny())).captured.single
+              as NewPostEntity;
+      expect(sent.tags.map((t) => t.userId), ['u1', 'u2']);
+      expect(sent.tags.first.mediaPosition, 0);
+      expect(sent.tags.first.x, 0.5);
+      expect(sent.tags.last.mediaPosition, isNull);
+    });
+
+    test(
+      'the tag pages open with the chosen people and the media in order',
+      () async {
+        final cubit = await withPhotos(2);
+        cubit.tagsChanged([omar]);
+
+        final args = cubit.tagArgs;
+
+        expect(args.chosen, [omar]);
+        expect(args.photos.map((p) => p.position), [0, 1]);
+        expect(args.photos.first.filePath, '/p0.jpg');
+        expect(args.photos.first.aspect, closeTo(800 / 600, 0.001));
+        expect(args.hasPhotos, isTrue);
+      },
+    );
+
+    test(
+      'removing a photo clears its spots and moves the later ones up',
+      () async {
+        final cubit = await withPhotos(3);
+        cubit.tagsChanged([
+          omar.withSpot(0, 0.1, 0.1),
+          laila.withSpot(2, 0.9, 0.8),
+          const TagChoice(id: 'u3', username: 'yousef'),
+        ]);
+
+        cubit.removeMedia(0);
+
+        final tags = cubit.state.tags;
+        expect(tags[0].hasSpot, isFalse);
+        expect(tags[0].id, 'u1');
+        expect(tags[1].mediaPosition, 1);
+        expect(tags[1].x, 0.9);
+        expect(tags[2].hasSpot, isFalse);
+        expect(tags.length, 3);
+      },
+    );
+
+    test('a tag on a photo before the removed one stays', () async {
+      final cubit = await withPhotos(3);
+      cubit.tagsChanged([omar.withSpot(0, 0.1, 0.1)]);
+
+      cubit.removeMedia(2);
+
+      expect(cubit.state.tags.single.mediaPosition, 0);
+    });
+
+    test('editing starts from the post\'s tags and knows when they change', () {
+      final post = PostEntity(
+        id: 'p1',
+        authorId: 'u1',
+        username: 'nour',
+        caption: 'Hello',
+        likeCount: 0,
+        commentCount: 0,
+        commentsEnabled: true,
+        visibility: ContentAudience.public,
+        createdAt: DateTime(2026),
+        likedByMe: false,
+        savedByMe: false,
+        media: const [],
+        tags: const [
+          PostTagEntity(userId: 'u2', username: 'laila', fullName: 'Laila F'),
+        ],
+        tagCount: 1,
+      );
+
+      final cubit = build(post);
+
+      expect(cubit.state.tags.single.id, 'u2');
+      expect(cubit.state.tags.single.fullName, 'Laila F');
+      expect(cubit.state.canSave, isFalse);
+
+      cubit.tagsChanged([...cubit.state.tags, omar]);
+      expect(cubit.state.hasChanges, isTrue);
+      cubit.tagsChanged([TagChoice.tag(post.tags.single)]);
+      expect(cubit.state.hasChanges, isFalse);
+    });
+  });
+
+  group('feeling', () {
+    const happy = PostMoodEntity(kind: MoodKind.feeling, key: 'happy');
+
+    test(
+      'a chosen feeling is something to lose, and goes in the post',
+      () async {
+        when(() => createPost(any())).thenAnswer((_) async => null);
+        final cubit = build()
+          ..captionChanged('hi')
+          ..moodChanged(happy);
+        expect(cubit.state.hasContent, isTrue);
+
+        cubit.save();
+        await pumpEventQueue();
+
+        final sent =
+            verify(() => createPost(captureAny())).captured.single
+                as NewPostEntity;
+        expect(sent.mood, happy);
+      },
+    );
+
+    test('Remove clears it', () {
+      final cubit = build()
+        ..moodChanged(happy)
+        ..moodChanged(null);
+      expect(cubit.state.mood, isNull);
+      expect(cubit.state.hasContent, isFalse);
+    });
+
+    test('editing starts from the post\'s feeling; changing or clearing is a change', () async {
+      final post = PostEntity(
+        id: 'p1',
+        authorId: 'u1',
+        username: 'nour',
+        caption: 'Hello',
+        likeCount: 0,
+        commentCount: 0,
+        commentsEnabled: true,
+        visibility: ContentAudience.public,
+        createdAt: DateTime(2026),
+        likedByMe: false,
+        savedByMe: false,
+        media: const [],
+        mood: happy,
+      );
+      registerFallbackValue(post);
+      registerFallbackValue(
+        const EditPostEntity(
+          id: 'x',
+          kept: [],
+          added: [],
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+        ),
+      );
+      when(() => updatePost(any(), before: any(named: 'before')))
+          .thenAnswer((_) async => post);
+      final cubit = build(post);
+
+      expect(cubit.state.mood, happy);
+      expect(cubit.state.canSave, isFalse);
+
+      cubit.moodChanged(
+        const PostMoodEntity(kind: MoodKind.feeling, key: 'sad'),
+      );
+      expect(cubit.state.hasChanges, isTrue);
+      cubit.moodChanged(null);
+      expect(cubit.state.hasChanges, isTrue);
+
+      cubit.save();
+      await pumpEventQueue();
+      final sent =
+          verify(() => updatePost(captureAny(), before: any(named: 'before')))
+                  .captured
+                  .single
+              as EditPostEntity;
+      expect(sent.mood, isNull);
     });
   });
 }

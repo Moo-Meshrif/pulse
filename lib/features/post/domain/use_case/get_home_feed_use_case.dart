@@ -5,10 +5,13 @@ import '../../data/datasource/posts_datasource.dart';
 import '../../data/enums/media_type.dart';
 import '../../data/model/post_media_model.dart';
 import '../../data/model/post_model.dart';
+import '../../data/model/post_tag_model.dart';
 import '../entity/feed_cursor_entity.dart';
 import '../entity/feed_page_entity.dart';
 import '../entity/post_entity.dart';
 import '../entity/post_media_entity.dart';
+import '../entity/post_mood_entity.dart';
+import '../entity/post_tag_entity.dart';
 
 /// A page of the home feed, newest first. The entry point Home calls; pass the last page's
 /// [FeedPageEntity.nextCursor] for the next one.
@@ -67,6 +70,31 @@ class GetHomeFeedUseCase {
         for (final item in post.media ?? const <PostMediaModel>[])
           ?_media(item),
       ],
+      mood: _mood(post),
+      tags: [for (final tag in post.tags ?? const <PostTagModel>[]) ?_tag(tag)],
+      tagCount: post.tagCount ?? 0,
+      iAmTagged: post.iAmTagged ?? false,
+    );
+  }
+
+  PostMoodEntity? _mood(PostModel post) {
+    final kind = post.moodKind;
+    final key = post.moodKey;
+    if (kind == null || key == null) return null;
+    return PostMoodEntity(kind: kind, key: key, text: post.moodText);
+  }
+
+  PostTagEntity? _tag(PostTagModel tag) {
+    final userId = tag.userId;
+    final username = tag.username;
+    if (userId == null || username == null) return null;
+    return PostTagEntity(
+      userId: userId,
+      username: username,
+      fullName: tag.fullName,
+      mediaPosition: tag.mediaPosition,
+      x: tag.x,
+      y: tag.y,
     );
   }
 

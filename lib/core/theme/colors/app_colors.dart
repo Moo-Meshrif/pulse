@@ -39,6 +39,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.scrim,
     required this.videoChip,
     required this.mediaChip,
+    required this.tagLabel,
     required this.glassFill,
     required this.glassBorder,
     required this.glassActive,
@@ -99,6 +100,9 @@ class AppColors extends ThemeExtension<AppColors> {
 
   /// Post chips on media (counter, mute, duration, remove).
   final Color mediaChip;
+
+  /// Dark pill of a person's tag on a photo (#161A19 @ 82%).
+  final Color tagLabel;
   final Color glassFill;
   final Color glassBorder;
   final Color glassActive;
@@ -185,6 +189,7 @@ class AppColors extends ThemeExtension<AppColors> {
     scrim: Color(0x66161A19), // #161A19 @ 40%
     videoChip: Color(0x73161A19), // #161A19 @ 45%
     mediaChip: Color(0x8C161A19), // #161A19 @ 55%
+    tagLabel: Color(0xD1161A19), // #161A19 @ 82%
     glassFill: Color(0x8CFFFFFF), // #FFFFFF @ 55%
     glassBorder: Color(0xCCFFFFFF), // #FFFFFF @ 80%
     glassActive: Color(0xD9FFFFFF), // #FFFFFF @ 85%
@@ -245,6 +250,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? scrim,
     Color? videoChip,
     Color? mediaChip,
+    Color? tagLabel,
     Color? glassFill,
     Color? glassBorder,
     Color? glassActive,
@@ -294,6 +300,7 @@ class AppColors extends ThemeExtension<AppColors> {
     scrim: scrim ?? this.scrim,
     videoChip: videoChip ?? this.videoChip,
     mediaChip: mediaChip ?? this.mediaChip,
+    tagLabel: tagLabel ?? this.tagLabel,
     glassFill: glassFill ?? this.glassFill,
     glassBorder: glassBorder ?? this.glassBorder,
     glassActive: glassActive ?? this.glassActive,
@@ -349,6 +356,7 @@ class AppColors extends ThemeExtension<AppColors> {
       scrim: mix(scrim, other.scrim),
       videoChip: mix(videoChip, other.videoChip),
       mediaChip: mix(mediaChip, other.mediaChip),
+      tagLabel: mix(tagLabel, other.tagLabel),
       glassFill: mix(glassFill, other.glassFill),
       glassBorder: mix(glassBorder, other.glassBorder),
       glassActive: mix(glassActive, other.glassActive),

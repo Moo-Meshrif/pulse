@@ -1884,5 +1884,420 @@
   "newPostPublishBusy": "منشورك السابق ما زال قيد الإرسال. حاول بعد قليل.",
   "@newPostPublishBusy": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "postHeadlineYou": "أنت",
+  "@postHeadlineYou": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHeadlineFeeling": "{emoji} {word}",
+  "@postHeadlineFeeling": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "postHeadlineWith": "مع ",
+  "@postHeadlineWith": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHeadlineAnd": " و",
+  "@postHeadlineAnd": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHeadlineOthers": "{count} آخرين",
+  "@postHeadlineOthers": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postCommentsOffTitle": "التعليقات متوقفة",
+  "@postCommentsOffTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postCommentsOffNotice": "أوقف {name} التعليقات على هذا المنشور.",
+  "@postCommentsOffNotice": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postCommentsOffLine": "التعليقات متوقفة",
+  "@postCommentsOffLine": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postCommentsOffHint": "التعليقات متوقفة على هذا المنشور",
+  "@postCommentsOffHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postEditHint": "التعليق، الشعور، الموقع، الوسوم",
+  "@postEditHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingHappy": "سعادة",
+  "@postFeelingHappy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingExcited": "حماس",
+  "@postFeelingExcited": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingLoved": "حب",
+  "@postFeelingLoved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingRelaxed": "راحة",
+  "@postFeelingRelaxed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingGrateful": "امتنان",
+  "@postFeelingGrateful": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingMotivated": "تحفّز",
+  "@postFeelingMotivated": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingCool": "روعة",
+  "@postFeelingCool": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingAmazed": "دهشة",
+  "@postFeelingAmazed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingTired": "تعب",
+  "@postFeelingTired": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingSad": "حزن",
+  "@postFeelingSad": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingDetermined": "عزيمة",
+  "@postFeelingDetermined": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingSick": "مرض",
+  "@postFeelingSick": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingFunny": "مرح",
+  "@postFeelingFunny": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingBlessed": "بركة",
+  "@postFeelingBlessed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagYoureTagged": "تم وسمك في هذا المنشور",
+  "@postTagYoureTagged": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoveMe": "أزلني من هذا المنشور",
+  "@postTagRemoveMe": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoveMeHint": "لن يتم وسمك بعد الآن",
+  "@postTagRemoveMeHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoveLabel": "إزالة الوسم",
+  "@postTagRemoveLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoveTitle": "إزالة وسمك؟",
+  "@postTagRemoveTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoveBody": "لن يتم وسمك بعد الآن في منشور {name} أو صوره. يبقى المنشور كما هو.",
+  "@postTagRemoveBody": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagRemoveConfirm": "إزالة",
+  "@postTagRemoveConfirm": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoved": "تمت إزالة الوسم",
+  "@postTagRemoved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemovedBody": "لم يعد وسمك في هذا المنشور.",
+  "@postTagRemovedBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagRemoveError": "تعذّرت إزالة وسمك",
+  "@postTagRemoveError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTaggedPeopleTitle": "الأشخاص الموسومون",
+  "@postTaggedPeopleTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTaggedFollow": "متابعة",
+  "@postTaggedFollow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTaggedFollowing": "تتم متابعته",
+  "@postTaggedFollowing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTaggedRequested": "تم الطلب",
+  "@postTaggedRequested": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTaggedLoadError": "تعذّر تحميل الأشخاص",
+  "@postTaggedLoadError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagBadge": "الأشخاص الموسومون في هذه الصورة",
+  "@postTagBadge": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTaggedPerson": "{name}، {state}",
+  "@postTaggedPerson": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagPeopleTitle": "وسم الأشخاص",
+  "@postTagPeopleTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleSearch": "ابحث عن أشخاص",
+  "@postTagPeopleSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleClear": "مسح البحث",
+  "@postTagPeopleClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleSuggested": "مقترحون",
+  "@postTagPeopleSuggested": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleDone": "تم",
+  "@postTagPeopleDone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleNoTags": "لا يسمح بالوسم",
+  "@postTagPeopleNoTags": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleMax": "يمكنك وسم {max} شخصًا كحد أقصى",
+  "@postTagPeopleMax": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagPeopleEmpty": "لا يوجد أشخاص",
+  "@postTagPeopleEmpty": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleInPhoto": "الوسم في الصورة",
+  "@postTagPeopleInPhoto": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleError": "تعذّر تحميل الأشخاص. أعد المحاولة",
+  "@postTagPeopleError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagPeopleCounter": "{count} / {max}",
+  "@postTagPeopleCounter": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagPeopleRemoveChip": "إزالة {name}",
+  "@postTagPeopleRemoveChip": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagPersonTagged": "{name}، موسوم",
+  "@postTagPersonTagged": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagPersonNotTagged": "{name}، غير موسوم",
+  "@postTagPersonNotTagged": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoTitle": "الوسم في الصورة",
+  "@postTagInPhotoTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagInPhotoHint": "اضغط على مكان الشخص ثم اخترْه. اسحب الوسم لتحريكه.",
+  "@postTagInPhotoHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagInPhotoNoSpot": "تم وسم {name} في المنشور وليس في صورة",
+  "@postTagInPhotoNoSpot": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoNoSpotMany": "تم وسم {count} أشخاص في المنشور وليس في صورة",
+  "@postTagInPhotoNoSpotMany": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagInPhotoAllPlaced": "تم وضع الجميع",
+  "@postTagInPhotoAllPlaced": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postTagInPhotoLabel": "وسم {name}، اسحب لتحريكه",
+  "@postTagInPhotoLabel": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoRemoveSpot": "إزالة موضع {name}",
+  "@postTagInPhotoRemoveSpot": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoThumb": "الصورة {number}، {count} موسوم",
+  "@postTagInPhotoThumb": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagValueTwo": "{a}، {b}",
+  "@postTagValueTwo": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagValueMore": "{a}، {b} و{count} آخرين",
+  "@postTagValueMore": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postFeelingTitle": "كيف تشعر؟",
+  "@postFeelingTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingRemove": "إزالة",
+  "@postFeelingRemove": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingTabFeelings": "المشاعر",
+  "@postFeelingTabFeelings": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingTabActivities": "الأنشطة",
+  "@postFeelingTabActivities": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingSearch": "ابحث عن المشاعر",
+  "@postFeelingSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingClear": "مسح البحث",
+  "@postFeelingClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingNoMatches": "لا نتائج",
+  "@postFeelingNoMatches": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFeelingSelected": "{word}، محدد",
+  "@postFeelingSelected": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "postFeelingValue": "{emoji} {word}",
+  "@postFeelingValue": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
   }
 }

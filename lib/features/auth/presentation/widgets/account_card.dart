@@ -62,6 +62,7 @@ class AccountCard extends StatelessWidget {
                     : ClipOval(
                         child: AppImage.network(
                           avatarUrl!,
+                          fit: BoxFit.cover,
                           cacheWidth: (size * 2).round(),
                           errorBuilder: (_) => initials,
                         ),

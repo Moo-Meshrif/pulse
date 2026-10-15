@@ -10,7 +10,7 @@ Scaffold (background)  [AppSafeArea]
    ├─ Expanded SingleChildScrollView
    │  ├─ Composer card (surface r22): author row (avatar 44, name, visibility chip) / caption field / media strip / counter
    │  ├─ Section label "ADD TO YOUR POST"
-   │  └─ Options card: Photo / video · Tag people · Location · Feeling / activity · Allow comments (switch)
+   │  └─ Options card: Photo / video · Tag people · Location · Feeling / activity · Allow comments (switch, kept as the 5th row though board 1 panel 7 omits it [user])
    └─ "Share post" button pinned at the bottom (above keyboard/inset)
 ```
 
@@ -26,11 +26,11 @@ Scaffold (background)  [AppSafeArea]
 | Media strip | thumbs + Add tile | 104 | | horizontal scroll; thumb remove X; video duration chip |
 | Counter | "0/2000" | | caption 12 | `danger` at 2000 |
 | Photo / video row | "Photo / video", value "2 added" | 54 | | `ic_image` tile; opens picker |
-| Tag people row | "Tag people" | | | `ic_tag_person`; **coming soon** [user] |
+| Tag people row | "Tag people", value = "Omar Khaled, Laila Fouad and 1 other" (names, then "and N other(s)") | | `ic_tag_person` | opens S6 (`s6-tag-people.md`); S6 has a "Tag in photo" button (photos only) that opens S7 (`s7-tag-in-photo.md`) [user: built 2026-10-15] |
 | Location row | "Location", value = chosen place ("Kolkata") | | | `ic_location`; opens S3 Add location (`s3-add-location.md`) |
-| Feeling row | "Feeling / activity" | | | `ic_smile`; **coming soon** [user] |
+| Feeling row | "Feeling / activity", value = "😊feeling happy" (AR: "😊 سعادة"; activities deferred, TODO) | | `ic_smile` | opens S8 (`s8-feeling-activity.md`); the value shows in primary under the title [user: built 2026-10-15] |
 | Allow comments | "Allow comments" | | | switch, default on |
-| Share | "Share post" | h 56 | primary pill | |
+| Share | "Share post" | h 56 | primary pill | label stays "Share post" although board 1 panel 7 shows "Post" [user] |
 
 ## States
 | State | UI |
@@ -41,7 +41,8 @@ Scaffold (background)  [AppSafeArea]
 | Success | close screen, notice "Post shared"; Home feed refreshes [user] |
 | Error | stay on screen, error notice with Retry (re-uploads only missing files) [user, default accepted] |
 | Limit | counter turns `danger` at 2000; at 10 media the Add tile disappears |
-| Coming soon | Tag people, Feeling rows tap -> notice "Coming soon" [user]. The chip opens S4 (Q1 answered) |
+| Headline preview | the composer card headline previews exactly what the feed card will show: name · "is feeling 😊happy" / "is 📺 watching ..." · "with Omar Khaled and 2 others", then location (primary pin) in the meta line, then the audience chip [user, board 1 panel 7] |
+| Rows with values | "Add to your post" rows show the current value in primary under the title; tap to change (a row with a value shows its change flow, S6/S8 each have Remove or untick to clear) [user] |
 | Dirty close | X / system back with content -> discard confirm (ConfirmationDialog); no confirm when empty [user] |
 
 ## Strings (en | ar draft `x-review`)
@@ -81,6 +82,8 @@ Counter "72 / 500" style numerals follow the locale rule in `rtl.md`.
 | Allow comments | `comments_enabled` (Q2) |
 | Visibility | S4 choice -> `p_visibility`; default from `profiles.default_post_visibility` (Public; Followers when the account is private) |
 | Create | `CreatePostUseCase` (post feature, to add to `00-data-layer.md`) |
+| Tags | S6/S7 result -> `p_tags` `[{user_id, media_position?, x?, y?}]` (max 20) |
+| Feeling / activity | S8 result (S9 deferred) -> `p_mood_kind`, `p_mood_key`, `p_mood_text` |
 
 ## Responsive / a11y
 `ContentWidth` on wide screens. Keyboard: Share stays visible above it; fields scroll into view. Targets >= 44. Semantics: remove buttons "Remove photo {n}", switch with label, counter announced at limit. RTL: title/X, chip, thumbs strip, chevrons mirror; the input aligns to the text direction.

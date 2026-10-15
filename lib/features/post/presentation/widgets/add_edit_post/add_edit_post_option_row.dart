@@ -78,7 +78,7 @@ class AddEditPostOptionRow extends StatelessWidget {
                       child: AppText(
                         value!,
                         style: context.text.bodySm,
-                        color: colors.textSecondary,
+                        color: colors.primary,
                         maxLines: 2,
                       ),
                     ),

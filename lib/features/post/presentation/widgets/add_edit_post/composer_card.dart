@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
-import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
@@ -10,6 +9,10 @@ import '../../cubit/add_edit_post_cubit.dart';
 import '../../cubit/add_edit_post_state.dart';
 import '../../dimens/post_composer_dimens.dart';
 import '../../utils/content_audience_display.dart';
+import '../../utils/post_card_callbacks.dart';
+import '../../utils/post_card_data.dart';
+import '../post_headline.dart';
+import '../post_meta_line.dart';
 import '../post_visibility/post_visibility_sheet.dart';
 import '../post_visibility/visibility_toast.dart';
 import 'caption_field.dart';
@@ -46,6 +49,42 @@ class ComposerCard extends StatelessWidget {
   }
 }
 
+/// What the feed card will say about the post: the name, the feeling, the tagged people, and the place.
+class _HeadlinePreview extends StatelessWidget {
+  const _HeadlinePreview({required this.name, this.authorId});
+
+  final String name;
+  final String? authorId;
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<AddEditPostCubit, AddEditPostState>(
+        buildWhen: (before, now) =>
+            before.mood != now.mood ||
+            before.tags != now.tags ||
+            before.location != now.location,
+        builder: (context, state) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PostHeadline(
+              data: PostCardData(
+                id: state.postId,
+                authorId: authorId ?? '',
+                authorName: name,
+                isMine: true,
+                createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+                mood: state.mood,
+                tags: [for (final tag in state.tags) tag.toTag()],
+                tagCount: state.tags.length,
+              ),
+              callbacks: const PostCardCallbacks(),
+            ),
+            if (state.location != null) PostMetaLine(location: state.location),
+          ],
+        ),
+      );
+}
+
 class _AuthorRow extends StatelessWidget {
   const _AuthorRow();
 
@@ -69,7 +108,6 @@ class _AuthorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.appColors;
     final me = context.read<AddEditPostCubit>().me;
     final name = me?.fullName ?? me?.username;
     return Row(
@@ -84,13 +122,7 @@ class _AuthorRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (name != null)
-                AppText(
-                  name,
-                  style: context.text.name,
-                  color: colors.textPrimary,
-                  maxLines: 1,
-                ),
+              if (name != null) _HeadlinePreview(name: name, authorId: me?.id),
               SizedBox(height: AppSpacing.s4),
               BlocSelector<
                 AddEditPostCubit,

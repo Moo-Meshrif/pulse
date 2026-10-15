@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pulse/core/constants/app_assets.dart';
 import 'package:pulse/core/notice/notices.dart';
+import 'package:pulse/core/widgets/app_svg_icon.dart';
 import 'package:pulse/core/widgets/notice/notice_card.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -28,6 +30,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(undone, 1);
     expect(find.byType(NoticeCard), findsNothing);
+  });
+
+  testView('a notice can carry a second line and its own icon', (tester) async {
+    await open(tester);
+    Notices.info(
+      'Comments are off',
+      body: 'Nour turned them off.',
+      icon: AppAssets.commentOff,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Comments are off'), findsOneWidget);
+    expect(find.text('Nour turned them off.'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is AppSvgIcon && w.asset == AppAssets.commentOff,
+      ),
+      findsOneWidget,
+    );
   });
 
   testView('a tap on the card dismisses it', (tester) async {

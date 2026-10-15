@@ -1,34 +1,38 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_assets.dart';
-import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/extensions/l10n.dart';
-import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/theme/dimens/app_dimens.dart';
-import '../../../../core/widgets/widgets.dart';
-import '../dimens/location_dimens.dart';
+import '../constants/app_assets.dart';
+import '../extensions/context_extensions.dart';
+import '../theme/app_text_styles.dart';
+import '../theme/dimens/app_dimens.dart';
+import '../widgets/widgets.dart';
 
-/// The white search pill: a ring in `primary` while it has focus and a clear button once it has text.
+/// The white search pill (Add location, Tag people): a ring in `primary` while it has focus and a clear button once it has text.
 /// It keeps its own controller and focus node; [onChanged] reports every change, clearing included.
-class LocationSearchField extends StatefulWidget {
-  const LocationSearchField({
+class SearchPillField extends StatefulWidget {
+  const SearchPillField({
     super.key,
     required this.onChanged,
+    required this.hint,
+    required this.clearLabel,
     this.autofocus = false,
     this.enabled = true,
   });
 
   final ValueChanged<String> onChanged;
+  final String hint;
+
+  /// Spoken by the clear button.
+  final String clearLabel;
   final bool autofocus;
 
   /// False while offline: the field greys out and takes no text.
   final bool enabled;
 
   @override
-  State<LocationSearchField> createState() => _LocationSearchFieldState();
+  State<SearchPillField> createState() => _SearchPillFieldState();
 }
 
-class _LocationSearchFieldState extends State<LocationSearchField> {
+class _SearchPillFieldState extends State<SearchPillField> {
   final _controller = TextEditingController();
   final _focus = FocusNode();
 
@@ -58,27 +62,27 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final hint = context.l10n.locationSearchHint;
+    final hint = widget.hint;
     final textStyle = context.text.body.copyWith(
       textBaseline: TextBaseline
           .alphabetic, // TextField asserts on it when inherit is false
     );
     return Container(
-      height: LocationDimens.searchHeight,
+      height: SearchFieldDimens.height,
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.s16),
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: BorderRadius.circular(LocationDimens.searchRadius),
+        borderRadius: BorderRadius.circular(SearchFieldDimens.radius),
         border: Border.all(
           color: _focus.hasFocus ? colors.primary : Colors.transparent,
-          width: LocationDimens.focusRingWidth,
+          width: SearchFieldDimens.focusRingWidth,
         ),
       ),
       child: Row(
         children: [
           AppSvgIcon(
             AppAssets.search,
-            size: LocationDimens.searchIcon,
+            size: SearchFieldDimens.icon,
             color: colors.textSecondary,
           ),
           SizedBox(width: AppSpacing.s12),
@@ -97,7 +101,8 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
               ),
             ),
           ),
-          if (_controller.text.isNotEmpty) _ClearButton(onTap: _clear),
+          if (_controller.text.isNotEmpty)
+            _ClearButton(onTap: _clear, label: widget.clearLabel),
         ],
       ),
     );
@@ -105,9 +110,10 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
 }
 
 class _ClearButton extends StatelessWidget {
-  const _ClearButton({required this.onTap});
+  const _ClearButton({required this.onTap, required this.label});
 
   final VoidCallback onTap;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -115,17 +121,17 @@ class _ClearButton extends StatelessWidget {
     return Semantics(
       button: true,
       excludeSemantics: true,
-      label: context.l10n.locationClearSearch,
+      label: label,
       onTap: onTap,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: SizedBox.square(
-          dimension: LocationDimens.clearTapTarget,
+          dimension: SearchFieldDimens.clearTapTarget,
           child: Center(
             child: Container(
-              width: LocationDimens.clearButton,
-              height: LocationDimens.clearButton,
+              width: SearchFieldDimens.clearButton,
+              height: SearchFieldDimens.clearButton,
               decoration: BoxDecoration(
                 color: colors.border,
                 shape: BoxShape.circle,
@@ -133,7 +139,7 @@ class _ClearButton extends StatelessWidget {
               alignment: Alignment.center,
               child: AppSvgIcon(
                 AppAssets.close,
-                size: LocationDimens.clearIcon,
+                size: SearchFieldDimens.clearIcon,
                 color: colors.textSecondary,
               ),
             ),

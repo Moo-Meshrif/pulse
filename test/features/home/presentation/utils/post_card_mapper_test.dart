@@ -1,7 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/constants/app_assets.dart';
 import 'package:pulse/features/home/presentation/utils/post_card_mapper.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../../post/post_fixtures.dart';
@@ -40,6 +43,38 @@ void main() {
       expect(card.commentCount, 2);
     });
 
+    test(
+      'carries the feeling, the tags, comments off and whose post it is',
+      () {
+        final post = PostEntity(
+          id: 'p1',
+          authorId: 'a1',
+          username: 'nour',
+          likeCount: 0,
+          commentCount: 0,
+          commentsEnabled: false,
+          visibility: ContentAudience.public,
+          createdAt: DateTime(2026),
+          likedByMe: false,
+          savedByMe: false,
+          media: const [],
+          mood: const PostMoodEntity(kind: MoodKind.feeling, key: 'happy'),
+          tags: const [PostTagEntity(userId: 'u2', username: 'omar')],
+          tagCount: 3,
+        );
+
+        final mine = postCardData(post, const [], userId: 'a1');
+        final theirs = postCardData(post, const [], userId: 'u9');
+
+        expect(mine.isMine, isTrue);
+        expect(theirs.isMine, isFalse);
+        expect(mine.commentsEnabled, isFalse);
+        expect(mine.mood?.key, 'happy');
+        expect(mine.tags.single.userId, 'u2');
+        expect(mine.tagCount, 3);
+      },
+    );
+
     test('falls back to the username without a name', () {
       expect(postCardData(_post(), const []).authorName, 'nour.adel');
       expect(
@@ -66,8 +101,8 @@ void main() {
       );
     });
 
-    test('a public post has no audience icon, others do', () {
-      expect(postCardData(_post(), const []).audienceIcon, isNull);
+    test('every post shows its audience icon', () {
+      expect(postCardData(_post(), const []).audienceIcon, AppAssets.globe);
       expect(
         postCardData(
           _post(visibility: ContentAudience.onlyMe),

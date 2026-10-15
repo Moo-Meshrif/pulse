@@ -27,7 +27,12 @@ class PostOptionLayout {
     }
     return PostOptionLayout._(
       quick,
-      const [PostOption.notInterested, PostOption.unfollow, PostOption.mute],
+      [
+        if (data.iAmTagged) PostOption.removeMyTag,
+        PostOption.notInterested,
+        PostOption.unfollow,
+        PostOption.mute,
+      ],
       const [PostOption.report],
     );
   }

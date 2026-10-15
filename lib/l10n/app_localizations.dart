@@ -2839,6 +2839,450 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your previous post is still being sent. Try again in a moment.'**
   String get newPostPublishBusy;
+
+  /// Post headline: the signed-in author
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get postHeadlineYou;
+
+  /// Post headline: the author feeling something; Arabic uses a noun, no verb
+  ///
+  /// In en, this message translates to:
+  /// **'is feeling {emoji}{word}'**
+  String postHeadlineFeeling(String emoji, String word);
+
+  /// Post headline: before the tagged people
+  ///
+  /// In en, this message translates to:
+  /// **'with '**
+  String get postHeadlineWith;
+
+  /// Post headline: between the tagged people
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get postHeadlineAnd;
+
+  /// Post headline: how many more people are tagged
+  ///
+  /// In en, this message translates to:
+  /// **'{count} others'**
+  String postHeadlineOthers(int count);
+
+  /// Notice when the comment button of a post with comments off is tapped
+  ///
+  /// In en, this message translates to:
+  /// **'Comments are off'**
+  String get postCommentsOffTitle;
+
+  /// Notice body
+  ///
+  /// In en, this message translates to:
+  /// **'{name} turned off comments for this post.'**
+  String postCommentsOffNotice(String name);
+
+  /// Line under the action bar of a post with comments off
+  ///
+  /// In en, this message translates to:
+  /// **'Comments are turned off'**
+  String get postCommentsOffLine;
+
+  /// Options sheet hint on Turn on comments
+  ///
+  /// In en, this message translates to:
+  /// **'Comments are off for this post'**
+  String get postCommentsOffHint;
+
+  /// Options sheet hint on Edit post
+  ///
+  /// In en, this message translates to:
+  /// **'Caption, feeling, location, tags'**
+  String get postEditHint;
+
+  /// A feeling a post can show (happy)
+  ///
+  /// In en, this message translates to:
+  /// **'happy'**
+  String get postFeelingHappy;
+
+  /// A feeling a post can show (excited)
+  ///
+  /// In en, this message translates to:
+  /// **'excited'**
+  String get postFeelingExcited;
+
+  /// A feeling a post can show (loved)
+  ///
+  /// In en, this message translates to:
+  /// **'loved'**
+  String get postFeelingLoved;
+
+  /// A feeling a post can show (relaxed)
+  ///
+  /// In en, this message translates to:
+  /// **'relaxed'**
+  String get postFeelingRelaxed;
+
+  /// A feeling a post can show (grateful)
+  ///
+  /// In en, this message translates to:
+  /// **'grateful'**
+  String get postFeelingGrateful;
+
+  /// A feeling a post can show (motivated)
+  ///
+  /// In en, this message translates to:
+  /// **'motivated'**
+  String get postFeelingMotivated;
+
+  /// A feeling a post can show (cool)
+  ///
+  /// In en, this message translates to:
+  /// **'cool'**
+  String get postFeelingCool;
+
+  /// A feeling a post can show (amazed)
+  ///
+  /// In en, this message translates to:
+  /// **'amazed'**
+  String get postFeelingAmazed;
+
+  /// A feeling a post can show (tired)
+  ///
+  /// In en, this message translates to:
+  /// **'tired'**
+  String get postFeelingTired;
+
+  /// A feeling a post can show (sad)
+  ///
+  /// In en, this message translates to:
+  /// **'sad'**
+  String get postFeelingSad;
+
+  /// A feeling a post can show (determined)
+  ///
+  /// In en, this message translates to:
+  /// **'determined'**
+  String get postFeelingDetermined;
+
+  /// A feeling a post can show (sick)
+  ///
+  /// In en, this message translates to:
+  /// **'sick'**
+  String get postFeelingSick;
+
+  /// A feeling a post can show (funny)
+  ///
+  /// In en, this message translates to:
+  /// **'funny'**
+  String get postFeelingFunny;
+
+  /// A feeling a post can show (blessed)
+  ///
+  /// In en, this message translates to:
+  /// **'blessed'**
+  String get postFeelingBlessed;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re tagged in this post'**
+  String get postTagYoureTagged;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Remove me from this post'**
+  String get postTagRemoveMe;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'You won\'t be tagged anymore'**
+  String get postTagRemoveMeHint;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Remove tag'**
+  String get postTagRemoveLabel;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Remove your tag?'**
+  String get postTagRemoveTitle;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll no longer be tagged in {name}\'s post or its photos. The post itself stays.'**
+  String postTagRemoveBody(String name);
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get postTagRemoveConfirm;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Tag removed'**
+  String get postTagRemoved;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re no longer tagged in this post.'**
+  String get postTagRemovedBody;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t remove your tag'**
+  String get postTagRemoveError;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Tagged people'**
+  String get postTaggedPeopleTitle;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get postTaggedFollow;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get postTaggedFollowing;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Requested'**
+  String get postTaggedRequested;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load people'**
+  String get postTaggedLoadError;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'People tagged in this photo'**
+  String get postTagBadge;
+
+  /// Post tags (S10, S11)
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {state}'**
+  String postTaggedPerson(String name, String state);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Tag people'**
+  String get postTagPeopleTitle;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Search people'**
+  String get postTagPeopleSearch;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get postTagPeopleClear;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested'**
+  String get postTagPeopleSuggested;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get postTagPeopleDone;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t allow tags'**
+  String get postTagPeopleNoTags;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'You can tag up to {max} people'**
+  String postTagPeopleMax(int max);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'No people found'**
+  String get postTagPeopleEmpty;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Tag in photo'**
+  String get postTagPeopleInPhoto;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load people. Retry'**
+  String get postTagPeopleError;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / {max}'**
+  String postTagPeopleCounter(int count, int max);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String postTagPeopleRemoveChip(String name);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, tagged'**
+  String postTagPersonTagged(String name);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, not tagged'**
+  String postTagPersonNotTagged(String name);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Tag in photo'**
+  String get postTagInPhotoTitle;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Tap where someone is, then pick them. Drag a label to move it.'**
+  String get postTagInPhotoHint;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{name} tagged in the post, not in a photo'**
+  String postTagInPhotoNoSpot(String name);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{count} people tagged in the post, not in a photo'**
+  String postTagInPhotoNoSpotMany(int count);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone is placed'**
+  String get postTagInPhotoAllPlaced;
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Tag {name}, drag to move'**
+  String postTagInPhotoLabel(String name);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}\'s spot'**
+  String postTagInPhotoRemoveSpot(String name);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'Photo {number}, {count} tagged'**
+  String postTagInPhotoThumb(int number, int count);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{a}, {b}'**
+  String postTagValueTwo(String a, String b);
+
+  /// Tag people (S6) and Tag in photo (S7)
+  ///
+  /// In en, this message translates to:
+  /// **'{a}, {b} and {count, plural, =1{1 other} other{{count} others}}'**
+  String postTagValueMore(String a, String b, int count);
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling?'**
+  String get postFeelingTitle;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get postFeelingRemove;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'Feelings'**
+  String get postFeelingTabFeelings;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get postFeelingTabActivities;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'Search feelings'**
+  String get postFeelingSearch;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get postFeelingClear;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get postFeelingNoMatches;
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'{word}, selected'**
+  String postFeelingSelected(String word);
+
+  /// Feeling page (S8) and the New post feeling row
+  ///
+  /// In en, this message translates to:
+  /// **'{emoji}feeling {word}'**
+  String postFeelingValue(String emoji, String word);
 }
 
 class _AppLocalizationsDelegate

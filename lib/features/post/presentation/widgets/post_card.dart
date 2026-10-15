@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/extensions/l10n.dart';
+import '../../../../core/notice/notices.dart';
 import '../dimens/post_card_dimens.dart';
 import '../utils/post_card_callbacks.dart';
 import '../utils/post_card_data.dart';
 import 'expandable_caption.dart';
 import 'post_action_bar.dart';
 import 'post_author_row.dart';
+import 'post_comments_off_line.dart';
 import 'post_media.dart';
 
 /// A post in a feed: author row, caption, media and action bar on a rounded card. [data] says what to draw,
@@ -40,15 +44,9 @@ class PostCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PostAuthorRow(
-            authorId: data.authorId,
-            name: data.authorName,
-            avatarUrl: data.authorAvatarUrl,
-            city: data.city,
-            createdAt: data.createdAt,
-            audienceIcon: data.audienceIcon,
+            data: data,
+            callbacks: callbacks,
             isOptionsOpen: isOptionsOpen,
-            onProfile: callbacks.onProfile,
-            onOptions: callbacks.onOptions,
           ),
           if (hasCaption)
             ExpandableCaption(
@@ -67,6 +65,11 @@ class PostCard extends StatelessWidget {
               postId: data.id,
               items: data.media,
               onDoubleTap: data.isLiked ? null : callbacks.onDoubleTapLike,
+              tags: data.tags,
+              viewerId: data.viewerId,
+              onTaggedPerson: callbacks.onTaggedPerson,
+              onTaggedPeople: callbacks.onTaggedPeople,
+              onRemoveMyTag: callbacks.onRemoveMyTag,
             ),
           PostActionBar(
             likeCount: data.likeCount,
@@ -74,13 +77,23 @@ class PostCard extends StatelessWidget {
             isLiked: data.isLiked,
             isSaved: data.isSaved,
             onLike: callbacks.onLike,
-            onComment: callbacks.onComment,
+            commentsEnabled: data.commentsEnabled,
+            onComment: data.commentsEnabled
+                ? callbacks.onComment
+                : () => _showCommentsOff(context),
             onShare: callbacks.onShare,
             onlySave: data.isOnlyMe,
             onSave: callbacks.onSave,
           ),
+          if (!data.commentsEnabled) const PostCommentsOffLine(),
         ],
       ),
     );
   }
+
+  void _showCommentsOff(BuildContext context) => Notices.info(
+    context.l10n.postCommentsOffTitle,
+    body: context.l10n.postCommentsOffNotice(data.authorName),
+    icon: AppAssets.commentOff,
+  );
 }

@@ -24,6 +24,7 @@ class PostActionBar extends StatelessWidget {
     this.onShare,
     this.onSave,
     this.onlySave = false,
+    this.commentsEnabled = true,
   });
 
   final int likeCount;
@@ -37,6 +38,9 @@ class PostActionBar extends StatelessWidget {
 
   /// Shows only Save (an Only me post).
   final bool onlySave;
+
+  /// False dims the comment button into the comments-off icon, with no count.
+  final bool commentsEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +66,15 @@ class PostActionBar extends StatelessWidget {
               SizedBox(width: PostCardDimens.actionGap),
               _ActionButton(
                 label: l10n.postComment,
-                icon: AppAssets.comment,
-                iconColor: colors.textPrimary,
-                count: commentCount,
+                icon: commentsEnabled
+                    ? AppAssets.comment
+                    : AppAssets.commentOff,
+                iconColor: commentsEnabled
+                    ? colors.textPrimary
+                    : colors.textPrimary.withValues(
+                        alpha: PostCardDimens.commentsOffOpacity,
+                      ),
+                count: commentsEnabled ? commentCount : null,
                 onTap: onComment,
               ),
               ...[

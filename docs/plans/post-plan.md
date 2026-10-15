@@ -1,6 +1,6 @@
 # Plan: post
-Source specs: docs/specs/post/ (schemas: `schema-post-visibility.sql`, `schema-shared-content-actions.sql`), docs/specs/_theme/ (post card tokens also in docs/specs/home/01-design-tokens.md and home/source-tokens.md section 2.3)
-Status: approved
+Source specs: docs/specs/post/ (schemas: `schema-post-visibility.sql`, `schema-shared-content-actions.sql`, `schema-post-tags-mood.sql`), docs/specs/_theme/ (post card tokens also in docs/specs/home/01-design-tokens.md and home/source-tokens.md section 2.3)
+Status: approved (Phases 13-18 added and approved 2026-10-15)
 Mode: one-by-one
 Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers in `test/helpers/pump_app.dart`, datasource tests with `test/helpers/backend_double.dart`; widget tests EN + AR/RTL + 1.5x text)
 
@@ -18,6 +18,12 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 | 10 Integration | **done on doubles** (boot test + DI/routes); the live Supabase run waits for a simulator/device (B1 is deployed) |
 | 11 Polish | **done**; device checks (B6) tested by the user 2026-10-15; side-by-side screenshot comparison tested by the user 2026-10-15 |
 | 12 Edit post (S5) | **done** on doubles (commit d506cb9); migration `edit_post` applied 2026-10-15 (B8); live save and device run tested by the user 2026-10-15 |
+| 13 Tags + mood backend and data | **done**; migration `post_tags_mood` **applied** 2026-10-15 (B9), behaviour checked in a rolled-back batch; Dart data layer and tests green |
+| 14 Card headline, meta, comments-off | **done** on doubles (device check against `s10-card-details-board.png` tested by the user 2026-10-15) |
+| 15 Tag view on the card, S10, S11 | **done** on doubles (device check against the two boards tested by the user 2026-10-15) |
+| 16 S6 Tag people + S7 Tag in photo | **done** on doubles (device check against board panels 1-3 tested by the user 2026-10-15) |
+| 17 S8 Feelings + New/Edit post rows | **done** on doubles (device check against board panels 4 and 7 tested by the user 2026-10-15) |
+| 18 Integration + polish (tags, mood) | **done**; the live run on a device and the board comparisons of 14-17 tested by the user 2026-10-15 |
 
 Open before / during Phase 5: the dark confirm dialog and the option / audience row widgets are built in the post feature first and move to `core/widgets` only when story or short actually reuses them (then as a variant or tone of the one widget, default look unchanged; search `core/widgets` and `confirmation_strategy` before adding). Still open: whether the close-friends list moves into `lib/shared/content`.
 
@@ -26,7 +32,8 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 - **Post feature widgets (pure UI in `features/post/presentation/widgets/`, moved to `core` only if a second feature needs them):** P1 PostCard, P2 PostAuthorRow, P3 ExpandableCaption, P4 PostMedia, P5 PostActionBar, P6 relative time (`core/utils`), P7 PostOptionsSheet, P8 HiddenPostRow (`02-components.md`), plus the S4 sheet. Built here, connected to the feed by the home plan [user].
 - **Data:** post feature (feed page, signed media URLs, create post with visibility), post actions (like, save, hide, comments toggle, delete) in the post feature, and report / change audience / mute / audience counts / account privacy as shared use cases in `lib/shared/content` (Q13, superseded 2026-10-14) [user], post visibility backend (migration from the S4 board), places (Edge Function `places` over OSM, recent places on device, one-time device position).
 - **Goal:** a person can write a post with up to 10 photos/videos, a place, an audience and comments on/off, and share it; the card, options sheet and visibility picker are ready for Home.
-- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), Tag people and Feeling / activity (coming soon), sharing a post by link (Copy link / Share are coming soon, Q-V3), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
+- **Added 2026-10-15 (Phases 13-18):** S6 Tag people, S7 Tag in photo, S8 Feelings (Feelings tab only), S10 Tagged people sheet, S11 Remove your tag, card headline / meta / tag badge and labels / comments-off (`02-components.md` P2a-P2c, P5), S1/S2/S5 deltas, backend `schema-post-tags-mood.sql`. Boards: `screenshots/s6-tag-feeling-board.png`, `s10-card-details-board.png`, `s11-remove-tag-board.png`.
+- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), activities (S8 Activities tab = "Coming soon", S9 deferred, source API or database undecided [user]), the profile Tagged tab (profile spec; `tagged_posts` RPC only), Settings > Privacy "Allow tags" toggle, Activity screen UI for tag notifications, the post page / comments page comments-off bar (comments page is a placeholder, home-plan H3), blocked accounts in tag search (no blocks table), sharing a post by link (Copy link / Share are coming soon, Q-V3), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
 - **Build order** (progress.md): control-page (done), story (done), **post**, home.
 
 ## Reuse
@@ -56,12 +63,14 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | B5 | Estimated values shipped as is: disabled Share opacity 40%, primer sizes and title ~22, no-results title ~18/700 | none | user review on device | open, no code marker |
 | B6 | Real-device checks: picker with videos (10 min / 50 MB), upload on slow network, location permission iOS + Android | 11 | user | **done**: tested by the user 2026-10-15 |
 | B8 | Migration `edit_post` (`update_post` rpc) reviewed and applied | 12 live save | user | **done 2026-10-15** (in the linked project's history as `edit_post`) |
+| B9 | Migration `post_tags_mood` (from `schema-post-tags-mood.sql`) validated in a rolled-back batch, then applied after the user approves | 13 apply; live checks of 14-18 | user approval | **done 2026-10-15** (applied as `post_tags_mood`, version 20261015162526) |
+| B10 | Arabic copy for S6-S11, headline connectors and the ten drafted feeling nouns (`x-review`; user gave سعادة، حماس، امتنان، تعب and the noun rule) | none | user review | open, no code marker |
 
 ## Code TODOs
 | Id | What is pending | Code it sits in | Phase |
 |---|---|---|---|
-| T2 | Tag people is "coming soon" | the New post options card | 6 |
-| T3 | Feeling / activity is "coming soon" | the New post options card | 6 |
+| T2 | ~~Tag people is "coming soon"~~ done in Phase 16, marker removed | the New post options card | 6 -> 16 |
+| T3 | ~~Feeling / activity is "coming soon"~~ done in Phase 17 (Feelings only), marker removed | the New post options card | 6 -> 17 |
 | T4 | Camera capture not in the New post picker (gallery only now) | the post media picking (`MediaIntake.pick`) | 6; marker added in Phase 12 |
 | T5 | ~~Home feed refresh after "Post shared"~~ done 2026-10-14: `CreatePostUseCase` asks for a feed refresh once the post exists; marker removed | `NewPostScreen` (`TODO(post-plan T5)`) | 6 |
 | T6 | ~~Edit caption opens no page~~ done: Edit post screen (`s5-edit-post.md`), marker removed | `PostOptionsActions.onEdit` | 5 |
@@ -71,7 +80,13 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | T11 | "Privacy settings" link shows "Coming soon" until a Settings > Privacy screen is specced (Q-V1) | `PostVisibilitySheet` private note (`TODO(post-plan T11)`) | 7 |
 | B1 | ~~Places Edge Function deploy waits for approval~~ deployed 2026-10-14 | the places datasource | 8 |
 | T9 | Optional later columns `location_place_id/lat/lng` and a location page (Q-L6) | - | no code marker |
-| T10 | Arabic review (B4) | ARB files | no code marker |
+| T10 | Arabic review (B4, B10) | ARB files | no code marker |
+| T13 | Activities deferred: the S8 Activities tab shows "Coming soon"; S9, activity verbs and suggestions come later from an API or a database (source undecided) | the feeling picker's Activities tab | 17 |
+| T14 | Blocked accounts are not filtered from tag search / `can_tag` (no blocks table yet) | `tag_search` / `can_tag` in the migration (SQL comment `TODO`) | 13 (SQL comment, no Dart marker) |
+| T15 | "Allow tags" (everyone / people you follow / no one) has no settings toggle; column default `everyone` | - | no code marker (Settings not specced) |
+| T16 | Profile Tagged tab and its long-press sheet (`s11-remove-tag.md` entry 3); `tagged_posts` RPC exists, no Dart call | - | no code marker (profile spec) |
+| T17 | Comments-off bar on the post / comments page (`02-components.md` "Post page when comments are off") | - | no code marker (comments page is home-plan H3's placeholder) |
+| T18 | Tag notifications (type `tag`) are written but no screen shows them | - | no code marker (Activity not specced) |
 
 ## Phases
 
@@ -287,6 +302,96 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 **Out of scope:** reordering media, camera capture (T4), editing stories or shorts.
 **Done when:** every row of the `s5-edit-post.md` table behaves as written on a device; analyze clean; tests green.
 **Verify:** use case and cubit tests (already in `update_post_use_case_test.dart`, `add_edit_post_cubit_test.dart`), options flow and screen tests EN/AR; device run (B6).
+
+### Phase 13: Tags + mood backend and data (added 2026-10-15)
+**Status:** [x] done 2026-10-15; migration applied (B9).
+**Goal:** the migration and the post feature's data for tags, mood and the new feed fields.
+**Depends on:** 12; B9 to apply.
+**Spec refs:** `post/schema-post-tags-mood.sql` (all), `post/00-data-layer.md` "Tags, mood and comments-off", `post/screens/s6-tag-people.md` / `s10-tagged-people.md` / `s11-remove-tag.md` Data mapping, `post/open-questions.md` Q17, Q19, Q21-Q23, Q27.
+**Tasks:**
+- [x] Migration (file written, identical to the spec copy) `supabase/migrations/20261021120000_post_tags_mood.sql` from the spec copy (keep both in sync); keep the `TODO` comment on blocked accounts in `tag_search` / `can_tag` (T14).
+- [x] Validate (run against the applied schema in a rolled-back batch; test data left nothing behind) in one rolled-back batch with several test users: tag limits (20, no self, no duplicates), `allow_tags` everyone / following / none, the 24 h cool-down after `remove_my_tag`, a spot on a missing photo rejected, tag notification written on insert and deleted on self-removal, none for the owner's removals, `home_feed` new columns (`mood_*`, `tag_count`, `tags`, `i_am_tagged`), `post_tagged_people` follow states, `tagged_posts` visibility, mood check (feeling key list, activity needs text); nothing left behind. Applied after the user approved (B9).
+- [x] Wire models and enums: feed row gains mood fields, tags list (user id, username, full name, media position, x, y), tag count, "I am tagged"; tag search person (with `can_tag`); tagged person (with follow state); `MoodKind`, `FollowState` (wire values).
+- [x] Datasource for tags (search people, tagged people of a post, remove my tag) per the project's datasource rule; no `getTaggedPosts` call yet (T16).
+- [x] Use cases (post's public API): search tag people, get tagged people, remove my tag; `CreatePostUseCase` / `UpdatePostUseCase` take the mood (kind, key, text) and the tags (user id, optional spot) and pass `p_mood_*` / `p_tags`; the post entity carries mood, tags, tag count and "I am tagged".
+**Out of scope:** UI; activities data (T13); profile Tagged tab (T16).
+**Done when:** migration validated (and applied once the user approves); models, datasource and use cases tested.
+**Verify:** datasource tests on `backend_double`, use case tests; the rolled-back SQL batch report.
+
+### Phase 14: Card headline, meta, comments-off
+**Status:** [x] built 2026-10-15; the device and board comparison tested by the user 2026-10-15.
+**Goal:** the post card shows mood, tags and location in the headline/meta, and the comments-off state.
+**Depends on:** 13 (data on doubles; live after B9).
+**Spec refs:** `post/02-components.md` P2a, P2b, P5 (comments off), States, Strings, Acceptance; `post/01-design-tokens.md` "Tags, mood and comments-off"; board `post/screenshots/s10-card-details-board.png` panels 1, 4, 6, 7.
+**Tasks:**
+- [x] Headline: 14 / h 1.35, max 2 lines + ellipsis; names 700 `textPrimary`, connectors 400 `textSecondary`; order name · mood · with-tags ("with A", "with A and B", "with A and N others"); EN feeling "is feeling 😊happy"; AR "😊 سعادة" (noun, no connector, no gendered verb); owner reads "You"; names tap -> profile, "N others" -> S10 (Phase 15 supplies the sheet; a callback here).
+- [x] Meta line: location (pin 12 + 600 `primary`, 1 line, tappable through a callback) · time · audience icon 12; the six combinations of board panel 7.
+- [x] Comments off: `ic_comment_off` 24 at 45 %, no count, still a 44 target; tap shows the existing top notice card ("Comments are off" / "{name} turned off comments for this post."); line under the actions (`ic_comment_off` 14 + 12 `textSecondary`). This replaces Phase 4 deviation (4).
+- [x] S2 own post: "Turn on comments" row highlighted `primarySoft` with sub "Comments are off for this post" while off; Edit post sub "Caption, feeling, location, tags"; Change who can see sub = current audience (`s2-post-options.md`).
+- [x] Map the new entity fields into the card's display data (Home's mapping included, as the card's public input changes).
+- [x] Strings EN + AR (`x-review`, headline rule [user]), semantics, RTL (connectors and names in reading order).
+**Out of scope:** tag labels on media (15), the post page bar (T17).
+**Done when:** `02-components.md` acceptance items for headline, meta and comments off pass; the board panel 7 combinations render as shown.
+**Verify:** widget tests (each headline combination EN + AR, 2-line ellipsis, comments-off icon / notice / line, 1.5x); compare with `s10-card-details-board.png`.
+
+### Phase 15: Tag view on the card, S10, S11
+**Status:** [x] built 2026-10-15; the device and board comparison tested by the user 2026-10-15.
+**Goal:** see who is tagged on a photo, list tagged people, and remove your own tag.
+**Depends on:** 13, 14.
+**Spec refs:** `post/02-components.md` P2c; `post/screens/s10-tagged-people.md`, `post/screens/s11-remove-tag.md` (entries 1, 2 and the S10 row; entry 3 is T16); `post/screens/s2-post-options.md` tagged variant; boards `s10-card-details-board.png` panels 2-3, `s11-remove-tag-board.png` panels 1-4.
+**Tasks:**
+- [x] Tag badge (32, bottom-start, photos with tags only) and labels at x/y per media position (h 30, r10, 82 %, 7 px pointer; flips below the spot when low); tap badge/media shows them, hide after 3 s or tap; double-tap still likes; label tap -> profile; your own label = white card with "Remove tag".
+- [x] S10 sheet (Post options shell): rows with Follow / Following / Requested pills through the follow feature's use case (optimistic, roll back on failure); your own row shows "Remove"; opened from "N others" and a long-press on the badge.
+- [x] S2 tagged variant (`i_am_tagged`, not owner): "You're tagged in this post" line and "Remove me from this post" first in the group (`primarySoft`).
+- [x] S11: one destructive confirm for all entries; optimistic update of headline and labels; notice "Tag removed"; rollback + "Couldn't remove your tag"; a false result counts as success; through the list's Cubit (callbacks into the card / sheet, like the other post actions).
+- [x] Strings EN + AR `x-review`, semantics, RTL (labels keep their x/y, not mirrored).
+**Out of scope:** profile Tagged tab (T16).
+**Done when:** S10 and S11 acceptance checklists pass; P2c acceptance item passes.
+**Verify:** cubit tests (remove tag optimistic / rollback, follow toggle), widget tests (badge, labels timing, own label, sheet rows, dialog) EN/AR/1.5x; compare with the two boards.
+
+### Phase 16: S6 Tag people + S7 Tag in photo
+**Status:** [x] built 2026-10-15; the device and board comparison tested by the user 2026-10-15.
+**Goal:** choose up to 20 people and, optionally, place them on photos.
+**Depends on:** 13; 12 (add/edit screen).
+**Spec refs:** `post/screens/s6-tag-people.md`, `post/screens/s7-tag-in-photo.md` (all); `post/01-design-tokens.md` "Tags, mood and comments-off" + Q29 line; board `s6-tag-feeling-board.png` panels 1-3.
+**Tasks:**
+- [x] S6 page (Add location style): header with Done, search (300 ms debounce, suggested when blank), chips, SUGGESTED + counter, list with checks, disabled "Doesn't allow tags" rows, max 20 (counter `danger`, rows 50 %, notice), empty = `AppEmpty` + `ic_search`, loader, error + Retry; "Tag in photo" outlined button pinned at the bottom, shown only with photos, disabled until one person is chosen.
+- [x] S7 page: hint, photo area with counter, tap marker, pick-list sheet of S6's chosen people without a spot (with a filter box), labels draggable inside the photo with ×, one spot per person, thumbs 56 r12 with ring and count badge 20, info card for people without a spot; videos skipped; Done back to S6; discard confirm when changed.
+- [x] Routes for both pages (pushed on the root Navigator); S6 returns the chosen people with any spots.
+- [x] Add/edit post: Tag people row opens S6 and shows the value ("Omar Khaled, Laila Fouad and 1 other") in `primary`; tags go into create / update; edit starts from the post's tags; removing a photo clears its spots; remove the `TODO(post-plan T2)` marker and tick T2.
+- [x] Strings EN + AR `x-review`, semantics, RTL.
+**Out of scope:** blocked accounts (T14), allow-tags setting (T15).
+**Done when:** S6 and S7 acceptance checklists pass; S1 shows the tag value.
+**Verify:** cubit tests (selection, limit, search debounce / stale answers, spots, drag clamp, photo removal), widget tests EN/AR/1.5x; compare with board panels 1-3.
+
+### Phase 17: S8 Feelings + New/Edit post rows
+**Status:** [x] built 2026-10-15; the device and board comparison tested by the user 2026-10-15.
+**Goal:** choose one feeling and preview the headline on New post.
+**Depends on:** 13, 14 (headline widget), 16 (rows pattern).
+**Spec refs:** `post/screens/s8-feeling-activity.md` (Feelings only), `post/screens/s1-new-post.md` (rows with values, headline preview), `post/screens/s5-edit-post.md` Fields; board `s6-tag-feeling-board.png` panels 4 and 7.
+**Tasks:**
+- [x] S8 page: header with Remove (only when set), segmented control (Activities tab shows "Coming soon" and stays on Feelings; leave `// TODO(post-plan T13): ...` there), search by EN + AR keywords, 2-column feeling tiles (14 feelings, native emoji, selected look), tap returns at once, tap again clears.
+- [x] Add/edit post: Feeling row opens S8 and shows "😊feeling happy" (AR "😊 سعادة") in `primary`; composer card headline previews exactly what the card will show (name, mood, tags, location, audience chip); mood goes into create / update; edit starts from the post's mood; remove the `TODO(post-plan T3)` marker and tick T3.
+- [x] Strings EN + AR (feeling nouns per Q28, `x-review`), semantics, RTL.
+**Out of scope:** activities (T13), S9.
+**Done when:** S8 acceptance checklist (Feelings part) passes; board panel 7 preview matches.
+**Verify:** cubit / widget tests (choose, clear, Remove, exclusive mood, preview text EN + AR), compare with board panels 4 and 7.
+
+### Phase 18: Integration + polish (tags, mood)
+**Status:** [x] built 2026-10-15 on doubles; the live run (task 3) tested by the user 2026-10-15.
+**Goal:** the whole flow works end to end and all new screens pass RTL, a11y and responsive checks.
+**Depends on:** 14-17; B9 applied for the live run.
+**Spec refs:** `post/00-overview.md` Navigation map; acceptance checklists of S6, S7, S8, S10, S11 and `02-components.md`.
+**Tasks:**
+- [x] App boot test: Create > New post > S6 (+ S7) > S8 > Share; `create_post` receives tags with spots and the mood; the feed card shows the headline, badge and labels.
+- [x] DI wiring (`build_runner`), all new routes in `AppRouter`.
+- [x] Live run (after B9; tested by the user 2026-10-15): post with tags and spots and a feeling; a tagged account sees "You", removes the tag; owner cannot re-tag within 24 h; a `none` account shows "Doesn't allow tags"; comments-off notice on the feed.
+- [x] RTL / 1.5x / 2.0x / 320 dp / wide window for S6, S7, S8, S10, S11 and the new card states.
+- [x] `grep -rn "TODO(post-plan"`: markers match open Code TODOs rows (T13 new; T2, T3 removed).
+**Done when:** all new acceptance checklists ticked; analyze clean; full suite green.
+**Verify:** full test suite, analyze, device run (user).
+
+**Notes:** `test/app/post_integration_test.dart` now boots the real app and runs Create > New post > photo > S6 > S7 (a spot for one person, one tagged in the post only) > S8 > Share, and checks `create_post` receives the tags with the spot and the feeling; a second test shows the feed card (headline, comments-off notice, badge, labels, your own label) and removes your tag. `test/features/post/presentation/tags_mood_responsive_test.dart` runs S6, S7, S8, the tagged people sheet, the remove dialog and the card at 320 dp / 2.0x, 390 dp / 1.5x and 1200 dp in EN and AR. It found two layout bugs, both fixed: Tag in photo overflowed at large text (the hint, strip and card now scroll under a photo that takes 55 % of the page) and a long username overflowed its label on the photo. Markers left in code: T4, T7, T11, T13, each with an open row. Live run (task 3): the SQL side was already checked in a rolled-back batch on the project (Phase 13); the app run with a real account was tested by the user 2026-10-15.
 
 ## Verification
 Each phase: `fvm flutter analyze` clean, `fvm flutter test` green, its "Done when" items ticked, screenshots compared where the phase has UI. The builder ticks the phase Status and notes deviations in the phase.

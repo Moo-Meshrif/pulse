@@ -10,6 +10,9 @@ class PostOptionsData extends Equatable {
   final bool commentsEnabled;
   final ContentAudience visibility;
 
+  /// You are tagged in it and it is not your post: the sheet offers to remove your tag.
+  final bool iAmTagged;
+
   const PostOptionsData({
     required this.postId,
     required this.isMine,
@@ -17,6 +20,7 @@ class PostOptionsData extends Equatable {
     this.isSaved = false,
     this.commentsEnabled = true,
     this.visibility = ContentAudience.public,
+    this.iAmTagged = false,
   });
 
   /// Copy link and Share only exist for a public post.
@@ -33,5 +37,6 @@ class PostOptionsData extends Equatable {
     isSaved,
     commentsEnabled,
     visibility,
+    iAmTagged,
   ];
 }

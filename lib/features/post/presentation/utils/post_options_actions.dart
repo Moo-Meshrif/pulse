@@ -20,6 +20,7 @@ class PostOptionsActions {
     required this.onCommitDelete,
     required this.onAudienceChanged,
     required this.onEdit,
+    required this.onRemoveMyTag,
   });
 
   final Future<void> Function() onSave;
@@ -42,4 +43,7 @@ class PostOptionsActions {
 
   /// Opens the edit screen of the post; saving there reloads the feed.
   final VoidCallback onEdit;
+
+  /// Takes your tag off the post at once; throws a `Failure` (after putting the tag back) when it fails.
+  final Future<void> Function() onRemoveMyTag;
 }

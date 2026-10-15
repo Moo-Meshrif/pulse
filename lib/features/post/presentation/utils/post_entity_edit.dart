@@ -9,6 +9,7 @@ extension PostEntityEdit on PostEntity {
     bool? savedByMe,
     bool? commentsEnabled,
     ContentAudience? visibility,
+    bool? iAmTagged,
   }) => PostEntity(
     id: id,
     authorId: authorId,
@@ -25,5 +26,35 @@ extension PostEntityEdit on PostEntity {
     likedByMe: likedByMe ?? this.likedByMe,
     savedByMe: savedByMe ?? this.savedByMe,
     media: media,
+    mood: mood,
+    tags: tags,
+    tagCount: tagCount,
+    iAmTagged: iAmTagged ?? this.iAmTagged,
+  );
+
+  /// The post without [userId]'s tag: they removed it.
+  PostEntity withoutTag(String userId) => PostEntity(
+    id: id,
+    authorId: authorId,
+    username: username,
+    fullName: fullName,
+    avatarUrl: avatarUrl,
+    caption: caption,
+    location: location,
+    likeCount: likeCount,
+    commentCount: commentCount,
+    commentsEnabled: commentsEnabled,
+    visibility: visibility,
+    createdAt: createdAt,
+    likedByMe: likedByMe,
+    savedByMe: savedByMe,
+    media: media,
+    mood: mood,
+    tags: [
+      for (final tag in tags)
+        if (tag.userId != userId) tag,
+    ],
+    tagCount: tagCount > 0 ? tagCount - 1 : 0,
+    iAmTagged: false,
   );
 }

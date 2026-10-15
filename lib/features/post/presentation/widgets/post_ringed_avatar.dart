@@ -46,6 +46,7 @@ class PostRingedAvatar extends StatelessWidget {
                   url,
                   width: size,
                   height: size,
+                  fit: BoxFit.cover,
                   cacheWidth: (size * _cacheScale).round(),
                   errorBuilder: (_) => initials,
                   placeholder: initials,

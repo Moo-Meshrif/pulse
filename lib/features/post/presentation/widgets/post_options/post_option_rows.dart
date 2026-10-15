@@ -115,9 +115,14 @@ class _PostOptionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final color = option.isDanger ? colors.danger : colors.textPrimary;
+    final highlighted = option.isHighlighted(data);
+    final color = option.isDanger
+        ? colors.danger
+        : highlighted
+        ? colors.primary
+        : colors.textPrimary;
     final title = option.title(context, data);
-    final hint = option.hint(context);
+    final hint = option.hint(context, data);
     return Semantics(
       button: true,
       excludeSemantics: true,
@@ -128,35 +133,38 @@ class _PostOptionRow extends StatelessWidget {
           constraints: const BoxConstraints(
             minHeight: PostOptionsDimens.rowMinHeight,
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.s16,
-              vertical: AppSpacing.s8,
-            ),
-            child: Row(
-              children: [
-                AppSvgIcon(
-                  option.icon(data),
-                  size: PostOptionsDimens.rowIcon,
-                  color: color,
-                ),
-                SizedBox(width: AppSpacing.s12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AppText(title, style: context.text.body, color: color),
-                      if (hint != null)
-                        AppText(
-                          hint,
-                          style: context.text.caption,
-                          color: colors.textSecondary,
-                        ),
-                    ],
+          child: ColoredBox(
+            color: highlighted ? colors.primarySoft : Colors.transparent,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.s16,
+                vertical: AppSpacing.s8,
+              ),
+              child: Row(
+                children: [
+                  AppSvgIcon(
+                    option.icon(data),
+                    size: PostOptionsDimens.rowIcon,
+                    color: color,
                   ),
-                ),
-              ],
+                  SizedBox(width: AppSpacing.s12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppText(title, style: context.text.body, color: color),
+                        if (hint != null)
+                          AppText(
+                            hint,
+                            style: context.text.caption,
+                            color: colors.textSecondary,
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

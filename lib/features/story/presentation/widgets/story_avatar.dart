@@ -39,6 +39,7 @@ class StoryAvatar extends StatelessWidget {
                 imageUrl!,
                 width: inner,
                 height: inner,
+                fit: BoxFit.cover,
                 cacheWidth: (inner * 2).round(),
                 errorBuilder: (_) =>
                     AvatarInitials(name: name, seed: seed, size: inner),

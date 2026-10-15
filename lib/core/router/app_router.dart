@@ -11,7 +11,12 @@ import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
 import '../../features/onboarding/presentation/screen/onboarding_screen.dart';
 import '../../features/places/presentation/screen/add_location_screen.dart';
 import '../../features/post/domain/entity/post_entity.dart';
+import '../../features/post/domain/entity/post_mood_entity.dart';
 import '../../features/post/presentation/screen/add_edit_post_screen.dart';
+import '../../features/post/presentation/screen/feeling_screen.dart';
+import '../../features/post/presentation/screen/tag_in_photo_screen.dart';
+import '../../features/post/presentation/screen/tag_people_screen.dart';
+import '../../features/post/presentation/utils/tag_people_args.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -97,6 +102,20 @@ abstract final class AppRouter {
       AppRoutes.pickPlace => _endSlidePage(
         settings,
         AddLocationScreen(current: settings.arguments as String?),
+      ),
+      // Tag people and Tag in photo take the chosen people and the post's media as the route argument.
+      AppRoutes.tagPeople => _endSlidePage(
+        settings,
+        TagPeopleScreen(args: settings.arguments as TagPeopleArgs),
+      ),
+      AppRoutes.tagInPhoto => _endSlidePage(
+        settings,
+        TagInPhotoScreen(args: settings.arguments as TagPeopleArgs),
+      ),
+      // The mood the post has comes in as the route argument.
+      AppRoutes.feeling => _endSlidePage(
+        settings,
+        FeelingScreen(current: settings.arguments as PostMoodEntity?),
       ),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
       AppRoutes.search ||

@@ -1568,4 +1568,265 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get newPostPublishBusy =>
       'منشورك السابق ما زال قيد الإرسال. حاول بعد قليل.';
+
+  @override
+  String get postHeadlineYou => 'أنت';
+
+  @override
+  String postHeadlineFeeling(String emoji, String word) {
+    return '$emoji $word';
+  }
+
+  @override
+  String get postHeadlineWith => 'مع ';
+
+  @override
+  String get postHeadlineAnd => ' و';
+
+  @override
+  String postHeadlineOthers(int count) {
+    return '$count آخرين';
+  }
+
+  @override
+  String get postCommentsOffTitle => 'التعليقات متوقفة';
+
+  @override
+  String postCommentsOffNotice(String name) {
+    return 'أوقف $name التعليقات على هذا المنشور.';
+  }
+
+  @override
+  String get postCommentsOffLine => 'التعليقات متوقفة';
+
+  @override
+  String get postCommentsOffHint => 'التعليقات متوقفة على هذا المنشور';
+
+  @override
+  String get postEditHint => 'التعليق، الشعور، الموقع، الوسوم';
+
+  @override
+  String get postFeelingHappy => 'سعادة';
+
+  @override
+  String get postFeelingExcited => 'حماس';
+
+  @override
+  String get postFeelingLoved => 'حب';
+
+  @override
+  String get postFeelingRelaxed => 'راحة';
+
+  @override
+  String get postFeelingGrateful => 'امتنان';
+
+  @override
+  String get postFeelingMotivated => 'تحفّز';
+
+  @override
+  String get postFeelingCool => 'روعة';
+
+  @override
+  String get postFeelingAmazed => 'دهشة';
+
+  @override
+  String get postFeelingTired => 'تعب';
+
+  @override
+  String get postFeelingSad => 'حزن';
+
+  @override
+  String get postFeelingDetermined => 'عزيمة';
+
+  @override
+  String get postFeelingSick => 'مرض';
+
+  @override
+  String get postFeelingFunny => 'مرح';
+
+  @override
+  String get postFeelingBlessed => 'بركة';
+
+  @override
+  String get postTagYoureTagged => 'تم وسمك في هذا المنشور';
+
+  @override
+  String get postTagRemoveMe => 'أزلني من هذا المنشور';
+
+  @override
+  String get postTagRemoveMeHint => 'لن يتم وسمك بعد الآن';
+
+  @override
+  String get postTagRemoveLabel => 'إزالة الوسم';
+
+  @override
+  String get postTagRemoveTitle => 'إزالة وسمك؟';
+
+  @override
+  String postTagRemoveBody(String name) {
+    return 'لن يتم وسمك بعد الآن في منشور $name أو صوره. يبقى المنشور كما هو.';
+  }
+
+  @override
+  String get postTagRemoveConfirm => 'إزالة';
+
+  @override
+  String get postTagRemoved => 'تمت إزالة الوسم';
+
+  @override
+  String get postTagRemovedBody => 'لم يعد وسمك في هذا المنشور.';
+
+  @override
+  String get postTagRemoveError => 'تعذّرت إزالة وسمك';
+
+  @override
+  String get postTaggedPeopleTitle => 'الأشخاص الموسومون';
+
+  @override
+  String get postTaggedFollow => 'متابعة';
+
+  @override
+  String get postTaggedFollowing => 'تتم متابعته';
+
+  @override
+  String get postTaggedRequested => 'تم الطلب';
+
+  @override
+  String get postTaggedLoadError => 'تعذّر تحميل الأشخاص';
+
+  @override
+  String get postTagBadge => 'الأشخاص الموسومون في هذه الصورة';
+
+  @override
+  String postTaggedPerson(String name, String state) {
+    return '$name، $state';
+  }
+
+  @override
+  String get postTagPeopleTitle => 'وسم الأشخاص';
+
+  @override
+  String get postTagPeopleSearch => 'ابحث عن أشخاص';
+
+  @override
+  String get postTagPeopleClear => 'مسح البحث';
+
+  @override
+  String get postTagPeopleSuggested => 'مقترحون';
+
+  @override
+  String get postTagPeopleDone => 'تم';
+
+  @override
+  String get postTagPeopleNoTags => 'لا يسمح بالوسم';
+
+  @override
+  String postTagPeopleMax(int max) {
+    return 'يمكنك وسم $max شخصًا كحد أقصى';
+  }
+
+  @override
+  String get postTagPeopleEmpty => 'لا يوجد أشخاص';
+
+  @override
+  String get postTagPeopleInPhoto => 'الوسم في الصورة';
+
+  @override
+  String get postTagPeopleError => 'تعذّر تحميل الأشخاص. أعد المحاولة';
+
+  @override
+  String postTagPeopleCounter(int count, int max) {
+    return '$count / $max';
+  }
+
+  @override
+  String postTagPeopleRemoveChip(String name) {
+    return 'إزالة $name';
+  }
+
+  @override
+  String postTagPersonTagged(String name) {
+    return '$name، موسوم';
+  }
+
+  @override
+  String postTagPersonNotTagged(String name) {
+    return '$name، غير موسوم';
+  }
+
+  @override
+  String get postTagInPhotoTitle => 'الوسم في الصورة';
+
+  @override
+  String get postTagInPhotoHint =>
+      'اضغط على مكان الشخص ثم اخترْه. اسحب الوسم لتحريكه.';
+
+  @override
+  String postTagInPhotoNoSpot(String name) {
+    return 'تم وسم $name في المنشور وليس في صورة';
+  }
+
+  @override
+  String postTagInPhotoNoSpotMany(int count) {
+    return 'تم وسم $count أشخاص في المنشور وليس في صورة';
+  }
+
+  @override
+  String get postTagInPhotoAllPlaced => 'تم وضع الجميع';
+
+  @override
+  String postTagInPhotoLabel(String name) {
+    return 'وسم $name، اسحب لتحريكه';
+  }
+
+  @override
+  String postTagInPhotoRemoveSpot(String name) {
+    return 'إزالة موضع $name';
+  }
+
+  @override
+  String postTagInPhotoThumb(int number, int count) {
+    return 'الصورة $number، $count موسوم';
+  }
+
+  @override
+  String postTagValueTwo(String a, String b) {
+    return '$a، $b';
+  }
+
+  @override
+  String postTagValueMore(String a, String b, int count) {
+    return '$a، $b و$count آخرين';
+  }
+
+  @override
+  String get postFeelingTitle => 'كيف تشعر؟';
+
+  @override
+  String get postFeelingRemove => 'إزالة';
+
+  @override
+  String get postFeelingTabFeelings => 'المشاعر';
+
+  @override
+  String get postFeelingTabActivities => 'الأنشطة';
+
+  @override
+  String get postFeelingSearch => 'ابحث عن المشاعر';
+
+  @override
+  String get postFeelingClear => 'مسح البحث';
+
+  @override
+  String get postFeelingNoMatches => 'لا نتائج';
+
+  @override
+  String postFeelingSelected(String word) {
+    return '$word، محدد';
+  }
+
+  @override
+  String postFeelingValue(String emoji, String word) {
+    return '$emoji $word';
+  }
 }

@@ -258,6 +258,7 @@ void main() {
                   onCommitDelete: () {},
                   onAudienceChanged: changed.add,
                   onEdit: () {},
+                  onRemoveMyTag: () async {},
                 ),
               ),
               child: const Text('open'),

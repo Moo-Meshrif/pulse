@@ -1,6 +1,8 @@
 import '../../../../core/utils/equatable.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
 import 'post_media_entity.dart';
+import 'post_mood_entity.dart';
+import 'post_tag_entity.dart';
 
 /// A post in a feed, with its author and what you did to it. Public: Home draws the card from it.
 class PostEntity extends Equatable {
@@ -19,6 +21,14 @@ class PostEntity extends Equatable {
   final bool likedByMe;
   final bool savedByMe;
   final List<PostMediaEntity> media;
+  final PostMoodEntity? mood;
+
+  /// Everyone tagged, in tag order (at most 20).
+  final List<PostTagEntity> tags;
+
+  /// All the people tagged, which can be more than [tags] holds.
+  final int tagCount;
+  final bool iAmTagged;
 
   const PostEntity({
     required this.id,
@@ -36,6 +46,10 @@ class PostEntity extends Equatable {
     required this.likedByMe,
     required this.savedByMe,
     required this.media,
+    this.mood,
+    this.tags = const [],
+    this.tagCount = 0,
+    this.iAmTagged = false,
   });
 
   @override
@@ -55,5 +69,9 @@ class PostEntity extends Equatable {
     likedByMe,
     savedByMe,
     media,
+    mood,
+    tags,
+    tagCount,
+    iAmTagged,
   ];
 }

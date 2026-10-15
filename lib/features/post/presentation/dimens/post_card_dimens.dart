@@ -19,6 +19,8 @@ abstract final class PostCardDimens {
   static const double moreTapTarget = 44; // tap target: fixed
   static double get moreIcon => AppScale.scale(22);
   static double get visibilityIcon => AppScale.scale(12);
+  static double get locationIcon => AppScale.scale(12);
+  static double get metaGap => AppScale.scale(5);
   static EdgeInsets get captionMargin => EdgeInsets.fromLTRB(
     AppScale.scale(2),
     AppScale.scale(10),
@@ -56,6 +58,35 @@ abstract final class PostCardDimens {
   static double get retryBadge => AppScale.scale(44);
   static double get retryIcon => AppScale.scale(22);
   static double get dotsTop => AppScale.scale(8);
+  // Tags on the media.
+  static double get tagBadge => AppScale.scale(32);
+  static double get tagBadgeIcon => AppScale.scale(16);
+  static double get tagLabelHeight => AppScale.scale(30);
+  static double get tagLabelRadius => AppScale.scale(10);
+  static double get tagPointer => AppScale.scale(7);
+  static double get tagLabelPadding => AppScale.scale(12);
+  static const Duration tagLabelsVisible = Duration(seconds: 3);
+  static double get ownTagRadius => AppScale.scale(12);
+  static double get ownTagNameRow => AppScale.scale(34);
+  static double get ownTagActionRow => AppScale.scale(38);
+  static double get ownTagAvatar => AppScale.scale(22);
+  static double get ownTagIcon => AppScale.scale(16);
+  static List<BoxShadow> get ownTagShadow => [
+    BoxShadow(
+      color: const Color(0x40161A19), // #161A19 @ 25%
+      offset: Offset(0, AppScale.scale(8)),
+      blurRadius: AppScale.scale(24),
+    ),
+  ];
+  // Comments off.
+  static const double commentsOffOpacity = 0.45;
+  static double get commentsOffLineIcon => AppScale.scale(14);
+  static EdgeInsets get commentsOffLinePadding => EdgeInsets.fromLTRB(
+    AppScale.scale(4),
+    AppScale.scale(2),
+    AppScale.scale(4),
+    AppScale.scale(6),
+  );
   // Action bar.
   static double get actionBarHeight => AppScale.scale(44);
   static double get actionBarTop => AppScale.scale(4);

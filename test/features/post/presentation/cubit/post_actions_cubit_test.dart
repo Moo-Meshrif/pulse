@@ -6,8 +6,11 @@ import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
+import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
@@ -33,6 +36,8 @@ class _Delete extends Mock implements DeletePostUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
+class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
+
 void main() {
   late _Like like;
   late _Save save;
@@ -42,6 +47,7 @@ void main() {
   late MockReportContent report;
   late MockSetMute mute;
   late _Follow follow;
+  late _RemoveTag removeTag;
   late PostActionsCubit cubit;
 
   final post = testPost('p1', authorId: 'a1');
@@ -57,6 +63,7 @@ void main() {
     report = MockReportContent();
     mute = MockSetMute();
     follow = _Follow();
+    removeTag = _RemoveTag();
     when(() => hide(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
     when(() => comments(any(), enabled: any(named: 'enabled')))
@@ -80,6 +87,7 @@ void main() {
       report,
       mute,
       follow,
+      removeTag,
     );
   });
 
@@ -257,5 +265,75 @@ void main() {
     cubit.reset();
     expect(cubit.rowOf('p1'), PostRow.card);
     expect(cubit.postOf(post), post);
+  });
+
+  group('removeMyTag', () {
+    final tagged = PostEntity(
+      id: 'p1',
+      authorId: 'a1',
+      username: 'nour',
+      likeCount: 1,
+      commentCount: 0,
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      createdAt: DateTime(2026),
+      likedByMe: false,
+      savedByMe: false,
+      media: const [],
+      tags: const [
+        PostTagEntity(userId: 'me', username: 'me'),
+        PostTagEntity(userId: 'u2', username: 'omar'),
+      ],
+      tagCount: 3,
+      iAmTagged: true,
+    );
+
+    test('shows the tag gone at once and keeps it gone', () async {
+      final answer = Completer<bool>();
+      when(() => removeTag('p1')).thenAnswer((_) => answer.future);
+
+      final done = cubit.removeMyTag(tagged, userId: 'me');
+
+      final during = cubit.postOf(tagged);
+      expect(during.tags.map((t) => t.userId), ['u2']);
+      expect(during.tagCount, 2);
+      expect(during.iAmTagged, isFalse);
+      answer.complete(true);
+      await done;
+      expect(cubit.postOf(tagged).tagCount, 2);
+    });
+
+    test('a tag that was already gone counts as removed', () async {
+      when(() => removeTag('p1')).thenAnswer((_) async => false);
+
+      await cubit.removeMyTag(tagged, userId: 'me');
+
+      expect(cubit.postOf(tagged).iAmTagged, isFalse);
+    });
+
+    test('puts the tag back and throws when it fails', () async {
+      when(() => removeTag('p1')).thenThrow(const NetworkFailure());
+
+      await expectLater(
+        cubit.removeMyTag(tagged, userId: 'me'),
+        throwsA(isA<NetworkFailure>()),
+      );
+
+      final after = cubit.postOf(tagged);
+      expect(after.tags.length, 2);
+      expect(after.tagCount, 3);
+      expect(after.iAmTagged, isTrue);
+    });
+
+    test('a like keeps the tags, the feeling and the count', () async {
+      when(() => like('p1', liked: true)).thenAnswer((_) async => 2);
+
+      await cubit.toggleLike(tagged);
+
+      final after = cubit.postOf(tagged);
+      expect(after.tags, tagged.tags);
+      expect(after.tagCount, 3);
+      expect(after.iAmTagged, isTrue);
+    });
   });
 }

@@ -1,4 +1,6 @@
 import '../../../../core/utils/equatable.dart';
+import '../../domain/entity/post_mood_entity.dart';
+import '../../domain/entity/post_tag_entity.dart';
 import 'post_card_media.dart';
 
 /// What [PostCard] draws about a post: plain values with the media links already signed.
@@ -7,6 +9,8 @@ class PostCardData extends Equatable {
   final String authorId;
   final String authorName;
   final String? authorAvatarUrl;
+
+  /// The place the author added; null or empty when none.
   final String? city;
   final DateTime createdAt;
   final String? caption;
@@ -21,6 +25,18 @@ class PostCardData extends Equatable {
 
   /// True for an Only me post: nobody else sees it, so its action bar has only Save.
   final bool isOnlyMe;
+
+  /// The post is the signed-in user's: the headline says "You".
+  final bool isMine;
+  final bool commentsEnabled;
+  final PostMoodEntity? mood;
+
+  /// The first people tagged (names for the headline); [tagCount] is how many in all.
+  final List<PostTagEntity> tags;
+  final int tagCount;
+
+  /// The signed-in user, so their own tag on a photo can remove itself.
+  final String? viewerId;
 
   const PostCardData({
     required this.id,
@@ -37,6 +53,12 @@ class PostCardData extends Equatable {
     this.isSaved = false,
     this.audienceIcon,
     this.isOnlyMe = false,
+    this.isMine = false,
+    this.commentsEnabled = true,
+    this.mood,
+    this.tags = const [],
+    this.tagCount = 0,
+    this.viewerId,
   });
 
   @override
@@ -55,5 +77,11 @@ class PostCardData extends Equatable {
     isSaved,
     audienceIcon,
     isOnlyMe,
+    isMine,
+    commentsEnabled,
+    mood,
+    tags,
+    tagCount,
+    viewerId,
   ];
 }

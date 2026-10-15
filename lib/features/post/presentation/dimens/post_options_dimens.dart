@@ -12,6 +12,8 @@ abstract final class PostOptionsDimens {
   static const double rowMinHeight = 56; // tap target: fixed
   static double get rowIcon => AppScale.scale(22);
   static double get groupGap => AppScale.scale(12);
+  static double get taggedLineIcon => AppScale.scale(16);
+  static double get taggedLineGap => AppScale.scale(8);
 }
 
 /// Visibility picker (docs/specs/post/01-design-tokens.md "Visibility picker (S4)").

@@ -2048,5 +2048,420 @@
   "newPostPublishBusy": "Your previous post is still being sent. Try again in a moment.",
   "@newPostPublishBusy": {
     "description": "Notice when sharing while another post is still being sent"
+  },
+  "postHeadlineYou": "You",
+  "@postHeadlineYou": {
+    "description": "Post headline: the signed-in author"
+  },
+  "postHeadlineFeeling": "is feeling {emoji}{word}",
+  "@postHeadlineFeeling": {
+    "description": "Post headline: the author feeling something; Arabic uses a noun, no verb",
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "postHeadlineWith": "with ",
+  "@postHeadlineWith": {
+    "description": "Post headline: before the tagged people"
+  },
+  "postHeadlineAnd": " and ",
+  "@postHeadlineAnd": {
+    "description": "Post headline: between the tagged people"
+  },
+  "postHeadlineOthers": "{count} others",
+  "@postHeadlineOthers": {
+    "description": "Post headline: how many more people are tagged",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postCommentsOffTitle": "Comments are off",
+  "@postCommentsOffTitle": {
+    "description": "Notice when the comment button of a post with comments off is tapped"
+  },
+  "postCommentsOffNotice": "{name} turned off comments for this post.",
+  "@postCommentsOffNotice": {
+    "description": "Notice body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postCommentsOffLine": "Comments are turned off",
+  "@postCommentsOffLine": {
+    "description": "Line under the action bar of a post with comments off"
+  },
+  "postCommentsOffHint": "Comments are off for this post",
+  "@postCommentsOffHint": {
+    "description": "Options sheet hint on Turn on comments"
+  },
+  "postEditHint": "Caption, feeling, location, tags",
+  "@postEditHint": {
+    "description": "Options sheet hint on Edit post"
+  },
+  "postFeelingHappy": "happy",
+  "@postFeelingHappy": {
+    "description": "A feeling a post can show (happy)"
+  },
+  "postFeelingExcited": "excited",
+  "@postFeelingExcited": {
+    "description": "A feeling a post can show (excited)"
+  },
+  "postFeelingLoved": "loved",
+  "@postFeelingLoved": {
+    "description": "A feeling a post can show (loved)"
+  },
+  "postFeelingRelaxed": "relaxed",
+  "@postFeelingRelaxed": {
+    "description": "A feeling a post can show (relaxed)"
+  },
+  "postFeelingGrateful": "grateful",
+  "@postFeelingGrateful": {
+    "description": "A feeling a post can show (grateful)"
+  },
+  "postFeelingMotivated": "motivated",
+  "@postFeelingMotivated": {
+    "description": "A feeling a post can show (motivated)"
+  },
+  "postFeelingCool": "cool",
+  "@postFeelingCool": {
+    "description": "A feeling a post can show (cool)"
+  },
+  "postFeelingAmazed": "amazed",
+  "@postFeelingAmazed": {
+    "description": "A feeling a post can show (amazed)"
+  },
+  "postFeelingTired": "tired",
+  "@postFeelingTired": {
+    "description": "A feeling a post can show (tired)"
+  },
+  "postFeelingSad": "sad",
+  "@postFeelingSad": {
+    "description": "A feeling a post can show (sad)"
+  },
+  "postFeelingDetermined": "determined",
+  "@postFeelingDetermined": {
+    "description": "A feeling a post can show (determined)"
+  },
+  "postFeelingSick": "sick",
+  "@postFeelingSick": {
+    "description": "A feeling a post can show (sick)"
+  },
+  "postFeelingFunny": "funny",
+  "@postFeelingFunny": {
+    "description": "A feeling a post can show (funny)"
+  },
+  "postFeelingBlessed": "blessed",
+  "@postFeelingBlessed": {
+    "description": "A feeling a post can show (blessed)"
+  },
+  "postTagYoureTagged": "You're tagged in this post",
+  "@postTagYoureTagged": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoveMe": "Remove me from this post",
+  "@postTagRemoveMe": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoveMeHint": "You won't be tagged anymore",
+  "@postTagRemoveMeHint": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoveLabel": "Remove tag",
+  "@postTagRemoveLabel": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoveTitle": "Remove your tag?",
+  "@postTagRemoveTitle": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoveBody": "You'll no longer be tagged in {name}'s post or its photos. The post itself stays.",
+  "@postTagRemoveBody": {
+    "description": "Post tags (S10, S11)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagRemoveConfirm": "Remove",
+  "@postTagRemoveConfirm": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoved": "Tag removed",
+  "@postTagRemoved": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemovedBody": "You're no longer tagged in this post.",
+  "@postTagRemovedBody": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagRemoveError": "Couldn't remove your tag",
+  "@postTagRemoveError": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTaggedPeopleTitle": "Tagged people",
+  "@postTaggedPeopleTitle": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTaggedFollow": "Follow",
+  "@postTaggedFollow": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTaggedFollowing": "Following",
+  "@postTaggedFollowing": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTaggedRequested": "Requested",
+  "@postTaggedRequested": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTaggedLoadError": "Couldn't load people",
+  "@postTaggedLoadError": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTagBadge": "People tagged in this photo",
+  "@postTagBadge": {
+    "description": "Post tags (S10, S11)"
+  },
+  "postTaggedPerson": "{name}, {state}",
+  "@postTaggedPerson": {
+    "description": "Post tags (S10, S11)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagPeopleTitle": "Tag people",
+  "@postTagPeopleTitle": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleSearch": "Search people",
+  "@postTagPeopleSearch": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleClear": "Clear search",
+  "@postTagPeopleClear": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleSuggested": "Suggested",
+  "@postTagPeopleSuggested": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleDone": "Done",
+  "@postTagPeopleDone": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleNoTags": "Doesn't allow tags",
+  "@postTagPeopleNoTags": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleMax": "You can tag up to {max} people",
+  "@postTagPeopleMax": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagPeopleEmpty": "No people found",
+  "@postTagPeopleEmpty": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleInPhoto": "Tag in photo",
+  "@postTagPeopleInPhoto": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleError": "Couldn't load people. Retry",
+  "@postTagPeopleError": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagPeopleCounter": "{count} / {max}",
+  "@postTagPeopleCounter": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagPeopleRemoveChip": "Remove {name}",
+  "@postTagPeopleRemoveChip": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagPersonTagged": "{name}, tagged",
+  "@postTagPersonTagged": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagPersonNotTagged": "{name}, not tagged",
+  "@postTagPersonNotTagged": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoTitle": "Tag in photo",
+  "@postTagInPhotoTitle": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagInPhotoHint": "Tap where someone is, then pick them. Drag a label to move it.",
+  "@postTagInPhotoHint": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagInPhotoNoSpot": "{name} tagged in the post, not in a photo",
+  "@postTagInPhotoNoSpot": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoNoSpotMany": "{count} people tagged in the post, not in a photo",
+  "@postTagInPhotoNoSpotMany": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagInPhotoAllPlaced": "Everyone is placed",
+  "@postTagInPhotoAllPlaced": {
+    "description": "Tag people (S6) and Tag in photo (S7)"
+  },
+  "postTagInPhotoLabel": "Tag {name}, drag to move",
+  "@postTagInPhotoLabel": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoRemoveSpot": "Remove {name}'s spot",
+  "@postTagInPhotoRemoveSpot": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagInPhotoThumb": "Photo {number}, {count} tagged",
+  "@postTagInPhotoThumb": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postTagValueTwo": "{a}, {b}",
+  "@postTagValueTwo": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "postTagValueMore": "{a}, {b} and {count, plural, =1{1 other} other{{count} others}}",
+  "@postTagValueMore": {
+    "description": "Tag people (S6) and Tag in photo (S7)",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "postFeelingTitle": "How are you feeling?",
+  "@postFeelingTitle": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingRemove": "Remove",
+  "@postFeelingRemove": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingTabFeelings": "Feelings",
+  "@postFeelingTabFeelings": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingTabActivities": "Activities",
+  "@postFeelingTabActivities": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingSearch": "Search feelings",
+  "@postFeelingSearch": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingClear": "Clear search",
+  "@postFeelingClear": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingNoMatches": "No matches",
+  "@postFeelingNoMatches": {
+    "description": "Feeling page (S8) and the New post feeling row"
+  },
+  "postFeelingSelected": "{word}, selected",
+  "@postFeelingSelected": {
+    "description": "Feeling page (S8) and the New post feeling row",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "postFeelingValue": "{emoji}feeling {word}",
+  "@postFeelingValue": {
+    "description": "Feeling page (S8) and the New post feeling row",
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
   }
 }

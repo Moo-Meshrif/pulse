@@ -10,6 +10,8 @@ import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../../../../helpers/pump_app.dart';
 
+const l10nPrimarySoft = Color(0xFFE2EEEB);
+
 void main() {
   late List<String> calls;
   Failure? failure;
@@ -33,6 +35,7 @@ void main() {
     onCommitDelete: () => calls.add('commitDelete'),
     onAudienceChanged: (audience) => calls.add('audience ${audience.wire}'),
     onEdit: () => calls.add('edit'),
+    onRemoveMyTag: () => step('removeMyTag'),
   );
 
   Future<void> open(
@@ -94,6 +97,71 @@ void main() {
         expect(find.text(text), findsOneWidget);
       }
       expect(find.text(l10nEn.postReportTitle), findsNothing);
+    });
+
+    testWidgets(
+      'tagged in it: the line and Remove me come first, highlighted',
+      (tester) async {
+        await open(
+          tester,
+          const PostOptionsData(
+            postId: 'p1',
+            isMine: false,
+            username: 'sara',
+            iAmTagged: true,
+          ),
+        );
+
+        expect(find.text(l10nEn.postTagYoureTagged), findsOneWidget);
+        expect(find.text(l10nEn.postTagRemoveMeHint), findsOneWidget);
+        final removeMe = tester.getTopLeft(find.text(l10nEn.postTagRemoveMe));
+        final notInterested = tester.getTopLeft(
+          find.text(l10nEn.postNotInterested),
+        );
+        expect(removeMe.dy, lessThan(notInterested.dy));
+      },
+    );
+
+    testWidgets('not tagged, or your own post: no line and no row', (
+      tester,
+    ) async {
+      await open(tester, others);
+      expect(find.text(l10nEn.postTagYoureTagged), findsNothing);
+      expect(find.text(l10nEn.postTagRemoveMe), findsNothing);
+    });
+
+    testWidgets('your post: hints, and Turn on comments stands out while off', (
+      tester,
+    ) async {
+      await open(tester, mine);
+      expect(find.text(l10nEn.postEditHint), findsOneWidget);
+      expect(find.text(l10nEn.postAudiencePublic), findsOneWidget);
+      expect(find.text(l10nEn.postCommentsOffHint), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+
+      await open(
+        tester,
+        const PostOptionsData(
+          postId: 'p1',
+          isMine: true,
+          username: 'me',
+          commentsEnabled: false,
+          visibility: ContentAudience.closeFriends,
+        ),
+      );
+      expect(find.text(l10nEn.postCommentsOn), findsOneWidget);
+      expect(find.text(l10nEn.postCommentsOffHint), findsOneWidget);
+      expect(find.text(l10nEn.postAudienceCloseFriends), findsOneWidget);
+      final row = find.ancestor(
+        of: find.text(l10nEn.postCommentsOn),
+        matching: find.byType(ColoredBox),
+      );
+      expect(
+        row.evaluate().any(
+          (e) => (e.widget as ColoredBox).color == l10nPrimarySoft,
+        ),
+        isTrue,
+      );
     });
 
     testWidgets('Copy link and Share are hidden when the post is not public', (
@@ -271,6 +339,51 @@ void main() {
       await tester.pumpAndSettle();
       expect(calls.last, 'mute');
       expect(find.text(l10nEn.postMuted('sara')), findsOneWidget);
+    });
+  });
+
+  group('Remove me from this post', () {
+    const tagged = PostOptionsData(
+      postId: 'p1',
+      isMine: false,
+      username: 'sara',
+      iAmTagged: true,
+    );
+
+    testWidgets('asks first; Cancel changes nothing', (tester) async {
+      await open(tester, tagged);
+      await tester.tap(find.text(l10nEn.postTagRemoveMe));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nEn.postTagRemoveTitle), findsOneWidget);
+      expect(find.text(l10nEn.postTagRemoveBody('sara')), findsOneWidget);
+      await tester.tap(find.text(l10nEn.cancel));
+      await tester.pumpAndSettle();
+
+      expect(calls, isEmpty);
+    });
+
+    testWidgets('confirmed: removes it and says so', (tester) async {
+      await open(tester, tagged);
+      await tester.tap(find.text(l10nEn.postTagRemoveMe));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.postTagRemoveConfirm));
+      await tester.pumpAndSettle();
+
+      expect(calls, ['removeMyTag']);
+      expect(find.text(l10nEn.postTagRemoved), findsOneWidget);
+      expect(find.text(l10nEn.postTagRemovedBody), findsOneWidget);
+    });
+
+    testWidgets('a failure says it could not', (tester) async {
+      await open(tester, tagged);
+      failure = const NetworkFailure();
+      await tester.tap(find.text(l10nEn.postTagRemoveMe));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10nEn.postTagRemoveConfirm));
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nEn.postTagRemoveError), findsOneWidget);
     });
   });
 }

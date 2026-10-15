@@ -5,9 +5,13 @@ import '../../../post/presentation/utils/post_card_data.dart';
 import '../../../post/presentation/utils/post_card_media.dart';
 import '../../../post/presentation/utils/post_options_data.dart';
 
-/// What the card draws for [post]: the name people know them by, the place, and the small audience icon
-/// for a post that is not public.
-PostCardData postCardData(PostEntity post, List<PostCardMedia> media) {
+/// What the card draws for [post]: the name people know them by, the place, the small audience icon, the
+/// feeling and the tagged people. [userId] is the signed-in user, so their own post reads "You".
+PostCardData postCardData(
+  PostEntity post,
+  List<PostCardMedia> media, {
+  String? userId,
+}) {
   final fullName = post.fullName?.trim();
   return PostCardData(
     id: post.id,
@@ -22,10 +26,14 @@ PostCardData postCardData(PostEntity post, List<PostCardMedia> media) {
     commentCount: post.commentCount,
     isLiked: post.likedByMe,
     isSaved: post.savedByMe,
-    audienceIcon: post.visibility == ContentAudience.public
-        ? null
-        : post.visibility.icon,
+    audienceIcon: post.visibility.icon,
     isOnlyMe: post.visibility == ContentAudience.onlyMe,
+    isMine: post.authorId == userId,
+    viewerId: userId,
+    commentsEnabled: post.commentsEnabled,
+    mood: post.mood,
+    tags: post.tags,
+    tagCount: post.tagCount,
   );
 }
 
@@ -38,4 +46,5 @@ PostOptionsData postOptionsData(PostEntity post, {required String? userId}) =>
       isSaved: post.savedByMe,
       commentsEnabled: post.commentsEnabled,
       visibility: post.visibility,
+      iAmTagged: post.iAmTagged && post.authorId != userId,
     );

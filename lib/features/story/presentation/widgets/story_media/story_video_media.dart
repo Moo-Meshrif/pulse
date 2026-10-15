@@ -126,7 +126,11 @@ class _StoryVideoMediaState extends State<StoryVideoMedia> {
       fit: StackFit.expand,
       children: [
         if (storyPicture(widget.story) case final poster?)
-          AppImage.network(poster.url, cacheKey: poster.cacheKey),
+          AppImage.network(
+            poster.url,
+            cacheKey: poster.cacheKey,
+            fit: BoxFit.cover,
+          ),
         if (ready)
           ClipRect(
             child: FittedBox(

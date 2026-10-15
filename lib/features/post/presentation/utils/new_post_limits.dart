@@ -24,3 +24,9 @@ abstract final class NewPostLimits {
     return null;
   }
 }
+
+/// What tagging allows (docs/specs/post/screens/s6-tag-people.md).
+abstract final class TagLimits {
+  static const maxPeople = 20;
+  static const searchDelay = Duration(milliseconds: 300);
+}

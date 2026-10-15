@@ -33,6 +33,7 @@ import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/retry_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
@@ -77,6 +78,8 @@ class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
 class _DiscardPublish extends Mock implements DiscardPostPublishUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
+
+class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
 
 /// The empty and failed pages float forever; with reduced motion they hold still, so the test can settle.
 void reduceMotion(WidgetTester tester) {
@@ -160,6 +163,7 @@ void main() {
           MockReportContent(),
           MockSetMute(),
           _Follow(),
+          _RemoveTag(),
         ),
       )
       ..registerFactory(

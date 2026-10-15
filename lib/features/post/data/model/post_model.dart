@@ -1,7 +1,9 @@
 import '../../../../core/utils/equatable.dart';
 import '../../../../core/utils/json_mapper.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
+import '../enums/mood_kind.dart';
 import 'post_media_model.dart';
+import 'post_tag_model.dart';
 
 /// A row of `home_feed()`: a post with its author and what you did to it.
 class PostModel extends Equatable {
@@ -20,6 +22,14 @@ class PostModel extends Equatable {
   final bool? likedByMe;
   final bool? savedByMe;
   final List<PostMediaModel>? media;
+  final MoodKind? moodKind;
+  final String? moodKey;
+  final String? moodText;
+  final int? tagCount;
+
+  /// Everyone tagged, in tag order (at most 20).
+  final List<PostTagModel>? tags;
+  final bool? iAmTagged;
 
   const PostModel({
     this.id,
@@ -37,6 +47,12 @@ class PostModel extends Equatable {
     this.likedByMe,
     this.savedByMe,
     this.media,
+    this.moodKind,
+    this.moodKey,
+    this.moodText,
+    this.tagCount,
+    this.tags,
+    this.iAmTagged,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
@@ -59,6 +75,16 @@ class PostModel extends Equatable {
       (item) =>
           item is Map<String, dynamic> ? PostMediaModel.fromJson(item) : null,
     ),
+    moodKind: MoodKind.fromWire(JsonMapper.string(json['mood_kind'])),
+    moodKey: JsonMapper.string(json['mood_key']),
+    moodText: JsonMapper.string(json['mood_text']),
+    tagCount: JsonMapper.integer(json['tag_count']),
+    tags: JsonMapper.list(
+      json['tags'],
+      (item) =>
+          item is Map<String, dynamic> ? PostTagModel.fromJson(item) : null,
+    ),
+    iAmTagged: JsonMapper.boolean(json['i_am_tagged']),
   );
 
   @override
@@ -78,5 +104,11 @@ class PostModel extends Equatable {
     likedByMe,
     savedByMe,
     media,
+    moodKind,
+    moodKey,
+    moodText,
+    tagCount,
+    tags,
+    iAmTagged,
   ];
 }

@@ -5,10 +5,23 @@ enum NoticeKind { error, success, info }
 /// One message of the notice card. Identity matters: the card restarts its timer for each new instance.
 @immutable
 class Notice {
-  const Notice(this.kind, this.title, {this.actionLabel, this.onResult});
+  const Notice(
+    this.kind,
+    this.title, {
+    this.message,
+    this.icon,
+    this.actionLabel,
+    this.onResult,
+  });
 
   final NoticeKind kind;
   final String title;
+
+  /// A second line under [title].
+  final String? message;
+
+  /// An icon asset in place of the one of [kind].
+  final String? icon;
 
   /// The one action ("Undo", "Retry", "View"); its tap is reported to [onResult].
   final String? actionLabel;

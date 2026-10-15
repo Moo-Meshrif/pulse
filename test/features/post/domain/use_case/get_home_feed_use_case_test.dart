@@ -2,10 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
+import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/feed_page_model.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/model/post_model.dart';
+import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
+import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
@@ -94,5 +98,53 @@ void main() {
     expect(page.posts.map((p) => p.id), ['p2']);
     expect(page.posts.single.media, isEmpty);
     expect(page.nextCursor, isNull);
+  });
+
+  test('maps the mood and the tags, and drops what is incomplete', () async {
+    answer(
+      FeedPageModel(
+        posts: [
+          PostModel(
+            id: 'p1',
+            authorId: 'a1',
+            username: 'dip',
+            createdAt: createdAt,
+            moodKind: MoodKind.feeling,
+            moodKey: 'happy',
+            tagCount: 4,
+            iAmTagged: true,
+            tags: const [
+              PostTagModel(userId: 'u2', username: 'sara', mediaPosition: 0),
+              PostTagModel(userId: 'u3'),
+            ],
+          ),
+          PostModel(
+            id: 'p2',
+            authorId: 'a1',
+            username: 'dip',
+            createdAt: createdAt,
+            moodKind: MoodKind.feeling,
+          ),
+        ],
+      ),
+    );
+
+    final page = await useCase();
+
+    final tagged = page.posts.first;
+    expect(
+      tagged.mood,
+      const PostMoodEntity(kind: MoodKind.feeling, key: 'happy'),
+    );
+    expect(tagged.tags, const [
+      PostTagEntity(userId: 'u2', username: 'sara', mediaPosition: 0),
+    ]);
+    expect(tagged.tagCount, 4);
+    expect(tagged.iAmTagged, isTrue);
+    final plain = page.posts.last;
+    expect(plain.mood, isNull);
+    expect(plain.tags, isEmpty);
+    expect(plain.tagCount, 0);
+    expect(plain.iAmTagged, isFalse);
   });
 }

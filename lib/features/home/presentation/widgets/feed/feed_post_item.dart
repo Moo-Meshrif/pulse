@@ -13,9 +13,11 @@ import '../../../../post/presentation/cubit/post_actions_state.dart';
 import '../../../../post/presentation/utils/enums/post_row.dart';
 import '../../../../post/presentation/utils/post_card_callbacks.dart';
 import '../../../../post/presentation/utils/post_options_actions.dart';
+import '../../../../post/presentation/utils/post_tag_removal.dart';
 import '../../../../post/presentation/widgets/hidden_post_row.dart';
 import '../../../../post/presentation/widgets/post_card.dart';
 import '../../../../post/presentation/widgets/post_options/post_options_flow.dart';
+import '../../../../post/presentation/widgets/tagged_people/tagged_people_sheet.dart';
 import '../../cubit/feed_cubit.dart';
 import '../../dimens/home_dimens.dart';
 import '../../utils/feed_post.dart';
@@ -53,6 +55,9 @@ class _FeedPostItemState extends State<FeedPostItem> {
     onComment: _openComments,
     onShare: _share,
     onSave: () => _actions.toggleSave(_loaded),
+    onTaggedPerson: _openProfileOf,
+    onTaggedPeople: _openTaggedPeople,
+    onRemoveMyTag: _removeMyTag,
   );
 
   /// The delete's Undo and commit run when the notice ends, maybe after this card has scrolled away:
@@ -80,10 +85,38 @@ class _FeedPostItemState extends State<FeedPostItem> {
     onCommitDelete: () => actions.commitDelete(loaded),
     onAudienceChanged: (audience) => actions.audienceChanged(loaded, audience),
     onEdit: _openEdit,
+    onRemoveMyTag: () => _removeMyTagOf(actions, loaded),
   );
 
-  void _openProfile() =>
-      AppNavigator.push<void>(context, AppRoutes.profileOf(_loaded.authorId));
+  void _openProfile() => _openProfileOf(_loaded.authorId);
+
+  void _openProfileOf(String userId) =>
+      AppNavigator.push<void>(context, AppRoutes.profileOf(userId));
+
+  /// The cubit takes the tag off at once; a failure puts it back and is thrown to the dialog flow.
+  Future<void> _removeMyTagOf(PostActionsCubit actions, PostEntity loaded) {
+    final userId = context.read<FeedCubit>().state.userId;
+    return userId == null
+        ? Future.value()
+        : actions.removeMyTag(loaded, userId: userId);
+  }
+
+  Future<void> _removeMyTag() => PostTagRemoval.confirmAndRemove(
+    context,
+    ownerName: _loaded.username,
+    remove: () => _removeMyTagOf(_actions, _loaded),
+  );
+
+  Future<void> _openTaggedPeople() async {
+    final result = await TaggedPeopleSheet.show(context, postId: _loaded.id);
+    if (result == null || !mounted) return;
+    final profileId = result.profileId;
+    if (profileId != null) {
+      _openProfileOf(profileId);
+    } else if (result.removeMe) {
+      await _removeMyTag();
+    }
+  }
 
   void _openEdit() => AppNavigator.push<void>(
     context,
@@ -139,6 +172,7 @@ class _FeedPostItemState extends State<FeedPostItem> {
               data: postCardData(
                 current.changed ?? widget.post.entity,
                 widget.post.media,
+                userId: context.read<FeedCubit>().state.userId,
               ),
               callbacks: _callbacks(),
               isOptionsOpen: _isOptionsOpen,

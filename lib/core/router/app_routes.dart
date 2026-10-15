@@ -43,6 +43,15 @@ abstract final class AppRoutes {
   /// Choose a place for a post, a story or anything else that has a location. Takes the place already
   /// chosen as its argument and goes back with a `LocationChoice`.
   static const pickPlace = '/pick-place';
+
+  /// Choose the people tagged in a post (S6). Takes `TagPeopleArgs`; goes back with the chosen `List<TagChoice>`.
+  static const tagPeople = '/create/post/tag-people';
+
+  /// Place the chosen people on the photos (S7). Takes `TagPeopleArgs`; goes back with the `List<TagChoice>`.
+  static const tagInPhoto = '/create/post/tag-in-photo';
+
+  /// Choose how you feel (S8). Takes the post's current `PostMoodEntity?`; goes back with a `MoodChoice`.
+  static const feeling = '/create/post/feeling';
   static const createShort = '/create/short';
 
   /// Story viewer for one person's stories (`/story/:authorId`).

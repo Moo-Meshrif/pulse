@@ -24,3 +24,20 @@
 | Q-V2 | Only me notice | - | **answered** [user]: "Only you can see this post" / "It's saved to your profile, hidden from everyone" |
 | Q-V3 | Button label / share by link | - | **answered** [user]: S1 keeps "Share post"; S2 Copy link + Share are "Coming soon" + code TODO until post deep links exist |
 | Q-V4 | Default visibility | - | **answered** [user + board]: Public every time unless "Use for future posts" saved another default; private account -> Followers |
+| Q14 | Share button label | - | **answered** [user, 2026-10-15]: stays "Share post" (board 1 panel 7 shows "Post") |
+| Q15 | Allow comments row | - | **answered** [user]: stays as the 5th row of S1 |
+| Q16 | Tag in photo (S7) | - | **answered** [user]: spec and build in full |
+| Q17 | Mood columns | - | **answered** [user]: `mood_kind` + `mood_key` + `mood_text` |
+| Q18 | Emoji | - | **answered** [user]: native emoji characters, no assets |
+| Q19 | Suggested people | - | **answered** [user]: people you follow, newest follow first |
+| Q20 | Activity suggestions | - | **superseded** [user, 2026-10-15]: activities (tab, S9, suggestions) are deferred; the source will be an API or a database, decided later (TODO). Table and RPC removed from the SQL |
+| Q21 | Remove own tag | - | **answered** [user, board `s11-remove-tag-board.png`]: S2 row, own photo label, S10 row; profile Tagged tab = profile spec follow-up |
+| Q22 | Tag notification | - | **answered** [user]: row only (type `tag`); UI with Activity |
+| Q23 | Allow tags | - | **answered** [user]: column + enforcement now (default everyone); Settings toggle later |
+| Q24 | Schema SQL | - | **answered** [user]: `schema-post-tags-mood.sql` written; not validated/applied |
+| Q25 | S7 pick list | - | **answered** [user]: only people already chosen in S6 |
+| Q26 | Activity headline | - | **answered**: board format "is 📺 watching {text}" [seen] |
+| Q27 | Blocked accounts in tag search | - | **answered** [user]: skipped for now, TODO in the SQL until blocking exists |
+| Q28 | Arabic wording | - | **answered** [user, 2026-10-15]: no gendered verbs; feelings are nouns (سعادة، حماس، امتنان، تعب…), activities verbal nouns ("📺 مشاهدة الديربي"), headline "نور عادل · 😊 سعادة · مع عمر خالد و٢ آخرين". Everything else stays `x-review` |
+| Q30 | Entry to S7 | - | **answered** [user]: a "Tag in photo" button on S6 (photos only, needs >= 1 person chosen); button placement/size estimated |
+| Q29 | Estimated sizes | - | **answered** [user, board 3.16]: S7 thumbs 56 r12 etc., S6 counter/empty/button; see `01-design-tokens.md` (only S9 row sizes remain estimated, deferred) |

@@ -45,6 +45,10 @@ class AppTextStyles {
     required this.sheetTitle,
     required this.noticeTitle,
     required this.noticeAction,
+    required this.headline,
+    required this.headlineName,
+    required this.tileLabel,
+    required this.emojiTile,
   });
 
   static const _sora = 'Sora';
@@ -117,6 +121,14 @@ class AppTextStyles {
   /// Notice card title (14/600) and its action pill (13/700).
   final TextStyle noticeTitle;
   final TextStyle noticeAction;
+
+  /// Post card headline (14, line 1.35): connector words 400, names 700.
+  final TextStyle headline;
+  final TextStyle headlineName;
+
+  /// A feeling tile's word (15/600) and its emoji (22).
+  final TextStyle tileLabel;
+  final TextStyle emojiTile;
 
   static final latin = _build(arabic: false);
   static final arabic = _build(arabic: true);
@@ -201,6 +213,16 @@ class AppTextStyles {
       sheetTitle: s(18, FontWeight.w700, sora: true, spacing: -0.2),
       noticeTitle: s(14, FontWeight.w600, spacing: 0),
       noticeAction: s(13, FontWeight.w700, spacing: 0),
+      headline: s(14, FontWeight.w400, spacing: 0, height: 1.35, arHeight: 1.5),
+      headlineName: s(
+        14,
+        FontWeight.w700,
+        spacing: 0,
+        height: 1.35,
+        arHeight: 1.5,
+      ),
+      tileLabel: s(15, FontWeight.w600, spacing: 0),
+      emojiTile: s(22, FontWeight.w400, spacing: 0),
     );
   }
 
@@ -242,6 +264,10 @@ class AppTextStyles {
       sheetTitle: f(sheetTitle),
       noticeTitle: f(noticeTitle),
       noticeAction: f(noticeAction),
+      headline: f(headline),
+      headlineName: f(headlineName),
+      tileLabel: f(tileLabel),
+      emojiTile: f(emojiTile),
     );
   }
 

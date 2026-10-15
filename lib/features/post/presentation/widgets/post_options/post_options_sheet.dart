@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/constants/app_assets.dart';
+import '../../../../../core/extensions/context_extensions.dart';
+import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
+import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/post_options_dimens.dart';
 import '../../utils/enums/post_option.dart';
@@ -35,6 +39,7 @@ class PostOptionsSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: PostOptionsDimens.groupGap,
         children: [
+          if (data.iAmTagged && !data.isMine) const _TaggedLine(),
           Row(
             spacing: PostOptionsDimens.quickGap,
             children: [
@@ -60,6 +65,33 @@ class PostOptionsSheet extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// "You're tagged in this post", over the options of a post you were tagged in.
+class _TaggedLine extends StatelessWidget {
+  const _TaggedLine();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.appColors;
+    return Row(
+      spacing: PostOptionsDimens.taggedLineGap,
+      children: [
+        AppSvgIcon(
+          AppAssets.user,
+          size: PostOptionsDimens.taggedLineIcon,
+          color: colors.primary,
+        ),
+        Expanded(
+          child: AppText(
+            context.l10n.postTagYoureTagged,
+            style: context.text.label,
+            color: colors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }
