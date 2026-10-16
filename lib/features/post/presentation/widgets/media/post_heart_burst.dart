@@ -5,7 +5,7 @@ import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/widgets/app_svg_icon.dart';
 import '../../dimens/post_card_dimens.dart';
 
-/// The big white heart of a double tap: it pops, then fades out. Call [PostHeartBurstState.play] on the key
+/// The big red heart of a double tap: it pops, then fades out. Call [PostHeartBurstState.play] on the key
 /// to start it.
 class PostHeartBurst extends StatefulWidget {
   const PostHeartBurst({super.key});
@@ -79,7 +79,7 @@ class PostHeartBurstState extends State<PostHeartBurst>
               child: AppSvgIcon(
                 AppAssets.heartFilled,
                 size: PostCardDimens.heart,
-                color: context.appColors.textOnPrimary,
+                color: context.appColors.like,
               ),
             ),
           ),

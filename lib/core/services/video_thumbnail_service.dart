@@ -1,5 +1,5 @@
+import 'package:flutter_video_thumbnail_plus/flutter_video_thumbnail_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../error/failures.dart';
 
@@ -10,7 +10,7 @@ abstract interface class VideoThumbnailService {
   Future<String> thumbnail(String videoPath);
 }
 
-/// [VideoThumbnailService] over `video_thumbnail`.
+/// [VideoThumbnailService] over `flutter_video_thumbnail_plus`.
 @LazySingleton(as: VideoThumbnailService)
 final class PackageVideoThumbnailService implements VideoThumbnailService {
   static const _quality = 80;
@@ -19,9 +19,9 @@ final class PackageVideoThumbnailService implements VideoThumbnailService {
   @override
   Future<String> thumbnail(String videoPath) async {
     try {
-      final path = await VideoThumbnail.thumbnailFile(
+      final path = await FlutterVideoThumbnailPlus.thumbnailFile(
         video: videoPath,
-        imageFormat: ImageFormat.JPEG,
+        imageFormat: ImageFormat.jpeg,
         maxHeight: _maxHeight,
         quality: _quality,
       );
