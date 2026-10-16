@@ -1,6 +1,7 @@
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pulse/core/enums/image_resize_preset.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/camera_device.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
@@ -22,6 +23,7 @@ void main() {
   late _Hint hint;
 
   setUpAll(() {
+    registerFallbackValue(ImageResizePreset.standard);
     registerFallbackValue(CameraLens.back);
   });
 
@@ -284,7 +286,7 @@ void main() {
 
   group('gallery', () {
     test('a photo goes on', () async {
-      when(() => picker.pick()).thenAnswer(
+      when(() => picker.pick(preset: any(named: 'preset'))).thenAnswer(
         (_) async => const PickedMedia(
           path: '/g.jpg',
           isVideo: false,
@@ -296,11 +298,13 @@ void main() {
       await cubit.pickFromGallery();
       expect(cubit.state.captured!.type, StoryMediaType.image);
       expect(cubit.state.captured!.durationMs, isNull);
+      // Photos come back shrunk for a full screen.
+      verify(() => picker.pick(preset: ImageResizePreset.fullScreen)).called(1);
       await cubit.close();
     });
 
     test('a video up to 60 seconds goes on', () async {
-      when(() => picker.pick()).thenAnswer(
+      when(() => picker.pick(preset: any(named: 'preset'))).thenAnswer(
         (_) async =>
             const PickedMedia(path: '/g.mp4', isVideo: true, durationMs: 60000),
       );
@@ -312,7 +316,7 @@ void main() {
     });
 
     test('a longer video is refused with a notice', () async {
-      when(() => picker.pick()).thenAnswer(
+      when(() => picker.pick(preset: any(named: 'preset'))).thenAnswer(
         (_) async =>
             const PickedMedia(path: '/g.mp4', isVideo: true, durationMs: 61000),
       );
@@ -324,7 +328,8 @@ void main() {
     });
 
     test('cancelling the picker does nothing; no camera is needed', () async {
-      when(() => picker.pick()).thenAnswer((_) async => null);
+      when(() => picker.pick(preset: any(named: 'preset')))
+          .thenAnswer((_) async => null);
       final cubit = build();
       await cubit.pickFromGallery();
       expect(cubit.state.captured, isNull);

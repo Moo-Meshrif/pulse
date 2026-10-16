@@ -1,10 +1,11 @@
 import 'package:clock/clock.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/data/repository/content_media_repository.dart';
 import '../../data/datasource/posts_datasource.dart';
 import '../../data/enums/media_type.dart';
 import '../../data/model/post_media_model.dart';
-import '../../data/repository/post_media_repository.dart';
 import '../entity/new_post_entity.dart';
 import '../entity/post_entity.dart';
 import '../entity/post_media_entity.dart';
@@ -18,15 +19,29 @@ class CreatePostUseCase {
   CreatePostUseCase(this._posts, this._media);
 
   final PostsDatasource _posts;
-  final PostMediaRepository _media;
+  final ContentMediaRepository _media;
 
-  Future<PostEntity?> call(NewPostEntity post) async {
+  /// [onProgress] is told how much of the files went out (0..1), each file counting the same.
+  Future<PostEntity?> call(
+    NewPostEntity post, {
+    void Function(double progress)? onProgress,
+  }) async {
     final folder = '${_posts.currentUserId}/${post.id}';
-    final uploaded = (await _posts.listFiles(folder)).toSet();
+    final existing = await _media.existing(folder);
 
+    final count = post.media.length;
     final media = <PostMediaModel>[];
-    for (var i = 0; i < post.media.length; i++) {
-      media.add(await _media.upload(folder, '$i', post.media[i], uploaded));
+    for (var i = 0; i < count; i++) {
+      final item = post.media[i];
+      final sent = await _media.send(
+        ContentKind.post,
+        item.toSend(),
+        folder: folder,
+        stem: '$i',
+        existing: existing,
+        onProgress: (part) => onProgress?.call((i + part) / count),
+      );
+      media.add(item.toModel(sent));
     }
 
     try {

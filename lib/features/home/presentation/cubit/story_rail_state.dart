@@ -1,7 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../../story/domain/entity/story_rail_item_entity.dart';
-import '../../../story/domain/entity/story_upload_status.dart';
 
 part 'story_rail_state.freezed.dart';
 
@@ -14,7 +15,7 @@ abstract class StoryRailState with _$StoryRailState {
     @Default(<StoryRailItemEntity>[]) List<StoryRailItemEntity> items,
 
     /// How posting your own story is going.
-    @Default(StoryUploadIdle()) StoryUploadStatus upload,
+    @Default(ContentPublishIdle(ContentKind.story)) ContentPublishStatus upload,
   }) = _StoryRailState;
 
   /// Your own story on the rail, once you have posted one.

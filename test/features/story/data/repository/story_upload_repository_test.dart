@@ -5,16 +5,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/events/event_bus.dart';
+import 'package:pulse/core/services/video_compress_service.dart';
+import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
-import 'package:pulse/features/story/data/datasource/story_media_uploader.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/model/new_story_model.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
-import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
+import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 
 class _MockStories extends Mock implements StoriesDatasource {}
 
-class _MockUploader extends Mock implements StoryMediaUploader {}
+class _MockUploader extends Mock implements MediaFilesDatasource {}
+
+class _MockThumbnails extends Mock implements VideoThumbnailService {}
+
+class _MockCompressor extends Mock implements VideoCompressService {}
 
 void main() {
   late Directory dir;
@@ -24,14 +33,16 @@ void main() {
   late _MockUploader uploader;
   late StoryUploadRepositoryImpl repository;
   late EventBus bus;
-  late List<StoryUploadStatus> seen;
+  late ContentPublishRepositoryImpl publish;
+  late List<ContentPublishStatus> seen;
 
   NewStoryModel video() => NewStoryModel(
     filePath: media.path,
     thumbFilePath: thumb.path,
     type: StoryMediaType.video,
-    width: 1080,
-    height: 1920,
+    // 720p, as the story camera records: it goes out without encoding.
+    width: 720,
+    height: 1280,
     durationMs: 9000,
   );
 
@@ -69,9 +80,14 @@ void main() {
       onBytes?.call(file.lengthSync());
     });
     bus = EventBus();
-    repository = StoryUploadRepositoryImpl(stories, uploader, bus);
+    publish = ContentPublishRepositoryImpl(bus);
+    repository = StoryUploadRepositoryImpl(
+      stories,
+      ContentMediaRepository(uploader, _MockThumbnails(), _MockCompressor()),
+      publish,
+    );
     seen = [];
-    bus.on<StoryUploadStatus>().listen(seen.add);
+    bus.on<ContentPublishStatus>().listen(seen.add);
     await pumpEventQueue();
   });
 
@@ -79,13 +95,19 @@ void main() {
 
   test('says nothing before a story is queued', () {
     expect(seen, isEmpty);
-    expect(bus.latest<StoryUploadStatus>(), isNull);
+    expect(
+      publish.current(ContentKind.story),
+      const ContentPublishIdle(ContentKind.story),
+    );
   });
 
   test('a late listener reads the newest status', () async {
     repository.enqueue(video());
     await pumpEventQueue();
-    expect(bus.latest<StoryUploadStatus>(), const StoryUploadIdle());
+    expect(
+      publish.current(ContentKind.story),
+      const ContentPublishIdle(ContentKind.story),
+    );
   });
 
   test('uploads the media, then the poster, then inserts the row', () async {
@@ -121,7 +143,9 @@ void main() {
       repository.enqueue(video());
       await pumpEventQueue();
 
-      final progress = seen.whereType<StoryUploading>().map((s) => s.progress);
+      final progress = seen.whereType<ContentPublishing>().map(
+        (s) => s.progress,
+      );
       expect(progress.first, 0);
       // 400 bytes in all: media 150, 300, then poster 300 + 50, 300 + 100.
       expect(
@@ -129,8 +153,8 @@ void main() {
         containsAllInOrder([0, 150 / 400, 300 / 400, 350 / 400, 1.0]),
       );
       expect(seen.sublist(seen.length - 2), [
-        const StoryUploadDone(),
-        const StoryUploadIdle(),
+        const ContentPublishDone(ContentKind.story),
+        const ContentPublishIdle(ContentKind.story),
       ]);
     },
   );
@@ -205,7 +229,13 @@ void main() {
         repository.enqueue(video());
         await pumpEventQueue();
 
-        expect(seen.last, const StoryUploadFailed(NetworkFailure()));
+        expect(
+          seen.last,
+          const ContentPublishFailed(
+            ContentKind.story,
+            failure: NetworkFailure(),
+          ),
+        );
         verifyNever(
           () => stories.insertStory(
             any(),
@@ -220,7 +250,7 @@ void main() {
       failFirstUpload();
       repository.enqueue(video());
       await pumpEventQueue();
-      repository.retry();
+      publish.retry(ContentKind.story);
       await pumpEventQueue();
 
       final paths = verify(
@@ -234,7 +264,7 @@ void main() {
       // First try (media, failed), then media and poster again.
       expect(paths, hasLength(3));
       expect(paths[1], paths[0]);
-      expect(seen.whereType<StoryUploadDone>(), hasLength(1));
+      expect(seen.whereType<ContentPublishDone>(), hasLength(1));
     });
 
     test('a failing insert is a failed status too', () async {
@@ -249,7 +279,10 @@ void main() {
       await pumpEventQueue();
       expect(
         seen.last,
-        const StoryUploadFailed(ServerFailure(statusCode: 500)),
+        const ContentPublishFailed(
+          ContentKind.story,
+          failure: ServerFailure(statusCode: 500),
+        ),
       );
     });
 
@@ -264,11 +297,29 @@ void main() {
       ).thenThrow(const FormatException('bad'));
       repository.enqueue(video());
       await pumpEventQueue();
-      expect(seen.last, isA<StoryUploadFailed>());
+      expect(seen.last, isA<ContentPublishFailed>());
+    });
+
+    test('a new story replaces one that failed', () async {
+      failFirstUpload();
+      repository.enqueue(video());
+      await pumpEventQueue();
+      expect(seen.last, isA<ContentPublishFailed>());
+
+      expect(repository.enqueue(video()), isTrue);
+      await pumpEventQueue();
+      expect(seen.last, const ContentPublishIdle(ContentKind.story));
+      verify(
+        () => stories.insertStory(
+          any(),
+          mediaPath: any(named: 'mediaPath'),
+          thumbPath: any(named: 'thumbPath'),
+        ),
+      ).called(1);
     });
 
     test('retry does nothing when nothing failed', () async {
-      repository.retry();
+      publish.retry(ContentKind.story);
       await pumpEventQueue();
       expect(seen, isEmpty);
       verifyNever(

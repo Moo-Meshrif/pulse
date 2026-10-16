@@ -2,11 +2,11 @@ import 'package:clock/clock.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/data/repository/content_media_repository.dart';
 import '../../../../shared/content/domain/use_case/set_content_audience_use_case.dart';
 import '../../data/datasource/posts_datasource.dart';
 import '../../data/enums/media_type.dart';
 import '../../data/model/post_media_model.dart';
-import '../../data/repository/post_media_repository.dart';
 import '../entity/edit_post_entity.dart';
 import '../entity/post_entity.dart';
 import '../entity/post_media_entity.dart';
@@ -26,13 +26,15 @@ class UpdatePostUseCase {
   );
 
   final PostsDatasource _posts;
-  final PostMediaRepository _media;
+  final ContentMediaRepository _media;
   final SetCommentsEnabledUseCase _setCommentsEnabled;
   final SetContentAudienceUseCase _setAudience;
 
+  /// [onProgress] is told how much of the added files went out (0..1), each file counting the same.
   Future<PostEntity> call(
     EditPostEntity post, {
     required PostEntity before,
+    void Function(double progress)? onProgress,
   }) async {
     if (post.commentsEnabled != before.commentsEnabled) {
       await _setCommentsEnabled(post.id, enabled: post.commentsEnabled);
@@ -44,9 +46,18 @@ class UpdatePostUseCase {
     final folder = '${_posts.currentUserId}/${post.id}';
     final stamp = clock.now().microsecondsSinceEpoch;
 
+    final count = post.added.length;
     final added = <PostMediaModel>[];
-    for (var i = 0; i < post.added.length; i++) {
-      added.add(await _media.upload(folder, 'e${stamp}_$i', post.added[i], {}));
+    for (var i = 0; i < count; i++) {
+      final item = post.added[i];
+      final sent = await _media.send(
+        ContentKind.post,
+        item.toSend(),
+        folder: folder,
+        stem: 'e${stamp}_$i',
+        onProgress: (part) => onProgress?.call((i + part) / count),
+      );
+      added.add(item.toModel(sent));
     }
 
     try {

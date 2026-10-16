@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +8,7 @@ import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
 
 import '../../../../helpers/backend_double.dart';
 
@@ -142,41 +142,29 @@ void main() {
     expect(backend.requests, isEmpty);
   });
 
-  test('listFiles returns the names in the folder', () async {
-    final backend = await signedIn(
-      (_) async => BackendDouble.json([
-        {'name': '0.jpg'},
-        {'name': '1.mp4'},
-      ]),
-    );
+  test('createPost sends a short as its kind', () async {
+    final backend = await signedIn((_) async => BackendDouble.json('s1'));
     final posts = SupabasePostsDatasource(backend.client);
 
-    expect(await posts.listFiles('user-1/p1'), ['0.jpg', '1.mp4']);
-    expect(body(backend.requests.single)['prefix'], 'user-1/p1');
+    await posts.createPost(
+      id: 's1',
+      kind: ContentKind.short,
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      media: const [
+        PostMediaModel(
+          type: MediaType.video,
+          path: 'user-1/s1/0.mp4',
+          thumbPath: 'user-1/s1/0_thumb.jpg',
+          width: 1080,
+          height: 1920,
+          durationMs: 30000,
+        ),
+      ],
+    );
+
+    expect(body(backend.requests.single)['p_kind'], 'short');
   });
-
-  test(
-    'uploadFile posts the file to its path, replacing an existing one',
-    () async {
-      final backend = await signedIn(
-        (_) async => BackendDouble.json({'Key': 'post-media/user-1/p1/0.jpg'}),
-      );
-      final posts = SupabasePostsDatasource(backend.client);
-      final file = File('${Directory.systemTemp.path}/post_upload_test.jpg')
-        ..writeAsBytesSync([1, 2, 3]);
-      addTearDown(file.deleteSync);
-
-      await posts.uploadFile(
-        path: 'user-1/p1/0.jpg',
-        file: file,
-        contentType: 'image/jpeg',
-      );
-
-      final request = backend.requests.single;
-      expect(request.url.path, endsWith('/object/post-media/user-1/p1/0.jpg'));
-      expect(request.headers['x-upsert'], 'true');
-    },
-  );
 
   test(
     'createPost sends one create_post call with the media in order',

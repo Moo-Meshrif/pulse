@@ -11,16 +11,19 @@ import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_item.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
-import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
 import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
+import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../../../helpers/pump_app.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _Retry extends Mock implements RetryStoryUploadUseCase {}
+class _Retry extends Mock implements RetryPublishUseCase {}
 
 StoryRailItemEntity person(
   String id, {
@@ -48,7 +51,12 @@ void main() {
     bus = EventBus();
     pushed = [];
     when(getRail.call).thenAnswer((_) async => []);
-    cubit = StoryRailCubit(getRail, bus, retry);
+    cubit = StoryRailCubit(
+      getRail,
+      bus,
+      GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+      retry,
+    );
     addTearDown(cubit.close);
   });
 
@@ -148,7 +156,7 @@ void main() {
   group('posting', () {
     testView('shows progress, then goes back to "Your story"', (tester) async {
       await show(tester);
-      bus.fireLatest<StoryUploadStatus>(const StoryUploading(0.5));
+      bus.fire(const ContentPublishing(ContentKind.story, progress: 0.5));
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.storyPosting), findsOneWidget);
       expect(find.text(l10nEn.storyYourStory), findsNothing);
@@ -163,8 +171,8 @@ void main() {
       await tester.pump();
       expect(pushed, isEmpty);
 
-      bus.fireLatest<StoryUploadStatus>(const StoryUploadDone());
-      bus.fireLatest<StoryUploadStatus>(const StoryUploadIdle());
+      bus.fire(const ContentPublishDone(ContentKind.story));
+      bus.fire(const ContentPublishIdle(ContentKind.story));
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.storyYourStory), findsOneWidget);
     });
@@ -173,13 +181,16 @@ void main() {
       tester,
     ) async {
       await show(tester);
-      bus.fireLatest<StoryUploadStatus>(
-        const StoryUploadFailed(NetworkFailure()),
+      bus.fire(
+        const ContentPublishFailed(
+          ContentKind.story,
+          failure: NetworkFailure(),
+        ),
       );
       await tester.pumpAndSettle();
       expect(find.text(l10nEn.retry), findsOneWidget);
       await tester.tap(find.text(l10nEn.retry));
-      verify(retry.call).called(1);
+      verify(() => retry(ContentKind.story)).called(1);
     });
   });
 

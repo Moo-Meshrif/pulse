@@ -59,6 +59,31 @@ void main() {
     ).called(1);
   });
 
+  test(
+    'pick shrinks a photo to the preset, or leaves it when none is given',
+    () async {
+      when(
+        () => imagePicker.pickMedia(
+          maxWidth: any(named: 'maxWidth'),
+          maxHeight: any(named: 'maxHeight'),
+          imageQuality: any(named: 'imageQuality'),
+        ),
+      ).thenAnswer((_) async => null);
+
+      await service.pick(preset: ImageResizePreset.fullScreen);
+      verify(
+        () => imagePicker.pickMedia(
+          maxWidth: 1920,
+          maxHeight: 1920,
+          imageQuality: 80,
+        ),
+      ).called(1);
+
+      await service.pick();
+      verify(imagePicker.pickMedia).called(1);
+    },
+  );
+
   testWidgets('a photo is listed at once, then measured with its file size', (
     tester,
   ) async {

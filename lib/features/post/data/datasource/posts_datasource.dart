@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -7,6 +5,7 @@ import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
+import '../../../../shared/content/data/enums/content_kind.dart';
 import '../enums/mood_kind.dart';
 import '../model/feed_page_model.dart';
 import '../model/post_media_model.dart';
@@ -30,21 +29,11 @@ abstract interface class PostsDatasource {
   /// Signed links by object path; a path that cannot be signed is left out.
   Future<Map<String, String>> signMediaUrls(List<String> paths);
 
-  /// The names of the files already in [folder] of the media bucket.
-  Future<List<String>> listFiles(String folder);
-
-  /// Uploads [file] to [path]; an object already there is replaced, so a retry is safe.
-  Future<void> uploadFile({
-    required String path,
-    required File file,
-    required String contentType,
-  });
-
-  Future<void> removeFiles(List<String> paths);
-
-  /// Inserts the post [id] whose [media] files are already uploaded.
+  /// Inserts the post [id] whose [media] files are already uploaded. [kind] is a post or a short (a short
+  /// holds exactly one video; the server checks it).
   Future<void> createPost({
     required String id,
+    ContentKind kind = ContentKind.post,
     String? caption,
     String? location,
     required bool commentsEnabled,
@@ -130,33 +119,9 @@ final class SupabasePostsDatasource implements PostsDatasource {
       });
 
   @override
-  Future<List<String>> listFiles(String folder) => Guard.run(() async {
-    final objects = await _client.storage.from(_bucket).list(path: folder);
-    return [for (final object in objects) object.name];
-  });
-
-  @override
-  Future<void> uploadFile({
-    required String path,
-    required File file,
-    required String contentType,
-  }) => Guard.run(
-    () => _client.storage
-        .from(_bucket)
-        .upload(
-          path,
-          file,
-          fileOptions: FileOptions(contentType: contentType, upsert: true),
-        ),
-  );
-
-  @override
-  Future<void> removeFiles(List<String> paths) =>
-      Guard.run(() => _client.storage.from(_bucket).remove(paths));
-
-  @override
   Future<void> createPost({
     required String id,
+    ContentKind kind = ContentKind.post,
     String? caption,
     String? location,
     required bool commentsEnabled,
@@ -166,24 +131,27 @@ final class SupabasePostsDatasource implements PostsDatasource {
     String? moodKey,
     String? moodText,
     List<PostTagModel> tags = const [],
-  }) => Guard.run(
-    () => _client.rpc<dynamic>(
-      'create_post',
-      params: {
-        'p_id': id,
-        'p_kind': 'post',
-        'p_caption': caption,
-        'p_location': location,
-        'p_media': [for (final item in media) item.toJson()],
-        'p_comments_enabled': commentsEnabled,
-        'p_visibility': visibility.wire,
-        'p_mood_kind': moodKind?.wire,
-        'p_mood_key': moodKey,
-        'p_mood_text': moodText,
-        'p_tags': [for (final tag in tags) tag.toJson()],
-      },
-    ),
-  );
+  }) {
+    assert(kind != ContentKind.story, 'A story is not a posts row');
+    return Guard.run(
+      () => _client.rpc<dynamic>(
+        'create_post',
+        params: {
+          'p_id': id,
+          'p_kind': kind.wire,
+          'p_caption': caption,
+          'p_location': location,
+          'p_media': [for (final item in media) item.toJson()],
+          'p_comments_enabled': commentsEnabled,
+          'p_visibility': visibility.wire,
+          'p_mood_kind': moodKind?.wire,
+          'p_mood_key': moodKey,
+          'p_mood_text': moodText,
+          'p_tags': [for (final tag in tags) tag.toJson()],
+        },
+      ),
+    );
+  }
 
   @override
   Future<void> updatePost({

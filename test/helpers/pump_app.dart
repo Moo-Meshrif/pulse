@@ -36,7 +36,6 @@ import 'package:pulse/features/profile/domain/use_case/save_about_you_use_case.d
 import 'package:pulse/features/profile/domain/use_case/save_interests_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_case.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
-import 'package:pulse/features/story/data/datasource/story_media_uploader.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/content_actions_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
@@ -94,8 +93,6 @@ class MockPostsDatasource extends Mock implements PostsDatasource {}
 class MockPostActionsDatasource extends Mock implements PostActionsDatasource {}
 
 class MockPostTagsDatasource extends Mock implements PostTagsDatasource {}
-
-class MockStoryMediaUploader extends Mock implements StoryMediaUploader {}
 
 class MockContentActionsDatasource extends Mock
     implements ContentActionsDatasource {}
@@ -238,7 +235,6 @@ Future<void> setUpRealWiring({
   await getIt.unregister<PostsDatasource>();
   await getIt.unregister<PostActionsDatasource>();
   await getIt.unregister<PostTagsDatasource>();
-  await getIt.unregister<StoryMediaUploader>();
   await getIt.unregister<ContentActionsDatasource>();
   await getIt.unregister<MediaFilesDatasource>();
   await getIt.unregister<AudienceDatasource>();
@@ -261,7 +257,6 @@ Future<void> setUpRealWiring({
   getIt.registerSingleton<PostsDatasource>(emptyFeed);
   getIt.registerSingleton<PostActionsDatasource>(MockPostActionsDatasource());
   getIt.registerSingleton<PostTagsDatasource>(MockPostTagsDatasource());
-  getIt.registerSingleton<StoryMediaUploader>(MockStoryMediaUploader());
   getIt.registerSingleton<ContentActionsDatasource>(
     MockContentActionsDatasource(),
   );

@@ -6,30 +6,30 @@ import '../../../../core/events/event_bus.dart';
 import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../../../shared/content/domain/event/content_delete_event.dart';
+import '../../../../shared/content/domain/use_case/get_publish_status_use_case.dart';
+import '../../../../shared/content/domain/use_case/retry_publish_use_case.dart';
 import '../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../story/domain/entity/story_rail_item_entity.dart';
-import '../../../story/domain/entity/story_upload_status.dart';
 import '../../../story/domain/event/story_rail_changed.dart';
 import '../../../story/domain/use_case/get_story_rail_use_case.dart';
-import '../../../story/domain/use_case/retry_story_upload_use_case.dart';
 import 'story_rail_state.dart';
 
 /// The Stories rail of Home: the people with a story, and how posting your own is going.
 @injectable
 class StoryRailCubit extends BaseCubit<StoryRailState>
     with EventCubitMixin<StoryRailState> {
-  StoryRailCubit(this._rail, this._events, this._retryUpload)
-    : super(
-        StoryRailState(
-          upload:
-              _events.latest<StoryUploadStatus>() ?? const StoryUploadIdle(),
-        ),
-      );
+  StoryRailCubit(
+    this._rail,
+    this._events,
+    GetPublishStatusUseCase uploadStatus,
+    this._retryUpload,
+  ) : super(StoryRailState(upload: uploadStatus(ContentKind.story)));
 
   final GetStoryRailUseCase _rail;
   final EventBus _events;
-  final RetryStoryUploadUseCase _retryUpload;
+  final RetryPublishUseCase _retryUpload;
 
   @override
   EventBus get events => _events;
@@ -48,7 +48,7 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
     listenTo<StoryRailChanged>((_) => load());
     listenTo<ContentDeleteEvent>(_onDelete);
     listenTo<FeedRefreshRequested>((_) => load());
-    listenTo<StoryUploadStatus>(_onUpload);
+    listenTo<ContentPublishStatus>(_onUpload);
     return load();
   }
 
@@ -101,10 +101,11 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
     ];
   }
 
-  void retryUpload() => _retryUpload();
+  void retryUpload() => _retryUpload(ContentKind.story);
 
-  void _onUpload(StoryUploadStatus status) {
+  void _onUpload(ContentPublishStatus status) {
+    if (status.kind != ContentKind.story) return;
     emit(state.copyWith(upload: status));
-    if (status is StoryUploadDone) load();
+    if (status is ContentPublishDone) load();
   }
 }

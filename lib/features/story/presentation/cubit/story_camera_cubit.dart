@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/enums/image_resize_preset.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/camera_device.dart';
 import '../../../../core/services/media_picker_service.dart';
@@ -173,7 +174,7 @@ class StoryCameraCubit extends BaseCubit<StoryCameraState> {
 
   /// The library: a photo, or a video of at most 60 seconds. Works without any camera permission.
   Future<void> pickFromGallery() async {
-    final media = await _picker.pick();
+    final media = await _picker.pick(preset: ImageResizePreset.fullScreen);
     if (media == null) return;
     final duration = Duration(milliseconds: media.durationMs ?? 0);
     if (media.isVideo && duration > StoryTiming.maxVideo) {

@@ -7,13 +7,11 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
-import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_media_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
-import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/event/post_saved.dart';
@@ -27,8 +25,12 @@ import 'package:pulse/features/post/presentation/utils/post_visibility_result.da
 import 'package:pulse/features/post/presentation/utils/tag_choice.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/publish_content_use_case.dart';
 
 class _CreatePost extends Mock implements CreatePostUseCase {}
 
@@ -65,7 +67,7 @@ void main() {
   late _Privacy privacy;
   late _Thumbnails thumbnails;
   late _Account account;
-  late PostPublishRepositoryImpl publish;
+  late ContentPublishRepositoryImpl publish;
   late EventBus bus;
 
   setUpAll(() {
@@ -89,19 +91,20 @@ void main() {
     thumbnails = _Thumbnails();
     account = _Account();
     bus = EventBus();
-    publish = PostPublishRepositoryImpl(bus);
+    publish = ContentPublishRepositoryImpl(bus);
     when(account.call).thenReturn(null);
     when(() => picker.describe(any())).thenAnswer(
       (invocation) async => invocation.positionalArguments.first as PickedMedia,
     );
-    when(() => createPost(any())).thenAnswer((_) async => null);
+    when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+        .thenAnswer((_) async => null);
     when(() => thumbnails.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
   });
 
   AddEditPostCubit build([PostEntity? post]) => AddEditPostCubit(
     createPost,
     updatePost,
-    publish,
+    PublishContentUseCase(publish),
     bus,
     signUrls,
     picker,
@@ -179,14 +182,21 @@ void main() {
       cubit.save();
       expect(cubit.state.isSaved, isTrue);
       await pumpEventQueue();
-      verifyNever(() => createPost(any()));
+      verifyNever(
+        () => createPost(any(), onProgress: any(named: 'onProgress')),
+      );
 
       read.complete(
         PickedMedia(path: '/p.jpg', isVideo: false, width: 800, height: 600),
       );
       await pumpEventQueue();
       final sent =
-          verify(() => createPost(captureAny())).captured.single
+          verify(
+                () => createPost(
+                  captureAny(),
+                  onProgress: any(named: 'onProgress'),
+                ),
+              ).captured.single
               as NewPostEntity;
       expect(sent.media.single.width, 800);
     });
@@ -233,14 +243,28 @@ void main() {
       expect(cubit.state.notice, isNull);
     });
 
-    test('a video over 50 MB is rejected', () async {
+    test('a video over 50 MB is kept: it is shrunk when sent', () async {
       when(() => picker.pickMany(limit: any(named: 'limit')))
           .thenAnswer((_) async => [video(sizeBytes: 50 * 1024 * 1024 + 1)]);
       final cubit = build();
       await cubit.pickMedia();
       await pumpEventQueue();
+      expect(cubit.state.media, hasLength(1));
+      expect(cubit.state.notice, isNull);
+    });
+
+    test('a video too long to shrink under 50 MB is rejected', () async {
+      // 6 minutes and 200 MB: under 1.2 Mbps after shrinking.
+      when(() => picker.pickMany(limit: any(named: 'limit'))).thenAnswer(
+        (_) async => [
+          video(durationMs: 6 * 60 * 1000, sizeBytes: 200 * 1024 * 1024),
+        ],
+      );
+      final cubit = build();
+      await cubit.pickMedia();
+      await pumpEventQueue();
       expect(cubit.state.media, isEmpty);
-      expect(cubit.state.notice, NewPostNotice.videoTooBig);
+      expect(cubit.state.notice, NewPostNotice.videoTooLong);
     });
 
     test('a video gets a poster; a failing poster is skipped', () async {
@@ -291,7 +315,12 @@ void main() {
       await pumpEventQueue();
 
       final sent =
-          verify(() => createPost(captureAny())).captured.single
+          verify(
+                () => createPost(
+                  captureAny(),
+                  onProgress: any(named: 'onProgress'),
+                ),
+              ).captured.single
               as NewPostEntity;
       expect(sent.id, cubit.state.postId);
       expect(sent.caption, 'hello');
@@ -303,7 +332,8 @@ void main() {
 
     test('closes at once, before the post is sent', () {
       final done = Completer<PostEntity?>();
-      when(() => createPost(any())).thenAnswer((_) => done.future);
+      when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+          .thenAnswer((_) => done.future);
       final cubit = build()..captionChanged('hello');
       cubit.save();
       expect(cubit.state.isSaved, isTrue);
@@ -313,27 +343,29 @@ void main() {
     test(
       'a failure is kept by the sender, then Retry sends the same id',
       () async {
-        when(() => createPost(any())).thenThrow(const UnexpectedFailure());
+        when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+            .thenThrow(const UnexpectedFailure());
         final cubit = build()..captionChanged('hello');
         cubit.save();
         await pumpEventQueue();
         expect(cubit.state.isSaved, isTrue);
-        expect(bus.latest<PostPublishStatus>(), isA<PostPublishFailed>());
+        expect(publish.current(ContentKind.post), isA<ContentPublishFailed>());
 
-        when(() => createPost(any())).thenAnswer((_) async => null);
-        publish.retry();
+        when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+            .thenAnswer((_) async => null);
+        publish.retry(ContentKind.post);
         await pumpEventQueue();
-        final ids = verify(() => createPost(captureAny())).captured
-            .cast<NewPostEntity>()
-            .map((p) => p.id)
-            .toSet();
+        final ids = verify(
+          () => createPost(captureAny(), onProgress: any(named: 'onProgress')),
+        ).captured.cast<NewPostEntity>().map((p) => p.id).toSet();
         expect(ids, {cubit.state.postId});
-        expect(bus.latest<PostPublishStatus>(), isA<PostPublishIdle>());
+        expect(publish.current(ContentKind.post), isA<ContentPublishIdle>());
       },
     );
 
     test('another post is refused while one is waiting for Retry', () async {
-      when(() => createPost(any())).thenThrow(const UnexpectedFailure());
+      when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+          .thenThrow(const UnexpectedFailure());
       build()
         ..captionChanged('first')
         ..save();
@@ -358,7 +390,9 @@ void main() {
     test('an empty post is not sent', () async {
       build().save();
       await pumpEventQueue();
-      verifyNever(() => createPost(any()));
+      verifyNever(
+        () => createPost(any(), onProgress: any(named: 'onProgress')),
+      );
     });
   });
 
@@ -465,8 +499,13 @@ void main() {
         ),
       );
       registerFallbackValue(post);
-      when(() => updatePost(any(), before: any(named: 'before')))
-          .thenAnswer((_) async => post);
+      when(
+        () => updatePost(
+          any(),
+          before: any(named: 'before'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenAnswer((_) async => post);
       when(() => signUrls(any())).thenAnswer((_) async => {'u/p/0.jpg': 'u0'});
       when(privacy.call).thenAnswer(
         (_) async => const PrivacyEntity(
@@ -532,11 +571,19 @@ void main() {
       cubit.save();
       await pumpEventQueue();
       final edited =
-          verify(() => updatePost(captureAny(), before: post)).captured.single
+          verify(
+                () => updatePost(
+                  captureAny(),
+                  before: post,
+                  onProgress: any(named: 'onProgress'),
+                ),
+              ).captured.single
               as EditPostEntity;
       expect(edited.caption, 'Changed');
       expect(edited.kept, [m0, m1]);
-      verifyNever(() => createPost(any()));
+      verifyNever(
+        () => createPost(any(), onProgress: any(named: 'onProgress')),
+      );
       expect(cubit.state.isSaved, isTrue);
     });
   });
@@ -556,7 +603,8 @@ void main() {
     }
 
     test('what is chosen is something to lose, and goes in the post', () async {
-      when(() => createPost(any())).thenAnswer((_) async => null);
+      when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+          .thenAnswer((_) async => null);
       final cubit = build()
         ..captionChanged('hi')
         ..tagsChanged([omar.withSpot(0, 0.5, 0.25), laila]);
@@ -566,7 +614,12 @@ void main() {
       await pumpEventQueue();
 
       final sent =
-          verify(() => createPost(captureAny())).captured.single
+          verify(
+                () => createPost(
+                  captureAny(),
+                  onProgress: any(named: 'onProgress'),
+                ),
+              ).captured.single
               as NewPostEntity;
       expect(sent.tags.map((t) => t.userId), ['u1', 'u2']);
       expect(sent.tags.first.mediaPosition, 0);
@@ -660,7 +713,8 @@ void main() {
     test(
       'a chosen feeling is something to lose, and goes in the post',
       () async {
-        when(() => createPost(any())).thenAnswer((_) async => null);
+        when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+            .thenAnswer((_) async => null);
         final cubit = build()
           ..captionChanged('hi')
           ..moodChanged(happy);
@@ -670,7 +724,12 @@ void main() {
         await pumpEventQueue();
 
         final sent =
-            verify(() => createPost(captureAny())).captured.single
+            verify(
+                  () => createPost(
+                    captureAny(),
+                    onProgress: any(named: 'onProgress'),
+                  ),
+                ).captured.single
                 as NewPostEntity;
         expect(sent.mood, happy);
       },
@@ -710,8 +769,13 @@ void main() {
           visibility: ContentAudience.public,
         ),
       );
-      when(() => updatePost(any(), before: any(named: 'before')))
-          .thenAnswer((_) async => post);
+      when(
+        () => updatePost(
+          any(),
+          before: any(named: 'before'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenAnswer((_) async => post);
       final cubit = build(post);
 
       expect(cubit.state.mood, happy);
@@ -727,9 +791,13 @@ void main() {
       cubit.save();
       await pumpEventQueue();
       final sent =
-          verify(() => updatePost(captureAny(), before: any(named: 'before')))
-                  .captured
-                  .single
+          verify(
+                () => updatePost(
+                  captureAny(),
+                  before: any(named: 'before'),
+                  onProgress: any(named: 'onProgress'),
+                ),
+              ).captured.single
               as EditPostEntity;
       expect(sent.mood, isNull);
     });

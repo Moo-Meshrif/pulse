@@ -7,7 +7,7 @@ import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../story/domain/entity/story_upload_status.dart';
+import '../../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../cubit/story_rail_cubit.dart';
 import '../../cubit/story_rail_state.dart';
 import '../../dimens/home_dimens.dart';
@@ -39,7 +39,7 @@ class YourStoryItem extends StatelessWidget {
           final l10n = context.l10n;
           final colors = context.appColors;
           return switch (state.upload) {
-            StoryUploading(:final progress) => _Tile(
+            ContentPublishing(:final progress) => _Tile(
               label: l10n.storyPosting,
               labelColor: colors.primary,
               onTap: null,
@@ -54,7 +54,7 @@ class YourStoryItem extends StatelessWidget {
                 ),
               ),
             ),
-            StoryUploadFailed() => _Tile(
+            ContentPublishFailed() => _Tile(
               label: l10n.retry,
               labelColor: colors.warningInk,
               onTap: context.read<StoryRailCubit>().retryUpload,

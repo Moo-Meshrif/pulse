@@ -3,20 +3,26 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/events/event_bus.dart';
 import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/state/base_cubit.dart';
-import '../../../post/domain/entity/post_publish_status.dart';
-import '../../../post/domain/use_case/discard_post_publish_use_case.dart';
-import '../../../post/domain/use_case/retry_post_publish_use_case.dart';
+import '../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../shared/content/domain/entity/content_publish_status.dart';
+import '../../../../shared/content/domain/use_case/discard_publish_use_case.dart';
+import '../../../../shared/content/domain/use_case/get_publish_status_use_case.dart';
+import '../../../../shared/content/domain/use_case/retry_publish_use_case.dart';
 
 /// How the post being shared or saved is going, for the banner above the feed.
 @injectable
-class PostPublishCubit extends BaseCubit<PostPublishStatus>
-    with EventCubitMixin<PostPublishStatus> {
-  PostPublishCubit(this._events, this._retry, this._discard)
-    : super(_events.latest<PostPublishStatus>() ?? const PostPublishIdle());
+class PostPublishCubit extends BaseCubit<ContentPublishStatus>
+    with EventCubitMixin<ContentPublishStatus> {
+  PostPublishCubit(
+    this._events,
+    GetPublishStatusUseCase status,
+    this._retry,
+    this._discard,
+  ) : super(status(ContentKind.post));
 
   final EventBus _events;
-  final RetryPostPublishUseCase _retry;
-  final DiscardPostPublishUseCase _discard;
+  final RetryPublishUseCase _retry;
+  final DiscardPublishUseCase _discard;
   bool _started = false;
 
   @override
@@ -26,10 +32,12 @@ class PostPublishCubit extends BaseCubit<PostPublishStatus>
   void start() {
     if (_started) return;
     _started = true;
-    syncState<PostPublishStatus>((_, status) => status);
+    syncState<ContentPublishStatus>(
+      (_, status) => status.kind == ContentKind.post ? status : null,
+    );
   }
 
-  void retry() => _retry();
+  void retry() => _retry(ContentKind.post);
 
-  void discard() => _discard();
+  void discard() => _discard(ContentKind.post);
 }

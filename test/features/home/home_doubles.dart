@@ -9,11 +9,9 @@ import 'package:pulse/features/home/presentation/cubit/post_publish_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/retry_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
@@ -21,14 +19,13 @@ import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_cas
 import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../helpers/content_mocks.dart';
 import '../post/post_fixtures.dart';
-
-class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
-
-class _DiscardPublish extends Mock implements DiscardPostPublishUseCase {}
 
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
 
@@ -39,8 +36,6 @@ class _CurrentUser extends Mock implements GetCurrentUserIdUseCase {}
 class _Unread extends Mock implements GetUnreadActivityCountUseCase {}
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
-
-class _Retry extends Mock implements RetryStoryUploadUseCase {}
 
 class _Like extends Mock implements SetPostLikeUseCase {}
 
@@ -69,6 +64,8 @@ void registerHomeDoubles() {
   when(currentUser.call).thenReturn('me');
   when(unread.call).thenAnswer((_) async => 0);
   when(getRail.call).thenAnswer((_) async => []);
+  // Nothing is being sent.
+  final publish = ContentPublishRepositoryImpl(EventBus());
   getIt
     ..registerFactory(
       () => FeedCubit(getFeed, _Sign(), EventBus(), currentUser),
@@ -87,8 +84,20 @@ void registerHomeDoubles() {
       ),
     )
     ..registerFactory(
-      () => PostPublishCubit(EventBus(), _RetryPublish(), _DiscardPublish()),
+      () => PostPublishCubit(
+        EventBus(),
+        GetPublishStatusUseCase(publish),
+        RetryPublishUseCase(publish),
+        DiscardPublishUseCase(publish),
+      ),
     )
     ..registerFactory(() => BellDotCubit(unread, EventBus()))
-    ..registerFactory(() => StoryRailCubit(getRail, EventBus(), _Retry()));
+    ..registerFactory(
+      () => StoryRailCubit(
+        getRail,
+        EventBus(),
+        GetPublishStatusUseCase(publish),
+        RetryPublishUseCase(publish),
+      ),
+    );
 }

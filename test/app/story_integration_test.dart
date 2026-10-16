@@ -58,9 +58,6 @@ class _Uploads implements StoryUploadRepository {
     posted.add(story);
     return true;
   }
-
-  @override
-  void retry() {}
 }
 
 /// The whole story flow through the real router, DI and cubits over mocked datasources: Home's rail opens

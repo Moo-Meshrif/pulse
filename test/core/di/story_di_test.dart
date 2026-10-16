@@ -13,7 +13,6 @@ import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
 import 'package:pulse/features/story/domain/entity/captured_story_media.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
 import 'package:pulse/features/story/presentation/cubit/audience_list_cubit.dart';
 import 'package:pulse/features/story/presentation/cubit/story_audience_cubit.dart';
 import 'package:pulse/features/story/presentation/cubit/story_camera_cubit.dart';
@@ -61,7 +60,6 @@ void main() {
 
   test('the use cases other features call resolve (the rest of the story feature talks to its datasource)', () {
     expect(getIt<GetStoryRailUseCase>(), isNotNull);
-    expect(getIt<RetryStoryUploadUseCase>(), isNotNull);
   });
 
   test('the services behind them resolve; the upload is one shared state', () {

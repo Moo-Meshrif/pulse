@@ -47,7 +47,8 @@ class PickedMedia extends Equatable {
 /// The photo library for photos and videos together. Returns null when the person cancels or the picker
 /// fails, so callers handle "got one" or "did not". The library needs no camera or microphone permission.
 abstract interface class MediaPickerService {
-  Future<PickedMedia?> pick();
+  /// One photo or video; a photo comes back shrunk to [preset], or as it is when none is given.
+  Future<PickedMedia?> pick({ImageResizePreset? preset});
 
   /// Up to [limit] photos and videos at once, with only their [PickedMedia.path] and kind: photos come
   /// back shrunk to [preset]. It does not read the files, so the caller can show them at once and fill in
@@ -78,9 +79,13 @@ final class ImagePickerMediaPickerService implements MediaPickerService {
   final ImagePicker _picker;
 
   @override
-  Future<PickedMedia?> pick() async {
+  Future<PickedMedia?> pick({ImageResizePreset? preset}) async {
     try {
-      final file = await _picker.pickMedia();
+      final file = await _picker.pickMedia(
+        maxWidth: preset?.maxSide.toDouble(),
+        maxHeight: preset?.maxSide.toDouble(),
+        imageQuality: preset?.quality,
+      );
       if (file == null) return null;
       return _isVideo(file) ? await _video(file.path) : await _image(file.path);
     } on Object {

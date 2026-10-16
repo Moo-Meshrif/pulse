@@ -8,10 +8,11 @@ import '../../../../core/services/media_picker_service.dart';
 import '../../../../core/services/video_thumbnail_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../core/utils/uuid_v4.dart';
+import '../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../shared/content/domain/use_case/get_privacy_use_case.dart';
+import '../../../../shared/content/domain/use_case/publish_content_use_case.dart';
 import '../../../profile/domain/entity/last_account_entity.dart';
 import '../../../profile/domain/use_case/get_last_account_use_case.dart';
-import '../../data/repository/post_publish_repository.dart';
 import '../../domain/entity/edit_post_entity.dart';
 import '../../domain/entity/new_post_entity.dart';
 import '../../domain/entity/new_post_media_entity.dart';
@@ -61,7 +62,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
 
   final CreatePostUseCase _createPost;
   final UpdatePostUseCase _updatePost;
-  final PostPublishRepository _publish;
+  final PublishContentUseCase _publish;
   final EventBus _events;
 
   @override
@@ -250,10 +251,10 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     final mood = state.mood;
     final previewPath = picked.firstOrNull?.path;
     final isStarted = original == null
-        ? _publish.enqueue(
-            isEdit: false,
+        ? _publish(
+            kind: ContentKind.post,
             previewPath: previewPath,
-            send: () async => _created(
+            send: (report) async => _created(
               await _createPost(
                 NewPostEntity(
                   id: postId,
@@ -268,13 +269,15 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
                   authorFullName: me?.fullName,
                   authorAvatarUrl: me?.avatarUrl,
                 ),
+                onProgress: report,
               ),
             ),
           )
-        : _publish.enqueue(
+        : _publish(
+            kind: ContentKind.post,
             isEdit: true,
             previewPath: previewPath,
-            send: () async => _updated(
+            send: (report) async => _updated(
               await _updatePost(
                 EditPostEntity(
                   id: postId,
@@ -288,6 +291,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
                   tags: tags,
                 ),
                 before: original,
+                onProgress: report,
               ),
             ),
           );

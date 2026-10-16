@@ -15,7 +15,7 @@ import '../model/story_rail_item_model.dart';
 import '../model/story_viewer_model.dart';
 
 /// Stories: the rail, a person's playlist, seen and like marks, viewers, mute, report, and the row of a
-/// new story. The media files themselves go through `StoryMediaUploader`.
+/// new story. The media files themselves go through `MediaFilesDatasource`.
 abstract interface class StoriesDatasource {
   /// The signed-in user's id; no session throws an auth failure.
   String get currentUserId;
@@ -73,7 +73,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
   SupabaseStoriesDatasource(this._client);
 
   /// The bucket stories and posts share.
-  static const bucket = 'post-media';
+  static const _bucket = 'post-media';
 
   /// How long a signed media link works, in seconds.
   static const signedUrlSeconds = 3600;
@@ -122,7 +122,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
   Future<Map<String, String>> _sign(List<String> paths) async {
     if (paths.isEmpty) return const {};
     final results = await _client.storage
-        .from(bucket)
+        .from(_bucket)
         .createSignedUrlsResult(paths, signedUrlSeconds);
     return {
       for (final result in results.whereType<SignedUrlSuccess>())

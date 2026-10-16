@@ -17,7 +17,7 @@ mixin _$StoryRailState {
 
 /// The people with an active story: you first when you have one, then unseen, then latest.
  List<StoryRailItemEntity> get items;/// How posting your own story is going.
- StoryUploadStatus get upload;
+ ContentPublishStatus get upload;
 /// Create a copy of StoryRailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -53,7 +53,7 @@ abstract mixin class $StoryRailStateCopyWith<$Res>  {
   factory $StoryRailStateCopyWith(StoryRailState value, $Res Function(StoryRailState) _then) = _$StoryRailStateCopyWithImpl;
 @useResult
 $Res call({
- List<StoryRailItemEntity> items, StoryUploadStatus upload
+ List<StoryRailItemEntity> items, ContentPublishStatus upload
 });
 
 
@@ -74,7 +74,7 @@ class _$StoryRailStateCopyWithImpl<$Res>
   return _then(StoryRailState(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<StoryRailItemEntity>,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
-as StoryUploadStatus,
+as ContentPublishStatus,
   ));
 }
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  StoryUploadStatus upload)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  ContentPublishStatus upload)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryRailState() when $default != null:
 return $default(_that.items,_that.upload);case _:
@@ -180,7 +180,7 @@ return $default(_that.items,_that.upload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  StoryUploadStatus upload)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  ContentPublishStatus upload)  $default,) {final _that = this;
 switch (_that) {
 case _StoryRailState():
 return $default(_that.items,_that.upload);case _:
@@ -200,7 +200,7 @@ return $default(_that.items,_that.upload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<StoryRailItemEntity> items,  StoryUploadStatus upload)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<StoryRailItemEntity> items,  ContentPublishStatus upload)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryRailState() when $default != null:
 return $default(_that.items,_that.upload);case _:
@@ -215,7 +215,7 @@ return $default(_that.items,_that.upload);case _:
 
 
 class _StoryRailState extends StoryRailState {
-  const _StoryRailState({ List<StoryRailItemEntity> items = const <StoryRailItemEntity>[], this.upload = const StoryUploadIdle()}): _items = items,super._();
+  const _StoryRailState({ List<StoryRailItemEntity> items = const <StoryRailItemEntity>[], this.upload = const ContentPublishIdle(ContentKind.story)}): _items = items,super._();
   
 
 /// The people with an active story: you first when you have one, then unseen, then latest.
@@ -228,7 +228,7 @@ class _StoryRailState extends StoryRailState {
 }
 
 /// How posting your own story is going.
-@override@JsonKey() final  StoryUploadStatus upload;
+@override@JsonKey() final  ContentPublishStatus upload;
 
 /// Create a copy of StoryRailState
 /// with the given fields replaced by the non-null parameter values.
@@ -262,7 +262,7 @@ abstract mixin class _$StoryRailStateCopyWith<$Res> implements $StoryRailStateCo
   factory _$StoryRailStateCopyWith(_StoryRailState value, $Res Function(_StoryRailState) _then) = __$StoryRailStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<StoryRailItemEntity> items, StoryUploadStatus upload
+ List<StoryRailItemEntity> items, ContentPublishStatus upload
 });
 
 
@@ -283,7 +283,7 @@ class __$StoryRailStateCopyWithImpl<$Res>
   return _then(_StoryRailState(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<StoryRailItemEntity>,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
-as StoryUploadStatus,
+as ContentPublishStatus,
   ));
 }
 

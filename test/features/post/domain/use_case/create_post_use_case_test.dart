@@ -3,27 +3,34 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/services/video_compress_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
-import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
+import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
 
 class _MockPosts extends Mock implements PostsDatasource {}
 
+class _MockFiles extends Mock implements MediaFilesDatasource {}
+
 class _MockThumbnails extends Mock implements VideoThumbnailService {}
+
+class _MockCompressor extends Mock implements VideoCompressService {}
 
 void main() {
   late _MockPosts posts;
+  late _MockFiles files;
   late _MockThumbnails thumbnails;
   late CreatePostUseCase useCase;
 
@@ -73,17 +80,22 @@ void main() {
   setUp(() {
     posts = _MockPosts();
     thumbnails = _MockThumbnails();
-    useCase = CreatePostUseCase(posts, PostMediaRepository(posts, thumbnails));
+    files = _MockFiles();
+    useCase = CreatePostUseCase(
+      posts,
+      ContentMediaRepository(files, thumbnails, _MockCompressor()),
+    );
     when(() => posts.currentUserId).thenReturn('u1');
-    when(() => posts.listFiles(any())).thenAnswer((_) async => const []);
+    when(() => files.listFiles(any())).thenAnswer((_) async => const []);
     when(
-      () => posts.uploadFile(
+      () => files.upload(
         path: any(named: 'path'),
         file: any(named: 'file'),
         contentType: any(named: 'contentType'),
+        onBytes: any(named: 'onBytes'),
       ),
     ).thenAnswer((_) async {});
-    when(() => posts.removeFiles(any())).thenAnswer((_) async {});
+    when(() => files.remove(any())).thenAnswer((_) async {});
     when(
       () => posts.createPost(
         id: any(named: 'id'),
@@ -103,10 +115,11 @@ void main() {
   });
 
   List<String> uploadedPaths() => verify(
-    () => posts.uploadFile(
+    () => files.upload(
       path: captureAny(named: 'path'),
       file: any(named: 'file'),
       contentType: any(named: 'contentType'),
+      onBytes: any(named: 'onBytes'),
     ),
   ).captured.cast<String>();
 
@@ -147,7 +160,7 @@ void main() {
         durationMs: 5000,
       ),
     ]);
-    verifyNever(() => posts.removeFiles(any()));
+    verifyNever(() => files.remove(any()));
   });
 
   test('sends the mood and the tags and returns them on the post', () async {
@@ -198,17 +211,18 @@ void main() {
     await useCase(post);
 
     final types = verify(
-      () => posts.uploadFile(
+      () => files.upload(
         path: any(named: 'path'),
         file: any(named: 'file'),
         contentType: captureAny(named: 'contentType'),
+        onBytes: any(named: 'onBytes'),
       ),
     ).captured;
     expect(types, ['image/jpeg', 'video/quicktime', 'image/jpeg']);
   });
 
   test('a retry uploads only the files that are missing', () async {
-    when(() => posts.listFiles('u1/p1'))
+    when(() => files.listFiles('u1/p1'))
         .thenAnswer((_) async => const ['0.jpg', '1.mov']);
 
     await useCase(post);
@@ -241,38 +255,19 @@ void main() {
     await expectLater(useCase(post), throwsA(isA<ServerFailure>()));
 
     verify(
-      () => posts.removeFiles([
-        'u1/p1/0.jpg',
-        'u1/p1/1.mov',
-        'u1/p1/1_thumb.jpg',
-      ]),
+      () => files.remove(['u1/p1/0.jpg', 'u1/p1/1.mov', 'u1/p1/1_thumb.jpg']),
     ).called(1);
-  });
-
-  test('a failed cleanup does not hide the original failure', () async {
-    when(
-      () => posts.createPost(
-        id: any(named: 'id'),
-        caption: any(named: 'caption'),
-        location: any(named: 'location'),
-        commentsEnabled: any(named: 'commentsEnabled'),
-        visibility: any(named: 'visibility'),
-        media: any(named: 'media'),
-      ),
-    ).thenThrow(const ServerFailure());
-    when(() => posts.removeFiles(any())).thenThrow(const NetworkFailure());
-
-    await expectLater(useCase(post), throwsA(isA<ServerFailure>()));
   });
 
   test(
     'a failed upload stops before the insert and keeps the files for a retry',
     () async {
       when(
-        () => posts.uploadFile(
+        () => files.upload(
           path: 'u1/p1/1.mov',
           file: any(named: 'file'),
           contentType: any(named: 'contentType'),
+          onBytes: any(named: 'onBytes'),
         ),
       ).thenThrow(const NetworkFailure());
 
@@ -288,7 +283,7 @@ void main() {
           media: any(named: 'media'),
         ),
       );
-      verifyNever(() => posts.removeFiles(any()));
+      verifyNever(() => files.remove(any()));
     },
   );
 

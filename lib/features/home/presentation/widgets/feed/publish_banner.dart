@@ -8,37 +8,42 @@ import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../post/domain/entity/post_publish_status.dart';
+import '../../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../cubit/post_publish_cubit.dart';
 import '../../dimens/home_dimens.dart';
 
-/// The post being shared or saved, above the feed: a thumbnail and a progress line while it goes out, or
+/// The post being shared or saved, above the feed: a thumbnail and a line showing how much is sent, or
 /// "couldn't post" with Retry and Discard. It is not there when nothing is being sent.
 class PublishBanner extends StatelessWidget {
   const PublishBanner({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<PostPublishCubit, PostPublishStatus>(
-        builder: (context, status) => switch (status) {
-          PostPublishing(:final isEdit, :final previewPath) => _Card(
-            previewPath: previewPath,
-            title: isEdit
-                ? context.l10n.postPublishSaving
-                : context.l10n.postPublishing,
-            progress: const LinearProgressIndicator(),
+  Widget build(
+    BuildContext context,
+  ) => BlocBuilder<PostPublishCubit, ContentPublishStatus>(
+    builder: (context, status) => switch (status) {
+      ContentPublishing(:final isEdit, :final previewPath, :final progress) =>
+        _Card(
+          previewPath: previewPath,
+          title: isEdit
+              ? context.l10n.postPublishSaving
+              : context.l10n.postPublishing,
+          // Moving until the first bytes go out, then how much is sent.
+          progress: LinearProgressIndicator(
+            value: progress == 0 ? null : progress,
           ),
-          PostPublishFailed(:final isEdit, :final previewPath) => _Card(
-            previewPath: previewPath,
-            title: isEdit
-                ? context.l10n.editPostSaveFailed
-                : context.l10n.postPublishFailed,
-            isFailed: true,
-            actions: const _FailedActions(),
-          ),
-          PostPublishIdle() || PostPublishDone() => const SizedBox.shrink(),
-        },
-      );
+        ),
+      ContentPublishFailed(:final isEdit, :final previewPath) => _Card(
+        previewPath: previewPath,
+        title: isEdit
+            ? context.l10n.editPostSaveFailed
+            : context.l10n.postPublishFailed,
+        isFailed: true,
+        actions: const _FailedActions(),
+      ),
+      ContentPublishIdle() || ContentPublishDone() => const SizedBox.shrink(),
+    },
+  );
 }
 
 class _Card extends StatelessWidget {

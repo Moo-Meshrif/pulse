@@ -35,6 +35,7 @@ import 'package:pulse/features/post/presentation/widgets/tag_in_photo/tag_photo_
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/privacy_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/model/audience_summary_model.dart';
@@ -69,6 +70,7 @@ void main() {
   late _Places places;
   late _Location location;
   late _Picker picker;
+  late MockMediaFilesDatasource files;
 
   setUpAll(() {
     registerFallbackValue(File(''));
@@ -129,12 +131,14 @@ void main() {
       ],
     );
     when(() => posts.currentUserId).thenReturn('me');
-    when(() => posts.listFiles(any())).thenAnswer((_) async => const []);
+    files = MockMediaFilesDatasource();
+    when(() => files.listFiles(any())).thenAnswer((_) async => const []);
     when(
-      () => posts.uploadFile(
+      () => files.upload(
         path: any(named: 'path'),
         file: any(named: 'file'),
         contentType: any(named: 'contentType'),
+        onBytes: any(named: 'onBytes'),
       ),
     ).thenAnswer((_) async {});
     when(
@@ -170,6 +174,8 @@ void main() {
         );
         await getIt.unregister<PostsDatasource>();
         getIt.registerSingleton<PostsDatasource>(posts);
+        await getIt.unregister<MediaFilesDatasource>();
+        getIt.registerSingleton<MediaFilesDatasource>(files);
         await getIt.unregister<PrivacyDatasource>();
         getIt.registerSingleton<PrivacyDatasource>(privacy);
         await getIt.unregister<AudienceDatasource>();

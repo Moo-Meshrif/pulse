@@ -73,7 +73,7 @@ Post strings (more/less, time, semantics): `../../post/02-components.md`.
 | Save | `rpc('set_post_save', {p_post, p_saved})` | bool |
 | Story rail (via story feature `GetStoryRailUseCase`, entity `StoryRailItemEntity`) | `rpc('story_rail')` | people with active stories: `isMe` (only listed when you have an active story), `storyCount`, `allSeen`; me first, then unseen, then latest. Labels = `username` [user]. "Your story" tile always first; own story (if any) shows as a normal item after it [user] |
 | Media URLs | `SignPostMediaUrlsUseCase(paths)` (post feature; it calls `createSignedUrls(paths, 3600)`) | `Map<path, url>`; cache key = path |
-| Story upload state | `WatchStoryUploadUseCase` (story) | stream of `StoryUploadStatus` (Idle, Uploading(progress), Failed, Done) |
+| Story / post upload state | `GetPublishStatusUseCase(kind)` (shared) then `ContentPublishStatus` on the `EventBus` | Idle, Publishing(progress), Failed, Done, per kind (story on the rail, post in the banner) |
 | Rail reload | `WatchStoryRailChangesUseCase` (story) | `Stream<void>` |
 | Option: Not interested / Undo | `HidePostUseCase(postId, hidden:)` | void |
 | Option: Mute / Undo | shared `SetMuteUseCase(userId, muted, MuteScope.posts)` | void |

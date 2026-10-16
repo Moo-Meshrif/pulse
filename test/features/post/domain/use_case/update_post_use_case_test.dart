@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/services/video_compress_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
-import 'package:pulse/features/post/data/repository/post_media_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
@@ -17,11 +17,15 @@ import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
+import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
 import 'package:pulse/shared/content/domain/use_case/set_content_audience_use_case.dart';
 
 class _MockPosts extends Mock implements PostsDatasource {}
+
+class _MockFiles extends Mock implements MediaFilesDatasource {}
 
 class _MockThumbnails extends Mock implements VideoThumbnailService {}
 
@@ -29,8 +33,11 @@ class _MockSetComments extends Mock implements SetCommentsEnabledUseCase {}
 
 class _MockSetAudience extends Mock implements SetContentAudienceUseCase {}
 
+class _MockCompressor extends Mock implements VideoCompressService {}
+
 void main() {
   late _MockPosts posts;
+  late _MockFiles files;
   late _MockSetComments setComments;
   late _MockSetAudience setAudience;
   late UpdatePostUseCase useCase;
@@ -62,6 +69,7 @@ void main() {
 
   setUp(() {
     posts = _MockPosts();
+    files = _MockFiles();
     setComments = _MockSetComments();
     setAudience = _MockSetAudience();
     when(() => setComments(any(), enabled: any(named: 'enabled')))
@@ -69,19 +77,20 @@ void main() {
     when(() => setAudience(any(), any(), any())).thenAnswer((_) async {});
     useCase = UpdatePostUseCase(
       posts,
-      PostMediaRepository(posts, _MockThumbnails()),
+      ContentMediaRepository(files, _MockThumbnails(), _MockCompressor()),
       setComments,
       setAudience,
     );
     when(() => posts.currentUserId).thenReturn('u1');
     when(
-      () => posts.uploadFile(
+      () => files.upload(
         path: any(named: 'path'),
         file: any(named: 'file'),
         contentType: any(named: 'contentType'),
+        onBytes: any(named: 'onBytes'),
       ),
     ).thenAnswer((_) async {});
-    when(() => posts.removeFiles(any())).thenAnswer((_) async {});
+    when(() => files.remove(any())).thenAnswer((_) async {});
     when(
       () => posts.updatePost(
         id: any(named: 'id'),
@@ -137,7 +146,7 @@ void main() {
               as List<PostMediaModel>;
       expect(media.map((m) => m.path).first, 'u1/p1/0.jpg');
       expect(media.last.path, startsWith('u1/p1/e'));
-      verify(() => posts.removeFiles(['u1/p1/1.jpg'])).called(1);
+      verify(() => files.remove(['u1/p1/1.jpg'])).called(1);
       expect(saved.id, 'p1');
       expect(saved.caption, 'New');
       expect(saved.media.first.path, 'u1/p1/0.jpg');
@@ -199,7 +208,7 @@ void main() {
       );
 
       final removed =
-          verify(() => posts.removeFiles(captureAny())).captured.single
+          verify(() => files.remove(captureAny())).captured.single
               as List<String>;
       expect(removed.single, startsWith('u1/p1/e'));
     },

@@ -6,11 +6,10 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/notice/notices.dart';
-import '../../../post/domain/entity/post_publish_status.dart';
+import '../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../../post/presentation/cubit/post_actions_cubit.dart';
 import '../../../post/presentation/cubit/post_actions_state.dart';
 import '../../../post/presentation/utils/enums/post_row.dart';
-import '../../../story/domain/entity/story_upload_status.dart';
 import '../cubit/bell_dot_cubit.dart';
 import '../cubit/feed_cubit.dart';
 import '../cubit/feed_state.dart';
@@ -62,18 +61,21 @@ class HomeScreen extends StatelessWidget {
   void _showActionFailure(BuildContext context, PostActionsState state) =>
       context.showFailure(state.failure);
 
-  bool _publishJustDone(PostPublishStatus before, PostPublishStatus status) =>
-      status is PostPublishDone;
+  bool _publishJustDone(
+    ContentPublishStatus before,
+    ContentPublishStatus status,
+  ) => status is ContentPublishDone;
 
-  void _showPublishDone(BuildContext context, PostPublishStatus status) {
-    if (status is! PostPublishDone) return;
+  void _showPublishDone(BuildContext context, ContentPublishStatus status) {
+    if (status is! ContentPublishDone) return;
     Notices.success(
       status.isEdit ? context.l10n.postUpdated : context.l10n.newPostShared,
     );
   }
 
   bool _uploadJustFailed(StoryRailState before, StoryRailState state) =>
-      state.upload is StoryUploadFailed && before.upload is! StoryUploadFailed;
+      state.upload is ContentPublishFailed &&
+      before.upload is! ContentPublishFailed;
 
   void _showUploadFailedWithRetry(BuildContext context, StoryRailState state) {
     final rail = context.read<StoryRailCubit>();
@@ -114,7 +116,7 @@ class HomeScreen extends StatelessWidget {
           listenWhen: _hasNewActionFailure,
           listener: _showActionFailure,
         ),
-        BlocListener<PostPublishCubit, PostPublishStatus>(
+        BlocListener<PostPublishCubit, ContentPublishStatus>(
           listenWhen: _publishJustDone,
           listener: _showPublishDone,
         ),

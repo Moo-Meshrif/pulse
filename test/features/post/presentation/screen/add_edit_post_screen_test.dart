@@ -8,7 +8,6 @@ import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
-import 'package:pulse/features/post/data/repository/post_publish_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
@@ -24,8 +23,10 @@ import 'package:pulse/features/post/presentation/widgets/add_edit_post/add_media
 import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/publish_content_use_case.dart';
 
 import '../../../../helpers/pump_app.dart';
 
@@ -74,12 +75,13 @@ void main() {
         defaultVisibility: ContentAudience.public,
       ),
     );
-    when(() => createPost(any())).thenAnswer((_) async => null);
+    when(() => createPost(any(), onProgress: any(named: 'onProgress')))
+        .thenAnswer((_) async => null);
     getIt.registerFactoryParam<AddEditPostCubit, PostEntity?, dynamic>(
       (post, _) => AddEditPostCubit(
         createPost,
         _UpdatePost(),
-        PostPublishRepositoryImpl(bus),
+        PublishContentUseCase(ContentPublishRepositoryImpl(bus)),
         bus,
         _SignUrls(),
         picker,
@@ -162,9 +164,7 @@ void main() {
 
     Finder rich(String text) => find.textContaining(text, findRichText: true);
 
-    testWidgets('the card says You alone, then what is chosen', (
-      tester,
-    ) async {
+    testWidgets('the card says You alone, then what is chosen', (tester) async {
       when(account.call).thenReturn(me);
       await open(tester);
       expect(rich(l10nEn.postHeadlineYou), findsOneWidget);
@@ -253,7 +253,8 @@ void main() {
     await tester.tap(shareButton());
     await tester.pump();
 
-    verify(() => createPost(any())).called(1);
+    verify(() => createPost(any(), onProgress: any(named: 'onProgress')))
+        .called(1);
   });
 
   testWidgets('Arabic at 1.5x text does not overflow', (tester) async {

@@ -27,14 +27,11 @@ import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.d
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
-import 'package:pulse/features/post/domain/entity/post_publish_status.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/discard_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/retry_post_publish_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
@@ -43,9 +40,13 @@ import 'package:pulse/features/post/presentation/cubit/post_actions_cubit.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
-import 'package:pulse/features/story/domain/entity/story_upload_status.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
-import 'package:pulse/features/story/domain/use_case/retry_story_upload_use_case.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
+import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
@@ -71,11 +72,11 @@ class _Delete extends Mock implements DeletePostUseCase {}
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _RetryUpload extends Mock implements RetryStoryUploadUseCase {}
+class _RetryUpload extends Mock implements RetryPublishUseCase {}
 
-class _RetryPublish extends Mock implements RetryPostPublishUseCase {}
+class _RetryPublish extends Mock implements RetryPublishUseCase {}
 
-class _DiscardPublish extends Mock implements DiscardPostPublishUseCase {}
+class _DiscardPublish extends Mock implements DiscardPublishUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
@@ -167,10 +168,22 @@ void main() {
         ),
       )
       ..registerFactory(
-        () => PostPublishCubit(bus, retryPublish, discardPublish),
+        () => PostPublishCubit(
+          bus,
+          GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+          retryPublish,
+          discardPublish,
+        ),
       )
       ..registerFactory(() => BellDotCubit(requestCount, bus))
-      ..registerFactory(() => StoryRailCubit(getRail, bus, retryUpload));
+      ..registerFactory(
+        () => StoryRailCubit(
+          getRail,
+          bus,
+          GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+          retryUpload,
+        ),
+      );
     addTearDown(getIt.reset);
   });
 
@@ -237,8 +250,11 @@ void main() {
   group('story posting', () {
     testView('a failed post says so and Retry sends it again', (tester) async {
       await show(tester);
-      bus.fireLatest<StoryUploadStatus>(
-        const StoryUploadFailed(NetworkFailure()),
+      bus.fire(
+        const ContentPublishFailed(
+          ContentKind.story,
+          failure: NetworkFailure(),
+        ),
       );
       await tester.pump();
       await tester.pump();
@@ -250,7 +266,7 @@ void main() {
           matching: find.text(l10nEn.retry),
         ),
       );
-      verify(retryUpload.call).called(1);
+      verify(() => retryUpload(ContentKind.story)).called(1);
     });
   });
 
@@ -259,19 +275,46 @@ void main() {
       tester,
     ) async {
       await show(tester);
-      bus.fireLatest<PostPublishStatus>(const PostPublishing(isEdit: false));
+      bus.fire(const ContentPublishing(ContentKind.post));
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.postPublishing), findsOneWidget);
 
       bus
-        ..fireLatest<PostPublishStatus>(const PostPublishDone(isEdit: false))
-        ..fireLatest<PostPublishStatus>(const PostPublishIdle());
+        ..fire(const ContentPublishDone(ContentKind.post))
+        ..fire(const ContentPublishIdle(ContentKind.post));
       await tester.pump();
       await tester.pump();
       await tester.pump(const Duration(seconds: 1)); // the notice slides in
       expect(find.text(l10nEn.postPublishing), findsNothing);
       expect(find.text(l10nEn.newPostShared), findsOneWidget);
+    });
+
+    testView('the banner line moves, then shows how much is sent', (
+      tester,
+    ) async {
+      await show(tester);
+      LinearProgressIndicator bar() => tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      );
+
+      bus.fire(const ContentPublishing(ContentKind.post));
+      await tester.pump();
+      await tester.pump();
+      expect(bar().value, isNull);
+
+      bus.fire(const ContentPublishing(ContentKind.post, progress: 0.4));
+      await tester.pump();
+      expect(bar().value, 0.4);
+    });
+
+    testView('a story going out does not show the post banner', (tester) async {
+      await show(tester);
+      bus.fire(const ContentPublishing(ContentKind.story, progress: 0.5));
+      await tester.pump();
+      await tester.pump();
+      // The rail says "Posting…" too; the banner is the one with the line.
+      expect(find.byType(LinearProgressIndicator), findsNothing);
     });
 
     testView('an empty feed shows the banner too', (tester) async {
@@ -280,7 +323,7 @@ void main() {
       await show(tester, settle: false);
       await tester.pump();
       await tester.pump();
-      bus.fireLatest<PostPublishStatus>(const PostPublishing(isEdit: false));
+      bus.fire(const ContentPublishing(ContentKind.post));
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.homeEmptyTitle), findsOneWidget);
@@ -289,17 +332,17 @@ void main() {
 
     testView('a failed post offers Retry and Discard', (tester) async {
       await show(tester);
-      bus.fireLatest<PostPublishStatus>(
-        const PostPublishFailed(failure: NetworkFailure(), isEdit: false),
+      bus.fire(
+        const ContentPublishFailed(ContentKind.post, failure: NetworkFailure()),
       );
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.postPublishFailed), findsOneWidget);
 
       await tester.tap(find.text(l10nEn.retry));
-      verify(retryPublish.call).called(1);
+      verify(() => retryPublish(ContentKind.post)).called(1);
       await tester.tap(find.text(l10nEn.postPublishDiscard));
-      verify(discardPublish.call).called(1);
+      verify(() => discardPublish(ContentKind.post)).called(1);
     });
   });
 
