@@ -49,12 +49,13 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     VideoThumbnailService thumbnails,
     GetLastAccountUseCase account,
     @factoryParam PostEntity? post,
+    @factoryParam Map<String, String>? signedUrls,
   ) : _intake = MediaIntake(picker, thumbnails),
       me = account(),
       super(
         post == null
             ? AddEditPostState(postId: uuidV4())
-            : AddEditPostState.editing(post),
+            : AddEditPostState.editing(post, signedUrls),
       );
 
   /// A photo whose size is unknown is shared as this square.
@@ -93,14 +94,17 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
 
   /// Editing: signs the post's own photos and posters for the strip. Without links the strip draws plain
   /// tiles.
-  Future<void> loadUrls() => run(
-    () => _signUrls([
-      for (final item in state.kept) ...[item.path, ?item.thumbPath],
-    ]),
-    prevent: !state.isEditing,
-    onSuccess: (urls) => state.copyWith(urls: urls),
-    onFailure: (_) => null,
-  );
+  Future<void> loadUrls() {
+    if (state.urls.isNotEmpty) return Future.value();
+    return run(
+      () => _signUrls([
+        for (final item in state.kept) ...[item.path, ?item.thumbPath],
+      ]),
+      prevent: !state.isEditing,
+      onSuccess: (urls) => state.copyWith(urls: urls),
+      onFailure: (_) => null,
+    );
+  }
 
   void captionChanged(String caption) => emit(state.copyWith(caption: caption));
 

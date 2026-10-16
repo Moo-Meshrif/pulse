@@ -101,18 +101,21 @@ void main() {
     when(() => thumbnails.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
   });
 
-  AddEditPostCubit build([PostEntity? post]) => AddEditPostCubit(
-    createPost,
-    updatePost,
-    PublishContentUseCase(publish),
-    bus,
-    signUrls,
-    picker,
-    privacy,
-    thumbnails,
-    account,
-    post,
-  );
+  //urls --> which passign from post card
+  AddEditPostCubit build([PostEntity? post, Map<String, String>? urls]) =>
+      AddEditPostCubit(
+        createPost,
+        updatePost,
+        PublishContentUseCase(publish),
+        bus,
+        signUrls,
+        picker,
+        privacy,
+        thumbnails,
+        account,
+        post,
+        urls,
+      );
 
   group('Share is enabled', () {
     test('not when empty', () {

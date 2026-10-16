@@ -14,15 +14,23 @@ import '../view/add_edit_post_view.dart';
 
 /// `/create/post`: write and share a post (docs/specs/post/screens/s1-new-post.md). Closing with
 /// something written asks first. Share closes it at once; the post is sent in the background.
-class AddEditPostScreen extends StatelessWidget {
-  /// [post] is the post to edit; null adds a new one.
-  const AddEditPostScreen({super.key, this.post});
 
+class AddEditPostArgs {
   final PostEntity? post;
+  final Map<String, String>? signedUrls;
+
+  AddEditPostArgs({this.post, this.signedUrls});
+}
+
+class AddEditPostScreen extends StatelessWidget {
+  /// [AddEditPostArgs] is the data to edit; null adds a new one.
+  const AddEditPostScreen({super.key, this.args});
+
+  final AddEditPostArgs? args;
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => getIt<AddEditPostCubit>(param1: post)
+    create: (_) => getIt<AddEditPostCubit>(param1: args?.post, param2: args?.signedUrls)
       ..loadDefaultVisibility()
       ..loadUrls(),
     child: Builder(

@@ -13,6 +13,7 @@ import '../../utils/post_card_callbacks.dart';
 import '../../utils/post_card_data.dart';
 import '../post_headline.dart';
 import '../post_meta_line.dart';
+import '../post_ringed_avatar.dart';
 import '../post_visibility/post_visibility_sheet.dart';
 import '../post_visibility/visibility_toast.dart';
 import 'caption_field.dart';
@@ -112,11 +113,7 @@ class _AuthorRow extends StatelessWidget {
     final name = me?.fullName ?? me?.username;
     return Row(
       children: [
-        AvatarInitials(
-          name: name,
-          seed: me?.id,
-          size: PostComposerDimens.avatar,
-        ),
+        _buildAutorAvatar(id: me?.id, name: name, url: me?.avatarUrl),
         SizedBox(width: AppSpacing.s12),
         Expanded(
           child: Column(
@@ -146,6 +143,17 @@ class _AuthorRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildAutorAvatar({String? id, String? name, String? url}) {
+    if (id != null && url != null && name != null) {
+      return PostRingedAvatar(authorId: id, name: name, avatarUrl: url);
+    }
+    return AvatarInitials(
+      name: name,
+      seed: id,
+      size: PostComposerDimens.avatar,
     );
   }
 }

@@ -10,6 +10,7 @@ import '../../../../../core/router/app_routes.dart';
 import '../../../../post/domain/entity/post_entity.dart';
 import '../../../../post/presentation/cubit/post_actions_cubit.dart';
 import '../../../../post/presentation/cubit/post_actions_state.dart';
+import '../../../../post/presentation/screen/add_edit_post_screen.dart';
 import '../../../../post/presentation/utils/enums/post_row.dart';
 import '../../../../post/presentation/utils/post_card_callbacks.dart';
 import '../../../../post/presentation/utils/post_options_actions.dart';
@@ -38,6 +39,16 @@ class _FeedPostItemState extends State<FeedPostItem> {
   bool _isOptionsOpen = false;
 
   PostEntity get _loaded => widget.post.entity;
+  Map<String, String>? get _signedUrls {
+    final Map<String, String> map = {};
+    for (var e in widget.post.media) {
+      if (e.cacheKey != null) {
+        map[e.cacheKey!] = e.url;
+      }
+    }
+    return map.isEmpty ? null : map;
+  }
+
   PostActionsCubit get _actions => context.read<PostActionsCubit>();
 
   /// Only what the cubit changed is selected: the post itself comes from the widget at build time, so an
@@ -125,7 +136,10 @@ class _FeedPostItemState extends State<FeedPostItem> {
     context,
     AppRoutes.editPost,
     rootNavigator: true,
-    arguments: _actions.postOf(_loaded),
+    arguments: AddEditPostArgs(
+      post: _actions.postOf(_loaded),
+      signedUrls: _signedUrls,
+    ),
   );
 
   void _openComments() =>

@@ -17,9 +17,13 @@ abstract class AddEditPostState with _$AddEditPostState {
   const AddEditPostState._();
 
   /// The screen for [post]: its caption, place, media and settings are what is being changed.
-  factory AddEditPostState.editing(PostEntity post) => AddEditPostState(
+  factory AddEditPostState.editing(
+    PostEntity post,
+    Map<String, String>? signedUrls,
+  ) => AddEditPostState(
     postId: post.id,
     original: post,
+    urls: signedUrls ?? {},
     caption: post.caption ?? '',
     location: post.location,
     kept: post.media,

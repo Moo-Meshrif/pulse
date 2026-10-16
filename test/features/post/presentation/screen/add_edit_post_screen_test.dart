@@ -89,6 +89,7 @@ void main() {
         _Thumbnails(),
         account,
         post,
+        {},
       ),
     );
   });

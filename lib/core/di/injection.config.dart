@@ -691,20 +691,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i476.ResetPasswordCubit>(
       () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
     );
-    gh.factoryParam<_i897.AddEditPostCubit, _i569.PostEntity?, dynamic>(
-      (post, _) => _i897.AddEditPostCubit(
-        gh<_i592.CreatePostUseCase>(),
-        gh<_i908.UpdatePostUseCase>(),
-        gh<_i1032.PublishContentUseCase>(),
-        gh<_i557.EventBus>(),
-        gh<_i599.SignPostMediaUrlsUseCase>(),
-        gh<_i715.MediaPickerService>(),
-        gh<_i660.GetPrivacyUseCase>(),
-        gh<_i143.VideoThumbnailService>(),
-        gh<_i727.GetLastAccountUseCase>(),
-        post,
-      ),
-    );
     gh.factory<_i127.SplashCubit>(
       () => _i127.SplashCubit(
         gh<_i710.IsSignedInUseCase>(),
@@ -735,6 +721,25 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i598.ControlCubit(
         gh<_i730.IsRecoveryPendingUseCase>(),
         gh<_i557.EventBus>(),
+      ),
+    );
+    gh.factoryParam<
+      _i897.AddEditPostCubit,
+      _i569.PostEntity?,
+      Map<String, String>?
+    >(
+      (post, signedUrls) => _i897.AddEditPostCubit(
+        gh<_i592.CreatePostUseCase>(),
+        gh<_i908.UpdatePostUseCase>(),
+        gh<_i1032.PublishContentUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i715.MediaPickerService>(),
+        gh<_i660.GetPrivacyUseCase>(),
+        gh<_i143.VideoThumbnailService>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        post,
+        signedUrls,
       ),
     );
     gh.lazySingleton<_i358.RecoveryLinkHandler>(

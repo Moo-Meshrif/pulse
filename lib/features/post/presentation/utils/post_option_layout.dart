@@ -12,7 +12,7 @@ class PostOptionLayout {
   factory PostOptionLayout.of(PostOptionsData data) {
     final quick = [
       PostOption.save,
-      if (data.isPublic) ...[PostOption.copyLink, PostOption.share],
+      if (!data.isOnlyMe) ...[PostOption.copyLink, PostOption.share],
     ];
     if (data.isMine) {
       return PostOptionLayout._(

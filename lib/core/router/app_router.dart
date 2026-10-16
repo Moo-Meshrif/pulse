@@ -10,7 +10,6 @@ import '../../features/legal/presentation/screen/legal_screen.dart';
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart';
 import '../../features/onboarding/presentation/screen/onboarding_screen.dart';
 import '../../features/places/presentation/screen/add_location_screen.dart';
-import '../../features/post/domain/entity/post_entity.dart';
 import '../../features/post/domain/entity/post_mood_entity.dart';
 import '../../features/post/presentation/screen/add_edit_post_screen.dart';
 import '../../features/post/presentation/screen/feeling_screen.dart';
@@ -96,7 +95,7 @@ abstract final class AppRouter {
       AppRoutes.createPost => _page(settings, const AddEditPostScreen()),
       AppRoutes.editPost => _page(
         settings,
-        AddEditPostScreen(post: settings.arguments as PostEntity),
+        AddEditPostScreen(args: settings.arguments as AddEditPostArgs?),
       ),
       // The place already on the post comes in as the route argument.
       AppRoutes.pickPlace => _endSlidePage(
