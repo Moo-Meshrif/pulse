@@ -13,7 +13,9 @@ class MediaThumb extends StatelessWidget {
   const MediaThumb({
     super.key,
     required this.index,
-    this.image,
+    this.url,
+    this.cacheKey,
+    this.filePath,
     this.durationMs,
     required this.onRemove,
   });
@@ -21,8 +23,11 @@ class MediaThumb extends StatelessWidget {
   /// Position in the strip, from 0.
   final int index;
 
-  /// The photo, or a frame of the video; null while there is none, which draws a plain tile.
-  final ImageProvider? image;
+  /// The photo, or a frame of the video, from a signed link ([url], cached under [cacheKey]) or from the
+  /// device ([filePath]); with neither, a plain tile is drawn.
+  final String? url;
+  final String? cacheKey;
+  final String? filePath;
 
   /// A video's length; null for a photo.
   final int? durationMs;
@@ -31,10 +36,10 @@ class MediaThumb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final cacheWidth =
-        (PostComposerDimens.thumb * MediaQuery.devicePixelRatioOf(context))
-            .round();
-    final picture = image;
+    final cacheWidth = _getCacheWidth(context);
+    final remote = url;
+    final local = filePath;
+    final fallback = ColoredBox(color: colors.border);
     return SizedBox.square(
       dimension: PostComposerDimens.thumb,
       child: Stack(
@@ -45,19 +50,7 @@ class MediaThumb extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                 PostComposerDimens.thumbRadius,
               ),
-              child: picture == null
-                  ? ColoredBox(color: colors.border)
-                  : Image(
-                      image: ResizeImage.resizeIfNeeded(
-                        cacheWidth,
-                        null,
-                        picture,
-                      ),
-                      fit: BoxFit.cover,
-                      excludeFromSemantics: true,
-                      errorBuilder: (_, _, _) =>
-                          ColoredBox(color: colors.border),
-                    ),
+              child: _buildImage(remote, cacheWidth, fallback, local),
             ),
           ),
           if (durationMs != null)
@@ -77,6 +70,36 @@ class MediaThumb extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  int _getCacheWidth(BuildContext context) =>
+      (PostComposerDimens.thumb * MediaQuery.devicePixelRatioOf(context))
+          .round();
+
+  Widget _buildImage(
+    String? remote,
+    int cacheWidth,
+    ColoredBox fallback,
+    String? local,
+  ) {
+    if (remote != null) {
+      return AppImage.network(
+        remote,
+        cacheKey: cacheKey,
+        fit: BoxFit.cover,
+        cacheWidth: cacheWidth,
+        errorBuilder: (_) => fallback,
+      );
+    }
+    if (local != null) {
+      return AppImage.file(
+        local,
+        fit: BoxFit.cover,
+        cacheWidth: cacheWidth,
+        errorBuilder: (_) => fallback,
+      );
+    }
+    return fallback;
   }
 }
 

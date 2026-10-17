@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,12 +35,12 @@ class MediaStrip extends StatelessWidget {
               if (index == count) return AddMediaTile(onTap: cubit.pickMedia);
               if (index < state.kept.length) {
                 final item = state.kept[index];
-                final url =
-                    state.urls[item.isVideo ? item.thumbPath : item.path];
+                final key = item.isVideo ? item.thumbPath : item.path;
                 return MediaThumb(
                   key: ValueKey(item.path),
                   index: index,
-                  image: url == null ? null : NetworkImage(url),
+                  url: state.urls[key],
+                  cacheKey: key,
                   durationMs: item.isVideo ? item.durationMs : null,
                   onRemove: () => cubit.removeMedia(index),
                 );
@@ -54,7 +52,7 @@ class MediaStrip extends StatelessWidget {
               return MediaThumb(
                 key: ValueKey(media.path),
                 index: index,
-                image: picture == null ? null : FileImage(File(picture)),
+                filePath: picture,
                 durationMs: media.isVideo ? media.durationMs : null,
                 onRemove: () => cubit.removeMedia(index),
               );
