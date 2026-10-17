@@ -78,7 +78,12 @@ class _PostVideoItemState extends State<PostVideoItem> {
         fit: StackFit.expand,
         children: [
           if (widget.media.posterUrl != null)
-            PostImageItem(media: widget.media, url: widget.media.posterUrl)
+            PostImageItem(
+              media: widget.media,
+              url: widget.media.posterUrl,
+              fit: BoxFit.cover,
+              cacheKey: widget.media.posterCacheKey,
+            )
           else
             PostBlurhash(hash: widget.media.blurhash),
           if (videos != null)

@@ -11,12 +11,24 @@ import 'post_retry_badge.dart';
 /// One photo of a post: the blurhash until it loads, then the picture fades in. If it fails the blurhash
 /// stays with a retry badge.
 class PostImageItem extends StatefulWidget {
-  const PostImageItem({super.key, required this.media, this.url});
+  const PostImageItem({
+    super.key,
+    required this.media,
+    this.url,
+    this.cacheKey,
+    this.fit = BoxFit.contain,
+  });
 
   final PostCardMedia media;
 
   /// The picture to draw; the media's own link when null (a video draws its poster).
   final String? url;
+
+  /// The cache key of [url]; the media's own when null.
+  final String? cacheKey;
+
+  /// The image fit
+  final BoxFit fit;
 
   @override
   State<PostImageItem> createState() => _PostImageItemState();
@@ -25,10 +37,12 @@ class PostImageItem extends StatefulWidget {
 class _PostImageItemState extends State<PostImageItem> {
   int _attempt = 0;
 
+  String? get _cacheKey => widget.cacheKey ?? widget.media.cacheKey;
+
   String get _url => widget.url ?? widget.media.url;
 
   Future<void> _retry() async {
-    await forgetPicture(_url, cacheKey: widget.media.cacheKey);
+    await forgetPicture(_url, cacheKey: _cacheKey);
     if (mounted) setState(() => _attempt++);
   }
 
@@ -42,7 +56,8 @@ class _PostImageItemState extends State<PostImageItem> {
         AppImage.network(
           _url,
           key: ValueKey(_attempt),
-          cacheKey: widget.media.cacheKey,
+          cacheKey: _cacheKey,
+          fit: widget.fit,
           errorBuilder: (_) =>
               PostRetryBadge(icon: AppAssets.image, onRetry: _retry),
           frameBuilder: (context, child, frame, isSync) => AnimatedOpacity(

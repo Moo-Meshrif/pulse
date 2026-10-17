@@ -24,6 +24,8 @@ abstract interface class ContentPublishRepository {
     required PublishWork send,
     bool isEdit = false,
     String? previewPath,
+    String? previewUrl,
+    String? previewCacheKey,
     bool replacesFailed = false,
   });
 
@@ -54,6 +56,8 @@ final class ContentPublishRepositoryImpl implements ContentPublishRepository {
     required PublishWork send,
     bool isEdit = false,
     String? previewPath,
+    String? previewUrl,
+    String? previewCacheKey,
     bool replacesFailed = false,
   }) {
     final status = current(kind);
@@ -65,6 +69,8 @@ final class ContentPublishRepositoryImpl implements ContentPublishRepository {
       kind: kind,
       isEdit: isEdit,
       previewPath: previewPath,
+      previewUrl: previewUrl,
+      previewCacheKey: previewCacheKey,
       send: send,
     );
     _start(kind);
@@ -126,6 +132,8 @@ final class ContentPublishRepositoryImpl implements ContentPublishRepository {
       failure: failure,
       isEdit: job.isEdit,
       previewPath: job.previewPath,
+      previewUrl: job.previewUrl,
+      previewCacheKey: job.previewCacheKey,
     ),
   );
 }
@@ -136,11 +144,15 @@ class _Job {
     required this.isEdit,
     required this.send,
     this.previewPath,
+    this.previewUrl,
+    this.previewCacheKey,
   });
 
   final ContentKind kind;
   final bool isEdit;
   final String? previewPath;
+  final String? previewUrl;
+  final String? previewCacheKey;
   final PublishWork send;
 
   ContentPublishing publishing(double progress) => ContentPublishing(
@@ -148,5 +160,7 @@ class _Job {
     progress: progress,
     isEdit: isEdit,
     previewPath: previewPath,
+    previewUrl: previewUrl,
+    previewCacheKey: previewCacheKey,
   );
 }

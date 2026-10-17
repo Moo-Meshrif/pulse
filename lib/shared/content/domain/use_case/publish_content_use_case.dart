@@ -16,10 +16,14 @@ class PublishContentUseCase {
     required PublishWork send,
     bool isEdit = false,
     String? previewPath,
+    String? previewUrl,
+    String? previewCacheKey,
   }) => _publish.enqueue(
     kind: kind,
     send: send,
     isEdit: isEdit,
     previewPath: previewPath,
+    previewUrl: previewUrl,
+    previewCacheKey: previewCacheKey,
   );
 }

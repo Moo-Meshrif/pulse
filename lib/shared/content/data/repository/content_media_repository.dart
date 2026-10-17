@@ -78,6 +78,10 @@ class ContentMediaRepository {
   /// How much of a file's progress encoding takes when it runs; uploading takes the rest.
   static const _encodeShare = 0.3;
 
+  /// Bytes are counted as the connection takes them, before the server has answered; the last of the
+  /// bar waits for the answer.
+  static const _bytesShare = 0.95;
+
   /// An encode may end up to this much shorter than its source (container rounding).
   static const _durationSlackMs = 1000;
 
@@ -144,7 +148,7 @@ class ContentMediaRepository {
       mainLength ??= sendsMain ? main.lengthSync() : 0;
       total ??= mainLength! + (thumb?.lengthSync() ?? 0);
       final share = total == 0 ? 1.0 : bytes / total!;
-      onProgress?.call(uploadStart + (1 - uploadStart) * share);
+      onProgress?.call(uploadStart + (1 - uploadStart) * share * _bytesShare);
     }
 
     if (sendsMain) {

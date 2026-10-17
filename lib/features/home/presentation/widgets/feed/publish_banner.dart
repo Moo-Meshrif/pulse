@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../../../core/constants/app_assets.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
@@ -22,9 +25,17 @@ class PublishBanner extends StatelessWidget {
     BuildContext context,
   ) => BlocBuilder<PostPublishCubit, ContentPublishStatus>(
     builder: (context, status) => switch (status) {
-      ContentPublishing(:final isEdit, :final previewPath, :final progress) =>
+      ContentPublishing(
+        :final isEdit,
+        :final previewPath,
+        :final previewUrl,
+        :final previewCacheKey,
+        :final progress,
+      ) =>
         _Card(
           previewPath: previewPath,
+          previewUrl: previewUrl,
+          previewCacheKey: previewCacheKey,
           title: isEdit
               ? context.l10n.postPublishSaving
               : context.l10n.postPublishing,
@@ -33,8 +44,15 @@ class PublishBanner extends StatelessWidget {
             value: progress == 0 ? null : progress,
           ),
         ),
-      ContentPublishFailed(:final isEdit, :final previewPath) => _Card(
+      ContentPublishFailed(
+        :final isEdit,
+        :final previewPath,
+        :final previewUrl,
+        :final previewCacheKey,
+      ) => _Card(
         previewPath: previewPath,
+        previewUrl: previewUrl,
+        previewCacheKey: previewCacheKey,
         title: isEdit
             ? context.l10n.editPostSaveFailed
             : context.l10n.postPublishFailed,
@@ -49,6 +67,8 @@ class PublishBanner extends StatelessWidget {
 class _Card extends StatelessWidget {
   const _Card({
     required this.previewPath,
+    required this.previewUrl,
+    required this.previewCacheKey,
     required this.title,
     this.progress,
     this.actions,
@@ -56,6 +76,8 @@ class _Card extends StatelessWidget {
   });
 
   final String? previewPath;
+  final String? previewUrl;
+  final String? previewCacheKey;
   final String title;
   final Widget? progress;
   final Widget? actions;
@@ -65,6 +87,7 @@ class _Card extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final path = previewPath;
+    final url = previewUrl;
     return Padding(
       padding: HomeDimens.listPadding.copyWith(bottom: HomeDimens.cardGap),
       child: Container(
@@ -79,14 +102,20 @@ class _Card extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.settingsTile),
               child: SizedBox.square(
                 dimension: HomeDimens.publishThumb,
-                child: path == null
-                    ? ColoredBox(color: colors.surfaceMuted)
-                    : Image.file(
+                child: path != null
+                    ? Image.file(
                         File(path),
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) =>
-                            ColoredBox(color: colors.surfaceMuted),
-                      ),
+                        errorBuilder: (_, _, _) => const _LogoPreview(),
+                      )
+                    : url != null
+                    ? AppImage.network(
+                        url,
+                        cacheKey: previewCacheKey,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_) => const _LogoPreview(),
+                      )
+                    : const _LogoPreview(),
               ),
             ),
             SizedBox(width: AppSpacing.s12),
@@ -120,6 +149,21 @@ class _Card extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Shown when the content has no picture to draw: the app logo filling the thumbnail's square.
+class _LogoPreview extends StatelessWidget {
+  const _LogoPreview();
+
+  @override
+  Widget build(BuildContext context) => ColoredBox(
+    color: context.appColors.primary,
+    child: SvgPicture.asset(
+      AppAssets.logo,
+      width: HomeDimens.publishThumb,
+      height: HomeDimens.publishThumb,
+    ),
+  );
 }
 
 class _FailedActions extends StatelessWidget {

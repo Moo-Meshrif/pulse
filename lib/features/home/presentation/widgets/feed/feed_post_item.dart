@@ -45,6 +45,9 @@ class _FeedPostItemState extends State<FeedPostItem> {
       if (e.cacheKey != null) {
         map[e.cacheKey!] = e.url;
       }
+      if (e.posterCacheKey != null && e.posterUrl != null) {
+        map[e.posterCacheKey!] = e.posterUrl!;
+      }
     }
     return map.isEmpty ? null : map;
   }

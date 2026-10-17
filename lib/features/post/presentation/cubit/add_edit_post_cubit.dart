@@ -237,6 +237,19 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     );
   }
 
+  /// The picture the sending card shows: the first of the post's media, as a file on this device or, for
+  /// an edited post's own media, a signed link. A video shows its frame; none gives the app logo.
+  (String?, String?, String?) _preview() {
+    final kept = state.kept.firstOrNull;
+    if (kept != null) {
+      final key = kept.isVideo ? kept.thumbPath : kept.path;
+      return (null, state.urls[key], key);
+    }
+    final first = state.media.firstOrNull;
+    if (first == null) return (null, null, null);
+    return (first.isVideo ? state.posters[first.path] : first.path, null, null);
+  }
+
   void clearNotice() => emit(state.copyWith(notice: null));
 
   /// Hands the post to the background sender and closes the screen; Home shows how it goes and offers Retry.
@@ -253,11 +266,13 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     final kept = state.kept;
     final tags = [for (final tag in state.tags) tag.toTag()];
     final mood = state.mood;
-    final previewPath = picked.firstOrNull?.path;
+    final (previewPath, previewUrl, previewCacheKey) = _preview();
     final isStarted = original == null
         ? _publish(
             kind: ContentKind.post,
             previewPath: previewPath,
+            previewUrl: previewUrl,
+            previewCacheKey: previewCacheKey,
             send: (report) async => _created(
               await _createPost(
                 NewPostEntity(
@@ -281,6 +296,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
             kind: ContentKind.post,
             isEdit: true,
             previewPath: previewPath,
+            previewUrl: previewUrl,
+            previewCacheKey: previewCacheKey,
             send: (report) async => _updated(
               await _updatePost(
                 EditPostEntity(

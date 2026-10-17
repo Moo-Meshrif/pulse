@@ -198,6 +198,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
                   isVideo: item.isVideo,
                   url: url,
                   posterUrl: links[item.thumbPath],
+                  posterCacheKey: item.thumbPath,
                   cacheKey: item.path,
                   width: item.width,
                   height: item.height,

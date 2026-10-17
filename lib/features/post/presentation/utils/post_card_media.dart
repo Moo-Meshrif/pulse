@@ -10,6 +10,9 @@ class PostCardMedia extends Equatable {
   /// A video's poster image.
   final String? posterUrl;
 
+  /// What keeps the poster cached (its storage path).
+  final String? posterCacheKey;
+
   /// What keeps the picture cached when its signed link changes (its storage path).
   final String? cacheKey;
   final int width;
@@ -21,6 +24,7 @@ class PostCardMedia extends Equatable {
     required this.isVideo,
     required this.url,
     this.posterUrl,
+    this.posterCacheKey,
     this.cacheKey,
     required this.width,
     required this.height,
@@ -38,6 +42,7 @@ class PostCardMedia extends Equatable {
     isVideo,
     url,
     posterUrl,
+    posterCacheKey,
     cacheKey,
     width,
     height,

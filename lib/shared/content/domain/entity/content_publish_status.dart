@@ -26,14 +26,28 @@ final class ContentPublishing extends ContentPublishStatus {
     this.progress = 0,
     this.isEdit = false,
     this.previewPath,
+    this.previewUrl,
+    this.previewCacheKey,
   });
 
   final double progress;
   final bool isEdit;
   final String? previewPath;
 
+  /// A signed link to a picture already online (an edited post's own media), cached under
+  /// [previewCacheKey]; used when there is no [previewPath].
+  final String? previewUrl;
+  final String? previewCacheKey;
+
   @override
-  List<Object?> get props => [kind, progress, isEdit, previewPath];
+  List<Object?> get props => [
+    kind,
+    progress,
+    isEdit,
+    previewPath,
+    previewUrl,
+    previewCacheKey,
+  ];
 }
 
 /// Sending failed; retrying sends it again, discarding drops it.
@@ -43,14 +57,25 @@ final class ContentPublishFailed extends ContentPublishStatus {
     required this.failure,
     this.isEdit = false,
     this.previewPath,
+    this.previewUrl,
+    this.previewCacheKey,
   });
 
   final Failure failure;
   final bool isEdit;
   final String? previewPath;
+  final String? previewUrl;
+  final String? previewCacheKey;
 
   @override
-  List<Object?> get props => [kind, failure, isEdit, previewPath];
+  List<Object?> get props => [
+    kind,
+    failure,
+    isEdit,
+    previewPath,
+    previewUrl,
+    previewCacheKey,
+  ];
 }
 
 /// The content is sent. Announced once, then the status goes back to [ContentPublishIdle].
