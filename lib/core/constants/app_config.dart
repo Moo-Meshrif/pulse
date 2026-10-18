@@ -2,9 +2,9 @@
 /// protects the data), so it is a plain constant, not a secret.
 abstract final class AppConfig {
   /// Supabase project "pulse" (eu-west-1).
-  static const supabaseUrl = 'https://xwldtqsvcpyzktysgmuv.supabase.co';
+  static const supabaseUrl = 'https://jwkrdpknkuvkvifhjbyt.supabase.co';
   static const supabasePublishableKey =
-      'sb_publishable_q6R0ckxmE3v96wzL13aXYQ_iMrBfd0L';
+      'sb_publishable_c4OqVY7yYUTWQG36X6ni0A_0ccXlGoC';
 
   /// Where the password-reset email link opens the app. It must be in Supabase's allowed redirect URLs
   /// (Authentication -> URL Configuration); the native URL scheme is set up with the deep link (Phase 10).
