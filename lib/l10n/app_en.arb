@@ -1218,6 +1218,10 @@
   "@storyToolText": {
     "description": "Story edit screen"
   },
+  "storyToolLocation": "Location",
+  "@storyToolLocation": {
+    "description": "Story edit screen"
+  },
   "storyToolMute": "Mute",
   "@storyToolMute": {
     "description": "Story edit screen"

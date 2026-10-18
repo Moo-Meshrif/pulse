@@ -6,9 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
+import '../../../../core/router/app_navigator.dart';
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/dimens/app_dimens.dart';
+import '../../../../core/utils/location_choice.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/enums/story_media_type.dart';
+import '../../data/enums/story_overlay_type.dart';
 import '../cubit/story_edit_cubit.dart';
 import '../cubit/story_edit_state.dart';
 import '../dimens/story_dimens.dart';
@@ -33,7 +37,35 @@ class StoryEditView extends StatelessWidget {
     if (text != null) cubit.addText(text);
   }
 
+  Future<void> _chooseLocation(
+    BuildContext context, {
+    StorySticker? current,
+  }) async {
+    final cubit = context.read<StoryEditCubit>();
+    final existing =
+        current ??
+        cubit.state.stickers
+            .where((s) => s.overlay.type == StoryOverlayType.location)
+            .firstOrNull;
+    // `Object?`: the router builds its routes without a result type, so a typed push cannot cast to them.
+    final choice = await AppNavigator.push<Object?>(
+      context,
+      AppRoutes.pickPlace,
+      arguments: existing?.overlay.text,
+    );
+    if (choice is! LocationChoice) return;
+    final name = choice.name;
+    if (name != null) {
+      cubit.setLocation(name);
+    } else if (existing != null) {
+      cubit.remove(existing.id);
+    }
+  }
+
   Future<void> _editText(BuildContext context, StorySticker sticker) async {
+    if (sticker.overlay.type == StoryOverlayType.location) {
+      return _chooseLocation(context, current: sticker);
+    }
     final cubit = context.read<StoryEditCubit>();
     final text = await StoryTextEditor.show(
       context,
@@ -110,6 +142,7 @@ class StoryEditView extends StatelessWidget {
               isVideo: state.media.type == StoryMediaType.video,
               isMuted: state.isMuted,
               onText: () => _addText(context),
+              onLocation: () => _chooseLocation(context),
               onMute: cubit.toggleMute,
               onSave: () => _save(context),
             ),

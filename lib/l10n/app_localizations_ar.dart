@@ -967,6 +967,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get storyToolText => 'نص';
 
   @override
+  String get storyToolLocation => 'الموقع';
+
+  @override
   String get storyToolMute => 'كتم الصوت';
 
   @override

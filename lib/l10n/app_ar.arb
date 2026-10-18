@@ -1205,6 +1205,10 @@
   "@storyToolText": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "storyToolLocation": "الموقع",
+  "@storyToolLocation": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "storyToolMute": "كتم الصوت",
   "@storyToolMute": {
     "x-review": "Arabic draft: pending user approval"

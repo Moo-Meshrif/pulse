@@ -112,6 +112,7 @@ class StoryTextSticker extends StatelessWidget {
   }
 }
 
+// TODO(story-plan T11): make the location card tappable in the viewer once a place page exists (this layer is IgnorePointer).
 class StoryLocationSticker extends StatelessWidget {
   const StoryLocationSticker({super.key, required this.text});
 
@@ -127,7 +128,10 @@ class StoryLocationSticker extends StatelessWidget {
         boxShadow: AppShadows.sticker,
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: StoryDimens.stickerHeight),
+        constraints: BoxConstraints(
+          minHeight: StoryDimens.stickerHeight,
+          maxWidth: MediaQuery.sizeOf(context).width - 2 * AppSpacing.s24,
+        ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: StoryDimens.stickerPadding),
           child: Row(

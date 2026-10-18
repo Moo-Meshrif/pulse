@@ -1823,6 +1823,12 @@ abstract class AppLocalizations {
   /// Story edit screen
   ///
   /// In en, this message translates to:
+  /// **'Location'**
+  String get storyToolLocation;
+
+  /// Story edit screen
+  ///
+  /// In en, this message translates to:
   /// **'Mute'**
   String get storyToolMute;
 

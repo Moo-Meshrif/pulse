@@ -10,6 +10,7 @@ import '../../../../core/state/base_cubit.dart';
 import '../../../profile/domain/entity/last_account_entity.dart';
 import '../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../data/enums/story_media_type.dart';
+import '../../data/enums/story_overlay_type.dart';
 import '../../data/model/new_story_model.dart';
 import '../../data/model/story_overlay_model.dart';
 import '../../data/repository/story_upload_repository.dart';
@@ -60,6 +61,25 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
     emit(
       state.copyWith(
         stickers: [...state.stickers, StorySticker.text(_nextId++, clean)],
+      ),
+    );
+  }
+
+  /// Puts the place on the story; a story holds one location card, so a new place replaces the old one.
+  void setLocation(String name) {
+    final clean = name.trim();
+    if (clean.isEmpty) return;
+    final others = [
+      for (final s in state.stickers)
+        if (s.overlay.type != StoryOverlayType.location) s,
+    ];
+    if (others.length >= StoryOverlayModel.maxPerStory) {
+      emit(state.copyWith(notice: StoryEditNotice.stickerLimit));
+      return;
+    }
+    emit(
+      state.copyWith(
+        stickers: [...others, StorySticker.location(_nextId++, clean)],
       ),
     );
   }

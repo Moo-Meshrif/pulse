@@ -56,6 +56,7 @@ Phases 0-3 are done; Phases 4-11 are built and tested on doubles, and only the d
 | T8 | ~~Hero from the rail avatar~~ done as a grow from the tapped point (`StoryPageRoute`), no marker left; Home's real rail passes the same point | the viewer's open transition | 11 |
 | T9 | Arabic copy review (B6) | ARB files | no code marker |
 | T10 | Story report sent copy [estimated] (B5) | ARB files | no code marker |
+| T11 | Location card in the viewer is display-only; make it tappable (opens the place page) once a place page exists | `StoryLocationSticker` / `StoryOverlaysLayer` | 8 |
 
 ## Phases
 
@@ -204,7 +205,7 @@ Phases 0-3 are done; Phases 4-11 are built and tested on doubles, and only the d
 **Spec refs:** `screens/s3-create-edit.md`; `source-tokens.md` §2 (sticker, text overlay), §4 (edit tools, stickers, bottom actions); `screenshots/stories-board-v2.png` panel 5; `open-questions.md` Q7, Q9.
 **Tasks:**
 - [x] Edit screen + Cubit: media full-bleed with shades; tool column (text, location, mute for video, save); stickers drag, pinch 0.5x-3x, rotate, drag to the bottom delete zone [est in tokens].
-- [x] Text sticker (Sora 30/700 white, shadow). Location tool: hidden until post's Add location exists (B4); `// TODO(story-plan B4)`.
+- [x] Text sticker (Sora 30/700 white, shadow). Location tool opens post's Add location (`/pick-place`); one location card per story.
 - [x] Bottom: "Your story" pill (avatar + label, audience = Followers / Public) and Share pill 120.
 - [x] Share: hand the media + overlays JSON (fractions of the frame) to the upload (Phase 9), pop to Home.
 - [x] Save tool: same rule as Phase 5 save (photo burned in, video as is).

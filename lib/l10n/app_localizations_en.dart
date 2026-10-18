@@ -971,6 +971,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storyToolText => 'Text';
 
   @override
+  String get storyToolLocation => 'Location';
+
+  @override
   String get storyToolMute => 'Mute';
 
   @override

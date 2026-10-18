@@ -7,13 +7,14 @@ import '../../../../../core/theme/colors/app_colors.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/story_dimens.dart';
 
-/// The tool column at the end: text, (location, once post's Add location exists), mute for a video, save.
+/// The tool column at the end: text, location, mute for a video, save.
 class StoryEditTools extends StatelessWidget {
   const StoryEditTools({
     super.key,
     required this.isVideo,
     required this.isMuted,
     required this.onText,
+    required this.onLocation,
     required this.onMute,
     required this.onSave,
   });
@@ -21,6 +22,7 @@ class StoryEditTools extends StatelessWidget {
   final bool isVideo;
   final bool isMuted;
   final VoidCallback onText;
+  final VoidCallback onLocation;
   final VoidCallback onMute;
   final VoidCallback onSave;
 
@@ -32,7 +34,11 @@ class StoryEditTools extends StatelessWidget {
       spacing: StoryCameraDimens.toolGap,
       children: [
         _Tool(asset: AppAssets.text, label: l10n.storyToolText, onTap: onText),
-        // TODO(story-plan B4): the location tool is hidden until post's Add location screen exists.
+        _Tool(
+          asset: AppAssets.location,
+          label: l10n.storyToolLocation,
+          onTap: onLocation,
+        ),
         if (isVideo)
           _Tool(
             asset: isMuted ? AppAssets.volumeOff : AppAssets.volume,

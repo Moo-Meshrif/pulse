@@ -20,6 +20,18 @@ class StorySticker extends Equatable {
     ),
   );
 
+  /// A location card in the lower half, for the place [name].
+  factory StorySticker.location(int id, String name) => StorySticker(
+    id: id,
+    overlay: StoryOverlayModel(
+      type: StoryOverlayType.location,
+      text: name,
+      x: 0.5,
+      y: 0.6,
+      scale: 1,
+    ),
+  );
+
   final int id;
   final StoryOverlayModel overlay;
 

@@ -117,6 +117,17 @@ void main() {
       expect(cubit.state.stickers, isEmpty);
     });
 
+    test('a new place replaces the old location card', () {
+      final cubit = build()
+        ..addText('a')
+        ..setLocation('Cairo')
+        ..setLocation(' Giza ');
+      final overlays = [for (final s in cubit.state.stickers) s.overlay];
+      expect(overlays, hasLength(2));
+      expect(overlays.last.type, StoryOverlayType.location);
+      expect(overlays.last.text, 'Giza');
+    });
+
     test('remove drops only that sticker', () {
       final cubit = build()
         ..addText('a')
