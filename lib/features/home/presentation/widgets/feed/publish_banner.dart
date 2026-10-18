@@ -21,47 +21,48 @@ class PublishBanner extends StatelessWidget {
   const PublishBanner({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocBuilder<PostPublishCubit, ContentPublishStatus>(
-    builder: (context, status) => switch (status) {
-      ContentPublishing(
-        :final isEdit,
-        :final previewPath,
-        :final previewUrl,
-        :final previewCacheKey,
-        :final progress,
-      ) =>
-        _Card(
-          previewPath: previewPath,
-          previewUrl: previewUrl,
-          previewCacheKey: previewCacheKey,
-          title: isEdit
-              ? context.l10n.postPublishSaving
-              : context.l10n.postPublishing,
-          // Moving until the first bytes go out, then how much is sent.
-          progress: LinearProgressIndicator(
-            value: progress == 0 ? null : progress,
-          ),
-        ),
-      ContentPublishFailed(
-        :final isEdit,
-        :final previewPath,
-        :final previewUrl,
-        :final previewCacheKey,
-      ) => _Card(
-        previewPath: previewPath,
-        previewUrl: previewUrl,
-        previewCacheKey: previewCacheKey,
-        title: isEdit
-            ? context.l10n.editPostSaveFailed
-            : context.l10n.postPublishFailed,
-        isFailed: true,
-        actions: const _FailedActions(),
-      ),
-      ContentPublishIdle() || ContentPublishDone() => const SizedBox.shrink(),
-    },
-  );
+  Widget build(BuildContext context) =>
+      BlocBuilder<PostPublishCubit, ContentPublishStatus>(
+        builder: (context, status) => switch (status) {
+          ContentPublishing(
+            :final isEdit,
+            :final previewPath,
+            :final previewUrl,
+            :final previewCacheKey,
+            :final progress,
+          ) =>
+            _Card(
+              previewPath: previewPath,
+              previewUrl: previewUrl,
+              previewCacheKey: previewCacheKey,
+              title: isEdit
+                  ? context.l10n.postPublishSaving
+                  : context.l10n.postPublishing,
+              // Moving until the first bytes go out, then how much is sent.
+              progress: LinearProgressIndicator(
+                value: progress == 0 ? null : progress,
+              ),
+            ),
+          ContentPublishFailed(
+            :final isEdit,
+            :final previewPath,
+            :final previewUrl,
+            :final previewCacheKey,
+          ) =>
+            _Card(
+              previewPath: previewPath,
+              previewUrl: previewUrl,
+              previewCacheKey: previewCacheKey,
+              title: isEdit
+                  ? context.l10n.editPostSaveFailed
+                  : context.l10n.postPublishFailed,
+              isFailed: true,
+              actions: const _FailedActions(),
+            ),
+          ContentPublishIdle() ||
+          ContentPublishDone() => const SizedBox.shrink(),
+        },
+      );
 }
 
 class _Card extends StatelessWidget {

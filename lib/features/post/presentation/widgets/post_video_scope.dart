@@ -59,6 +59,7 @@ class _PostVideoScopeState extends State<PostVideoScope> {
         volume: () => _coordinator.isMuted ? 0 : 1,
       ),
       config: _config,
+      onPlayStateChanged: _pauseStrays,
     );
     _videos = PostVideos(coordinator: _coordinator, flux: _flux);
     _coordinator.addListener(_onCoordinator);
@@ -96,6 +97,18 @@ class _PostVideoScopeState extends State<PostVideoScope> {
       }
     }
     _select();
+  }
+
+  /// The window starts the video at its active slot by itself (after a refresh, a new video can land there
+  /// while nothing is on screen); only the one the coordinator picked may play.
+  void _pauseStrays() {
+    final pickedId = _coordinator.activeId;
+    for (final state in _flux.controllerStates.value) {
+      final controller = state.controller;
+      if (state.item.id != pickedId && controller.isPlaying) {
+        controller.pause();
+      }
+    }
   }
 
   /// Hands the picked video to the window (it plays it and pauses the others), or pauses all.

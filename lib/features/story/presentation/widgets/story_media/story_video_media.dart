@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/utils/app_video_controller.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/story_model.dart';
@@ -46,15 +47,11 @@ class _StoryVideoMediaState extends State<StoryVideoMedia> {
         if (mounted) action();
       });
 
-  /// The bar starts empty for a new story.
-  void _resetProgress() => _afterFrame(() => widget.progress.value = 0);
-
   VideoPlayerController? get _player => widget.controller?.player;
 
   @override
   void initState() {
     super.initState();
-    _resetProgress();
     _player?.addListener(_onValue);
     _afterFrame(_sync);
   }
@@ -122,6 +119,10 @@ class _StoryVideoMediaState extends State<StoryVideoMedia> {
         onRetry: widget.onRetry ?? () {},
       );
     }
+    final blurhash = AppBlurhash(
+      hash: widget.story.blurhash,
+      color: context.appColors.black,
+    );
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -130,7 +131,10 @@ class _StoryVideoMediaState extends State<StoryVideoMedia> {
             poster.url,
             cacheKey: poster.cacheKey,
             fit: BoxFit.cover,
-          ),
+            placeholder: blurhash,
+          )
+        else
+          blurhash,
         if (ready)
           ClipRect(
             child: FittedBox(

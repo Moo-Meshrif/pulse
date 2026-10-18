@@ -225,6 +225,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
       'width': story.width,
       'height': story.height,
       'duration_ms': story.durationMs,
+      'blurhash': story.blurhash,
       'overlays': [for (final o in story.overlays) o.toJson()],
     }),
   );

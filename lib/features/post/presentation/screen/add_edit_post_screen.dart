@@ -30,9 +30,10 @@ class AddEditPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => getIt<AddEditPostCubit>(param1: args?.post, param2: args?.signedUrls)
-      ..loadDefaultVisibility()
-      ..loadUrls(),
+    create: (_) =>
+        getIt<AddEditPostCubit>(param1: args?.post, param2: args?.signedUrls)
+          ..loadDefaultVisibility()
+          ..loadUrls(),
     child: Builder(
       builder: (context) => BlocListener<AddEditPostCubit, AddEditPostState>(
         listenWhen: _isSavedOrHasNewNotice,

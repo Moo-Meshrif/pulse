@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/blurhash_service.dart';
 import '../../../../core/services/gallery_service.dart';
 import '../../../../core/services/video_thumbnail_service.dart';
 import '../../../../core/state/base_cubit.dart';
@@ -24,6 +25,7 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
   StoryEditCubit(
     this._uploads,
     this._thumbnails,
+    this._blurhash,
     this._gallery,
     GetLastAccountUseCase account,
     @factoryParam CapturedStoryMedia media,
@@ -37,6 +39,7 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
 
   final StoryUploadRepository _uploads;
   final VideoThumbnailService _thumbnails;
+  final BlurhashService _blurhash;
   final GalleryService _gallery;
 
   /// Who is posting, for the "Your story" pill; null when this device has no saved account.
@@ -106,6 +109,10 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
     try {
       final isVideo = media.type == StoryMediaType.video;
       final thumb = isVideo ? await _thumbnails.thumbnail(media.path) : null;
+      final hashSource = isVideo ? thumb : media.path;
+      final blurhash = hashSource == null
+          ? null
+          : await _blurhash.blurhash(hashSource);
       final started = _uploads.enqueue(
         NewStoryModel(
           filePath: media.path,
@@ -114,6 +121,7 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
           width: media.width ?? fallbackWidth,
           height: media.height ?? fallbackHeight,
           durationMs: isVideo ? (media.durationMs ?? 0) : null,
+          blurhash: blurhash,
           overlays: [for (final s in state.stickers) s.overlay],
         ),
       );

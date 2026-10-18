@@ -1,5 +1,6 @@
 // Barrel file: features import only this.
 export 'app_back_button.dart';
+export 'app_blurhash.dart';
 export 'app_bottom_sheet.dart';
 export 'app_dialog_shell.dart';
 export 'app_empty/app_empty.dart';

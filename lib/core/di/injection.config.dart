@@ -199,6 +199,7 @@ import '../../shared/content/domain/use_case/set_mute_use_case.dart' as _i71;
 import '../events/event_bus.dart' as _i557;
 import '../router/recovery_link_handler.dart' as _i358;
 import '../router/session_guard.dart' as _i96;
+import '../services/blurhash_service.dart' as _i905;
 import '../services/camera_device.dart' as _i64;
 import '../services/camera_permission_service.dart' as _i754;
 import '../services/connectivity_service.dart' as _i47;
@@ -238,6 +239,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i815.SessionEvents>(
       () => _i815.SessionEvents(),
       dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i905.BlurhashService>(
+      () => _i905.PackageBlurhashService(),
     );
     gh.factoryParam<_i962.TagInPhotoCubit, _i425.TagPeopleArgs, dynamic>(
       (args, _) => _i962.TagInPhotoCubit(args),
@@ -664,6 +668,7 @@ extension GetItInjectableX on _i174.GetIt {
       (media, _) => _i144.StoryEditCubit(
         gh<_i618.StoryUploadRepository>(),
         gh<_i143.VideoThumbnailService>(),
+        gh<_i905.BlurhashService>(),
         gh<_i841.GalleryService>(),
         gh<_i727.GetLastAccountUseCase>(),
         media,

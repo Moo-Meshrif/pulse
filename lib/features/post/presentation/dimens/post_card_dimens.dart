@@ -106,7 +106,6 @@ abstract final class PostMotion {
   static const likePopScale = 1.2;
   static const likeRestScale = 1.0;
   static const heartPop = Duration(milliseconds: 200);
-  static const imageFadeIn = Duration(milliseconds: 200);
   static const heartFade = Duration(milliseconds: 600);
   static const scrollBack = Duration(milliseconds: 200);
   static const heartStartScale = 0.6;

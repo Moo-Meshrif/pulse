@@ -5,11 +5,11 @@ import 'package:video_player/video_player.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/utils/app_video_controller.dart';
 import '../../../../../core/utils/format_countdown.dart';
+import '../../../../../core/widgets/app_blurhash.dart';
 import '../../dimens/post_card_dimens.dart';
 import '../../utils/post_card_media.dart';
 import '../post_video_scope.dart';
 import '../visible_fraction.dart';
-import 'post_blurhash.dart';
 import 'post_image_item.dart';
 import 'post_media_chip.dart';
 import 'post_mute_button.dart';
@@ -85,7 +85,7 @@ class _PostVideoItemState extends State<PostVideoItem> {
               cacheKey: widget.media.posterCacheKey,
             )
           else
-            PostBlurhash(hash: widget.media.blurhash),
+            AppBlurhash(hash: widget.media.blurhash),
           if (videos != null)
             ValueListenableBuilder(
               valueListenable: videos.flux.controllerStates,

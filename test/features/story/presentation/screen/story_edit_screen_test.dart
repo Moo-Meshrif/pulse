@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
@@ -18,6 +19,11 @@ import '../../../../helpers/fake_video_player_platform.dart';
 import '../../../../helpers/pump_app.dart';
 
 class _Uploads extends Mock implements StoryUploadRepository {}
+
+class _NoBlurhash implements BlurhashService {
+  @override
+  Future<String?> blurhash(String path) async => null;
+}
 
 class _Thumbs extends Mock implements VideoThumbnailService {}
 
@@ -64,7 +70,14 @@ void main() {
     when(() => gallery.saveVideoFile(any())).thenAnswer((_) async {});
     await getIt.reset();
     getIt.registerFactoryParam<StoryEditCubit, CapturedStoryMedia, void>(
-      (media, _) => StoryEditCubit(uploads, _Thumbs(), gallery, account, media),
+      (media, _) => StoryEditCubit(
+        uploads,
+        _Thumbs(),
+        _NoBlurhash(),
+        gallery,
+        account,
+        media,
+      ),
     );
   });
 

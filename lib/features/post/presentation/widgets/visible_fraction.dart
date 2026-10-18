@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Reports how much of [child] shows inside the nearest scrollable, 0 to 1, as the list scrolls and after
+/// Reports how much of [child] shows inside the nearest vertical scrollable (a post's own horizontal pages do not count), 0 to 1, as the list scrolls and after
 /// it is first laid out or updated. A child outside any scrollable counts as fully visible. Reports 0 when
 /// it goes away.
 class VisibleFraction extends StatefulWidget {
@@ -26,7 +26,7 @@ class _VisibleFractionState extends State<VisibleFraction> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final position = Scrollable.maybeOf(context)?.position;
+    final position = Scrollable.maybeOf(context, axis: Axis.vertical)?.position;
     if (position != _position) {
       _position?.removeListener(_measure);
       _position = position?..addListener(_measure);
@@ -54,7 +54,10 @@ class _VisibleFractionState extends State<VisibleFraction> {
     if (!mounted) return;
     final box = context.findRenderObject();
     if (box is! RenderBox || !box.attached || !box.hasSize) return;
-    final viewport = Scrollable.maybeOf(context)?.context.findRenderObject();
+    final viewport = Scrollable.maybeOf(
+      context,
+      axis: Axis.vertical,
+    )?.context.findRenderObject();
     var fraction = 1.0;
     if (viewport is RenderBox && viewport.attached && viewport.hasSize) {
       final mine = box.localToGlobal(Offset.zero) & box.size;

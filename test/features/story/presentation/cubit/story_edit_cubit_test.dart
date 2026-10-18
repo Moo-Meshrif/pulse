@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/gallery_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
@@ -18,6 +19,11 @@ import 'package:pulse/features/story/presentation/utils/enums/story_edit_notice.
 class _Uploads extends Mock implements StoryUploadRepository {}
 
 class _Thumbs extends Mock implements VideoThumbnailService {}
+
+class _NoBlurhash implements BlurhashService {
+  @override
+  Future<String?> blurhash(String path) async => null;
+}
 
 class _Gallery extends Mock implements GalleryService {}
 
@@ -68,7 +74,7 @@ void main() {
   });
 
   StoryEditCubit build([CapturedStoryMedia media = _photo]) =>
-      StoryEditCubit(uploads, thumbs, gallery, account, media);
+      StoryEditCubit(uploads, thumbs, _NoBlurhash(), gallery, account, media);
 
   group('stickers', () {
     test('text is added in the middle, white, trimmed', () {

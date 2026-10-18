@@ -31,7 +31,9 @@ class StoryPerson extends StatefulWidget {
 }
 
 class _StoryPersonState extends State<StoryPerson> {
-  final _progress = ValueNotifier<double>(0);
+  var _progress = ValueNotifier<double>(0);
+  final _retiredProgress = <ValueNotifier<double>>[];
+  String? _progressStoryId;
   VideoFlux<AppVideoItem>? _flux;
   List<StoryModel> _videos = const [];
   final _failedVideos = <String>{};
@@ -42,6 +44,9 @@ class _StoryPersonState extends State<StoryPerson> {
   void dispose() {
     _flux?.disposeAll();
     _progress.dispose();
+    for (final progress in _retiredProgress) {
+      progress.dispose();
+    }
     super.dispose();
   }
 
@@ -113,6 +118,19 @@ class _StoryPersonState extends State<StoryPerson> {
     return controller is AppVideoController ? controller : null;
   }
 
+  /// Each story fills its own progress: the story that leaves still ticks once before it is removed, and
+  /// on a shared value that tick would put its old position into the bar of the story that arrives.
+  ValueNotifier<double> _progressOf(StoryModel story) {
+    if (story.id != _progressStoryId) {
+      if (_progressStoryId != null) {
+        _retiredProgress.add(_progress);
+        _progress = ValueNotifier<double>(0);
+      }
+      _progressStoryId = story.id;
+    }
+    return _progress;
+  }
+
   /// Opens a video that failed again, with a fresh controller from the preloader.
   void _retryVideo(StoryModel story) {
     final index = _videos.indexWhere((v) => v.id == story.id);
@@ -144,6 +162,7 @@ class _StoryPersonState extends State<StoryPerson> {
             ? state.storyIndex
             : storyStartIndex(stories);
         final story = stories[storyIndex];
+        final progress = _progressOf(story);
         _select(story, isActive);
         if (isActive) _preloadNext(stories, storyIndex);
 
@@ -155,7 +174,7 @@ class _StoryPersonState extends State<StoryPerson> {
               child: StoryMedia(
                 story: story,
                 isRunning: isActive && !state.isPaused,
-                progress: _progress,
+                progress: progress,
                 restarts: state.restarts,
                 onCompleted: () {
                   if (isActive) cubit.next();
@@ -173,7 +192,7 @@ class _StoryPersonState extends State<StoryPerson> {
               story: story,
               count: stories.length,
               index: storyIndex,
-              progress: _progress,
+              progress: progress,
               isActive: isActive,
               isOverlayOpen:
                   isActive && state.pauses.contains(StoryPauseReason.overlay),

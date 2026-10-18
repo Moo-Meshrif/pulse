@@ -15,6 +15,7 @@ import '../utils/enums/story_viewer_status.dart';
 import '../utils/story_dismiss.dart';
 import '../utils/story_tap_zone.dart';
 import '../widgets/story_buffering_loader.dart';
+import '../widgets/story_cube_page.dart';
 import '../widgets/story_loading_top.dart';
 import '../widgets/story_menus/story_menus.dart';
 import '../widgets/story_person/story_person.dart';
@@ -193,10 +194,14 @@ class _StoryViewerViewState extends State<StoryViewerView>
             allowImplicitScrolling: true,
             itemCount: state.people.length,
             onPageChanged: _cubit.showPerson,
-            itemBuilder: (context, index) => StoryPerson(
-              key: ValueKey(state.people[index].authorId),
+            itemBuilder: (context, index) => StoryCubePage(
+              pages: _pages!,
               index: index,
-              person: state.people[index],
+              child: StoryPerson(
+                key: ValueKey(state.people[index].authorId),
+                index: index,
+                person: state.people[index],
+              ),
             ),
           ),
         ),

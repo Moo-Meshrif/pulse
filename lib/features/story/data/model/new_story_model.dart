@@ -15,6 +15,9 @@ class NewStoryModel extends Equatable {
 
   /// Videos only.
   final int? durationMs;
+
+  /// Of the photo, or of a video's poster frame; the viewer shows it while the picture loads.
+  final String? blurhash;
   final List<StoryOverlayModel> overlays;
 
   NewStoryModel({
@@ -24,6 +27,7 @@ class NewStoryModel extends Equatable {
     required this.height,
     this.thumbFilePath,
     this.durationMs,
+    this.blurhash,
     this.overlays = const [],
   }) : assert(
          overlays.length <= StoryOverlayModel.maxPerStory,
@@ -42,6 +46,7 @@ class NewStoryModel extends Equatable {
     width,
     height,
     durationMs,
+    blurhash,
     overlays,
   ];
 }

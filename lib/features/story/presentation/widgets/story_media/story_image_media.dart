@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/story_model.dart';
 import '../../dimens/story_constants.dart';
@@ -44,15 +45,6 @@ class _StoryImageMediaState extends State<StoryImageMedia>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) action();
       });
-
-  /// The bar starts empty for a new story.
-  void _resetProgress() => _afterFrame(() => widget.progress.value = 0);
-
-  @override
-  void initState() {
-    super.initState();
-    _resetProgress();
-  }
 
   @override
   void didUpdateWidget(StoryImageMedia oldWidget) {
@@ -116,7 +108,12 @@ class _StoryImageMediaState extends State<StoryImageMedia>
           gaplessPlayback: true,
           frameBuilder: (context, child, frame, sync) {
             if (frame != null) _markReady();
-            return child;
+            return frame == null && !sync
+                ? AppBlurhash(
+                    hash: widget.story.blurhash,
+                    color: context.appColors.black,
+                  )
+                : child;
           },
           errorBuilder: (context) {
             _markFailed();

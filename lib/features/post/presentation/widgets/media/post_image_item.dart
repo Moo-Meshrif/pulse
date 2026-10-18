@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/utils/cached_picture.dart';
+import '../../../../../core/widgets/app_blurhash.dart';
 import '../../../../../core/widgets/app_image.dart';
-import '../../dimens/post_card_dimens.dart';
 import '../../utils/post_card_media.dart';
-import 'post_blurhash.dart';
 import 'post_retry_badge.dart';
 
 /// One photo of a post: the blurhash until it loads, then the picture fades in. If it fails the blurhash
@@ -48,23 +47,24 @@ class _PostImageItemState extends State<PostImageItem> {
 
   @override
   Widget build(BuildContext context) {
-    final blurhash = PostBlurhash(hash: widget.media.blurhash);
+    final blurhash = AppBlurhash(hash: widget.media.blurhash);
     return Stack(
       fit: StackFit.expand,
       children: [
-        blurhash,
         AppImage.network(
           _url,
           key: ValueKey(_attempt),
           cacheKey: _cacheKey,
           fit: widget.fit,
-          errorBuilder: (_) =>
+          errorBuilder: (_) => Stack(
+            fit: StackFit.expand,
+            children: [
+              blurhash,
               PostRetryBadge(icon: AppAssets.image, onRetry: _retry),
-          frameBuilder: (context, child, frame, isSync) => AnimatedOpacity(
-            opacity: frame == null && !isSync ? 0 : 1,
-            duration: PostMotion.imageFadeIn,
-            child: child,
+            ],
           ),
+          frameBuilder: (context, child, frame, isSync) =>
+              frame == null && !isSync ? blurhash : child,
         ),
       ],
     );
