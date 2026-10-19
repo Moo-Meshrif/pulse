@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/error/error_reporter.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/model/story_model.dart';
@@ -15,6 +16,7 @@ class StoryImageMedia extends StatefulWidget {
     required this.progress,
     required this.restarts,
     required this.onCompleted,
+    this.onFailedChanged,
   });
 
   final StoryModel story;
@@ -22,6 +24,9 @@ class StoryImageMedia extends StatefulWidget {
   final ValueNotifier<double> progress;
   final int restarts;
   final VoidCallback onCompleted;
+
+  /// Called with true when the picture fails to load and with false when a retry starts.
+  final ValueChanged<bool>? onFailedChanged;
 
   @override
   State<StoryImageMedia> createState() => _StoryImageMediaState();
@@ -79,6 +84,7 @@ class _StoryImageMediaState extends State<StoryImageMedia>
   void _markFailed() => WidgetsBinding.instance.addPostFrameCallback((_) {
     if (!mounted || _hasFailed) return;
     setState(() => _hasFailed = true);
+    widget.onFailedChanged?.call(true);
     _sync();
   });
 
@@ -90,6 +96,7 @@ class _StoryImageMediaState extends State<StoryImageMedia>
       _hasFailed = false;
       _isReady = false;
     });
+    widget.onFailedChanged?.call(false);
   }
 
   @override
@@ -114,6 +121,10 @@ class _StoryImageMediaState extends State<StoryImageMedia>
                     color: context.appColors.black,
                   )
                 : child;
+          },
+          onError: (error, stack) {
+            if (_hasFailed) return;
+            ErrorReporter.report(error, stack ?? StackTrace.current);
           },
           errorBuilder: (context) {
             _markFailed();

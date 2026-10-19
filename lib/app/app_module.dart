@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/router/recovery_link_handler.dart';
 import '../core/router/session_guard.dart';
+import '../core/services/device_tier.dart';
 import '../features/auth/domain/use_case/watch_password_recovery_use_case.dart';
 import '../features/auth/domain/use_case/watch_session_ended_use_case.dart';
 
@@ -18,6 +19,11 @@ abstract class AppModule {
   @lazySingleton
   Future<SharedPreferences> get sharedPreferences =>
       SharedPreferences.getInstance();
+
+  /// Resolved before the first frame so the blur surfaces know their fill from the start.
+  @preResolve
+  @lazySingleton
+  Future<DeviceTier> get deviceTier => DeviceTier.detect();
 
   /// The Supabase client. `main()` initializes Supabase (which restores the stored session) before the
   /// container is built; tests that do not touch the backend never resolve this.

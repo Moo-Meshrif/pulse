@@ -22,6 +22,7 @@ class AppImage extends StatelessWidget {
     this.cacheWidth,
     this.placeholder,
     this.errorBuilder,
+    this.onError,
     this.frameBuilder,
     this.gaplessPlayback = false,
     this.semanticLabel,
@@ -41,7 +42,8 @@ class AppImage extends StatelessWidget {
     this.frameBuilder,
     this.gaplessPlayback = false,
     this.semanticLabel,
-  }) : url = null,
+  }) : onError = null,
+       url = null,
        cacheKey = null,
        bytes = null,
        _source = _Source.file;
@@ -58,7 +60,8 @@ class AppImage extends StatelessWidget {
     this.frameBuilder,
     this.gaplessPlayback = false,
     this.semanticLabel,
-  }) : url = null,
+  }) : onError = null,
+       url = null,
        path = null,
        cacheKey = null,
        _source = _Source.memory;
@@ -75,7 +78,8 @@ class AppImage extends StatelessWidget {
     this.frameBuilder,
     this.gaplessPlayback = false,
     this.semanticLabel,
-  }) : url = null,
+  }) : onError = null,
+       url = null,
        cacheKey = null,
        bytes = null,
        _source = _Source.asset;
@@ -99,6 +103,9 @@ class AppImage extends StatelessWidget {
 
   /// Shown when the picture could not be loaded; nothing when null.
   final Widget Function(BuildContext context)? errorBuilder;
+
+  /// Network only: called with the load error, e.g. to log it.
+  final void Function(Object error, StackTrace? stack)? onError;
 
   /// Called for every frame (to know when the picture is ready); replaces [placeholder].
   final ImageFrameBuilder? frameBuilder;
@@ -143,8 +150,10 @@ class AppImage extends StatelessWidget {
               ? null
               : (context, child, frame, sync) =>
                     frame == null && !sync ? placeholder! : child),
-      errorBuilder: (context, error, stack) =>
-          errorBuilder?.call(context) ?? const SizedBox.shrink(),
+      errorBuilder: (context, error, stack) {
+        onError?.call(error, stack);
+        return errorBuilder?.call(context) ?? const SizedBox.shrink();
+      },
     );
   }
 }

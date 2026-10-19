@@ -1,11 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../enums/sheet_tone.dart';
 import '../extensions/context_extensions.dart';
 import '../theme/dimens/app_dimens.dart';
 import 'app_safe_area.dart';
+import 'backdrop_blur.dart';
+import 'device_tier_scope.dart';
 
 /// The shared dialog route and card (docs/specs/auth/02-components.md C14). Content is up to the caller.
 class AppDialogShell extends StatelessWidget {
@@ -62,11 +62,11 @@ class AppDialogShell extends StatelessWidget {
           Positioned.fill(
             child: AnimatedBuilder(
               animation: curved,
-              builder: (context, _) => BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: DialogDimens.backdropBlurSigma * curved.value,
-                  sigmaY: DialogDimens.backdropBlurSigma * curved.value,
-                ),
+              builder: (context, _) => BackdropBlur(
+                // Low-tier: a fixed blur, so it is not recomputed with a new sigma on every frame of the entrance.
+                sigma:
+                    DialogDimens.backdropBlurSigma *
+                    (context.isLowTier ? 1 : curved.value),
                 child: const SizedBox.expand(),
               ),
             ),

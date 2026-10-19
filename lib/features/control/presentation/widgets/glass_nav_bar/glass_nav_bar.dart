@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -50,8 +48,6 @@ class GlassNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final radius = BorderRadius.circular(NavDimens.radius);
-    // TODO(control-page-plan T9): the flat low-tier fill (`AppColors.glassFillFlat`) is not used; no device
-    // detection yet (user decision).
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: NavDimens.sideInset),
       child: ContentWidth(
@@ -64,11 +60,8 @@ class GlassNavBar extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: radius,
-              child: BackdropFilter(
-                filter: ui.ImageFilter.blur(
-                  sigmaX: NavDimens.blurSigma,
-                  sigmaY: NavDimens.blurSigma,
-                ),
+              child: BackdropBlur(
+                sigma: NavDimens.blurSigma,
                 child: CustomPaint(
                   foregroundPainter: GlassBorderPainter(
                     radius: NavDimens.radius,
@@ -82,13 +75,16 @@ class GlassNavBar extends StatelessWidget {
                   ),
                   child: ColoredBox(
                     color: colors.glassFill,
-                    child: Padding(
-                      padding: EdgeInsets.all(NavDimens.padding),
-                      child: _Slots(
-                        selected: selected,
-                        onTabSelected: _onTab,
-                        onCreate: _onCreate,
-                        chatBadge: chatBadge,
+                    // Its own layer: the tab animations do not repaint the glass.
+                    child: RepaintBoundary(
+                      child: Padding(
+                        padding: EdgeInsets.all(NavDimens.padding),
+                        child: _Slots(
+                          selected: selected,
+                          onTabSelected: _onTab,
+                          onCreate: _onCreate,
+                          chatBadge: chatBadge,
+                        ),
                       ),
                     ),
                   ),

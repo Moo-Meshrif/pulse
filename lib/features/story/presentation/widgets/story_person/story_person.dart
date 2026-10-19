@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_flux/video_flux.dart';
 
+import '../../../../../core/error/error_reporter.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/utils/app_video_controller.dart';
 import '../../../data/enums/story_media_type.dart';
@@ -37,6 +38,7 @@ class _StoryPersonState extends State<StoryPerson> {
   VideoFlux<AppVideoItem>? _flux;
   List<StoryModel> _videos = const [];
   final _failedVideos = <String>{};
+  final _failedImages = <String>{};
   String? _selectedVideoId;
   final _preloaded = <String>{};
 
@@ -76,7 +78,8 @@ class _StoryPersonState extends State<StoryPerson> {
       onControllerInitialized: (_) {
         if (mounted) setState(() {});
       },
-      onControllerInitializationError: (controller, _, _) {
+      onControllerInitializationError: (controller, error, stack) {
+        ErrorReporter.report(error, stack);
         final id = _videos
             .where((v) => v.mediaUrl == controller.dataSource)
             .firstOrNull
@@ -131,6 +134,13 @@ class _StoryPersonState extends State<StoryPerson> {
     return _progress;
   }
 
+  /// Tracks a picture that failed to load, so the stickers do not sit on top of the error.
+  void _setImageFailed(StoryModel story, bool failed) {
+    final id = story.id;
+    if (id == null || !mounted) return;
+    setState(() => failed ? _failedImages.add(id) : _failedImages.remove(id));
+  }
+
   /// Opens a video that failed again, with a fresh controller from the preloader.
   void _retryVideo(StoryModel story) {
     final index = _videos.indexWhere((v) => v.id == story.id);
@@ -182,10 +192,14 @@ class _StoryPersonState extends State<StoryPerson> {
                 video: _controllerFor(story),
                 hasVideoFailed: _failedVideos.contains(story.id),
                 onRetryVideo: () => _retryVideo(story),
+                onImageFailedChanged: (failed) =>
+                    _setImageFailed(story, failed),
               ),
             ),
             const StoryShades(),
-            StoryOverlaysLayer(overlays: story.overlays ?? const []),
+            if (!_failedVideos.contains(story.id) &&
+                !_failedImages.contains(story.id))
+              StoryOverlaysLayer(overlays: story.overlays ?? const []),
             StoryChrome(
               isVisible: !(isActive && state.isHolding),
               person: widget.person,

@@ -39,7 +39,7 @@ No phase is blocked.
 | T6 | ~~Re-tap on the Home root must also refresh the feed~~ done 2026-10-14: `ControlCubit.refreshHome()` calls post's `RequestFeedRefreshUseCase` after the scroll to top; marker removed | the re-tap handling of the shell | 4 |
 | T7 | `/create/post` shows a placeholder until the post feature's New post screen is built | the Post route | 5 |
 | T8 | `/create/short` shows a placeholder until the shorts feature exists | the Short route | 5 |
-| T9 | Flat low-tier fallback fill (#FFFFFF 92%) kept as a constant, not used: no device detection now | the nav bar's glass layer | 3 |
+| T9 | Flat low-tier fill `glassFillFlat` kept unused: low-tier Android gets a lighter blur (`DeviceTier`, `BackdropBlur`, 2026-10-19); use the flat fill only if a real-device profile still shows jank | the nav bar's glass layer | 3 |
 | T10 | Arabic copy review (Q10) | ARB files | no code marker |
 
 Existing markers this plan resolves: `TODO(reset-link)` and `TODO(auth-plan)` on the `/home` route in `lib/core/router/app_router.dart` (Phase 4 removes both; the Home placeholder moves to T1).

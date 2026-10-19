@@ -40,7 +40,7 @@ Visible / hidden (keyboard open or full-screen route: slides down 200 ms). Badge
 - Back: pop inside the tab; on a tab root other than Home go to Home; on Home root leave the app (Android).
 - Re-tap active tab: pop to root, else scroll to top (+ refresh on Home).
 - Nav hides when the keyboard is open and on full-screen routes (story viewer, create, comments) [user]; tab sub-pages keep it.
-- Always blur (sigma 22); flat fallback constant kept, no detection [user].
+- Blur (sigma 22); on a low-tier Android device the same look with a lighter blur (x 0.45). `glassFillFlat` is kept, unused [user].
 - Every tab scroll view reserves bottom padding 92 + viewPadding.bottom.
 
 ## Data mapping

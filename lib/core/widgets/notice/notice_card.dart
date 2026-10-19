@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../../constants/app_assets.dart';
@@ -10,6 +8,7 @@ import '../../theme/colors/app_colors.dart';
 import '../../theme/dimens/app_dimens.dart';
 import '../app_svg_icon.dart';
 import '../app_text.dart';
+import '../backdrop_blur.dart';
 
 /// The dark floating card of a [Notice]: icon, text, optional action pill and a bar that shrinks over the
 /// notice's duration. It dismisses itself when the bar runs out, on a tap, on a swipe up, or after its
@@ -79,11 +78,8 @@ class _NoticeCardState extends State<NoticeCard>
           ),
           child: ClipRRect(
             borderRadius: radius,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: NoticeDimens.blurSigma,
-                sigmaY: NoticeDimens.blurSigma,
-              ),
+            child: BackdropBlur(
+              sigma: NoticeDimens.blurSigma,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: NoticeColors.surface,

@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +5,8 @@ import '../../extensions/context_extensions.dart';
 import '../../theme/app_text_styles.dart';
 import '../../theme/dimens/app_dimens.dart';
 import '../app_text.dart';
+import '../backdrop_blur.dart';
+import '../device_tier_scope.dart';
 import 'loading_overlay.dart';
 
 // The pieces `LoadingOverlay` is made of, kept apart so its own file reads top to bottom. Internal to this
@@ -62,13 +62,11 @@ class OverlayFrost extends StatelessWidget {
   Widget build(BuildContext context) {
     final scrim = ColoredBox(color: color.withValues(alpha: color.a * amount));
     if (amount <= 0) return scrim;
-    return BackdropFilter(
+    return BackdropBlur(
       // The design also saturates the backdrop 1.4x; `ImageFilter` has no colour filter in this Flutter
       // version, so only the blur is applied.
-      filter: ui.ImageFilter.blur(
-        sigmaX: OverlayDimens.blur * amount,
-        sigmaY: OverlayDimens.blur * amount,
-      ),
+      // Low-tier: a fixed blur, so it is not recomputed with a new sigma while the overlay comes in.
+      sigma: OverlayDimens.blur * (context.isLowTier ? 1 : amount),
       child: scrim,
     );
   }

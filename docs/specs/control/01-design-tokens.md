@@ -5,7 +5,7 @@ Reuse `../_theme/*`. Values [user] from `../home/source-tokens.md` section 1 unl
 | Token | Value | Status |
 |---|---|---|
 | glassFill | #FFFFFF @ 55% (0x8CFFFFFF) | [new] |
-| glassFillFlat | #FFFFFF @ 92% | [new] low-tier fallback constant, **not wired** (no detection now) [user] |
+| glassFillFlat | #FFFFFF @ 92% | [new] low-tier fallback constant, **not wired**: low-tier devices get a lighter blur instead [user] |
 | glassBorder | #FFFFFF @ 80% (0xCCFFFFFF) | [new] |
 | glassHighlightTop / Bottom | #FFFFFF @ 95% / 35%, 1 px | [new] optional |
 | navBubble | #FFFFFF @ 85% | [new] |

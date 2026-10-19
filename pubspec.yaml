@@ -36,6 +36,7 @@ dependencies:
   connectivity_plus: ^7.3.2
   country_picker: ^2.0.28
   cupertino_icons: ^2.0.0
+  device_info_plus: ^13.3.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1

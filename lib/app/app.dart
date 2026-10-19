@@ -7,6 +7,7 @@ import '../core/router/app_router.dart';
 import '../core/router/app_routes.dart';
 import '../core/router/recovery_link_handler.dart';
 import '../core/router/session_guard.dart';
+import '../core/services/device_tier.dart';
 import '../core/theme/app_scale.dart';
 import '../core/theme/app_scroll_behavior.dart';
 import '../core/theme/app_theme.dart';
@@ -34,6 +35,7 @@ class _AppState extends State<App> {
   // A session that ends by itself (expired, revoked) sends the user to Sign in from any screen, except
   // the ones in `SessionGuard.keepsScreen`.
   final _sessionGuard = getIt<SessionGuard>();
+  final _deviceTier = getIt<DeviceTier>();
 
   @override
   void initState() {
@@ -54,7 +56,10 @@ class _AppState extends State<App> {
         value: SystemUiOverlayStyle.dark,
         child: MediaQuery.withClampedTextScaling(
           maxScaleFactor: AppScale.maxSystemTextScale,
-          child: NoticeHost(child: child!),
+          child: DeviceTierScope(
+            tier: _deviceTier,
+            child: NoticeHost(child: child!),
+          ),
         ),
       ),
       onGenerateTitle: (context) => context.l10n.appTitle,

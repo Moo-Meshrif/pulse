@@ -203,6 +203,7 @@ import '../services/blurhash_service.dart' as _i905;
 import '../services/camera_device.dart' as _i64;
 import '../services/camera_permission_service.dart' as _i754;
 import '../services/connectivity_service.dart' as _i47;
+import '../services/device_tier.dart' as _i876;
 import '../services/gallery_service.dart' as _i841;
 import '../services/launch_service.dart' as _i1016;
 import '../services/local_storage_service.dart' as _i527;
@@ -225,6 +226,10 @@ extension GetItInjectableX on _i174.GetIt {
     final appModule = _$AppModule();
     await gh.lazySingletonAsync<_i460.SharedPreferences>(
       () => appModule.sharedPreferences,
+      preResolve: true,
+    );
+    await gh.lazySingletonAsync<_i876.DeviceTier>(
+      () => appModule.deviceTier,
       preResolve: true,
     );
     gh.lazySingleton<_i454.SupabaseClient>(() => appModule.supabaseClient);

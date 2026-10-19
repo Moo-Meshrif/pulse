@@ -19,6 +19,7 @@ class StoryMedia extends StatelessWidget {
     this.video,
     this.hasVideoFailed = false,
     this.onRetryVideo,
+    this.onImageFailedChanged,
   });
 
   final StoryModel story;
@@ -32,6 +33,7 @@ class StoryMedia extends StatelessWidget {
   final AppVideoController? video;
   final bool hasVideoFailed;
   final VoidCallback? onRetryVideo;
+  final ValueChanged<bool>? onImageFailedChanged;
 
   @override
   Widget build(BuildContext context) => story.type == StoryMediaType.video
@@ -51,5 +53,6 @@ class StoryMedia extends StatelessWidget {
           progress: progress,
           restarts: restarts,
           onCompleted: onCompleted,
+          onFailedChanged: onImageFailedChanged,
         );
 }
