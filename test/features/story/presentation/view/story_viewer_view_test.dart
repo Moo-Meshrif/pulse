@@ -15,7 +15,7 @@ import 'package:pulse/features/story/data/model/story_model.dart';
 import 'package:pulse/features/story/data/model/story_overlay_model.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
-import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_viewer/story_viewer_cubit.dart';
 import 'package:pulse/features/story/presentation/view/story_viewer_view.dart';
 import 'package:pulse/features/story/presentation/widgets/story_progress_bars.dart';
 

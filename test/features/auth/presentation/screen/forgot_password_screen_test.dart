@@ -6,7 +6,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/launch_service.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/auth/presentation/cubit/forgot_password_cubit.dart';
+import 'package:pulse/features/auth/presentation/cubit/forgot_password/forgot_password_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/forgot_password_screen.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 

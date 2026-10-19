@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/auth/presentation/cubit/sign_up_cubit.dart';
+import '../../features/auth/presentation/cubit/sign_up/sign_up_cubit.dart';
 import '../../features/auth/presentation/screen/forgot_password_screen.dart';
 import '../../features/auth/presentation/screen/reset_password_screen.dart';
 import '../../features/auth/presentation/screen/sign_in_screen.dart';

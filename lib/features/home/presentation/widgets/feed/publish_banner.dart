@@ -12,7 +12,7 @@ import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/domain/entity/content_publish_status.dart';
-import '../../cubit/post_publish_cubit.dart';
+import '../../cubit/post_publish/post_publish_cubit.dart';
 import '../../dimens/home_dimens.dart';
 
 /// The post being shared or saved, above the feed: a thumbnail and a line showing how much is sent, or

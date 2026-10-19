@@ -12,7 +12,7 @@ import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/model/new_story_model.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
 import 'package:pulse/features/story/domain/entity/captured_story_media.dart';
-import 'package:pulse/features/story/presentation/cubit/story_edit_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_edit/story_edit_cubit.dart';
 import 'package:pulse/features/story/presentation/screen/story_edit_screen.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 

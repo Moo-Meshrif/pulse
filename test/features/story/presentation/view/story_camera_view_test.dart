@@ -8,7 +8,7 @@ import 'package:pulse/core/services/camera_device.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/story/data/datasource/story_camera_hint_datasource.dart';
-import 'package:pulse/features/story/presentation/cubit/story_camera_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_camera/story_camera_cubit.dart';
 import 'package:pulse/features/story/presentation/view/story_camera_view.dart';
 import 'package:pulse/features/story/presentation/widgets/story_camera/story_shutter.dart';
 

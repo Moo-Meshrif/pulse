@@ -9,8 +9,8 @@ import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/story_camera_cubit.dart';
-import '../cubit/story_camera_state.dart';
+import '../cubit/story_camera/story_camera_cubit.dart';
+import '../cubit/story_camera/story_camera_state.dart';
 import '../utils/enums/story_camera_notice.dart';
 import '../view/story_camera_view.dart';
 

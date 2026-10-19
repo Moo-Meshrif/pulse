@@ -8,8 +8,8 @@ import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/post_entity.dart';
-import '../cubit/add_edit_post_cubit.dart';
-import '../cubit/add_edit_post_state.dart';
+import '../cubit/add_edit_post/add_edit_post_cubit.dart';
+import '../cubit/add_edit_post/add_edit_post_state.dart';
 import '../view/add_edit_post_view.dart';
 
 /// `/create/post`: write and share a post (docs/specs/post/screens/s1-new-post.md). Closing with

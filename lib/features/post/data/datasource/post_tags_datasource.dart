@@ -29,27 +29,25 @@ final class SupabasePostTagsDatasource implements PostTagsDatasource {
   @override
   Future<List<TagPersonModel>> searchPeople(String? query, {int limit = 30}) =>
       Guard.run(() async {
-        final rows = await _client.rpc<dynamic>(
+        final rows = await _client.rpc<List<dynamic>>(
           'tag_search',
           params: {'p_q': query, 'p_limit': limit},
         );
-        return [
-          for (final row in rows as List)
-            TagPersonModel.fromJson(row as Map<String, dynamic>),
-        ];
+        return List<Map<String, dynamic>>.from(rows)
+            .map(TagPersonModel.fromJson)
+            .toList();
       });
 
   @override
   Future<List<TaggedPersonModel>> getTaggedPeople(String postId) =>
       Guard.run(() async {
-        final rows = await _client.rpc<dynamic>(
+        final rows = await _client.rpc<List<dynamic>>(
           'post_tagged_people',
           params: {'p_post': postId},
         );
-        return [
-          for (final row in rows as List)
-            TaggedPersonModel.fromJson(row as Map<String, dynamic>),
-        ];
+        return List<Map<String, dynamic>>.from(rows)
+            .map(TaggedPersonModel.fromJson)
+            .toList();
       });
 
   @override

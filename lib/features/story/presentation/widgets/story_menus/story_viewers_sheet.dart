@@ -5,7 +5,7 @@ import '../../../../../core/di/injection.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/theme/app_breakpoints.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../cubit/story_viewers_cubit.dart';
+import '../../cubit/story_viewers/story_viewers_cubit.dart';
 import '../../dimens/story_constants.dart';
 import '../../utils/enums/story_option.dart';
 import 'viewers_body.dart';

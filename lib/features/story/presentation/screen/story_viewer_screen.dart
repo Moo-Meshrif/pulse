@@ -6,8 +6,8 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../domain/entity/story_rail_item_entity.dart';
-import '../cubit/story_viewer_cubit.dart';
-import '../cubit/story_viewer_state.dart';
+import '../cubit/story_viewer/story_viewer_cubit.dart';
+import '../cubit/story_viewer/story_viewer_state.dart';
 import '../view/story_viewer_view.dart';
 
 /// `/story/:authorId`: one person's stories, then the next people of the rail

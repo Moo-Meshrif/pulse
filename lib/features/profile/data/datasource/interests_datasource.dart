@@ -27,7 +27,7 @@ final class SupabaseInterestsDatasource implements InterestsDatasource {
         .from('interests')
         .select()
         .order('sort_order', ascending: true);
-    return [for (final row in rows) InterestModel.fromJson(row)];
+    return rows.map(InterestModel.fromJson).toList();
   });
 
   @override

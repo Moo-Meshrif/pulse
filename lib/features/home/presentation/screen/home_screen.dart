@@ -7,15 +7,15 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/notice/notices.dart';
 import '../../../../shared/content/domain/entity/content_publish_status.dart';
-import '../../../post/presentation/cubit/post_actions_cubit.dart';
-import '../../../post/presentation/cubit/post_actions_state.dart';
+import '../../../post/presentation/cubit/post_actions/post_actions_cubit.dart';
+import '../../../post/presentation/cubit/post_actions/post_actions_state.dart';
 import '../../../post/presentation/utils/enums/post_row.dart';
-import '../cubit/bell_dot_cubit.dart';
-import '../cubit/feed_cubit.dart';
-import '../cubit/feed_state.dart';
-import '../cubit/post_publish_cubit.dart';
-import '../cubit/story_rail_cubit.dart';
-import '../cubit/story_rail_state.dart';
+import '../cubit/bell_dot/bell_dot_cubit.dart';
+import '../cubit/feed/feed_cubit.dart';
+import '../cubit/feed/feed_state.dart';
+import '../cubit/post_publish/post_publish_cubit.dart';
+import '../cubit/story_rail/story_rail_cubit.dart';
+import '../cubit/story_rail/story_rail_state.dart';
 import '../view/home_view.dart';
 
 /// The Home tab's root page: the feed of the people you follow.

@@ -6,7 +6,7 @@ import '../../../../../core/notice/notices.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../data/model/story_model.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
-import '../../cubit/story_viewer_cubit.dart';
+import '../../cubit/story_viewer/story_viewer_cubit.dart';
 import '../../dimens/story_constants.dart';
 import '../../dimens/story_dimens.dart';
 import '../../utils/enums/story_pause_reason.dart';

@@ -19,10 +19,10 @@ final class SupabaseAudienceDatasource implements AudienceDatasource {
 
   @override
   Future<AudienceSummaryModel> getSummary() => Guard.run(() async {
-    final rows = await _client.rpc<dynamic>('audience_summary');
-    final list = rows as List;
+    final rows = await _client.rpc<List<dynamic>>('audience_summary');
+    final list = List<Map<String, dynamic>>.from(rows);
     return list.isEmpty
         ? const AudienceSummaryModel()
-        : AudienceSummaryModel.fromJson(list.first as Map<String, dynamic>);
+        : AudienceSummaryModel.fromJson(list.first);
   });
 }

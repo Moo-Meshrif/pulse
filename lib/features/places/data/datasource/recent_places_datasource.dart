@@ -19,6 +19,6 @@ class RecentPlacesDatasource {
 
   Future<void> save(List<PlaceModel> places) => _storage.setValue<List<String>>(
     StorageKeys.recentPlaces,
-    [for (final place in places) place.toStored()],
+    places.map((place) => place.toStored()).toList(),
   );
 }

@@ -8,8 +8,8 @@ import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../cubit/audience_list_cubit.dart';
-import '../../cubit/audience_list_state.dart';
+import '../../cubit/audience_list/audience_list_cubit.dart';
+import '../../cubit/audience_list/audience_list_state.dart';
 import '../../dimens/story_dimens.dart';
 
 /// The title row of a list screen: back, the name of the list, and how many are selected.

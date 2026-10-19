@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../cubit/story_rail_cubit.dart';
-import '../../cubit/story_rail_state.dart';
+import '../../cubit/story_rail/story_rail_cubit.dart';
+import '../../cubit/story_rail/story_rail_state.dart';
 import '../../dimens/home_dimens.dart';
 import 'story_item.dart';
 import 'your_story_item.dart';

@@ -7,7 +7,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/home/presentation/cubit/story_rail_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cubit.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_item.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';

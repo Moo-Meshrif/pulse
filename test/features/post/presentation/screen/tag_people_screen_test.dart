@@ -6,7 +6,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/notice/notices.dart';
 import 'package:pulse/features/post/domain/entity/tag_person_entity.dart';
 import 'package:pulse/features/post/domain/use_case/search_tag_people_use_case.dart';
-import 'package:pulse/features/post/presentation/cubit/tag_people_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/tag_people/tag_people_cubit.dart';
 import 'package:pulse/features/post/presentation/screen/tag_people_screen.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
 import 'package:pulse/features/post/presentation/utils/tag_choice.dart';

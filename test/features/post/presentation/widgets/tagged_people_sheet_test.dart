@@ -8,7 +8,7 @@ import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dar
 import 'package:pulse/features/post/data/enums/follow_state.dart';
 import 'package:pulse/features/post/domain/entity/tagged_person_entity.dart';
 import 'package:pulse/features/post/domain/use_case/get_tagged_people_use_case.dart';
-import 'package:pulse/features/post/presentation/cubit/tagged_people_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/tagged_people_result.dart';
 import 'package:pulse/features/post/presentation/widgets/tagged_people/tagged_people_sheet.dart';
 

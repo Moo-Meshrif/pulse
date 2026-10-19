@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/di/injection.dart';
-import 'package:pulse/features/post/presentation/cubit/tag_in_photo_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/tag_in_photo/tag_in_photo_cubit.dart';
 import 'package:pulse/features/post/presentation/screen/tag_in_photo_screen.dart';
 import 'package:pulse/features/post/presentation/utils/tag_choice.dart';
 import 'package:pulse/features/post/presentation/utils/tag_people_args.dart';

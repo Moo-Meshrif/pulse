@@ -35,12 +35,12 @@ import '../../features/auth/domain/use_case/watch_password_recovery_use_case.dar
     as _i121;
 import '../../features/auth/domain/use_case/watch_session_ended_use_case.dart'
     as _i793;
-import '../../features/auth/presentation/cubit/forgot_password_cubit.dart'
+import '../../features/auth/presentation/cubit/forgot_password/forgot_password_cubit.dart'
     as _i104;
-import '../../features/auth/presentation/cubit/reset_password_cubit.dart'
+import '../../features/auth/presentation/cubit/reset_password/reset_password_cubit.dart'
     as _i476;
-import '../../features/auth/presentation/cubit/sign_in_cubit.dart' as _i329;
-import '../../features/auth/presentation/cubit/sign_up_cubit.dart' as _i102;
+import '../../features/auth/presentation/cubit/sign_in/sign_in_cubit.dart' as _i329;
+import '../../features/auth/presentation/cubit/sign_up/sign_up_cubit.dart' as _i102;
 import '../../features/control/presentation/cubit/control_cubit.dart' as _i598;
 import '../../features/follow/data/datasource/follows_datasource.dart'
     as _i1001;
@@ -56,11 +56,11 @@ import '../../features/follow/domain/use_case/respond_to_follow_request_use_case
     as _i534;
 import '../../features/follow/domain/use_case/toggle_follow_use_case.dart'
     as _i130;
-import '../../features/home/presentation/cubit/bell_dot_cubit.dart' as _i472;
-import '../../features/home/presentation/cubit/feed_cubit.dart' as _i646;
-import '../../features/home/presentation/cubit/post_publish_cubit.dart'
+import '../../features/home/presentation/cubit/bell_dot/bell_dot_cubit.dart' as _i472;
+import '../../features/home/presentation/cubit/feed/feed_cubit.dart' as _i646;
+import '../../features/home/presentation/cubit/post_publish/post_publish_cubit.dart'
     as _i704;
-import '../../features/home/presentation/cubit/story_rail_cubit.dart' as _i363;
+import '../../features/home/presentation/cubit/story_rail/story_rail_cubit.dart' as _i363;
 import '../../features/legal/data/datasource/legal_datasource.dart' as _i604;
 import '../../features/legal/presentation/cubit/legal_cubit.dart' as _i736;
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
@@ -102,15 +102,15 @@ import '../../features/post/domain/use_case/set_post_save_use_case.dart'
 import '../../features/post/domain/use_case/sign_post_media_urls_use_case.dart'
     as _i599;
 import '../../features/post/domain/use_case/update_post_use_case.dart' as _i908;
-import '../../features/post/presentation/cubit/add_edit_post_cubit.dart'
+import '../../features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart'
     as _i897;
-import '../../features/post/presentation/cubit/post_actions_cubit.dart' as _i72;
-import '../../features/post/presentation/cubit/post_visibility_cubit.dart'
+import '../../features/post/presentation/cubit/post_actions/post_actions_cubit.dart' as _i72;
+import '../../features/post/presentation/cubit/post_visibility/post_visibility_cubit.dart'
     as _i264;
-import '../../features/post/presentation/cubit/tag_in_photo_cubit.dart'
+import '../../features/post/presentation/cubit/tag_in_photo/tag_in_photo_cubit.dart'
     as _i962;
-import '../../features/post/presentation/cubit/tag_people_cubit.dart' as _i442;
-import '../../features/post/presentation/cubit/tagged_people_cubit.dart'
+import '../../features/post/presentation/cubit/tag_people/tag_people_cubit.dart' as _i442;
+import '../../features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart'
     as _i932;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/interests_datasource.dart'
@@ -153,16 +153,16 @@ import '../../features/story/data/repository/story_upload_repository.dart'
 import '../../features/story/domain/entity/captured_story_media.dart' as _i2;
 import '../../features/story/domain/use_case/get_story_rail_use_case.dart'
     as _i849;
-import '../../features/story/presentation/cubit/audience_list_cubit.dart'
+import '../../features/story/presentation/cubit/audience_list/audience_list_cubit.dart'
     as _i117;
-import '../../features/story/presentation/cubit/story_audience_cubit.dart'
+import '../../features/story/presentation/cubit/story_audience/story_audience_cubit.dart'
     as _i219;
-import '../../features/story/presentation/cubit/story_camera_cubit.dart'
+import '../../features/story/presentation/cubit/story_camera/story_camera_cubit.dart'
     as _i507;
-import '../../features/story/presentation/cubit/story_edit_cubit.dart' as _i144;
-import '../../features/story/presentation/cubit/story_viewer_cubit.dart'
+import '../../features/story/presentation/cubit/story_edit/story_edit_cubit.dart' as _i144;
+import '../../features/story/presentation/cubit/story_viewer/story_viewer_cubit.dart'
     as _i125;
-import '../../features/story/presentation/cubit/story_viewers_cubit.dart'
+import '../../features/story/presentation/cubit/story_viewers/story_viewers_cubit.dart'
     as _i56;
 import '../../shared/content/data/datasource/audience_datasource.dart' as _i61;
 import '../../shared/content/data/datasource/content_actions_datasource.dart'

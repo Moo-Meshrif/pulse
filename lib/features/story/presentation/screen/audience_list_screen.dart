@@ -7,8 +7,8 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../data/enums/audience_list.dart';
-import '../cubit/audience_list_cubit.dart';
-import '../cubit/audience_list_state.dart';
+import '../cubit/audience_list/audience_list_cubit.dart';
+import '../cubit/audience_list/audience_list_state.dart';
 import '../view/audience_list_view.dart';
 
 /// `/audience/close-friends` and `/audience/hidden`: pick people from your followers

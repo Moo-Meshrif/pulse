@@ -83,7 +83,7 @@ final class SupabasePostsDatasource implements PostsDatasource {
     DateTime? beforeCreated,
     String? beforeId,
   }) => Guard.run(() async {
-    final rows = await _client.rpc<dynamic>(
+    final rows = await _client.rpc<List<dynamic>>(
       'home_feed',
       params: {
         'p_limit': limit,
@@ -92,10 +92,8 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_before_id': ?beforeId,
       },
     );
-    final posts = [
-      for (final row in rows as List)
-        PostModel.fromJson(row as Map<String, dynamic>),
-    ];
+    final posts = List<Map<String, dynamic>>.from(rows).map(PostModel.fromJson)
+        .toList();
     // A full page may have more behind it; a short one is the end.
     final last = posts.length < limit ? null : posts.last;
     return FeedPageModel(
@@ -141,13 +139,13 @@ final class SupabasePostsDatasource implements PostsDatasource {
           'p_kind': kind.wire,
           'p_caption': caption,
           'p_location': location,
-          'p_media': [for (final item in media) item.toJson()],
+          'p_media': media.map((item) => item.toJson()).toList(),
           'p_comments_enabled': commentsEnabled,
           'p_visibility': visibility.wire,
           'p_mood_kind': moodKind?.wire,
           'p_mood_key': moodKey,
           'p_mood_text': moodText,
-          'p_tags': [for (final tag in tags) tag.toJson()],
+          'p_tags': tags.map((tag) => tag.toJson()).toList(),
         },
       ),
     );
@@ -170,11 +168,11 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_id': id,
         'p_caption': caption,
         'p_location': location,
-        'p_media': [for (final item in media) item.toJson()],
+        'p_media': media.map((item) => item.toJson()).toList(),
         'p_mood_kind': moodKind?.wire,
         'p_mood_key': moodKey,
         'p_mood_text': moodText,
-        'p_tags': [for (final tag in tags) tag.toJson()],
+        'p_tags': tags.map((tag) => tag.toJson()).toList(),
       },
     ),
   );

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../cubit/feed_cubit.dart';
+import '../../cubit/feed/feed_cubit.dart';
 import 'feed_message_page.dart';
 
 /// The first load failed: the same page with a way to try again.

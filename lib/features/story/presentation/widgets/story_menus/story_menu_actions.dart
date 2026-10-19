@@ -10,7 +10,7 @@ import '../../../../../core/utils/cached_picture.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/enums/story_media_type.dart';
 import '../../../data/model/story_model.dart';
-import '../../cubit/story_viewer_cubit.dart';
+import '../../cubit/story_viewer/story_viewer_cubit.dart';
 import '../../utils/story_snapshot.dart';
 import 'story_confirm_dialog.dart';
 

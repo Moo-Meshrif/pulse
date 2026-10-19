@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../cubit/add_edit_post_cubit.dart';
-import '../../cubit/add_edit_post_state.dart';
+import '../../cubit/add_edit_post/add_edit_post_cubit.dart';
+import '../../cubit/add_edit_post/add_edit_post_state.dart';
 import '../../dimens/post_composer_dimens.dart';
 
 /// The "Share post" pill ("Save" when editing) pinned under the scroll area.

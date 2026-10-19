@@ -9,8 +9,8 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/services/photo_picker_service.dart';
 import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/sign_up_cubit.dart';
-import '../cubit/sign_up_state.dart';
+import '../cubit/sign_up/sign_up_cubit.dart';
+import '../cubit/sign_up/sign_up_state.dart';
 import '../dimens/auth_dimens.dart';
 import '../widgets/auth_header.dart';
 

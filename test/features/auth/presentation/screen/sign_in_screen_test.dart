@@ -7,7 +7,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/auth/presentation/cubit/sign_in_cubit.dart';
+import 'package:pulse/features/auth/presentation/cubit/sign_in/sign_in_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_in_screen.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';

@@ -20,10 +20,10 @@ final class SupabaseActivityDatasource implements ActivityDatasource {
 
   @override
   Future<UnreadActivityModel> getUnreadCount() => Guard.run(() async {
-    final rows = await _client.rpc<dynamic>('activity_unread_count');
-    final row = (rows as List).firstOrNull;
+    final rows = await _client.rpc<List<dynamic>>('activity_unread_count');
+    final row = List<Map<String, dynamic>>.from(rows).firstOrNull;
     return row == null
         ? const UnreadActivityModel()
-        : UnreadActivityModel.fromJson(row as Map<String, dynamic>);
+        : UnreadActivityModel.fromJson(row);
   });
 }

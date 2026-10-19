@@ -143,7 +143,7 @@ final class SupabaseMediaFilesDatasource implements MediaFilesDatasource {
   @override
   Future<List<String>> listFiles(String folder) => Guard.run(() async {
     final objects = await _client.storage.from(_bucket).list(path: folder);
-    return [for (final object in objects) object.name];
+    return objects.map((object) => object.name).toList();
   });
 
   @override
@@ -151,7 +151,7 @@ final class SupabaseMediaFilesDatasource implements MediaFilesDatasource {
     try {
       final folder = '$_uid/$name';
       final objects = await _client.storage.from(_bucket).list(path: folder);
-      return [for (final object in objects) '$folder/${object.name}'];
+      return objects.map((object) => '$folder/${object.name}').toList();
     } on Object {
       return const [];
     }

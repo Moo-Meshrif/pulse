@@ -4,7 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/features/post/data/datasource/visibility_notice_datasource.dart';
-import 'package:pulse/features/post/presentation/cubit/post_visibility_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/post_visibility/post_visibility_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/post_options_actions.dart';
 import 'package:pulse/features/post/presentation/utils/post_options_data.dart';
 import 'package:pulse/features/post/presentation/utils/post_visibility_result.dart';

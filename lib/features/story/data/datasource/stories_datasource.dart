@@ -88,27 +88,25 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
   @override
   Future<List<StoryRailItemModel>> getStoryRail({int limit = 30}) =>
       Guard.run(() async {
-        final rows = await _client.rpc<dynamic>(
+        final rows = await _client.rpc<List<dynamic>>(
           'story_rail',
           params: {'p_limit': limit},
         );
-        return [
-          for (final row in rows as List)
-            StoryRailItemModel.fromJson(row as Map<String, dynamic>),
-        ];
+        return List<Map<String, dynamic>>.from(rows)
+            .map(StoryRailItemModel.fromJson)
+            .toList();
       });
 
   @override
   Future<List<StoryModel>> getAuthorStories(String authorId) =>
       Guard.run(() async {
-        final rows = await _client.rpc<dynamic>(
+        final rows = await _client.rpc<List<dynamic>>(
           'author_stories',
           params: {'p_author': authorId},
         );
-        final stories = [
-          for (final row in rows as List)
-            StoryModel.fromJson(row as Map<String, dynamic>),
-        ];
+        final stories = List<Map<String, dynamic>>.from(rows)
+            .map(StoryModel.fromJson)
+            .toList();
         final urls = await _sign([
           for (final s in stories) ...[?s.path, ?s.thumbPath],
         ]);
@@ -155,7 +153,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
     required int limit,
     DateTime? before,
   }) => Guard.run(() async {
-    final rows = await _client.rpc<dynamic>(
+    final rows = await _client.rpc<List<dynamic>>(
       'story_viewers',
       params: {
         'p_story': storyId,
@@ -163,10 +161,9 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
         if (before != null) 'p_before': before.toUtc().toIso8601String(),
       },
     );
-    return [
-      for (final row in rows as List)
-        StoryViewerModel.fromJson(row as Map<String, dynamic>),
-    ];
+    return List<Map<String, dynamic>>.from(rows)
+        .map(StoryViewerModel.fromJson)
+        .toList();
   });
 
   @override
@@ -184,7 +181,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
     required int limit,
     required int offset,
   }) => Guard.run(() async {
-    final rows = await _client.rpc<dynamic>(
+    final rows = await _client.rpc<List<dynamic>>(
       'audience_people',
       params: {
         'p_list': list.wire,
@@ -194,10 +191,9 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
         'p_offset': offset,
       },
     );
-    return [
-      for (final row in rows as List)
-        AudiencePersonModel.fromJson(row as Map<String, dynamic>),
-    ];
+    return List<Map<String, dynamic>>.from(rows)
+        .map(AudiencePersonModel.fromJson)
+        .toList();
   });
 
   @override
@@ -226,7 +222,7 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
       'height': story.height,
       'duration_ms': story.durationMs,
       'blurhash': story.blurhash,
-      'overlays': [for (final o in story.overlays) o.toJson()],
+      'overlays': story.overlays.map((o) => o.toJson()).toList(),
     }),
   );
 }

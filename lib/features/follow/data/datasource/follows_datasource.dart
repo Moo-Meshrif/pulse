@@ -68,10 +68,9 @@ final class SupabaseFollowsDatasource implements FollowsDatasource {
       'suggested_profiles',
       params: {'p_tab': tab.value, 'p_limit': limit, 'p_offset': offset},
     );
-    return [
-      for (final row in rows)
-        SuggestedProfileModel.fromJson(row as Map<String, dynamic>),
-    ];
+    return List<Map<String, dynamic>>.from(rows)
+        .map(SuggestedProfileModel.fromJson)
+        .toList();
   });
 
   @override
@@ -118,10 +117,9 @@ final class SupabaseFollowsDatasource implements FollowsDatasource {
       'follow_requests',
       params: {'p_limit': limit, 'p_offset': offset},
     );
-    return [
-      for (final row in rows)
-        FollowRequestModel.fromJson(row as Map<String, dynamic>),
-    ];
+    return List<Map<String, dynamic>>.from(rows)
+        .map(FollowRequestModel.fromJson)
+        .toList();
   });
 
   @override

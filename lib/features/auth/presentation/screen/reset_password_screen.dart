@@ -7,8 +7,8 @@ import '../../../../core/extensions/l10n.dart';
 import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/widgets/confirmation_dialog/confirmation_dialog.dart';
-import '../cubit/reset_password_cubit.dart';
-import '../cubit/reset_password_state.dart';
+import '../cubit/reset_password/reset_password_cubit.dart';
+import '../cubit/reset_password/reset_password_state.dart';
 import '../view/reset_password_view.dart';
 
 /// `/reset-password`: provides [ResetPasswordCubit], shows the "Password updated" dialog and leaves to

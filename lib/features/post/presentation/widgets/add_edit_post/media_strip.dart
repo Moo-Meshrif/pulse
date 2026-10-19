@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/services/media_picker_service.dart';
-import '../../cubit/add_edit_post_cubit.dart';
-import '../../cubit/add_edit_post_state.dart';
+import '../../cubit/add_edit_post/add_edit_post_cubit.dart';
+import '../../cubit/add_edit_post/add_edit_post_state.dart';
 import '../../dimens/post_composer_dimens.dart';
 import 'add_media_tile.dart';
 import 'media_thumb.dart';

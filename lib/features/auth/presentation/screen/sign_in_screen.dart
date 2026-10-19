@@ -5,8 +5,8 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/router/app_navigator.dart';
-import '../cubit/sign_in_cubit.dart';
-import '../cubit/sign_in_state.dart';
+import '../cubit/sign_in/sign_in_cubit.dart';
+import '../cubit/sign_in/sign_in_state.dart';
 import '../view/sign_in_view.dart';
 
 /// `/sign-in`: provides [SignInCubit], follows its destination (Home, a sign-up step, or the Verify

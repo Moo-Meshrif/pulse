@@ -6,7 +6,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/theme/app_theme.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/auth/presentation/cubit/reset_password_cubit.dart';
+import 'package:pulse/features/auth/presentation/cubit/reset_password/reset_password_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/reset_password_screen.dart';
 import 'package:pulse/features/auth/presentation/widgets/auth_close_button.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';

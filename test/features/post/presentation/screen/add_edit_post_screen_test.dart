@@ -14,7 +14,7 @@ import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
-import 'package:pulse/features/post/presentation/cubit/add_edit_post_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart';
 import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
 import 'package:pulse/features/post/presentation/utils/tag_choice.dart';

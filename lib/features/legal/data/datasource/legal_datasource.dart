@@ -28,6 +28,8 @@ final class SupabaseLegalDatasource implements LegalDatasource {
           params: {'p_type': type, 'p_locale': languageCode},
         );
         if (rows.isEmpty) throw const NotFoundFailure();
-        return LegalDocumentModel.fromJson(rows.first as Map<String, dynamic>);
+        return LegalDocumentModel.fromJson(
+          Map<String, dynamic>.from(rows.first as Map),
+        );
       });
 }

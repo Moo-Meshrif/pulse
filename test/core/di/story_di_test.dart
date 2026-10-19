@@ -13,12 +13,12 @@ import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
 import 'package:pulse/features/story/domain/entity/captured_story_media.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
-import 'package:pulse/features/story/presentation/cubit/audience_list_cubit.dart';
-import 'package:pulse/features/story/presentation/cubit/story_audience_cubit.dart';
-import 'package:pulse/features/story/presentation/cubit/story_camera_cubit.dart';
-import 'package:pulse/features/story/presentation/cubit/story_edit_cubit.dart';
-import 'package:pulse/features/story/presentation/cubit/story_viewer_cubit.dart';
-import 'package:pulse/features/story/presentation/cubit/story_viewers_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/audience_list/audience_list_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_audience/story_audience_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_camera/story_camera_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_edit/story_edit_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_viewer/story_viewer_cubit.dart';
+import 'package:pulse/features/story/presentation/cubit/story_viewers/story_viewers_cubit.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../helpers/pump_app.dart';

@@ -16,7 +16,7 @@ import 'package:pulse/core/theme/colors/app_colors.dart';
 import 'package:pulse/core/utils/country_names_delegate.dart';
 import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/core/widgets/widgets.dart';
-import 'package:pulse/features/auth/presentation/cubit/sign_up_cubit.dart';
+import 'package:pulse/features/auth/presentation/cubit/sign_up/sign_up_cubit.dart';
 import 'package:pulse/features/auth/presentation/screen/sign_up_screen.dart';
 import 'package:pulse/features/auth/presentation/widgets/follow_row.dart';
 import 'package:pulse/features/auth/presentation/widgets/labeled_checkbox.dart';

@@ -8,7 +8,7 @@ import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/bell_dot_cubit.dart';
+import '../cubit/bell_dot/bell_dot_cubit.dart';
 import '../dimens/home_dimens.dart';
 import 'home_icon_button.dart';
 

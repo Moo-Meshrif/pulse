@@ -6,7 +6,7 @@ import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../cubit/story_edit_cubit.dart';
+import '../../cubit/story_edit/story_edit_cubit.dart';
 import '../../dimens/story_constants.dart';
 
 /// Typing a text sticker over the dimmed edit screen. Resolves with the words (the "Done" button, or
