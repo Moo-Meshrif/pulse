@@ -5,6 +5,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
@@ -28,6 +29,8 @@ class _NoBlurhash implements BlurhashService {
 class _Thumbs extends Mock implements VideoThumbnailService {}
 
 class _Gallery extends Mock implements GalleryService {}
+
+class _VideoOverlay extends Fake implements VideoOverlayService {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
 
@@ -75,6 +78,7 @@ void main() {
         _Thumbs(),
         _NoBlurhash(),
         gallery,
+        _VideoOverlay(),
         account,
         media,
       ),

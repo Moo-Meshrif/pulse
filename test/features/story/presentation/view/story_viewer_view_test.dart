@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/enums/story_overlay_type.dart';
@@ -69,6 +70,8 @@ class _Stories extends Fake implements StoriesDatasource {
 
 class _Gallery extends Fake implements GalleryService {}
 
+class _VideoOverlay extends Fake implements VideoOverlayService {}
+
 StoryModel story(String id, {bool liked = false, int? views, DateTime? at}) =>
     StoryModel(
       id: id,
@@ -113,6 +116,7 @@ void main() {
       _Rail(),
       stories,
       _Gallery(),
+      _VideoOverlay(),
       okSetMute(),
       okReportContent(),
       okRemoveMediaFiles(),

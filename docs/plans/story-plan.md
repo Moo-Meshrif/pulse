@@ -16,7 +16,7 @@ Phases 0-3 are done; Phases 4-11 are built and tested on doubles, and only the d
 ## Summary
 - **Screens:** S1 story viewer (panel 1 others', panel 2 own + count chip), S6 viewer options / report / delete / viewers sheet, S5 camera and microphone permissions (shared: story, short, profile photo), S2 camera and recording, S3 edit and share, S4 posting state on the rail.
 - **Goal:** 24-hour photo and video stories: watch a person's stories with gestures, like, mark seen, manage your own (viewers, save, delete), mute or report others; create from camera or gallery with text and location stickers; upload in the background with real progress on the rail.
-- **Out of scope** (specs): replies (go to Chat later, `00-overview`, Q3), audience picker and audience column (Q18, read-only row now), the Home rail UI (home feature; a temporary rail stands in, P2), Create sheet Story row (Q2: none), Copy link (P5, hidden), video burn-in on save (P4).
+- **Out of scope** (specs): replies (go to Chat later, `00-overview`, Q3), audience picker and audience column (Q18, read-only row now), the Home rail UI (home feature; a temporary rail stands in, P2), Create sheet Story row (Q2: none), Copy link (P5, hidden), ~~video burn-in on save (P4)~~ built.
 - **Build order** (progress.md): control-page (done), story, post, home.
 
 ## Reuse
@@ -49,7 +49,7 @@ Phases 0-3 are done; Phases 4-11 are built and tested on doubles, and only the d
 | T1 | ~~Temporary rail in the Home placeholder~~ removed after device testing (2026-10-14): Home's real rail will use `GetStoryRailUseCase`, `WatchStoryUploadUseCase`, `RetryStoryUploadUseCase`, `WatchStoryRailChangesUseCase` and `StoryViewerArgs` | the Home tab | 9 |
 | T2 | Copy link row hidden: no story link format yet (P5) | the options sheet for someone's story | 5 |
 | T3 | Go to profile opens a placeholder until the profile screens exist | the options sheet's Go to profile action | 5 |
-| T4 | Video saved without overlays; burn-in later (P4) | the save-to-device action | 5 |
+| T4 | ~~Video saved without overlays~~ done: burn-in built, see `story-video-burn-in-plan.md` (native code not run on a device yet) | the save-to-device action | 5 |
 | T5 | ~~"Who can see this" read-only~~ done: picker, lists and audience column (`s7-who-can-see.md`); the migration `20261015120000_story_audience.sql` waits for approval before it is applied | the own-story options sheet | 5 |
 | T6 | Report sheet: post adds its Mute / Unfollow rows to the sent step when the post feature is built (P6) | the shared report sheet | 2 |
 | T7 | Permission screens also serve the short and profile-photo camera flows; only story uses them now | the shared permission flow | 6 |

@@ -47,3 +47,10 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// Same version Gradle resolves at runtime (other plugins pull 1.9.2); compiling against an older one breaks at runtime. VideoOverlayPlugin draws stickers on videos.
+dependencies {
+    implementation("androidx.media3:media3-transformer:1.9.2")
+    implementation("androidx.media3:media3-effect:1.9.2")
+    implementation("androidx.media3:media3-common:1.9.2")
+}

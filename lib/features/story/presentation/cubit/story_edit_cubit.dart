@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/blurhash_service.dart';
 import '../../../../core/services/gallery_service.dart';
+import '../../../../core/services/video_overlay_service.dart';
 import '../../../../core/services/video_thumbnail_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../profile/domain/entity/last_account_entity.dart';
@@ -28,6 +29,7 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
     this._thumbnails,
     this._blurhash,
     this._gallery,
+    this._videoOverlay,
     GetLastAccountUseCase account,
     @factoryParam CapturedStoryMedia media,
   ) : me = account(),
@@ -42,6 +44,7 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
   final VideoThumbnailService _thumbnails;
   final BlurhashService _blurhash;
   final GalleryService _gallery;
+  final VideoOverlayService _videoOverlay;
 
   /// Who is posting, for the "Your story" pill; null when this device has no saved account.
   final LastAccountEntity? me;
@@ -167,10 +170,19 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
         : _gallery.saveImage(bytes),
   );
 
-  /// Saves the video as it is: the stickers are not burned in yet.
-  // TODO(story-plan T4): video saved without overlays; burn-in later (P4).
-  Future<void> saveVideo() =>
-      _saveWith(() => _gallery.saveVideoFile(state.media.path));
+  /// Saves the video; with stickers on it they are drawn onto a copy first ([overlayPng] comes from the
+  /// screen's snapshot), and the copy is deleted afterwards.
+  Future<void> saveVideo(Uint8List? overlayPng) => _saveWith(() async {
+    final path = state.media.path;
+    if (state.stickers.isEmpty) return _gallery.saveVideoFile(path);
+    if (overlayPng == null) throw const UnexpectedFailure();
+    final burned = await _videoOverlay.burn(path, overlayPng);
+    try {
+      await _gallery.saveVideoFile(burned);
+    } finally {
+      await _videoOverlay.delete(burned);
+    }
+  });
 
   Future<void> _saveWith(Future<void> Function() save) async {
     if (state.isSaving) return;

@@ -8,6 +8,7 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
@@ -53,6 +54,8 @@ class _Stories extends Fake implements StoriesDatasource {
 
 class _Gallery extends Fake implements GalleryService {}
 
+class _VideoOverlay extends Fake implements VideoOverlayService {}
+
 void main() {
   HttpOverrides? previous;
   setUpAll(() {
@@ -68,6 +71,7 @@ void main() {
         _Rail(),
         _Stories(),
         _Gallery(),
+        _VideoOverlay(),
         okSetMute(),
         okReportContent(),
         okRemoveMediaFiles(),

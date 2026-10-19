@@ -18,13 +18,57 @@ Future<Uint8List?> renderStoryImage(
 }) async {
   final size = MediaQuery.sizeOf(context);
   final deviceRatio = MediaQuery.devicePixelRatioOf(context);
-  final overlay = Overlay.of(context, rootOverlay: true);
   final provider = image;
   try {
     await precacheImage(provider, context);
   } catch (_) {
     return null;
   }
+  if (!context.mounted) return null;
+  return _capture(
+    context,
+    size: size,
+    pixelRatio: width == null
+        ? deviceRatio
+        : (width / size.width).clamp(1.0, 3.0),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        const ColoredBox(color: Colors.black),
+        Image(image: provider, fit: BoxFit.cover),
+        StoryOverlaysLayer(overlays: overlays),
+      ],
+    ),
+  );
+}
+
+/// Draws only the stickers and text of a video story on a transparent picture of the video's shape
+/// ([width] x [height], any size with the same ratio), and returns the PNG bytes; null when it cannot be
+/// drawn. Positions are fractions of the frame, and the sticker size follows the screen width, so it looks
+/// like the viewer's.
+Future<Uint8List?> renderStoryOverlay(
+  BuildContext context, {
+  required List<StoryOverlayModel> overlays,
+  required int width,
+  required int height,
+}) {
+  final screenWidth = MediaQuery.sizeOf(context).width;
+  return _capture(
+    context,
+    size: Size(screenWidth, screenWidth * height / width),
+    pixelRatio: (width / screenWidth).clamp(1.0, 3.0),
+    child: StoryOverlaysLayer(overlays: overlays),
+  );
+}
+
+/// Builds [child] off screen in the root overlay for a frame, reads it as a PNG, and takes it out again.
+Future<Uint8List?> _capture(
+  BuildContext context, {
+  required Size size,
+  required double pixelRatio,
+  required Widget child,
+}) async {
+  final overlay = Overlay.of(context, rootOverlay: true);
   final key = GlobalKey();
   final entry = OverlayEntry(
     builder: (_) => Positioned(
@@ -34,17 +78,7 @@ Future<Uint8List?> renderStoryImage(
       height: size.height,
       child: RepaintBoundary(
         key: key,
-        child: Material(
-          type: MaterialType.transparency,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              const ColoredBox(color: Colors.black),
-              Image(image: provider, fit: BoxFit.cover),
-              StoryOverlaysLayer(overlays: overlays),
-            ],
-          ),
-        ),
+        child: Material(type: MaterialType.transparency, child: child),
       ),
     ),
   );
@@ -54,11 +88,8 @@ Future<Uint8List?> renderStoryImage(
     final boundary =
         key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
     if (boundary == null) return null;
-    final ratio = width == null
-        ? deviceRatio
-        : (width / size.width).clamp(1.0, 3.0);
-    final image = await boundary.toImage(pixelRatio: ratio);
-    final data = await image.toByteData(format: ui.ImageByteFormat.png);
+    final picture = await boundary.toImage(pixelRatio: pixelRatio);
+    final data = await picture.toByteData(format: ui.ImageByteFormat.png);
     return data?.buffer.asUint8List();
   } finally {
     entry.remove();

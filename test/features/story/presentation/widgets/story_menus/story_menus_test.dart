@@ -7,6 +7,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
@@ -100,6 +101,8 @@ class _Stories extends Fake implements StoriesDatasource {
 
 class _Gallery extends Fake implements GalleryService {}
 
+class _VideoOverlay extends Fake implements VideoOverlayService {}
+
 class _Mute extends Fake implements SetMuteUseCase {
   final calls = <(String, bool)>[];
 
@@ -159,6 +162,7 @@ void main() {
       _Rail(),
       stories,
       _Gallery(),
+      _VideoOverlay(),
       mute,
       report,
       _RemoveFiles(),

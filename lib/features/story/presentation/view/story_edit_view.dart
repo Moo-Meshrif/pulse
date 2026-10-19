@@ -78,7 +78,18 @@ class StoryEditView extends StatelessWidget {
     final cubit = context.read<StoryEditCubit>();
     final media = cubit.state.media;
     if (media.type == StoryMediaType.video) {
-      await cubit.saveVideo();
+      final stickers = cubit.state.stickers;
+      final width = media.width;
+      final height = media.height;
+      final png = stickers.isEmpty || width == null || height == null
+          ? null
+          : await renderStoryOverlay(
+              context,
+              overlays: [for (final s in stickers) s.overlay],
+              width: width,
+              height: height,
+            );
+      await cubit.saveVideo(png);
       return;
     }
     final bytes = await renderStoryImage(

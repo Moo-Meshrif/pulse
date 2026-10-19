@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
@@ -27,6 +28,8 @@ class _NoBlurhash implements BlurhashService {
 
 class _Gallery extends Mock implements GalleryService {}
 
+class _VideoOverlay extends Mock implements VideoOverlayService {}
+
 class _Account extends Mock implements GetLastAccountUseCase {}
 
 const _photo = CapturedStoryMedia(
@@ -47,6 +50,7 @@ void main() {
   late _Uploads uploads;
   late _Thumbs thumbs;
   late _Gallery gallery;
+  late _VideoOverlay videoOverlay;
   late _Account account;
 
   setUpAll(() {
@@ -65,16 +69,27 @@ void main() {
     uploads = _Uploads();
     thumbs = _Thumbs();
     gallery = _Gallery();
+    videoOverlay = _VideoOverlay();
     account = _Account();
     when(() => account()).thenReturn(null);
     when(() => uploads.enqueue(any())).thenReturn(true);
     when(() => thumbs.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
     when(() => gallery.saveImage(any())).thenAnswer((_) async {});
     when(() => gallery.saveVideoFile(any())).thenAnswer((_) async {});
+    when(() => videoOverlay.burn(any(), any()))
+        .thenAnswer((_) async => '/b.mp4');
+    when(() => videoOverlay.delete(any())).thenAnswer((_) async {});
   });
 
-  StoryEditCubit build([CapturedStoryMedia media = _photo]) =>
-      StoryEditCubit(uploads, thumbs, _NoBlurhash(), gallery, account, media);
+  StoryEditCubit build([CapturedStoryMedia media = _photo]) => StoryEditCubit(
+    uploads,
+    thumbs,
+    _NoBlurhash(),
+    gallery,
+    videoOverlay,
+    account,
+    media,
+  );
 
   group('stickers', () {
     test('text is added in the middle, white, trimmed', () {
@@ -219,18 +234,59 @@ void main() {
       expect(cubit.state.notice, StoryEditNotice.saveFailed);
     });
 
-    test('a video file is saved as it is', () async {
+    test('a video without stickers is saved as it is', () async {
       final cubit = build(_video);
-      await cubit.saveVideo();
+      await cubit.saveVideo(null);
       verify(() => gallery.saveVideoFile('/v.mp4')).called(1);
+      verifyNever(() => videoOverlay.burn(any(), any()));
       expect(cubit.state.notice, StoryEditNotice.saved);
+    });
+
+    test(
+      'a video with stickers is burned, saved, and the copy deleted',
+      () async {
+        final cubit = build(_video)..addText('Hi');
+        await cubit.saveVideo(Uint8List.fromList([1]));
+        verifyInOrder([
+          () => videoOverlay.burn('/v.mp4', any()),
+          () => gallery.saveVideoFile('/b.mp4'),
+          () => videoOverlay.delete('/b.mp4'),
+        ]);
+        verifyNever(() => gallery.saveVideoFile('/v.mp4'));
+        expect(cubit.state.notice, StoryEditNotice.saved);
+      },
+    );
+
+    test('a failed burn is a failed save and saves nothing', () async {
+      when(() => videoOverlay.burn(any(), any()))
+          .thenThrow(const UnexpectedFailure());
+      final cubit = build(_video)..addText('Hi');
+      await cubit.saveVideo(Uint8List.fromList([1]));
+      verifyNever(() => gallery.saveVideoFile(any()));
+      expect(cubit.state.notice, StoryEditNotice.saveFailed);
+    });
+
+    test('a failed gallery save still deletes the copy', () async {
+      when(() => gallery.saveVideoFile(any()))
+          .thenThrow(const PermissionFailure());
+      final cubit = build(_video)..addText('Hi');
+      await cubit.saveVideo(Uint8List.fromList([1]));
+      verify(() => videoOverlay.delete('/b.mp4')).called(1);
+      expect(cubit.state.notice, StoryEditNotice.saveFailed);
+    });
+
+    test('stickers but no snapshot is a failed save', () async {
+      final cubit = build(_video)..addText('Hi');
+      await cubit.saveVideo(null);
+      verifyNever(() => videoOverlay.burn(any(), any()));
+      expect(cubit.state.notice, StoryEditNotice.saveFailed);
     });
 
     test('a refused library is a failed save', () async {
       when(() => gallery.saveVideoFile(any()))
           .thenThrow(const PermissionFailure());
       final cubit = build(_video);
-      await cubit.saveVideo();
+      await cubit.saveVideo(null);
       expect(cubit.state.notice, StoryEditNotice.saveFailed);
     });
   });

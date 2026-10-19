@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +8,7 @@ import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/model/story_model.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
@@ -26,6 +28,8 @@ class _Stories extends Mock implements StoriesDatasource {}
 
 class _Gallery extends Mock implements GalleryService {}
 
+class _VideoOverlay extends Mock implements VideoOverlayService {}
+
 StoryRailItemEntity person(String id, {bool isMe = false}) =>
     StoryRailItemEntity(
       authorId: id,
@@ -42,6 +46,7 @@ void main() {
   late _Rail rail;
   late _Stories stories;
   late _Gallery gallery;
+  late _VideoOverlay videoOverlay;
   late MockSetMute setMute;
   late MockReportContent reportContent;
   late MockRemoveMediaFiles removeFiles;
@@ -51,6 +56,7 @@ void main() {
     rail,
     stories,
     gallery,
+    videoOverlay,
     setMute,
     reportContent,
     removeFiles,
@@ -62,10 +68,12 @@ void main() {
     rail = _Rail();
     stories = _Stories();
     gallery = _Gallery();
+    videoOverlay = _VideoOverlay();
     setMute = okSetMute();
     reportContent = okReportContent();
     removeFiles = okRemoveMediaFiles();
     registerFallbackValue(const StoryModel());
+    registerFallbackValue(Uint8List(0));
     registerContentFallbacks();
     when(() => rail()).thenAnswer(
       (_) async => [person('a'), person('b'), person('c', isMe: true)],
@@ -643,5 +651,54 @@ void main() {
       );
       await cubit.close();
     });
+
+    test(
+      'save with stickers downloads, burns, saves, deletes both copies',
+      () async {
+        when(() => gallery.downloadVideo(any()))
+            .thenAnswer((_) async => '/d.mp4');
+        when(() => gallery.saveVideoFile(any())).thenAnswer((_) async {});
+        when(() => videoOverlay.burn(any(), any()))
+            .thenAnswer((_) async => '/b.mp4');
+        when(() => videoOverlay.delete(any())).thenAnswer((_) async {});
+        final cubit = build();
+        final failure = await cubit.saveVideo(
+          'https://x/v.mp4',
+          overlayPng: Uint8List.fromList([1]),
+        );
+        expect(failure, isNull);
+        verifyInOrder([
+          () => gallery.downloadVideo('https://x/v.mp4'),
+          () => videoOverlay.burn('/d.mp4', any()),
+          () => gallery.saveVideoFile('/b.mp4'),
+          () => videoOverlay.delete('/b.mp4'),
+          () => videoOverlay.delete('/d.mp4'),
+        ]);
+        verifyNever(() => gallery.saveVideoFromUrl(any()));
+        await cubit.close();
+      },
+    );
+
+    test(
+      'a failed burn returns the failure and still deletes the download',
+      () async {
+        when(() => gallery.downloadVideo(any()))
+            .thenAnswer((_) async => '/d.mp4');
+        when(() => videoOverlay.burn(any(), any()))
+            .thenThrow(const UnexpectedFailure());
+        when(() => videoOverlay.delete(any())).thenAnswer((_) async {});
+        final cubit = build();
+        expect(
+          await cubit.saveVideo(
+            'https://x/v.mp4',
+            overlayPng: Uint8List.fromList([1]),
+          ),
+          const UnexpectedFailure(),
+        );
+        verify(() => videoOverlay.delete('/d.mp4')).called(1);
+        verifyNever(() => gallery.saveVideoFile(any()));
+        await cubit.close();
+      },
+    );
   });
 }

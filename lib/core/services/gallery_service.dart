@@ -17,6 +17,9 @@ abstract interface class GalleryService {
   /// Downloads the video at [url] and saves it. Throws [PermissionFailure] like [saveImage].
   Future<void> saveVideoFromUrl(String url);
 
+  /// Downloads the video at [url] into a temporary file and returns its path; the caller deletes it.
+  Future<String> downloadVideo(String url);
+
   /// Saves the video file at [path]. Throws [PermissionFailure] like [saveImage].
   Future<void> saveVideoFile(String path);
 }
@@ -34,6 +37,18 @@ final class GalGalleryService implements GalleryService {
 
   @override
   Future<void> saveVideoFromUrl(String url) => Guard.run(() async {
+    final path = await _download(url);
+    try {
+      await _save(() => Gal.putVideo(path));
+    } finally {
+      await _deleteFile(path);
+    }
+  });
+
+  @override
+  Future<String> downloadVideo(String url) => Guard.run(() => _download(url));
+
+  Future<String> _download(String url) async {
     final response = await _http.get(Uri.parse(url));
     if (response.statusCode != 200) {
       throw ServerFailure(statusCode: response.statusCode);
@@ -42,12 +57,13 @@ final class GalGalleryService implements GalleryService {
       '${Directory.systemTemp.path}/pulse_${DateTime.now().microsecondsSinceEpoch}.mp4',
     );
     await file.writeAsBytes(response.bodyBytes);
-    try {
-      await _save(() => Gal.putVideo(file.path));
-    } finally {
-      if (await file.exists()) await file.delete();
-    }
-  });
+    return file.path;
+  }
+
+  Future<void> _deleteFile(String path) async {
+    final file = File(path);
+    if (await file.exists()) await file.delete();
+  }
 
   @override
   Future<void> saveVideoFile(String path) => _guarded(() => Gal.putVideo(path));

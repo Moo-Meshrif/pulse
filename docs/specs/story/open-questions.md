@@ -28,7 +28,7 @@
 | P1 | Backend: plan Phase 0 writes the three migrations (home schema, post options, story extras) into `supabase/migrations`, user reviews, then they are applied. `story_rail` re-created to also skip `story_mutes`; `story_viewers` gets a cursor `p_before` (viewed_at), page 30 |
 | P2 | Until Home is built, a temporary minimal rail in the Home placeholder opens the story screens (replaced by Home's real rail) |
 | P3 | Upload progress: streamed upload to the storage REST endpoint with the existing `http` package, counting bytes sent |
-| P4 | Save to device: photos burned in with overlays; videos saved without overlays (burn-in later) |
+| P4 | Save to device: photos burned in with overlays; videos burned in too (native overlay, see `docs/plans/story-video-burn-in-plan.md`; not yet run on a device) |
 | P5 | Copy link hidden for now (no story link format yet) |
 | P6 | Report sheet is shared (core), built now; story "sent" step = title "Thanks for letting us know" + body "We'll review this story." [estimated] + Done; post adds its Mute/Unfollow rows later |
 | P7 | Reply Send shows a "coming soon" notice until Chat exists |

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
@@ -22,6 +23,8 @@ class _Stories extends Mock implements StoriesDatasource {}
 
 class _Gallery extends Mock implements GalleryService {}
 
+class _VideoOverlay extends Fake implements VideoOverlayService {}
+
 void main() {
   late Completer<List<StoryRailItemEntity>> rail;
   late StoryViewerCubit cubit;
@@ -34,6 +37,7 @@ void main() {
       railCase,
       _Stories(),
       _Gallery(),
+      _VideoOverlay(),
       okSetMute(),
       okReportContent(),
       okRemoveMediaFiles(),

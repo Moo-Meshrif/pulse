@@ -9,6 +9,7 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/events/event_bus.dart';
 import '../../../../core/events/event_cubit_mixin.dart';
 import '../../../../core/services/gallery_service.dart';
+import '../../../../core/services/video_overlay_service.dart';
 import '../../../../core/state/base_cubit.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
 import '../../../../shared/content/data/enums/content_kind.dart';
@@ -37,6 +38,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState>
     this._rail,
     this._stories,
     this._gallery,
+    this._videoOverlay,
     this._setMute,
     this._reportContent,
     this._removeFiles,
@@ -48,6 +50,7 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState>
   final GetStoryRailUseCase _rail;
   final StoriesDatasource _stories;
   final GalleryService _gallery;
+  final VideoOverlayService _videoOverlay;
   final SetMuteUseCase _setMute;
   final ReportContentUseCase _reportContent;
   final RemoveMediaFilesUseCase _removeFiles;
@@ -315,8 +318,23 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState>
   Future<Failure?> saveImage(Uint8List bytes) =>
       _attempt(() => _gallery.saveImage(bytes));
 
-  Future<Failure?> saveVideo(String url) =>
-      _attempt(() => _gallery.saveVideoFromUrl(url));
+  /// Saves the video at [url]; with [overlayPng] (the story's stickers) they are drawn onto a copy first.
+  /// Every temporary file is deleted afterwards.
+  Future<Failure?> saveVideo(String url, {Uint8List? overlayPng}) =>
+      _attempt(() async {
+        if (overlayPng == null) return _gallery.saveVideoFromUrl(url);
+        final downloaded = await _gallery.downloadVideo(url);
+        try {
+          final burned = await _videoOverlay.burn(downloaded, overlayPng);
+          try {
+            await _gallery.saveVideoFile(burned);
+          } finally {
+            await _videoOverlay.delete(burned);
+          }
+        } finally {
+          await _videoOverlay.delete(downloaded);
+        }
+      });
 
   Future<Failure?> _attempt(Future<void> Function() action) async {
     Failure? failed;

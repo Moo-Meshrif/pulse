@@ -9,6 +9,7 @@ import '../../../../../core/notice/notices.dart';
 import '../../../../../core/utils/cached_picture.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../data/enums/story_media_type.dart';
+import '../../../data/model/story_model.dart';
 import '../../cubit/story_viewer_cubit.dart';
 import '../../utils/story_snapshot.dart';
 import 'story_confirm_dialog.dart';
@@ -62,10 +63,7 @@ abstract final class StoryMenuActions {
     final l10n = context.l10n;
     final Failure? failure;
     if (story.type == StoryMediaType.video) {
-      // TODO(story-plan T4): the video is saved without its stickers; burn-in comes later (P4).
-      failure = story.mediaUrl == null
-          ? const UnexpectedFailure()
-          : await cubit.saveVideo(story.mediaUrl!);
+      failure = await _saveVideo(context, cubit, story);
     } else {
       final url = story.mediaUrl;
       final bytes = url == null
@@ -86,6 +84,34 @@ abstract final class StoryMenuActions {
     } else {
       context.showFailure(failure);
     }
+  }
+
+  /// Saves the video as it is, or, when it has stickers, with them drawn on (slow: the screen is frosted
+  /// while it works).
+  static Future<Failure?> _saveVideo(
+    BuildContext context,
+    StoryViewerCubit cubit,
+    StoryModel story,
+  ) async {
+    final url = story.mediaUrl;
+    if (url == null) return const UnexpectedFailure();
+    final overlays = story.overlays ?? const [];
+    final width = story.width;
+    final height = story.height;
+    if (overlays.isEmpty || width == null || height == null) {
+      return cubit.saveVideo(url);
+    }
+    return runWithLoadingOverlay(context, () async {
+      final png = await renderStoryOverlay(
+        context,
+        overlays: overlays,
+        width: width,
+        height: height,
+      );
+      return png == null
+          ? const UnexpectedFailure()
+          : await cubit.saveVideo(url, overlayPng: png);
+    }, tone: LoadingTone.dark);
   }
 
   static Future<void> delete(
