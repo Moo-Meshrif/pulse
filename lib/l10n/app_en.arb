@@ -2050,6 +2050,36 @@
   "@homeCaughtUp": {
     "description": "Home feed footer at the end of the feed"
   },
+  "homeNewPosts": "New posts",
+  "@homeNewPosts": {
+    "description": "Pill over the feed when one new post is waiting above what you are reading"
+  },
+  "homeNewPostsCount": "{count, plural, =1{1 new post} other{{count} new posts}}",
+  "@homeNewPostsCount": {
+    "description": "Pill over the feed when 2 to 9 new posts are waiting",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNewPostsMany": "9+ new posts",
+  "@homeNewPostsMany": {
+    "description": "Pill over the feed when more than 9 new posts are waiting"
+  },
+  "homeNewPostsOpen": "Show {count, plural, =1{1 new post} other{{count} new posts}} and scroll to top",
+  "@homeNewPostsOpen": {
+    "description": "Screen reader label of the new posts pill",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeBackToTop": "Back to top",
+  "@homeBackToTop": {
+    "description": "Screen reader label of the round button that scrolls the feed to the top"
+  },
   "postPublishing": "Posting…",
   "@postPublishing": {
     "description": "Banner above the feed while a new post is being sent"

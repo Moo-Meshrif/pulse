@@ -1574,6 +1574,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeCaughtUp => 'You\'re all caught up';
 
   @override
+  String get homeNewPosts => 'New posts';
+
+  @override
+  String homeNewPostsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new posts',
+      one: '1 new post',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeNewPostsMany => '9+ new posts';
+
+  @override
+  String homeNewPostsOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new posts',
+      one: '1 new post',
+    );
+    return 'Show $_temp0 and scroll to top';
+  }
+
+  @override
+  String get homeBackToTop => 'Back to top';
+
+  @override
   String get postPublishing => 'Posting…';
 
   @override

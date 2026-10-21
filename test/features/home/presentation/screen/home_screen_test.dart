@@ -60,6 +60,7 @@ import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart
 import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 import '../../../post/post_fixtures.dart';
+import '../../home_doubles.dart';
 
 class _Status extends Fake implements GetPublishStatusUseCase {
   @override
@@ -173,7 +174,20 @@ void main() {
     when(() => hide(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
     getIt
-      ..registerFactory(() => FeedCubit(getFeed, sign, bus, currentUser))
+      ..registerFactory(() {
+        final changes = quietChangeDoubles();
+        return FeedCubit(
+          getFeed,
+          sign,
+          bus,
+          currentUser,
+          changes.check,
+          changes.postsByIds,
+          changes.counts,
+          changes.startLive,
+          changes.stopLive,
+        );
+      })
       ..registerFactory(
         () => PostActionsCubit(
           like,
@@ -231,6 +245,7 @@ void main() {
           ),
           retryUpload,
           FakeLastAccount(),
+          quietChangeDoubles().check,
         ),
       )
       ..registerFactoryParam<ShareSheetCubit, String, void>((postId, _) {

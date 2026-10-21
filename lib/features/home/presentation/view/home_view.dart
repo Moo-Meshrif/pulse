@@ -17,6 +17,7 @@ import '../utils/enums/feed_mode.dart';
 import '../utils/feed_videos.dart';
 import '../widgets/feed/feed_empty.dart';
 import '../widgets/feed/feed_failed.dart';
+import '../widgets/feed/feed_floaters.dart';
 import '../widgets/feed/feed_header.dart';
 import '../widgets/feed/feed_post_list.dart';
 import '../widgets/feed/feed_skeleton.dart';
@@ -125,30 +126,37 @@ class _Posts extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<FeedCubit, FeedState>(
-    buildWhen: _havePostsChanged,
-    builder: (context, state) => PostVideoScope(
-      videos: feedVideos(state.posts),
-      child: PagedScrollView<FeedCubit, FeedState>(
-        paging: _paging,
-        onRefresh: () => _refresh(context),
-        onLoadMore: () => unawaited(context.read<FeedCubit>().loadMore()),
-        retryLabel: context.l10n.homeLoadMoreError,
-        caughtUpLabel: context.l10n.homeCaughtUp,
-        refreshIcon: AppAssets.home,
-        refreshIconFilled: AppAssets.homeFilled,
-        bottomSpace: NavClearance.of(context),
-        loadMoreSkeleton: const FeedMoreSkeleton(),
-        headerSlivers: const [FeedHeader()],
-        slivers: [
-          const SliverToBoxAdapter(child: StoryRail()),
-          const SliverToBoxAdapter(child: PublishBanner()),
-          SliverPadding(
-            padding: HomeDimens.listPadding,
-            sliver: FeedPostList(posts: state.posts),
-          ),
-        ],
+  Widget build(BuildContext context) => Stack(
+    children: [
+      BlocBuilder<FeedCubit, FeedState>(
+        buildWhen: _havePostsChanged,
+        builder: _buildFeed,
       ),
+      const Positioned.fill(child: FeedFloaters()),
+    ],
+  );
+
+  Widget _buildFeed(BuildContext context, FeedState state) => PostVideoScope(
+    videos: feedVideos(state.posts),
+    child: PagedScrollView<FeedCubit, FeedState>(
+      paging: _paging,
+      onRefresh: () => _refresh(context),
+      onLoadMore: () => unawaited(context.read<FeedCubit>().loadMore()),
+      retryLabel: context.l10n.homeLoadMoreError,
+      caughtUpLabel: context.l10n.homeCaughtUp,
+      refreshIcon: AppAssets.home,
+      refreshIconFilled: AppAssets.homeFilled,
+      bottomSpace: NavClearance.of(context),
+      loadMoreSkeleton: const FeedMoreSkeleton(),
+      headerSlivers: const [FeedHeader()],
+      slivers: [
+        const SliverToBoxAdapter(child: StoryRail()),
+        const SliverToBoxAdapter(child: PublishBanner()),
+        SliverPadding(
+          padding: HomeDimens.listPadding,
+          sliver: FeedPostList(posts: state.posts),
+        ),
+      ],
     ),
   );
 }

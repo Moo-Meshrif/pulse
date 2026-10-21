@@ -5,6 +5,7 @@ import '../../../post/domain/entity/post_entity.dart';
 extension PostEntityEdit on PostEntity {
   PostEntity copyWith({
     int? likeCount,
+    int? commentCount,
     bool? likedByMe,
     bool? savedByMe,
     bool? commentsEnabled,
@@ -19,7 +20,7 @@ extension PostEntityEdit on PostEntity {
     caption: caption,
     location: location,
     likeCount: likeCount ?? this.likeCount,
-    commentCount: commentCount,
+    commentCount: commentCount ?? this.commentCount,
     commentsEnabled: commentsEnabled ?? this.commentsEnabled,
     visibility: visibility ?? this.visibility,
     createdAt: createdAt,

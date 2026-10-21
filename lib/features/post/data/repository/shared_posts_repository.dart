@@ -14,7 +14,6 @@ import '../../domain/entity/new_post_media_entity.dart';
 import '../../domain/entity/post_entity.dart';
 import '../../domain/entity/post_mood_entity.dart';
 import '../../domain/entity/post_tag_entity.dart';
-import '../../domain/event/feed_refresh_requested.dart';
 import '../../domain/event/post_saved.dart';
 import '../datasource/post_draft_datasource.dart';
 import '../enums/mood_kind.dart';
@@ -118,9 +117,6 @@ class SharedPostsRepository {
     final id = _idOf(post);
     if (_finished.contains(state)) {
       await _done(id);
-      if (state == PendingContentState.published) {
-        _events.fire(const FeedRefreshRequested());
-      }
       return false;
     }
     if (!_publish.hasJob(id)) {
@@ -165,10 +161,10 @@ class SharedPostsRepository {
     _announce(created);
   }
 
-  /// The feed shows the post at once; with no author to show it loads again.
-  void _announce(PostEntity? created) => _events.fire(
-    created == null ? const FeedRefreshRequested() : PostSaved(created),
-  );
+  /// The feed shows the post at once; with no author to show it, it waits for the next load.
+  void _announce(PostEntity? created) {
+    if (created != null) _events.fire(PostSaved(created));
+  }
 
   /// From now on the post survives the app closing as a shared post, not as the draft.
   Future<void> _handOver(PostDraftModel draft) async {

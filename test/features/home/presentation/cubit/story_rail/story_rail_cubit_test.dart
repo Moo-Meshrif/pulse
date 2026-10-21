@@ -12,11 +12,13 @@ import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dar
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
+import 'package:pulse/shared/content/domain/event/content_changed.dart';
 import 'package:pulse/shared/content/domain/event/content_delete_event.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../../../../helpers/content_mocks.dart';
+import '../../../home_doubles.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
@@ -35,12 +37,14 @@ void main() {
   late _GetRail getRail;
   late EventBus bus;
   late _Retry retry;
+  late MockCheckContentChanges check;
 
   setUp(() {
     getRail = _GetRail();
     bus = EventBus();
     addTearDown(bus.dispose);
     retry = _Retry();
+    check = quietChangeDoubles().check;
     when(getRail.call).thenAnswer((_) async => [person('a')]);
   });
 
@@ -56,6 +60,7 @@ void main() {
     ),
     retry,
     FakeLastAccount(),
+    check,
   );
 
   Future<void> flush() => Future<void>.delayed(Duration.zero);
@@ -263,5 +268,51 @@ void main() {
     await flush();
     expect(cubit.state.items, hasLength(2));
     await cubit.close();
+  });
+
+  group('content changes', () {
+    test('a story that came or went loads the rail again', () async {
+      final cubit = build();
+      await cubit.start();
+      when(getRail.call).thenAnswer((_) async => [person('a'), person('b')]);
+
+      bus.fire(const ContentChanged(ContentKind.story, upsertedIds: ['s1']));
+      await flush();
+      expect(cubit.state.items.map((p) => p.authorId), ['a', 'b']);
+
+      when(getRail.call).thenAnswer((_) async => [person('b')]);
+      bus.fire(const ContentChanged(ContentKind.story, removedIds: ['s0']));
+      await flush();
+      expect(cubit.state.items.map((p) => p.authorId), ['b']);
+      await cubit.close();
+    });
+
+    test('mustReload loads it again, and a post change is ignored', () async {
+      final cubit = build();
+      await cubit.start();
+      clearInteractions(getRail);
+
+      bus.fire(const ContentChanged(ContentKind.post, removedIds: ['p1']));
+      await flush();
+      verifyNever(getRail.call);
+
+      bus.fire(const ContentChanged(ContentKind.story, mustReload: true));
+      await flush();
+      verify(getRail.call).called(1);
+      await cubit.close();
+    });
+
+    test(
+      'the check runs when the rail starts and when the app returns',
+      () async {
+        final cubit = build();
+        await cubit.start();
+        verify(() => check(ContentKind.story)).called(1);
+
+        await cubit.checkChanges();
+        verify(() => check(ContentKind.story)).called(1);
+        await cubit.close();
+      },
+    );
   });
 }

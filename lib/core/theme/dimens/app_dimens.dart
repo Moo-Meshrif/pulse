@@ -84,6 +84,15 @@ abstract final class AppShadows {
     ),
   ];
 
+  /// Round back to top button over the feed: 0 8 24 #161A19 @ 18%.
+  static List<BoxShadow> get backToTop => [
+    BoxShadow(
+      color: AppPalette.ink.withAlpha(0x2E),
+      offset: Offset(0, AppScale.scale(8)),
+      blurRadius: AppScale.scale(24),
+    ),
+  ];
+
   /// Notice card: 0 14 36 #161A19 @ 28%.
   static List<BoxShadow> get notice => [
     BoxShadow(

@@ -1,25 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
-import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/use_case/share_to_feed_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/use_case/check_content_changes_use_case.dart';
 
 class _MockPosts extends Mock implements PostsDatasource {}
+
+class _MockCheck extends Mock implements CheckContentChangesUseCase {}
 
 class _MockPublish extends Mock implements ContentPublishRepository {}
 
 void main() {
   late _MockPosts posts;
   late _MockPublish publish;
-  late EventBus events;
+  late _MockCheck check;
   late ShareToFeedUseCase useCase;
   late PublishWork work;
 
@@ -28,8 +29,9 @@ void main() {
   setUp(() {
     posts = _MockPosts();
     publish = _MockPublish();
-    events = EventBus();
-    useCase = ShareToFeedUseCase(posts, events, publish);
+    check = _MockCheck();
+    when(() => check(any())).thenAnswer((_) async {});
+    useCase = ShareToFeedUseCase(posts, publish, check);
     when(
       () => publish.enqueue(
         kind: any(named: 'kind'),
@@ -104,39 +106,32 @@ void main() {
     },
   );
 
-  test('asks the feed to load again once the share exists', () async {
+  test('runs the change check once the share exists', () async {
     answer();
-    final refresh = events.on<FeedRefreshRequested>().first;
 
     useCase('o1');
     await work((_) {});
 
-    expect(await refresh, const FeedRefreshRequested());
+    verify(() => check(ContentKind.post)).called(1);
   });
 
-  test(
-    'a failed share asks for no refresh and passes the failure on',
-    () async {
-      when(
-        () => posts.shareToFeed(
-          postId: any(named: 'postId'),
-          caption: any(named: 'caption'),
-          audience: any(named: 'audience'),
-          moodKind: any(named: 'moodKind'),
-          moodKey: any(named: 'moodKey'),
-          moodText: any(named: 'moodText'),
-          location: any(named: 'location'),
-          tags: any(named: 'tags'),
-        ),
-      ).thenThrow(StateError('offline'));
-      var refreshed = false;
-      events.on<FeedRefreshRequested>().listen((_) => refreshed = true);
+  test('a failed share runs no check and passes the failure on', () async {
+    when(
+      () => posts.shareToFeed(
+        postId: any(named: 'postId'),
+        caption: any(named: 'caption'),
+        audience: any(named: 'audience'),
+        moodKind: any(named: 'moodKind'),
+        moodKey: any(named: 'moodKey'),
+        moodText: any(named: 'moodText'),
+        location: any(named: 'location'),
+        tags: any(named: 'tags'),
+      ),
+    ).thenThrow(StateError('offline'));
 
-      useCase('o1');
-      await expectLater(work((_) {}), throwsStateError);
-      await Future<void>.delayed(Duration.zero);
+    useCase('o1');
+    await expectLater(work((_) {}), throwsStateError);
 
-      expect(refreshed, isFalse);
-    },
-  );
+    verifyNever(() => check(any()));
+  });
 }

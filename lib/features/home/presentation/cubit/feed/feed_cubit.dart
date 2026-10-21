@@ -1,18 +1,29 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/events/event_bus.dart';
 import '../../../../../core/events/event_cubit_mixin.dart';
 import '../../../../../core/state/base_cubit.dart';
 import '../../../../../core/state/load_more_status.dart';
+import '../../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../../shared/content/domain/event/content_changed.dart';
+import '../../../../../shared/content/domain/event/content_ping.dart';
+import '../../../../../shared/content/domain/use_case/check_content_changes_use_case.dart';
+import '../../../../../shared/content/domain/use_case/get_post_counts_use_case.dart';
+import '../../../../../shared/content/domain/use_case/start_content_live_use_case.dart';
+import '../../../../../shared/content/domain/use_case/stop_content_live_use_case.dart';
 import '../../../../post/domain/entity/feed_cursor_entity.dart';
 import '../../../../post/domain/entity/feed_page_entity.dart';
 import '../../../../post/domain/entity/post_entity.dart';
 import '../../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../../post/domain/event/post_saved.dart';
 import '../../../../post/domain/use_case/get_home_feed_use_case.dart';
+import '../../../../post/domain/use_case/get_posts_by_ids_use_case.dart';
 import '../../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
 import '../../../../profile/domain/use_case/get_current_user_id_use_case.dart';
 import '../../utils/enums/feed_status.dart';
+import '../../utils/feed_changes.dart';
 import '../../utils/feed_post.dart';
 import '../../utils/feed_post_signer.dart';
 import 'feed_state.dart';
@@ -26,12 +37,29 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     SignPostMediaUrlsUseCase signMedia,
     this._events,
     GetCurrentUserIdUseCase currentUserId,
+    this._checkChanges,
+    this._postsByIds,
+    this._counts,
+    this._startLive,
+    this._stopLive,
   ) : _signer = FeedPostSigner(signMedia),
       super(FeedState(userId: currentUserId()));
 
   final GetHomeFeedUseCase _feed;
   final FeedPostSigner _signer;
   final EventBus _events;
+  final CheckContentChangesUseCase _checkChanges;
+  final GetPostsByIdsUseCase _postsByIds;
+  final GetPostCountsUseCase _counts;
+  final StartContentLiveUseCase _startLive;
+  final StopContentLiveUseCase _stopLive;
+
+  /// Most posts read in one check; one request carries at most 50.
+  static const _maxRead = 50;
+
+  /// How long a post that just arrived keeps its ring (the ring fades by itself in the card).
+  static const _freshStay = Duration(seconds: 4);
+  Timer? _freshTimer;
 
   @override
   EventBus get events => _events;
@@ -41,7 +69,103 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   Future<void> start() {
     listenTo<FeedRefreshRequested>((_) => _reload());
     listenTo<PostSaved>((event) => _postSaved(event.post));
-    return load();
+    listenTo<ContentChanged>(_contentChanged);
+    listenTo<ContentPing>(_onPing);
+    resumeLive();
+    final loading = load();
+    unawaited(checkChanges());
+    return loading;
+  }
+
+  /// The server says posts changed: run the same check as when Home opens, so counts move too.
+  void _onPing(ContentPing event) {
+    if (event.kind == ContentKind.post) unawaited(checkChanges());
+  }
+
+  /// Listens to the server for changes (also the Stories rail's) while Home is open and the app is in
+  /// front.
+  void resumeLive() => _startLive();
+
+  /// Stops listening: the app went to the background.
+  void pauseLive() => _stopLive();
+
+  /// Asks what changed since the last check and the counts of the posts on screen. The changes arrive as
+  /// a [ContentChanged] event. Quiet when offline. Called when Home opens and when the app comes back.
+  Future<void> checkChanges() async {
+    await _checkChanges(ContentKind.post);
+    await refreshCounts();
+  }
+
+  /// The newest like and comment counts of the posts on screen; they land in [FeedState.counts].
+  Future<void> refreshCounts() => run(
+    () => _counts([for (final post in state.posts) post.id]),
+    prevent: state.status != FeedStatus.ready || state.posts.isEmpty,
+    onSuccess: (counts) => state.copyWith(
+      counts: {
+        for (final count in counts)
+          if (count.id != null) count.id!: count,
+      },
+    ),
+    onFailure: (_) => null,
+  );
+
+  Future<void> _contentChanged(ContentChanged event) async {
+    if (event.kind != ContentKind.post) return;
+    // A load that is running brings the newest posts anyway.
+    if (event.mustReload) return _isBusy(state) ? null : refresh(silent: true);
+    if (!await _settled()) return;
+    final removed = event.removedIds.toSet();
+    if (removed.isNotEmpty) removePosts(removed);
+    final ids = event.upsertedIds.take(_maxRead).toList();
+    if (ids.isNotEmpty) await _readChanged(ids);
+  }
+
+  /// Reads the changed and new posts and puts them in place (see [applyFreshPosts]).
+  Future<void> _readChanged(List<String> ids) => run(
+    () async => _signer.sign(await _postsByIds(ids)),
+    onSuccess: (fresh) {
+      final result = applyFreshPosts(
+        posts: state.posts,
+        pending: state.pendingPosts,
+        fresh: fresh,
+        asked: ids,
+        userId: state.userId,
+      );
+      if (result.freshIds.isNotEmpty) _clearFreshLater();
+      return state.copyWith(
+        posts: result.posts,
+        pendingPosts: result.pending,
+        replacedIds: result.replacedIds,
+        freshIds: result.freshIds,
+      );
+    },
+    onFailure: (_) => null,
+  );
+
+  /// The person asked for the waiting posts (the pill): they go on top.
+  void showPending() {
+    final pending = state.pendingPosts;
+    if (pending.isEmpty) return;
+    emit(
+      state.copyWith(
+        posts: withPendingOnTop(state.posts, pending),
+        pendingPosts: const [],
+        freshIds: {for (final post in pending) post.id},
+      ),
+    );
+    _clearFreshLater();
+  }
+
+  void _clearFreshLater() {
+    _freshTimer?.cancel();
+    _freshTimer = Timer(_freshStay, () => emit(state.copyWith(freshIds: {})));
+  }
+
+  @override
+  Future<void> close() {
+    _freshTimer?.cancel();
+    _stopLive();
+    return super.close();
   }
 
   /// A feed that failed to load tries again; one on screen refreshes. A request that arrives while the feed
@@ -88,14 +212,15 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
         state.copyWith(status: FeedStatus.failed, failure: failure),
   );
 
-  /// Pull to refresh: the posts on screen stay until the new ones arrive.
-  Future<void> refresh() => run(
+  /// Pull to refresh: the posts on screen stay until the new ones arrive. [silent] skips the refresh band,
+  /// for a refresh the person did not ask for.
+  Future<void> refresh({bool silent = false}) => run(
     () => _page(null),
     prevent:
         state.status != FeedStatus.ready ||
         state.isRefreshing ||
         state.loadMore == LoadMoreStatus.loading,
-    loading: state.copyWith(isRefreshing: true, refreshFailure: null),
+    loading: state.copyWith(isRefreshing: !silent, refreshFailure: null),
     onSuccess: (page) => _replaced(page),
     onFailure: (failure) =>
         state.copyWith(isRefreshing: false, refreshFailure: failure),
@@ -154,6 +279,9 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   void removePosts(Set<String> ids) => emit(
     state.copyWith(
       posts: state.posts.where((post) => !ids.contains(post.id)).toList(),
+      pendingPosts: state.pendingPosts
+          .where((post) => !ids.contains(post.id))
+          .toList(),
     ),
   );
 

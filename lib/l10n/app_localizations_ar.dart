@@ -1570,6 +1570,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeCaughtUp => 'لقد اطلعت على كل شيء';
 
   @override
+  String get homeNewPosts => 'منشورات جديدة';
+
+  @override
+  String homeNewPostsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count منشور جديد',
+      many: '$count منشورًا جديدًا',
+      few: '$count منشورات جديدة',
+      two: 'منشوران جديدان',
+      one: 'منشور جديد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeNewPostsMany => '+9 منشورات جديدة';
+
+  @override
+  String homeNewPostsOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count منشور جديد',
+      many: '$count منشورًا جديدًا',
+      few: '$count منشورات جديدة',
+      two: 'منشورين جديدين',
+      one: 'منشور جديد',
+    );
+    return 'عرض $_temp0 والانتقال إلى الأعلى';
+  }
+
+  @override
+  String get homeBackToTop => 'العودة إلى الأعلى';
+
+  @override
   String get postPublishing => 'جارٍ النشر…';
 
   @override

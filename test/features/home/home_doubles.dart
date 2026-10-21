@@ -11,6 +11,7 @@ import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cub
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/get_posts_by_ids_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
@@ -20,17 +21,58 @@ import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_cas
 import 'package:pulse/features/post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/use_case/check_content_changes_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/get_post_counts_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_line_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/start_content_live_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/stop_content_live_use_case.dart';
 
 import '../../helpers/content_mocks.dart';
 import '../../helpers/pump_app.dart';
 import '../post/post_fixtures.dart';
 
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
+
+class MockCheckContentChanges extends Mock
+    implements CheckContentChangesUseCase {}
+
+class MockGetPostsByIds extends Mock implements GetPostsByIdsUseCase {}
+
+class MockGetPostCounts extends Mock implements GetPostCountsUseCase {}
+
+class MockStartContentLive extends Mock implements StartContentLiveUseCase {}
+
+class MockStopContentLive extends Mock implements StopContentLiveUseCase {}
+
+/// The change check answers at once with nothing changed and no counts.
+({
+  MockCheckContentChanges check,
+  MockGetPostsByIds postsByIds,
+  MockGetPostCounts counts,
+  MockStartContentLive startLive,
+  MockStopContentLive stopLive,
+})
+quietChangeDoubles() {
+  registerFallbackValue(ContentKind.post);
+  final check = MockCheckContentChanges();
+  final postsByIds = MockGetPostsByIds();
+  final counts = MockGetPostCounts();
+  when(() => check(any())).thenAnswer((_) async {});
+  when(() => postsByIds(any())).thenAnswer((_) async => []);
+  when(() => counts(any())).thenAnswer((_) async => []);
+  return (
+    check: check,
+    postsByIds: postsByIds,
+    counts: counts,
+    startLive: MockStartContentLive(),
+    stopLive: MockStopContentLive(),
+  );
+}
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -74,9 +116,20 @@ void registerHomeDoubles() {
     FakeConnectivity(),
   );
   getIt
-    ..registerFactory(
-      () => FeedCubit(getFeed, _Sign(), EventBus(), currentUser),
-    )
+    ..registerFactory(() {
+      final changes = quietChangeDoubles();
+      return FeedCubit(
+        getFeed,
+        _Sign(),
+        EventBus(),
+        currentUser,
+        changes.check,
+        changes.postsByIds,
+        changes.counts,
+        changes.startLive,
+        changes.stopLive,
+      );
+    })
     ..registerFactory(
       () => PostActionsCubit(
         _Like(),
@@ -113,6 +166,7 @@ void registerHomeDoubles() {
         GetPublishStatusUseCase(publish),
         RetryPublishUseCase(publish),
         FakeLastAccount(),
+        quietChangeDoubles().check,
       ),
     );
 }

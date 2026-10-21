@@ -180,7 +180,7 @@ void main() {
       await pumpEventQueue();
       expect(device.shared, isEmpty);
       expect(device.deleted, ['p1']);
-      expect(events, contains(const FeedRefreshRequested()));
+      expect(events, isNot(contains(const FeedRefreshRequested())));
     });
 
     test('a failed post discarded is forgotten with its files', () async {
@@ -247,7 +247,7 @@ void main() {
       );
       expect(device.shared, isEmpty);
       expect(device.deleted, ['p1']);
-      expect(events, contains(const FeedRefreshRequested()));
+      expect(events, isNot(contains(const FeedRefreshRequested())));
       expect(device.keptFolders, isEmpty);
     });
 

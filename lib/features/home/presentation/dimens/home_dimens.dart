@@ -43,6 +43,40 @@ abstract final class HomeDimens {
   static const int publishStackLayers = 3;
   static const publishDoneStay = Duration(milliseconds: 1500);
   static const publishExpand = Duration(milliseconds: 200);
+  // New posts pill and back to top button (docs/specs/home/screens/s2-new-posts-pill.md).
+  static double get pillHeight => AppScale.scale(44);
+  static double get pillRadius => AppScale.scale(22);
+  static double get pillGapBelowHeader => AppScale.scale(12);
+  static EdgeInsetsDirectional get pillPadding => EdgeInsetsDirectional.only(
+    start: AppScale.scale(9),
+    end: AppScale.scale(16),
+  );
+  static double get pillGap => AppScale.scale(8);
+  static double get pillAvatar => AppScale.scale(26);
+  static double get pillAvatarRing => AppScale.scale(2);
+  static double get pillAvatarOverlap => AppScale.scale(8);
+  static double get pillArrow => AppScale.scale(16);
+  static const int pillAvatars = 3;
+  static const int pillMaxCount = 9;
+  static const pillSlide = Duration(milliseconds: 220);
+  static double get pillSlideFrom => AppScale.scale(12);
+  static const pillAutoHide = Duration(seconds: 10);
+  static const pillShadowAlpha = 0x59; // 35% of primary
+  static double get pillShadowBlur => AppScale.scale(24);
+  static double get pillShadowDy => AppScale.scale(8);
+  static const scrollToTopDuration = Duration(milliseconds: 450);
+  static const int pillViewports = 1;
+  static const int backToTopViewports = 3;
+  static const int jumpFirstViewports = 6;
+  static double get backToTopSize => AppScale.scale(48);
+  static double get backToTopIcon => AppScale.scale(22);
+  static double get backToTopEnd => AppScale.scale(18);
+  static double get backToTopAboveNav => AppScale.scale(16);
+  static const backToTopFillAlpha = 0xEB; // white @ 92%
+  // A post that just arrived: a soft ring that fades out.
+  static double get freshRing => AppScale.scale(2);
+  static const freshRingStay = Duration(seconds: 2);
+  static const freshRingFade = Duration(milliseconds: 600);
   // First-load skeleton.
   static const int skeletonCards = 3;
   static const int skeletonStories = 4;

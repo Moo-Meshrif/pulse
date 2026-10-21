@@ -45,13 +45,19 @@ import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/content_actions_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/content_changes_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/content_changes_point_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/content_discards_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/content_live_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/pending_content_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/enums/pending_content_state.dart';
+import 'package:pulse/shared/content/data/model/content_changes_model.dart';
+import 'package:pulse/shared/content/data/model/content_changes_point_model.dart';
 import 'package:pulse/shared/content/data/model/content_discard_model.dart';
+import 'package:pulse/shared/content/data/model/post_count_model.dart';
 import 'package:pulse/shared/content/data/repository/media_upload_queue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -137,6 +143,39 @@ MockPendingContentDatasource serverDraftOk() {
   when(pending.cleanupList).thenAnswer((_) async => const []);
   when(() => pending.confirmCleanup(any())).thenAnswer((_) async => 0);
   return pending;
+}
+
+/// The server has nothing new: a check only gets a starting point, there are no counts.
+class QuietContentChanges implements ContentChangesDatasource {
+  @override
+  Future<ContentChangesModel> changesSince(
+    ContentKind kind, {
+    DateTime? afterAt,
+    String? afterId,
+  }) async => ContentChangesModel(
+    reset: afterAt == null,
+    ops: const [],
+    nextAt: DateTime.now().toUtc(),
+    hasMore: false,
+  );
+
+  @override
+  Future<List<PostCountModel>> postCounts(List<String> ids) async => const [];
+}
+
+/// No points saved on this device; writes keep nothing.
+/// A live connection that never pings.
+class QuietContentLive implements ContentLiveDatasource {
+  @override
+  Stream<ContentKind> pings() => const Stream.empty();
+}
+
+class NoContentChangesPoints implements ContentChangesPointDatasource {
+  @override
+  ContentChangesPointModel? read(ContentKind kind) => null;
+
+  @override
+  Future<void> write(ContentKind kind, ContentChangesPointModel point) async {}
 }
 
 /// No discards saved on this device; adding and removing keep nothing.
@@ -350,6 +389,14 @@ Future<void> setUpRealWiring({
   getIt.registerSingleton<PendingContentDatasource>(serverDraftOk());
   await getIt.unregister<ContentDiscardsDatasource>();
   getIt.registerSingleton<ContentDiscardsDatasource>(EmptyContentDiscards());
+  await getIt.unregister<ContentChangesDatasource>();
+  getIt.registerSingleton<ContentChangesDatasource>(QuietContentChanges());
+  await getIt.unregister<ContentLiveDatasource>();
+  getIt.registerSingleton<ContentLiveDatasource>(QuietContentLive());
+  await getIt.unregister<ContentChangesPointDatasource>();
+  getIt.registerSingleton<ContentChangesPointDatasource>(
+    NoContentChangesPoints(),
+  );
   getIt.registerSingleton<ActivityDatasource>(MockActivityDatasource());
   getIt.registerSingleton<AuthDatasource>(auth ?? signedOut);
   getIt.registerSingleton<ProfileDatasource>(

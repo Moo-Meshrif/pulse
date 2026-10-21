@@ -1881,6 +1881,26 @@
   "@homeCaughtUp": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "homeNewPosts": "منشورات جديدة",
+  "@homeNewPosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeNewPostsCount": "{count, plural, =1{منشور جديد} =2{منشوران جديدان} few{{count} منشورات جديدة} many{{count} منشورًا جديدًا} other{{count} منشور جديد}}",
+  "@homeNewPostsCount": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeNewPostsMany": "+9 منشورات جديدة",
+  "@homeNewPostsMany": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeNewPostsOpen": "عرض {count, plural, =1{منشور جديد} =2{منشورين جديدين} few{{count} منشورات جديدة} many{{count} منشورًا جديدًا} other{{count} منشور جديد}} والانتقال إلى الأعلى",
+  "@homeNewPostsOpen": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "homeBackToTop": "العودة إلى الأعلى",
+  "@homeBackToTop": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "postPublishing": "جارٍ النشر…",
   "@postPublishing": {
     "x-review": "Arabic draft: pending user approval"

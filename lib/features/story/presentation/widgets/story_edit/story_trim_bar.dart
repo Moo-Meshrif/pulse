@@ -109,7 +109,8 @@ class _StoryTrimBarState extends State<StoryTrimBar> {
                       bottom: 0,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
-                        onHorizontalDragStart: (_) => _touch.value = _Touch.move,
+                        onHorizontalDragStart: (_) =>
+                            _touch.value = _Touch.move,
                         onHorizontalDragEnd: (_) => _touch.value = null,
                         onHorizontalDragCancel: () => _touch.value = null,
                         onHorizontalDragUpdate: (details) =>

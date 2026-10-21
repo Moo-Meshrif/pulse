@@ -61,6 +61,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.successOnDark,
     required this.micOffPill,
     required this.fixChipText,
+    required this.newPostRing,
   });
 
   final Color primary;
@@ -161,6 +162,9 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Fix chip text (#9ED3C9).
   final Color fixChipText;
 
+  /// The soft ring of a post that just arrived in the feed (#9ED3C9).
+  final Color newPostRing;
+
   static const light = AppColors(
     primary: AppPalette.brand,
     primaryPressed: Color(0xFF1F4D47),
@@ -219,6 +223,7 @@ class AppColors extends ThemeExtension<AppColors> {
     successOnDark: Color(0xFF5FD39A),
     micOffPill: Color(0xDB1B201F),
     fixChipText: Color(0xFF9ED3C9),
+    newPostRing: Color(0xFF9ED3C9),
   );
 
   @override
@@ -272,6 +277,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? successOnDark,
     Color? micOffPill,
     Color? fixChipText,
+    Color? newPostRing,
   }) => AppColors(
     primary: primary ?? this.primary,
     primaryPressed: primaryPressed ?? this.primaryPressed,
@@ -322,6 +328,7 @@ class AppColors extends ThemeExtension<AppColors> {
     successOnDark: successOnDark ?? this.successOnDark,
     micOffPill: micOffPill ?? this.micOffPill,
     fixChipText: fixChipText ?? this.fixChipText,
+    newPostRing: newPostRing ?? this.newPostRing,
   );
 
   @override
@@ -384,6 +391,7 @@ class AppColors extends ThemeExtension<AppColors> {
       successOnDark: mix(successOnDark, other.successOnDark),
       micOffPill: mix(micOffPill, other.micOffPill),
       fixChipText: mix(fixChipText, other.fixChipText),
+      newPostRing: mix(newPostRing, other.newPostRing),
     );
   }
 }

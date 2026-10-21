@@ -485,14 +485,14 @@ void main() {
       expect(fourth.state.notice, NewPostNotice.publishBusy);
     });
 
-    test('tells the feed to load again when the author is unknown', () async {
+    test('does not ask the feed to load when the author is unknown', () async {
       final events = <Object>[];
       bus.on<FeedRefreshRequested>().listen(events.add);
       build()
         ..captionChanged('hello')
         ..save();
       await pumpEventQueue();
-      expect(events, [const FeedRefreshRequested()]);
+      expect(events, isEmpty);
     });
 
     test('an empty post is not sent', () async {

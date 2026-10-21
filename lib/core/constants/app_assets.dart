@@ -7,6 +7,8 @@ abstract final class AppAssets {
 
   static const arrowBack = '$_icons/ic_arrow_back.svg';
   static const arrowForward = '$_icons/ic_arrow_forward.svg';
+  static const arrowUp = '$_icons/ic_arrow_up.svg';
+  static const arrowUpBold = '$_icons/ic_arrow_up_bold.svg';
   static const bell = '$_icons/ic_bell.svg';
   static const block = '$_icons/ic_block.svg';
   static const bookmark = '$_icons/ic_bookmark.svg';

@@ -2834,6 +2834,36 @@ abstract class AppLocalizations {
   /// **'You\'re all caught up'**
   String get homeCaughtUp;
 
+  /// Pill over the feed when one new post is waiting above what you are reading
+  ///
+  /// In en, this message translates to:
+  /// **'New posts'**
+  String get homeNewPosts;
+
+  /// Pill over the feed when 2 to 9 new posts are waiting
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new post} other{{count} new posts}}'**
+  String homeNewPostsCount(int count);
+
+  /// Pill over the feed when more than 9 new posts are waiting
+  ///
+  /// In en, this message translates to:
+  /// **'9+ new posts'**
+  String get homeNewPostsMany;
+
+  /// Screen reader label of the new posts pill
+  ///
+  /// In en, this message translates to:
+  /// **'Show {count, plural, =1{1 new post} other{{count} new posts}} and scroll to top'**
+  String homeNewPostsOpen(int count);
+
+  /// Screen reader label of the round button that scrolls the feed to the top
+  ///
+  /// In en, this message translates to:
+  /// **'Back to top'**
+  String get homeBackToTop;
+
   /// Banner above the feed while a new post is being sent
   ///
   /// In en, this message translates to:

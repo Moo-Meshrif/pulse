@@ -21,7 +21,13 @@ mixin _$FeedState {
 /// empty page shows.
  Set<String> get pendingDeleteIds;/// Counts the times the posts were replaced (first load, refresh): what was done to the old ones
 /// no longer applies.
- int get generation;/// Why the first load failed.
+ int get generation;/// New posts of other people that were found while the person reads further down: they wait here, never
+/// inserted above what is on screen, until the person asks for them (the pill).
+ List<FeedPost> get pendingPosts;/// Posts that just arrived on top: they show a soft ring for a moment.
+ Set<String> get freshIds;/// Posts a change check replaced where they stand: what was done to them on this phone (a like, a save)
+/// no longer applies, the new version has it.
+ Set<String> get replacedIds;/// The newest counts of the posts on screen, from the last check.
+ Map<String, PostCountModel> get counts;/// Why the first load failed.
  Failure? get failure;/// One-shot: a refresh failed; the posts on screen stay.
  Failure? get refreshFailure;
 /// Create a copy of FeedState
@@ -35,20 +41,20 @@ $FeedStateCopyWith<FeedState> get copyWith => _$FeedStateCopyWithImpl<FeedState>
 @override
 bool operator ==(Object other) {
   final _this = this as FeedState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedState&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.status, _this.status) || other.status == _this.status)&&const DeepCollectionEquality().equals(other.posts, _this.posts)&&(identical(other.nextCursor, _this.nextCursor) || other.nextCursor == _this.nextCursor)&&(identical(other.isRefreshing, _this.isRefreshing) || other.isRefreshing == _this.isRefreshing)&&(identical(other.loadMore, _this.loadMore) || other.loadMore == _this.loadMore)&&const DeepCollectionEquality().equals(other.pendingDeleteIds, _this.pendingDeleteIds)&&(identical(other.generation, _this.generation) || other.generation == _this.generation)&&(identical(other.failure, _this.failure) || other.failure == _this.failure)&&(identical(other.refreshFailure, _this.refreshFailure) || other.refreshFailure == _this.refreshFailure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedState&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.status, _this.status) || other.status == _this.status)&&const DeepCollectionEquality().equals(other.posts, _this.posts)&&(identical(other.nextCursor, _this.nextCursor) || other.nextCursor == _this.nextCursor)&&(identical(other.isRefreshing, _this.isRefreshing) || other.isRefreshing == _this.isRefreshing)&&(identical(other.loadMore, _this.loadMore) || other.loadMore == _this.loadMore)&&const DeepCollectionEquality().equals(other.pendingDeleteIds, _this.pendingDeleteIds)&&(identical(other.generation, _this.generation) || other.generation == _this.generation)&&const DeepCollectionEquality().equals(other.pendingPosts, _this.pendingPosts)&&const DeepCollectionEquality().equals(other.freshIds, _this.freshIds)&&const DeepCollectionEquality().equals(other.replacedIds, _this.replacedIds)&&const DeepCollectionEquality().equals(other.counts, _this.counts)&&(identical(other.failure, _this.failure) || other.failure == _this.failure)&&(identical(other.refreshFailure, _this.refreshFailure) || other.refreshFailure == _this.refreshFailure));
 }
 
 
 @override
 int get hashCode {
   final _this = this as FeedState;
-  return Object.hash(runtimeType,_this.userId,_this.status,const DeepCollectionEquality().hash(_this.posts),_this.nextCursor,_this.isRefreshing,_this.loadMore,const DeepCollectionEquality().hash(_this.pendingDeleteIds),_this.generation,_this.failure,_this.refreshFailure);
+  return Object.hash(runtimeType,_this.userId,_this.status,const DeepCollectionEquality().hash(_this.posts),_this.nextCursor,_this.isRefreshing,_this.loadMore,const DeepCollectionEquality().hash(_this.pendingDeleteIds),_this.generation,const DeepCollectionEquality().hash(_this.pendingPosts),const DeepCollectionEquality().hash(_this.freshIds),const DeepCollectionEquality().hash(_this.replacedIds),const DeepCollectionEquality().hash(_this.counts),_this.failure,_this.refreshFailure);
 }
 
 @override
 String toString() {
   final _this = this as FeedState;
-  return 'FeedState(userId: ${_this.userId}, status: ${_this.status}, posts: ${_this.posts}, nextCursor: ${_this.nextCursor}, isRefreshing: ${_this.isRefreshing}, loadMore: ${_this.loadMore}, pendingDeleteIds: ${_this.pendingDeleteIds}, generation: ${_this.generation}, failure: ${_this.failure}, refreshFailure: ${_this.refreshFailure})';
+  return 'FeedState(userId: ${_this.userId}, status: ${_this.status}, posts: ${_this.posts}, nextCursor: ${_this.nextCursor}, isRefreshing: ${_this.isRefreshing}, loadMore: ${_this.loadMore}, pendingDeleteIds: ${_this.pendingDeleteIds}, generation: ${_this.generation}, pendingPosts: ${_this.pendingPosts}, freshIds: ${_this.freshIds}, replacedIds: ${_this.replacedIds}, counts: ${_this.counts}, failure: ${_this.failure}, refreshFailure: ${_this.refreshFailure})';
 }
 
 
@@ -59,7 +65,7 @@ abstract mixin class $FeedStateCopyWith<$Res>  {
   factory $FeedStateCopyWith(FeedState value, $Res Function(FeedState) _then) = _$FeedStateCopyWithImpl;
 @useResult
 $Res call({
- String? userId, FeedStatus status, List<FeedPost> posts, FeedCursorEntity? nextCursor, bool isRefreshing, LoadMoreStatus loadMore, Set<String> pendingDeleteIds, int generation, Failure? failure, Failure? refreshFailure
+ String? userId, FeedStatus status, List<FeedPost> posts, FeedCursorEntity? nextCursor, bool isRefreshing, LoadMoreStatus loadMore, Set<String> pendingDeleteIds, int generation, List<FeedPost> pendingPosts, Set<String> freshIds, Set<String> replacedIds, Map<String, PostCountModel> counts, Failure? failure, Failure? refreshFailure
 });
 
 
@@ -76,7 +82,7 @@ class _$FeedStateCopyWithImpl<$Res>
 
 /// Create a copy of FeedState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? status = null,Object? posts = null,Object? nextCursor = freezed,Object? isRefreshing = null,Object? loadMore = null,Object? pendingDeleteIds = null,Object? generation = null,Object? failure = freezed,Object? refreshFailure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? status = null,Object? posts = null,Object? nextCursor = freezed,Object? isRefreshing = null,Object? loadMore = null,Object? pendingDeleteIds = null,Object? generation = null,Object? pendingPosts = null,Object? freshIds = null,Object? replacedIds = null,Object? counts = null,Object? failure = freezed,Object? refreshFailure = freezed,}) {
   return _then(FeedState(
 userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -86,7 +92,11 @@ as FeedCursorEntity?,isRefreshing: null == isRefreshing ? _self.isRefreshing : i
 as bool,loadMore: null == loadMore ? _self.loadMore : loadMore // ignore: cast_nullable_to_non_nullable
 as LoadMoreStatus,pendingDeleteIds: null == pendingDeleteIds ? _self.pendingDeleteIds : pendingDeleteIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,generation: null == generation ? _self.generation : generation // ignore: cast_nullable_to_non_nullable
-as int,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as int,pendingPosts: null == pendingPosts ? _self.pendingPosts : pendingPosts // ignore: cast_nullable_to_non_nullable
+as List<FeedPost>,freshIds: null == freshIds ? _self.freshIds : freshIds // ignore: cast_nullable_to_non_nullable
+as Set<String>,replacedIds: null == replacedIds ? _self.replacedIds : replacedIds // ignore: cast_nullable_to_non_nullable
+as Set<String>,counts: null == counts ? _self.counts : counts // ignore: cast_nullable_to_non_nullable
+as Map<String, PostCountModel>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,refreshFailure: freezed == refreshFailure ? _self.refreshFailure : refreshFailure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
@@ -173,10 +183,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userId,  FeedStatus status,  List<FeedPost> posts,  FeedCursorEntity? nextCursor,  bool isRefreshing,  LoadMoreStatus loadMore,  Set<String> pendingDeleteIds,  int generation,  Failure? failure,  Failure? refreshFailure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userId,  FeedStatus status,  List<FeedPost> posts,  FeedCursorEntity? nextCursor,  bool isRefreshing,  LoadMoreStatus loadMore,  Set<String> pendingDeleteIds,  int generation,  List<FeedPost> pendingPosts,  Set<String> freshIds,  Set<String> replacedIds,  Map<String, PostCountModel> counts,  Failure? failure,  Failure? refreshFailure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FeedState() when $default != null:
-return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isRefreshing,_that.loadMore,_that.pendingDeleteIds,_that.generation,_that.failure,_that.refreshFailure);case _:
+return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isRefreshing,_that.loadMore,_that.pendingDeleteIds,_that.generation,_that.pendingPosts,_that.freshIds,_that.replacedIds,_that.counts,_that.failure,_that.refreshFailure);case _:
   return orElse();
 
 }
@@ -194,10 +204,10 @@ return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isR
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userId,  FeedStatus status,  List<FeedPost> posts,  FeedCursorEntity? nextCursor,  bool isRefreshing,  LoadMoreStatus loadMore,  Set<String> pendingDeleteIds,  int generation,  Failure? failure,  Failure? refreshFailure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userId,  FeedStatus status,  List<FeedPost> posts,  FeedCursorEntity? nextCursor,  bool isRefreshing,  LoadMoreStatus loadMore,  Set<String> pendingDeleteIds,  int generation,  List<FeedPost> pendingPosts,  Set<String> freshIds,  Set<String> replacedIds,  Map<String, PostCountModel> counts,  Failure? failure,  Failure? refreshFailure)  $default,) {final _that = this;
 switch (_that) {
 case _FeedState():
-return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isRefreshing,_that.loadMore,_that.pendingDeleteIds,_that.generation,_that.failure,_that.refreshFailure);case _:
+return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isRefreshing,_that.loadMore,_that.pendingDeleteIds,_that.generation,_that.pendingPosts,_that.freshIds,_that.replacedIds,_that.counts,_that.failure,_that.refreshFailure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -214,10 +224,10 @@ return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isR
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userId,  FeedStatus status,  List<FeedPost> posts,  FeedCursorEntity? nextCursor,  bool isRefreshing,  LoadMoreStatus loadMore,  Set<String> pendingDeleteIds,  int generation,  Failure? failure,  Failure? refreshFailure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userId,  FeedStatus status,  List<FeedPost> posts,  FeedCursorEntity? nextCursor,  bool isRefreshing,  LoadMoreStatus loadMore,  Set<String> pendingDeleteIds,  int generation,  List<FeedPost> pendingPosts,  Set<String> freshIds,  Set<String> replacedIds,  Map<String, PostCountModel> counts,  Failure? failure,  Failure? refreshFailure)?  $default,) {final _that = this;
 switch (_that) {
 case _FeedState() when $default != null:
-return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isRefreshing,_that.loadMore,_that.pendingDeleteIds,_that.generation,_that.failure,_that.refreshFailure);case _:
+return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isRefreshing,_that.loadMore,_that.pendingDeleteIds,_that.generation,_that.pendingPosts,_that.freshIds,_that.replacedIds,_that.counts,_that.failure,_that.refreshFailure);case _:
   return null;
 
 }
@@ -229,7 +239,7 @@ return $default(_that.userId,_that.status,_that.posts,_that.nextCursor,_that.isR
 
 
 class _FeedState extends FeedState {
-  const _FeedState({this.userId, this.status = FeedStatus.initial,  List<FeedPost> posts = const <FeedPost>[], this.nextCursor, this.isRefreshing = false, this.loadMore = LoadMoreStatus.idle,  Set<String> pendingDeleteIds = const <String>{}, this.generation = 0, this.failure, this.refreshFailure}): _posts = posts,_pendingDeleteIds = pendingDeleteIds,super._();
+  const _FeedState({this.userId, this.status = FeedStatus.initial,  List<FeedPost> posts = const <FeedPost>[], this.nextCursor, this.isRefreshing = false, this.loadMore = LoadMoreStatus.idle,  Set<String> pendingDeleteIds = const <String>{}, this.generation = 0,  List<FeedPost> pendingPosts = const <FeedPost>[],  Set<String> freshIds = const <String>{},  Set<String> replacedIds = const <String>{},  Map<String, PostCountModel> counts = const <String, PostCountModel>{}, this.failure, this.refreshFailure}): _posts = posts,_pendingDeleteIds = pendingDeleteIds,_pendingPosts = pendingPosts,_freshIds = freshIds,_replacedIds = replacedIds,_counts = counts,super._();
   
 
 /// The signed-in person, to tell their own posts apart.
@@ -260,6 +270,46 @@ class _FeedState extends FeedState {
 /// Counts the times the posts were replaced (first load, refresh): what was done to the old ones
 /// no longer applies.
 @override@JsonKey() final  int generation;
+/// New posts of other people that were found while the person reads further down: they wait here, never
+/// inserted above what is on screen, until the person asks for them (the pill).
+ final  List<FeedPost> _pendingPosts;
+/// New posts of other people that were found while the person reads further down: they wait here, never
+/// inserted above what is on screen, until the person asks for them (the pill).
+@override@JsonKey() List<FeedPost> get pendingPosts {
+  if (_pendingPosts is EqualUnmodifiableListView) return _pendingPosts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_pendingPosts);
+}
+
+/// Posts that just arrived on top: they show a soft ring for a moment.
+ final  Set<String> _freshIds;
+/// Posts that just arrived on top: they show a soft ring for a moment.
+@override@JsonKey() Set<String> get freshIds {
+  if (_freshIds is EqualUnmodifiableSetView) return _freshIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_freshIds);
+}
+
+/// Posts a change check replaced where they stand: what was done to them on this phone (a like, a save)
+/// no longer applies, the new version has it.
+ final  Set<String> _replacedIds;
+/// Posts a change check replaced where they stand: what was done to them on this phone (a like, a save)
+/// no longer applies, the new version has it.
+@override@JsonKey() Set<String> get replacedIds {
+  if (_replacedIds is EqualUnmodifiableSetView) return _replacedIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_replacedIds);
+}
+
+/// The newest counts of the posts on screen, from the last check.
+ final  Map<String, PostCountModel> _counts;
+/// The newest counts of the posts on screen, from the last check.
+@override@JsonKey() Map<String, PostCountModel> get counts {
+  if (_counts is EqualUnmodifiableMapView) return _counts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_counts);
+}
+
 /// Why the first load failed.
 @override final  Failure? failure;
 /// One-shot: a refresh failed; the posts on screen stay.
@@ -275,18 +325,18 @@ _$FeedStateCopyWith<_FeedState> get copyWith => __$FeedStateCopyWithImpl<_FeedSt
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FeedState&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.posts, _posts)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.loadMore, loadMore) || other.loadMore == loadMore)&&const DeepCollectionEquality().equals(other.pendingDeleteIds, _pendingDeleteIds)&&(identical(other.generation, generation) || other.generation == generation)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.refreshFailure, refreshFailure) || other.refreshFailure == refreshFailure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FeedState&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.posts, _posts)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.loadMore, loadMore) || other.loadMore == loadMore)&&const DeepCollectionEquality().equals(other.pendingDeleteIds, _pendingDeleteIds)&&(identical(other.generation, generation) || other.generation == generation)&&const DeepCollectionEquality().equals(other.pendingPosts, _pendingPosts)&&const DeepCollectionEquality().equals(other.freshIds, _freshIds)&&const DeepCollectionEquality().equals(other.replacedIds, _replacedIds)&&const DeepCollectionEquality().equals(other.counts, _counts)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.refreshFailure, refreshFailure) || other.refreshFailure == refreshFailure));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,userId,status,const DeepCollectionEquality().hash(_posts),nextCursor,isRefreshing,loadMore,const DeepCollectionEquality().hash(_pendingDeleteIds),generation,failure,refreshFailure);
+    return Object.hash(runtimeType,userId,status,const DeepCollectionEquality().hash(_posts),nextCursor,isRefreshing,loadMore,const DeepCollectionEquality().hash(_pendingDeleteIds),generation,const DeepCollectionEquality().hash(_pendingPosts),const DeepCollectionEquality().hash(_freshIds),const DeepCollectionEquality().hash(_replacedIds),const DeepCollectionEquality().hash(_counts),failure,refreshFailure);
 }
 
 @override
 String toString() {
-    return 'FeedState(userId: $userId, status: $status, posts: $posts, nextCursor: $nextCursor, isRefreshing: $isRefreshing, loadMore: $loadMore, pendingDeleteIds: $pendingDeleteIds, generation: $generation, failure: $failure, refreshFailure: $refreshFailure)';
+    return 'FeedState(userId: $userId, status: $status, posts: $posts, nextCursor: $nextCursor, isRefreshing: $isRefreshing, loadMore: $loadMore, pendingDeleteIds: $pendingDeleteIds, generation: $generation, pendingPosts: $pendingPosts, freshIds: $freshIds, replacedIds: $replacedIds, counts: $counts, failure: $failure, refreshFailure: $refreshFailure)';
 }
 
 
@@ -297,7 +347,7 @@ abstract mixin class _$FeedStateCopyWith<$Res> implements $FeedStateCopyWith<$Re
   factory _$FeedStateCopyWith(_FeedState value, $Res Function(_FeedState) _then) = __$FeedStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? userId, FeedStatus status, List<FeedPost> posts, FeedCursorEntity? nextCursor, bool isRefreshing, LoadMoreStatus loadMore, Set<String> pendingDeleteIds, int generation, Failure? failure, Failure? refreshFailure
+ String? userId, FeedStatus status, List<FeedPost> posts, FeedCursorEntity? nextCursor, bool isRefreshing, LoadMoreStatus loadMore, Set<String> pendingDeleteIds, int generation, List<FeedPost> pendingPosts, Set<String> freshIds, Set<String> replacedIds, Map<String, PostCountModel> counts, Failure? failure, Failure? refreshFailure
 });
 
 
@@ -314,7 +364,7 @@ class __$FeedStateCopyWithImpl<$Res>
 
 /// Create a copy of FeedState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? status = null,Object? posts = null,Object? nextCursor = freezed,Object? isRefreshing = null,Object? loadMore = null,Object? pendingDeleteIds = null,Object? generation = null,Object? failure = freezed,Object? refreshFailure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? status = null,Object? posts = null,Object? nextCursor = freezed,Object? isRefreshing = null,Object? loadMore = null,Object? pendingDeleteIds = null,Object? generation = null,Object? pendingPosts = null,Object? freshIds = null,Object? replacedIds = null,Object? counts = null,Object? failure = freezed,Object? refreshFailure = freezed,}) {
   return _then(_FeedState(
 userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -324,7 +374,11 @@ as FeedCursorEntity?,isRefreshing: null == isRefreshing ? _self.isRefreshing : i
 as bool,loadMore: null == loadMore ? _self.loadMore : loadMore // ignore: cast_nullable_to_non_nullable
 as LoadMoreStatus,pendingDeleteIds: null == pendingDeleteIds ? _self._pendingDeleteIds : pendingDeleteIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,generation: null == generation ? _self.generation : generation // ignore: cast_nullable_to_non_nullable
-as int,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as int,pendingPosts: null == pendingPosts ? _self._pendingPosts : pendingPosts // ignore: cast_nullable_to_non_nullable
+as List<FeedPost>,freshIds: null == freshIds ? _self._freshIds : freshIds // ignore: cast_nullable_to_non_nullable
+as Set<String>,replacedIds: null == replacedIds ? _self._replacedIds : replacedIds // ignore: cast_nullable_to_non_nullable
+as Set<String>,counts: null == counts ? _self._counts : counts // ignore: cast_nullable_to_non_nullable
+as Map<String, PostCountModel>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,refreshFailure: freezed == refreshFailure ? _self.refreshFailure : refreshFailure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));

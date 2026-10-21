@@ -19,6 +19,7 @@ class ControlScreen extends StatelessWidget {
   static Widget _root(BuildContext context, MainTab tab) => switch (tab) {
     MainTab.home => const HomeScreen(),
     // TODO(control-page-plan T2): Shorts tab placeholder until the shorts feature is specced.
+    // TODO(content-changes-plan T2): the shorts feed listens for `ContentChanged` of `ContentKind.short` (changes_since and posts_by_ids already serve shorts) and asks `CheckContentChangesUseCase(ContentKind.short)` when it opens and when the app returns.
     MainTab.shorts => const TabPlaceholder(tab: MainTab.shorts),
     // TODO(control-page-plan T3): Chat tab placeholder until the chat feature exists.
     MainTab.chat => const TabPlaceholder(tab: MainTab.chat),

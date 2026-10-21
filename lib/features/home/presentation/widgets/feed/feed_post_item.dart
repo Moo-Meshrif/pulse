@@ -26,6 +26,7 @@ import '../../cubit/feed/feed_cubit.dart';
 import '../../dimens/home_dimens.dart';
 import '../../utils/feed_post.dart';
 import '../../utils/post_card_mapper.dart';
+import 'fresh_ring.dart';
 
 /// One post of the feed: its card, the "Not interested" row it turns into, or nothing once it was
 /// reported or deleted. Wires the card to [PostActionsCubit].
@@ -261,15 +262,18 @@ class _FeedPostItemState extends State<FeedPostItem> {
                 ),
                 PostRow.card => Padding(
                   padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
-                  child: PostCard(
-                    data: postCardData(
-                      _shown(current.changed, current.isOriginalGone),
-                      widget.post.media,
-                      userId: context.read<FeedCubit>().state.userId,
-                      originalMedia: widget.post.originalMedia,
+                  child: FreshRing(
+                    postId: _loaded.id,
+                    child: PostCard(
+                      data: postCardData(
+                        _shown(current.changed, current.isOriginalGone),
+                        widget.post.media,
+                        userId: context.read<FeedCubit>().state.userId,
+                        originalMedia: widget.post.originalMedia,
+                      ),
+                      callbacks: _callbacks(),
+                      isOptionsOpen: _isOptionsOpen,
                     ),
-                    callbacks: _callbacks(),
-                    isOptionsOpen: _isOptionsOpen,
                   ),
                 ),
               },

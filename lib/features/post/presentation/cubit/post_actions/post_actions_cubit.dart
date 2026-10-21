@@ -9,6 +9,7 @@ import '../../../../../core/state/base_cubit.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../../shared/content/data/enums/mute_scope.dart';
+import '../../../../../shared/content/data/model/post_count_model.dart';
 import '../../../../../shared/content/domain/use_case/report_content_use_case.dart';
 import '../../../../../shared/content/domain/use_case/set_mute_use_case.dart';
 import '../../../../follow/domain/use_case/toggle_follow_use_case.dart';
@@ -69,6 +70,48 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   void reset() {
     _cancelHiddenTimers();
     emit(const PostActionsState());
+  }
+
+  /// The screen replaced these posts with newer versions: what was done to them here is in the new data.
+  void forget(Set<String> ids) {
+    if (!ids.any(state.posts.containsKey)) return;
+    emit(
+      state.copyWith(
+        posts: {
+          for (final entry in state.posts.entries)
+            if (!ids.contains(entry.key)) entry.key: entry.value,
+        },
+      ),
+    );
+  }
+
+  /// Puts the newest like and comment counts on the [loaded] posts. A post whose like request is still in
+  /// flight keeps its own count until the request ends.
+  void applyCounts(
+    List<PostEntity> loaded,
+    Map<String, PostCountModel> counts,
+  ) {
+    final changed = <String, PostEntity>{};
+    for (final post in loaded) {
+      final count = counts[post.id];
+      if (count == null || _likePending.contains(post.id)) continue;
+      final now = postOf(post);
+      final likes = count.likeCount ?? now.likeCount;
+      final comments = count.commentCount ?? now.commentCount;
+      final liked = count.likedByMe ?? now.likedByMe;
+      if (likes == now.likeCount &&
+          comments == now.commentCount &&
+          liked == now.likedByMe) {
+        continue;
+      }
+      changed[post.id] = now.copyWith(
+        likeCount: likes,
+        commentCount: comments,
+        likedByMe: liked,
+      );
+    }
+    if (changed.isEmpty) return;
+    emit(state.copyWith(posts: {...state.posts, ...changed}));
   }
 
   void _cancelHiddenTimers() {

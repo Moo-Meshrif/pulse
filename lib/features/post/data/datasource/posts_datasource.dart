@@ -26,6 +26,10 @@ abstract interface class PostsDatasource {
     String? beforeId,
   });
 
+  /// The posts and shorts [ids] (up to 50) the signed-in user can see, in the shape of the feed rows;
+  /// one they can no longer see (or that is gone) is left out.
+  Future<List<PostModel>> getPostsByIds(List<String> ids);
+
   /// Signed links by object path; a path that cannot be signed is left out.
   Future<Map<String, String>> signMediaUrls(List<String> paths);
 
@@ -58,7 +62,7 @@ abstract interface class PostsDatasource {
   });
 }
 
-/// [PostsDatasource] as an adapter over Supabase: `home_feed`, `update_post` and the private
+/// [PostsDatasource] as an adapter over Supabase: `home_feed`, `posts_by_ids`, `update_post` and the private
 /// `post-media` bucket.
 @LazySingleton(as: PostsDatasource)
 final class SupabasePostsDatasource implements PostsDatasource {
@@ -105,6 +109,18 @@ final class SupabasePostsDatasource implements PostsDatasource {
       nextBeforeId: last?.id,
     );
   });
+
+  @override
+  Future<List<PostModel>> getPostsByIds(List<String> ids) =>
+      Guard.run(() async {
+        final rows = await _client.rpc<List<dynamic>>(
+          'posts_by_ids',
+          params: {'p_ids': ids},
+        );
+        return List<Map<String, dynamic>>.from(rows)
+            .map(PostModel.fromJson)
+            .toList();
+      });
 
   @override
   Future<Map<String, String>> signMediaUrls(List<String> paths) =>

@@ -7,7 +7,10 @@ import '../../../../../core/events/event_cubit_mixin.dart';
 import '../../../../../core/state/base_cubit.dart';
 import '../../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../../shared/content/domain/entity/content_publish_status.dart';
+import '../../../../../shared/content/domain/event/content_changed.dart';
 import '../../../../../shared/content/domain/event/content_delete_event.dart';
+import '../../../../../shared/content/domain/event/content_ping.dart';
+import '../../../../../shared/content/domain/use_case/check_content_changes_use_case.dart';
 import '../../../../../shared/content/domain/use_case/get_publish_status_use_case.dart';
 import '../../../../../shared/content/domain/use_case/retry_publish_use_case.dart';
 import '../../../../post/domain/event/feed_refresh_requested.dart';
@@ -28,12 +31,14 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
     GetPublishStatusUseCase uploadStatus,
     this._retryUpload,
     GetLastAccountUseCase account,
+    this._checkChanges,
   ) : account = account(),
       super(StoryRailState(upload: uploadStatus(ContentKind.story)));
 
   final GetStoryRailUseCase _rail;
   final EventBus _events;
   final RetryPublishUseCase _retryUpload;
+  final CheckContentChangesUseCase _checkChanges;
 
   /// You, from the saved account: the photo or initials in the posting ring before you have a story.
   final LastAccountEntity? account;
@@ -50,13 +55,34 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
   bool _reloadAgain = false;
 
   /// Loads the rail and keeps it current: a mute or delete reloads it, and so does a story that finished
-  /// posting or a refresh of Home.
+  /// posting, a refresh of Home, or a story that was added or deleted elsewhere (the change check).
   Future<void> start() {
     listenTo<StoryRailChanged>((_) => load());
     listenTo<ContentDeleteEvent>(_onDelete);
     listenTo<FeedRefreshRequested>((_) => load());
     listenTo<ContentPublishStatus>(_onUpload);
-    return load();
+    listenTo<ContentChanged>(_onContentChanged);
+    listenTo<ContentPing>((event) {
+      if (event.kind == ContentKind.story) unawaited(checkChanges());
+    });
+    final loading = load();
+    unawaited(checkChanges());
+    return loading;
+  }
+
+  /// Asks what changed in stories since the last check; the answer arrives as a [ContentChanged] event.
+  /// Quiet when offline. Called when Home opens and when the app comes back.
+  Future<void> checkChanges() => _checkChanges(ContentKind.story);
+
+  /// The rail holds one row per person, so a story that came or went is a new read of the rail, quietly
+  /// (the rail on screen stays until the answer is in).
+  void _onContentChanged(ContentChanged event) {
+    if (event.kind != ContentKind.story) return;
+    if (event.mustReload ||
+        event.upsertedIds.isNotEmpty ||
+        event.removedIds.isNotEmpty) {
+      load();
+    }
   }
 
   /// A change that comes in while loading runs one more load after it. A load that fails leaves the rail

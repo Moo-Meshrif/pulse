@@ -19,6 +19,7 @@ import 'package:pulse/features/post/presentation/utils/enums/post_row.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/enums/mute_scope.dart';
+import 'package:pulse/shared/content/data/model/post_count_model.dart';
 
 import '../../../../../helpers/content_mocks.dart';
 import '../../../../../helpers/failure_of.dart';
@@ -334,6 +335,69 @@ void main() {
       expect(after.tags, tagged.tags);
       expect(after.tagCount, 3);
       expect(after.iAmTagged, isTrue);
+    });
+  });
+
+  group('counts and replaced posts', () {
+    test('new counts land on the post; equal ones change nothing', () {
+      cubit.applyCounts(
+        [post],
+        {
+          'p1': const PostCountModel(
+            id: 'p1',
+            likeCount: 25,
+            commentCount: 7,
+            likedByMe: true,
+          ),
+        },
+      );
+      final after = cubit.postOf(post);
+      expect(after.likeCount, 25);
+      expect(after.commentCount, 7);
+      expect(after.likedByMe, isTrue);
+
+      final states = <Object>[];
+      cubit.stream.listen(states.add);
+      cubit.applyCounts(
+        [post],
+        {
+          'p1': const PostCountModel(
+            id: 'p1',
+            likeCount: 25,
+            commentCount: 7,
+            likedByMe: true,
+          ),
+        },
+      );
+      expect(states, isEmpty);
+    });
+
+    test('a post with a like request in flight keeps its own count', () async {
+      final answer = Completer<int>();
+      when(() => like('p1', liked: true)).thenAnswer((_) => answer.future);
+      final done = cubit.toggleLike(post);
+
+      cubit.applyCounts(
+        [post],
+        {'p1': const PostCountModel(id: 'p1', likeCount: 3, commentCount: 2)},
+      );
+      expect(cubit.postOf(post).likeCount, 11);
+
+      answer.complete(11);
+      await done;
+    });
+
+    test('forget drops what was done to the replaced posts only', () async {
+      when(() => save('p1', saved: true)).thenAnswer((_) async => true);
+      when(() => save('p2', saved: true)).thenAnswer((_) async => true);
+      final other = testPost('p2');
+      await cubit.toggleSave(post);
+      await cubit.toggleSave(other);
+
+      cubit.forget({'p1', 'zz'});
+
+      expect(cubit.postOf(post).savedByMe, isFalse);
+      expect(cubit.postOf(other).savedByMe, isTrue);
     });
   });
 }

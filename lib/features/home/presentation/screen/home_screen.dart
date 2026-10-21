@@ -34,6 +34,19 @@ class HomeScreen extends StatelessWidget {
   void _forgetOldActions(BuildContext context, FeedState state) =>
       context.read<PostActionsCubit>().reset();
 
+  bool _postsWereReplaced(FeedState before, FeedState state) =>
+      state.replacedIds.isNotEmpty && state.replacedIds != before.replacedIds;
+
+  void _forgetReplaced(BuildContext context, FeedState state) =>
+      context.read<PostActionsCubit>().forget(state.replacedIds);
+
+  bool _haveCountsChanged(FeedState before, FeedState state) =>
+      state.counts != before.counts;
+
+  void _applyCounts(BuildContext context, FeedState state) => context
+      .read<PostActionsCubit>()
+      .applyCounts([for (final post in state.posts) post.entity], state.counts);
+
   bool _hasNewRefreshFailure(FeedState before, FeedState state) =>
       state.refreshFailure != null &&
       state.refreshFailure != before.refreshFailure;
@@ -138,6 +151,18 @@ class HomeScreen extends StatelessWidget {
     return cubit;
   }
 
+  /// The app came back: finish shared posts that were waiting, and learn what changed meanwhile in the feed and in the Stories rail.
+  void _onAppReturned(BuildContext context) {
+    context.read<PostPublishCubit>().resume();
+    context.read<FeedCubit>().resumeLive();
+    unawaited(context.read<FeedCubit>().checkChanges());
+    unawaited(context.read<StoryRailCubit>().checkChanges());
+  }
+
+  /// The app went to the background: stop listening to the server.
+  void _onAppHidden(BuildContext context) =>
+      context.read<FeedCubit>().pauseLive();
+
   @override
   Widget build(BuildContext context) => MultiBlocProvider(
     providers: [
@@ -154,6 +179,14 @@ class HomeScreen extends StatelessWidget {
         BlocListener<FeedCubit, FeedState>(
           listenWhen: _postsReplaced,
           listener: _forgetOldActions,
+        ),
+        BlocListener<FeedCubit, FeedState>(
+          listenWhen: _postsWereReplaced,
+          listener: _forgetReplaced,
+        ),
+        BlocListener<FeedCubit, FeedState>(
+          listenWhen: _haveCountsChanged,
+          listener: _applyCounts,
         ),
         BlocListener<FeedCubit, FeedState>(
           listenWhen: _hasNewRefreshFailure,
@@ -186,7 +219,8 @@ class HomeScreen extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) => OnAppVisibility(
-          onShow: context.read<PostPublishCubit>().resume,
+          onShow: () => _onAppReturned(context),
+          onHide: () => _onAppHidden(context),
           child: const HomeView(),
         ),
       ),

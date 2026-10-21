@@ -22,6 +22,7 @@ import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart
 import '../../../../helpers/content_mocks.dart';
 
 import '../../../../helpers/pump_app.dart';
+import '../../home_doubles.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
@@ -65,6 +66,7 @@ void main() {
       ),
       retry,
       FakeLastAccount(),
+      quietChangeDoubles().check,
     );
     addTearDown(cubit.close);
   });

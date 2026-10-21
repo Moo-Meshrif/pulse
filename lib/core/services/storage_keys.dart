@@ -29,6 +29,10 @@ abstract final class StorageKeys {
   // content: the discards of one user the server has not confirmed yet (id and kind of each)
   static String contentDiscards(String userId) => 'content_discards_$userId';
 
+  // content: where the last check for changes stopped, one per user and kind (post, short, story)
+  static String contentChangesPoint(String userId, String kind) =>
+      'content_changes_${kind}_$userId';
+
   // places: the last places picked (a post's location), newest first
   static const recentPlaces = 'recent_places';
 
