@@ -172,15 +172,11 @@ class StoryCameraCubit extends BaseCubit<StoryCameraState> {
     }
   }
 
-  /// The library: a photo, or a video of at most 60 seconds. Works without any camera permission.
+  /// The library: a photo, or a video (the edit screen trims one over 60 seconds). Works without any camera
+  /// permission.
   Future<void> pickFromGallery() async {
     final media = await _picker.pick(preset: ImageResizePreset.fullScreen);
     if (media == null) return;
-    final duration = Duration(milliseconds: media.durationMs ?? 0);
-    if (media.isVideo && duration > StoryTiming.maxVideo) {
-      emit(state.copyWith(notice: StoryCameraNotice.videoTooLong));
-      return;
-    }
     _capture(
       CapturedStoryMedia(
         path: media.path,

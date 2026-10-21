@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
 
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
+
 import '../../../../helpers/backend_double.dart';
+import '../../../../helpers/failure_of.dart';
 
 void main() {
   Future<BackendDouble> signedIn(
@@ -221,5 +225,96 @@ void main() {
       {'user_id': 'u2', 'media_position': null, 'x': null, 'y': null},
       {'user_id': 'u3', 'media_position': 0, 'x': 0.5, 'y': 0.4},
     ]);
+  });
+
+  group('shared posts', () {
+    test(
+      'a feed row carries the flag, the id and the embedded original',
+      () async {
+        final backend = await signedIn(
+          (_) async => BackendDouble.json([
+            {
+              ...row(1),
+              'media': <Object>[],
+              'is_share': true,
+              'shared_post_id': 'o1',
+              'shared_post': {...row(2), 'id': 'o1'},
+            },
+            {
+              ...row(3),
+              'is_share': true,
+              'shared_post_id': null,
+              'shared_post': null,
+            },
+          ]),
+        );
+        final posts = SupabasePostsDatasource(backend.client);
+
+        final page = await posts.getHomeFeed(limit: 20);
+
+        final share = page.posts.first;
+        expect(share.isShare, isTrue);
+        expect(share.sharedPostId, 'o1');
+        expect(share.sharedPost!.id, 'o1');
+        expect(share.sharedPost!.media!.single.type, MediaType.video);
+        expect(page.posts.last.isShare, isTrue);
+        expect(page.posts.last.sharedPost, isNull);
+      },
+    );
+
+    test('a plain row is not a share', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([row(1)]));
+      final page = await SupabasePostsDatasource(backend.client)
+          .getHomeFeed(limit: 20);
+
+      expect(page.posts.single.isShare, isNull);
+      expect(page.posts.single.sharedPost, isNull);
+    });
+
+    test(
+      'shareToFeed sends the words, audience, feeling, place and tags',
+      () async {
+        final backend = await signedIn(
+          (_) async => BackendDouble.json('new-1'),
+        );
+        final posts = SupabasePostsDatasource(backend.client);
+
+        final id = await posts.shareToFeed(
+          postId: 'o1',
+          caption: 'Look',
+          audience: ContentAudience.followers,
+          moodKind: MoodKind.feeling,
+          moodKey: 'happy',
+          location: 'Cairo',
+          tags: const [PostTagModel(userId: 'u2')],
+        );
+
+        expect(id, 'new-1');
+        expect(body(backend.to('/rpc/share_to_feed').single), {
+          'p_post': 'o1',
+          'p_caption': 'Look',
+          'p_visibility': 'followers',
+          'p_mood_kind': 'feeling',
+          'p_mood_key': 'happy',
+          'p_mood_text': null,
+          'p_location': 'Cairo',
+          'p_tags': [
+            {'user_id': 'u2', 'media_position': null, 'x': null, 'y': null},
+          ],
+        });
+      },
+    );
+
+    test('an unavailable original is a NotFoundFailure', () async {
+      final backend = await signedIn(
+        (_) async => BackendDouble.postgrestError(400, 'P0002'),
+      );
+      final posts = SupabasePostsDatasource(backend.client);
+
+      expect(
+        await failureOf(posts.shareToFeed(postId: 'o1')),
+        isA<NotFoundFailure>(),
+      );
+    });
   });
 }

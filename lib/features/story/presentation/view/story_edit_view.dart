@@ -21,8 +21,10 @@ import '../utils/story_sticker.dart';
 import '../widgets/story_edit/story_edit_actions.dart';
 import '../widgets/story_edit/story_edit_media.dart';
 import '../widgets/story_edit/story_edit_tools.dart';
+import '../widgets/story_edit/story_saving_overlay.dart';
 import '../widgets/story_edit/story_sticker_canvas.dart';
 import '../widgets/story_edit/story_text_editor.dart';
+import '../widgets/story_edit/story_trim_bar.dart';
 import '../widgets/story_shades.dart';
 
 /// The edit screen's body (S3): the media with its stickers, the tools and the bottom actions.
@@ -112,7 +114,13 @@ class StoryEditView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           const ColoredBox(color: Colors.black),
-          StoryEditMedia(media: state.media, isMuted: state.isMuted),
+          StoryEditMedia(
+            media: state.media,
+            isMuted: state.isMuted,
+            trim: state.isTrimmable
+                ? (start: state.trimStartMs, end: state.trimEndMs)
+                : null,
+          ),
           const StoryShades(),
           StoryStickerCanvas(
             stickers: state.stickers,
@@ -158,6 +166,24 @@ class StoryEditView extends StatelessWidget {
               onSave: () => _save(context),
             ),
           ),
+          if (state.isTrimmable)
+            PositionedDirectional(
+              start: StoryCameraDimens.actionSide,
+              end: StoryCameraDimens.actionSide,
+              bottom:
+                  actionsBottom +
+                  StoryCameraDimens.actionHeight +
+                  StoryTrimDimens.aboveActions,
+              child: StoryTrimBar(
+                durationMs: state.media.durationMs ?? 0,
+                startMs: state.trimStartMs,
+                endMs: state.trimEndMs,
+                frames: state.trimFrames,
+                onStart: cubit.trimStart,
+                onEnd: cubit.trimEnd,
+                onMove: cubit.trimMove,
+              ),
+            ),
           PositionedDirectional(
             start: StoryCameraDimens.actionSide,
             end: StoryCameraDimens.actionSide,
@@ -168,6 +194,8 @@ class StoryEditView extends StatelessWidget {
               onShare: cubit.share,
             ),
           ),
+          if (state.isSaving && state.media.type == StoryMediaType.video)
+            StorySavingOverlay(progress: state.saveProgress),
         ],
       ),
     );

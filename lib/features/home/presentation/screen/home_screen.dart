@@ -94,8 +94,22 @@ class HomeScreen extends StatelessWidget {
       state.upload is ContentPublishFailed &&
       before.upload is! ContentPublishFailed;
 
+  bool _uploadResumed(StoryRailState before, StoryRailState state) =>
+      before.upload is ContentPublishFailed &&
+      state.upload is! ContentPublishFailed;
+
+  /// The story posts again by itself: the notice about it is no longer true.
+  void _clearUploadNotice(BuildContext context, StoryRailState state) =>
+      Notices.clear();
+
   void _showUploadFailedWithRetry(BuildContext context, StoryRailState state) {
     final rail = context.read<StoryRailCubit>();
+    final failure = state.upload;
+    // A lost connection is retried by itself when it is back: say so instead of offering a retry.
+    if (failure is ContentPublishFailed && failure.isOffline) {
+      Notices.info(context.l10n.storyPostOffline);
+      return;
+    }
     Notices.error(
       context.l10n.storyPostFailed,
       actionLabel: context.l10n.retry,
@@ -164,6 +178,10 @@ class HomeScreen extends StatelessWidget {
         BlocListener<StoryRailCubit, StoryRailState>(
           listenWhen: _uploadJustFailed,
           listener: _showUploadFailedWithRetry,
+        ),
+        BlocListener<StoryRailCubit, StoryRailState>(
+          listenWhen: _uploadResumed,
+          listener: _clearUploadNotice,
         ),
       ],
       child: Builder(

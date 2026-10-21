@@ -112,6 +112,7 @@ void registerHomeDoubles() {
         EventBus(),
         GetPublishStatusUseCase(publish),
         RetryPublishUseCase(publish),
+        FakeLastAccount(),
       ),
     );
 }

@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
+import '../../../../shared/content/data/enums/content_audience.dart';
 import '../enums/mood_kind.dart';
 import '../model/feed_page_model.dart';
 import '../model/post_media_model.dart';
@@ -28,6 +29,21 @@ abstract interface class PostsDatasource {
   /// Signed links by object path; a path that cannot be signed is left out.
   Future<Map<String, String>> signMediaUrls(List<String> paths);
 
+  /// Shares the Public post [postId] to the signed-in user's feed and returns the new post's id. A share
+  /// of a share is made of its original. Throws a [NotFoundFailure] when the post is gone or can't be
+  /// shared, and a [ServerFailure] for a caption over 2000 characters. A share has no photo, so a tag
+  /// carries no spot.
+  Future<String> shareToFeed({
+    required String postId,
+    String? caption,
+    ContentAudience? audience,
+    MoodKind? moodKind,
+    String? moodKey,
+    String? moodText,
+    String? location,
+    List<PostTagModel> tags = const [],
+  });
+
   /// Replaces the caption, place, media list, mood and tags of the signed-in user's post [id]; the
   /// [media] files are already uploaded.
   Future<void> updatePost({
@@ -49,6 +65,9 @@ final class SupabasePostsDatasource implements PostsDatasource {
   SupabasePostsDatasource(this._client);
 
   static const _bucket = 'post-media';
+
+  /// The code `share_to_feed` raises as `post_unavailable`.
+  static const _postUnavailable = 'P0002';
 
   /// How long a signed media link works, in seconds.
   static const _signedUrlSeconds = 3600;
@@ -99,6 +118,38 @@ final class SupabasePostsDatasource implements PostsDatasource {
             result.path: result.signedUrl,
         };
       });
+
+  @override
+  Future<String> shareToFeed({
+    required String postId,
+    String? caption,
+    ContentAudience? audience,
+    MoodKind? moodKind,
+    String? moodKey,
+    String? moodText,
+    String? location,
+    List<PostTagModel> tags = const [],
+  }) => Guard.run(() async {
+    try {
+      final id = await _client.rpc<String>(
+        'share_to_feed',
+        params: {
+          'p_post': postId,
+          'p_caption': caption,
+          'p_visibility': audience?.wire,
+          'p_mood_kind': moodKind?.wire,
+          'p_mood_key': moodKey,
+          'p_mood_text': moodText,
+          'p_location': location,
+          'p_tags': tags.map((tag) => tag.toJson()).toList(),
+        },
+      );
+      return id;
+    } on PostgrestException catch (error) {
+      if (error.code == _postUnavailable) throw const NotFoundException('post');
+      rethrow;
+    }
+  });
 
   @override
   Future<void> updatePost({

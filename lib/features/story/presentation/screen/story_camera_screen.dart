@@ -60,8 +60,6 @@ class StoryCameraScreen extends StatelessWidget {
     if (notice == null) return;
     final l10n = context.l10n;
     switch (notice) {
-      case StoryCameraNotice.videoTooLong:
-        Notices.info(l10n.storyVideoTooLong);
       case StoryCameraNotice.captureFailed:
         Notices.error(l10n.storyCaptureFailed);
     }

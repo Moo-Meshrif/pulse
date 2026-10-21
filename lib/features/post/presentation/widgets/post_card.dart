@@ -12,6 +12,8 @@ import 'post_action_bar.dart';
 import 'post_author_row.dart';
 import 'post_comments_off_line.dart';
 import 'post_media.dart';
+import 'post_unavailable_embed.dart';
+import 'shared_post_embed.dart';
 
 /// A post in a feed: author row, caption, media and action bar on a rounded card. [data] says what to draw,
 /// [callbacks] what to tell the list. Put a [PostVideoScope] around the list so only one video plays.
@@ -60,7 +62,9 @@ class PostCard extends StatelessWidget {
             )
           else
             SizedBox(height: PostCardDimens.captionMargin.top),
-          if (hasMedia)
+          if (data.isShare)
+            _sharedOriginal()
+          else if (hasMedia)
             PostMedia(
               postId: data.id,
               items: data.media,
@@ -82,6 +86,7 @@ class PostCard extends StatelessWidget {
                 ? callbacks.onComment
                 : () => _showCommentsOff(context),
             onShare: callbacks.onShare,
+            showShare: data.canShare,
             onlySave: data.isOnlyMe,
             onSave: callbacks.onSave,
           ),
@@ -89,6 +94,17 @@ class PostCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _sharedOriginal() {
+    final original = data.original;
+    return original == null
+        ? const PostUnavailableEmbed()
+        : SharedPostEmbed(
+            shareId: data.id,
+            original: original,
+            callbacks: callbacks,
+          );
   }
 
   void _showCommentsOff(BuildContext context) => Notices.info(

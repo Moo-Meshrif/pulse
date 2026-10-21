@@ -78,6 +78,25 @@ abstract final class PostCardDimens {
       blurRadius: AppScale.scale(24),
     ),
   ];
+  // Shared post (docs/specs/post/02-components.md P10-P11); the values marked [estimated] there.
+  static double get embedRadius => AppScale.scale(16);
+  static const double embedBorder = 1; // hairline: fixed
+  static double get embedPadding => AppScale.scale(10);
+  static double get embedAvatar => AppScale.scale(32);
+  static double get embedMediaRadius => AppScale.scale(12);
+  static EdgeInsets get embedCaptionMargin => EdgeInsets.fromLTRB(
+    AppScale.scale(2),
+    AppScale.scale(8),
+    AppScale.scale(2),
+    AppScale.scale(8),
+  );
+  static const int embedCaptionLines = 3;
+  static double get unavailableRadius => AppScale.scale(14);
+  static double get unavailablePadding => AppScale.scale(12);
+  static double get unavailableLock => AppScale.scale(40);
+  static double get unavailableLockIcon => AppScale.scale(18);
+  static double get unavailableGap => AppScale.scale(10);
+  static const int unavailableBodyLines = 2;
   // Comments off.
   static const double commentsOffOpacity = 0.45;
   static double get commentsOffLineIcon => AppScale.scale(14);

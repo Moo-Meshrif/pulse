@@ -116,6 +116,8 @@ import '../../features/post/domain/use_case/set_post_like_use_case.dart'
     as _i804;
 import '../../features/post/domain/use_case/set_post_save_use_case.dart'
     as _i520;
+import '../../features/post/domain/use_case/share_to_feed_use_case.dart'
+    as _i482;
 import '../../features/post/domain/use_case/sign_post_media_urls_use_case.dart'
     as _i599;
 import '../../features/post/domain/use_case/update_post_use_case.dart' as _i908;
@@ -125,6 +127,8 @@ import '../../features/post/presentation/cubit/post_actions/post_actions_cubit.d
     as _i238;
 import '../../features/post/presentation/cubit/post_visibility/post_visibility_cubit.dart'
     as _i922;
+import '../../features/post/presentation/cubit/share_sheet/share_sheet_cubit.dart'
+    as _i1066;
 import '../../features/post/presentation/cubit/tag_in_photo/tag_in_photo_cubit.dart'
     as _i125;
 import '../../features/post/presentation/cubit/tag_people/tag_people_cubit.dart'
@@ -180,6 +184,8 @@ import '../../features/story/presentation/cubit/story_camera/story_camera_cubit.
     as _i569;
 import '../../features/story/presentation/cubit/story_edit/story_edit_cubit.dart'
     as _i378;
+import '../../features/story/presentation/cubit/story_post_edit/story_post_edit_cubit.dart'
+    as _i305;
 import '../../features/story/presentation/cubit/story_viewer/story_viewer_cubit.dart'
     as _i465;
 import '../../features/story/presentation/cubit/story_viewers/story_viewers_cubit.dart'
@@ -242,12 +248,14 @@ import '../services/launch_service.dart' as _i1016;
 import '../services/local_storage_service.dart' as _i527;
 import '../services/location_service.dart' as _i669;
 import '../services/media_picker_service.dart' as _i715;
+import '../services/palette_service.dart' as _i886;
 import '../services/photo_picker_service.dart' as _i94;
 import '../services/session_events.dart' as _i815;
 import '../services/video_compress_service.dart' as _i794;
 import '../services/video_overlay_service.dart' as _i327;
 import '../services/video_thumbnail_service.dart' as _i143;
 import '../state/camera_permission_cubit.dart' as _i721;
+import '../utils/story_post_args.dart' as _i439;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -286,6 +294,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i905.BlurhashService>(
       () => _i905.PackageBlurhashService(),
     );
+    gh.lazySingleton<_i886.PaletteService>(() => _i886.PixelPaletteService());
     gh.factoryParam<_i125.TagInPhotoCubit, _i425.TagPeopleArgs, dynamic>(
       (args, _) => _i125.TagInPhotoCubit(args),
     );
@@ -645,6 +654,14 @@ extension GetItInjectableX on _i174.GetIt {
         audience,
       ),
     );
+    gh.lazySingleton<_i618.StoryUploadRepository>(
+      () => _i618.StoryUploadRepositoryImpl(
+        gh<_i474.StoriesDatasource>(),
+        gh<_i463.ContentMediaRepository>(),
+        gh<_i999.ContentPublishRepository>(),
+        gh<_i591.PendingContentDatasource>(),
+      ),
+    );
     gh.lazySingleton<_i974.PlacesRepository>(
       () => _i974.PlacesRepositoryImpl(
         gh<_i438.PlacesDatasource>(),
@@ -731,13 +748,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i815.SessionEvents>(),
       ),
     );
-    gh.lazySingleton<_i618.StoryUploadRepository>(
-      () => _i618.StoryUploadRepositoryImpl(
-        gh<_i474.StoriesDatasource>(),
-        gh<_i463.ContentMediaRepository>(),
-        gh<_i999.ContentPublishRepository>(),
-      ),
-    );
     gh.factory<_i302.SignInCubit>(
       () => _i302.SignInCubit(
         gh<_i43.AuthDatasource>(),
@@ -752,6 +762,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i793.WatchSessionEndedUseCase>(),
       ),
       dispose: _i431.disposeSessionGuard,
+    );
+    gh.factory<_i482.ShareToFeedUseCase>(
+      () => _i482.ShareToFeedUseCase(
+        gh<_i141.PostsDatasource>(),
+        gh<_i557.EventBus>(),
+        gh<_i999.ContentPublishRepository>(),
+      ),
     );
     gh.factory<_i730.IsRecoveryPendingUseCase>(
       () => _i730.IsRecoveryPendingUseCase(gh<_i43.AuthDatasource>()),
@@ -801,17 +818,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i47.ConnectivityService>(),
       ),
     );
-    gh.factoryParam<_i378.StoryEditCubit, _i2.CapturedStoryMedia, dynamic>(
-      (media, _) => _i378.StoryEditCubit(
-        gh<_i618.StoryUploadRepository>(),
-        gh<_i143.VideoThumbnailService>(),
-        gh<_i905.BlurhashService>(),
-        gh<_i841.GalleryService>(),
-        gh<_i327.VideoOverlayService>(),
-        gh<_i727.GetLastAccountUseCase>(),
-        media,
-      ),
-    );
     gh.factory<_i781.SignUpCubit>(
       () => _i781.SignUpCubit(
         gh<_i43.AuthDatasource>(),
@@ -835,12 +841,44 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.EventBus>(),
       ),
     );
+    gh.factoryParam<_i305.StoryPostEditCubit, _i439.StoryPostArgs, dynamic>(
+      (post, _) => _i305.StoryPostEditCubit(
+        gh<_i618.StoryUploadRepository>(),
+        gh<_i905.BlurhashService>(),
+        gh<_i841.GalleryService>(),
+        gh<_i886.PaletteService>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        post,
+      ),
+    );
+    gh.factoryParam<_i1066.ShareSheetCubit, String, dynamic>(
+      (postId, _) => _i1066.ShareSheetCubit(
+        gh<_i482.ShareToFeedUseCase>(),
+        gh<_i660.GetPrivacyUseCase>(),
+        gh<_i541.GetPublishStatusUseCase>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        postId,
+      ),
+    );
     gh.factory<_i308.StoryRailCubit>(
       () => _i308.StoryRailCubit(
         gh<_i850.GetStoryRailUseCase>(),
         gh<_i557.EventBus>(),
         gh<_i541.GetPublishStatusUseCase>(),
         gh<_i108.RetryPublishUseCase>(),
+        gh<_i727.GetLastAccountUseCase>(),
+      ),
+    );
+    gh.factoryParam<_i378.StoryEditCubit, _i2.CapturedStoryMedia, dynamic>(
+      (media, _) => _i378.StoryEditCubit(
+        gh<_i618.StoryUploadRepository>(),
+        gh<_i143.VideoThumbnailService>(),
+        gh<_i905.BlurhashService>(),
+        gh<_i841.GalleryService>(),
+        gh<_i327.VideoOverlayService>(),
+        gh<_i794.VideoCompressService>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        media,
       ),
     );
     gh.factoryParam<

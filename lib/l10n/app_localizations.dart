@@ -1790,11 +1790,11 @@ abstract class AppLocalizations {
   /// **'Recording, {time}'**
   String storyRecordingTime(String time);
 
-  /// Story camera screen
+  /// Story edit screen: under the trim bar of a video longer than 60 seconds
   ///
   /// In en, this message translates to:
-  /// **'Choose a video of 60 seconds or less'**
-  String get storyVideoTooLong;
+  /// **'Drag to choose the part to share'**
+  String get storyTrimHint;
 
   /// Story camera screen
   ///
@@ -1921,6 +1921,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t load stories'**
   String get storyRailFailed;
+
+  /// Notice on Home: posting a story paused because the connection is lost; it goes on by itself
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Your story will post when you\'re back online.'**
+  String get storyPostOffline;
+
+  /// Story edit screen: shown over the screen while a video is saved to the device
+  ///
+  /// In en, this message translates to:
+  /// **'Saving video… {percent}%'**
+  String storySavingVideo(int percent);
 
   /// Story rail on the Home tab
   ///
@@ -2966,6 +2978,156 @@ abstract class AppLocalizations {
   /// **'{count} others'**
   String postHeadlineOthers(int count);
 
+  /// Share headline: between the sharer and the author of the shared post
+  ///
+  /// In en, this message translates to:
+  /// **' shared '**
+  String get postHeadlineShared;
+
+  /// Share headline: after the author's name
+  ///
+  /// In en, this message translates to:
+  /// **'\'s post'**
+  String get postHeadlineSharedPostOf;
+
+  /// Share headline when the shared post's author is not known
+  ///
+  /// In en, this message translates to:
+  /// **' shared a post'**
+  String get postHeadlineSharedAPost;
+
+  /// Screen reader label of the framed post inside a share
+  ///
+  /// In en, this message translates to:
+  /// **'Shared post by {name}'**
+  String postSharedSemantics(String name);
+
+  /// Title of the tile that replaces a shared post you can't see
+  ///
+  /// In en, this message translates to:
+  /// **'This post isn\'t available'**
+  String get postUnavailableTitle;
+
+  /// Body of the tile that replaces a shared post you can't see
+  ///
+  /// In en, this message translates to:
+  /// **'It was deleted, or its audience changed and you can\'t see it.'**
+  String get postUnavailableBody;
+
+  /// Screen reader label of the tile that replaces a shared post you can't see
+  ///
+  /// In en, this message translates to:
+  /// **'Post unavailable'**
+  String get postUnavailableSemantics;
+
+  /// Title of the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareTitle;
+
+  /// Hint of the words field in the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Say something about this...'**
+  String get shareFieldHint;
+
+  /// Screen reader label of the tag people tool in the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Tag people'**
+  String get shareTagPeople;
+
+  /// Screen reader label of the feeling tool in the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Feeling'**
+  String get shareFeeling;
+
+  /// Screen reader label of the location tool in the share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get shareLocation;
+
+  /// Button that shares the post to your feed
+  ///
+  /// In en, this message translates to:
+  /// **'Share now'**
+  String get shareNow;
+
+  /// Characters written in the share words field
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / 2000'**
+  String shareCounter(int count);
+
+  /// Share sheet: put the post on your story
+  ///
+  /// In en, this message translates to:
+  /// **'Add to story'**
+  String get shareAddToStory;
+
+  /// Share sheet: copy the post link
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get shareCopyLink;
+
+  /// Share sheet: send the post with WhatsApp
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get shareWhatsApp;
+
+  /// Share sheet: other apps
+  ///
+  /// In en, this message translates to:
+  /// **'More...'**
+  String get shareMore;
+
+  /// Notice after a post was shared to your feed
+  ///
+  /// In en, this message translates to:
+  /// **'Shared to your feed'**
+  String get sharedToFeedTitle;
+
+  /// Notice line when the share is public
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone can see it now.'**
+  String get sharedToFeedPublic;
+
+  /// Notice line when the share is for followers
+  ///
+  /// In en, this message translates to:
+  /// **'Your followers can see it now.'**
+  String get sharedToFeedFollowers;
+
+  /// Notice line when the share is for close friends
+  ///
+  /// In en, this message translates to:
+  /// **'Your close friends can see it now.'**
+  String get sharedToFeedCloseFriends;
+
+  /// Notice line when the share is only for you
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see it.'**
+  String get sharedToFeedOnlyMe;
+
+  /// Notice action that shows the new share at the top of the feed
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get sharedToFeedView;
+
+  /// Notice when sharing failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share. Try again.'**
+  String get shareFailed;
+
   /// Notice when the comment button of a post with comments off is tapped
   ///
   /// In en, this message translates to:
@@ -3379,6 +3541,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{emoji}feeling {word}'**
   String postFeelingValue(String emoji, String word);
+
+  /// Story editor for a post
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get storyToolBackground;
+
+  /// Story editor for a post
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the post to change its style · pinch to resize'**
+  String get storyPostStickerHint;
+
+  /// Story editor for a post
+  ///
+  /// In en, this message translates to:
+  /// **'Background {number}'**
+  String storyBackgroundOption(int number);
+
+  /// Story editor for a post
+  ///
+  /// In en, this message translates to:
+  /// **'Post by {username}: {caption}'**
+  String storyPostSemantics(String username, String caption);
+
+  /// Story editor for a post
+  ///
+  /// In en, this message translates to:
+  /// **'Post by {username}'**
+  String storyPostSemanticsNoCaption(String username);
+
+  /// Pill under a post sticker in the story viewer
+  ///
+  /// In en, this message translates to:
+  /// **'View post'**
+  String get storyViewPost;
+
+  /// Card that replaces a story's post sticker when the post is gone
+  ///
+  /// In en, this message translates to:
+  /// **'Post unavailable'**
+  String get storyPostUnavailableTitle;
+
+  /// Under the Post unavailable title
+  ///
+  /// In en, this message translates to:
+  /// **'It was deleted, or you can\'t see it.'**
+  String get storyPostUnavailableBody;
 }
 
 class _AppLocalizationsDelegate

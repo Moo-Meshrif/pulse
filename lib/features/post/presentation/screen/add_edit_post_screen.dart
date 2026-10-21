@@ -11,6 +11,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/post_entity.dart';
 import '../cubit/add_edit_post/add_edit_post_cubit.dart';
 import '../cubit/add_edit_post/add_edit_post_state.dart';
+import '../utils/post_card_data.dart';
 import '../view/add_edit_post_view.dart';
 
 /// `/create/post`: write and share a post (docs/specs/post/screens/s1-new-post.md). Closing with
@@ -22,7 +23,10 @@ class AddEditPostArgs {
   final PostEntity? post;
   final Map<String, String>? signedUrls;
 
-  AddEditPostArgs({this.post, this.signedUrls});
+  /// Editing a share: the shared post as the card draws it, shown read-only under the words.
+  final PostCardData? original;
+
+  AddEditPostArgs({this.post, this.signedUrls, this.original});
 }
 
 class AddEditPostScreen extends StatelessWidget {
@@ -49,7 +53,10 @@ class AddEditPostScreen extends StatelessWidget {
           // A phone may kill the app once it is hidden: the draft is saved at once.
           child: OnAppVisibility(
             onHide: () => context.read<AddEditPostCubit>().saveDraftOpen(),
-            child: AddEditPostView(onClose: () => _closeAskingFirst(context)),
+            child: AddEditPostView(
+              sharedOriginal: args?.original,
+              onClose: () => _closeAskingFirst(context),
+            ),
           ),
         ),
       ),

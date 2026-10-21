@@ -37,9 +37,11 @@ abstract final class PostOptionsFlow {
       case PostOption.save:
         return _attempt(context, actions.onSave);
       case PostOption.copyLink:
-      case PostOption.share:
-        // TODO(post-plan T7): Copy link and Share are coming soon until post links and share_plus exist.
+        // TODO(post-plan T7): Copy link is coming soon until post links exist.
         Notices.info(context.l10n.comingSoon);
+        return Future.value();
+      case PostOption.share:
+        actions.onShare();
         return Future.value();
       case PostOption.notInterested:
         return _attempt(context, actions.onNotInterested);

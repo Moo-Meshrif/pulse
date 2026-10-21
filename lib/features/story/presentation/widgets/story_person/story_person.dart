@@ -15,6 +15,7 @@ import '../../utils/story_picture.dart';
 import '../../utils/story_start_index.dart';
 import '../story_media/story_media.dart';
 import '../story_overlays_layer.dart';
+import '../story_post/story_post_layer.dart';
 import '../story_shades.dart';
 import 'story_chrome.dart';
 import 'story_waiting.dart';
@@ -211,6 +212,14 @@ class _StoryPersonState extends State<StoryPerson> {
               isOverlayOpen:
                   isActive && state.pauses.contains(StoryPauseReason.overlay),
             ),
+            if (story.sticker != null &&
+                !_failedVideos.contains(story.id) &&
+                !_failedImages.contains(story.id))
+              StoryPostLayer(
+                key: ValueKey('post-${story.id}'),
+                story: story,
+                isActive: isActive,
+              ),
           ],
         );
       },

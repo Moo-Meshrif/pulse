@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:injectable/injectable.dart';
@@ -5,9 +6,12 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/services/blurhash_service.dart';
 import '../../../../../core/services/gallery_service.dart';
+import '../../../../../core/services/video_compress_service.dart';
 import '../../../../../core/services/video_overlay_service.dart';
 import '../../../../../core/services/video_thumbnail_service.dart';
 import '../../../../../core/state/base_cubit.dart';
+import '../../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../../shared/content/domain/policy/media_policy.dart';
 import '../../../../profile/domain/entity/last_account_entity.dart';
 import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../data/enums/story_media_type.dart';
@@ -16,6 +20,7 @@ import '../../../data/model/new_story_model.dart';
 import '../../../data/model/story_overlay_model.dart';
 import '../../../data/repository/story_upload_repository.dart';
 import '../../../domain/entity/captured_story_media.dart';
+import '../../dimens/story_constants.dart';
 import '../../utils/enums/story_edit_notice.dart';
 import '../../utils/story_sticker.dart';
 import 'story_edit_state.dart';
@@ -30,21 +35,34 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
     this._blurhash,
     this._gallery,
     this._videoOverlay,
+    this._compressor,
     GetLastAccountUseCase account,
     @factoryParam CapturedStoryMedia media,
   ) : me = account(),
-      super(StoryEditState(media: media));
+      super(
+        StoryEditState(
+          media: media,
+          trimEndMs: min(
+            media.durationMs ?? 0,
+            StoryTiming.maxVideo.inMilliseconds,
+          ),
+        ),
+      );
 
   /// A photo whose size is unknown is posted as this (the viewer lays it out cover-fit anyway).
   static const fallbackWidth = 1080;
   static const fallbackHeight = 1920;
   static const maxTextLength = 100;
 
+  /// Frames along a long video in the trim bar.
+  static const trimFrameCount = 8;
+
   final StoryUploadRepository _uploads;
   final VideoThumbnailService _thumbnails;
   final BlurhashService _blurhash;
   final GalleryService _gallery;
   final VideoOverlayService _videoOverlay;
+  final VideoCompressService _compressor;
 
   /// Who is posting, for the "Your story" pill; null when this device has no saved account.
   final LastAccountEntity? me;
@@ -116,6 +134,66 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
     state.copyWith(stickers: state.stickers.where((s) => s.id != id).toList()),
   );
 
+  /// Reads the frames of a long video for the trim bar; the bar shows empty tiles until they are here, and
+  /// stays so when they cannot be read.
+  Future<void> loadTrimFrames() async {
+    if (!state.isTrimmable) return;
+    final duration = state.media.durationMs ?? 0;
+    try {
+      final frames = await Future.wait([
+        for (var i = 0; i < trimFrameCount; i++)
+          _thumbnails.frameAt(
+            state.media.path,
+            timeMs: duration * i ~/ trimFrameCount,
+          ),
+      ]);
+      if (!isClosed) emit(state.copyWith(trimFrames: frames));
+    } on Failure {
+      // The bar still works without pictures.
+    }
+  }
+
+  static final _maxTrimMs = StoryTiming.maxVideo.inMilliseconds;
+  static final _minTrimMs = StoryTiming.minTrim.inMilliseconds;
+
+  /// Moves the start of the shared part; it keeps at least a second and at most 60 s.
+  void trimStart(int ms) {
+    if (!state.isTrimmable) return;
+    final end = state.trimEndMs;
+    emit(
+      state.copyWith(
+        trimStartMs: ms.clamp(max(0, end - _maxTrimMs), end - _minTrimMs),
+      ),
+    );
+  }
+
+  /// Moves the end of the shared part; it keeps at least a second and at most 60 s.
+  void trimEnd(int ms) {
+    if (!state.isTrimmable) return;
+    final start = state.trimStartMs;
+    final duration = state.media.durationMs ?? 0;
+    emit(
+      state.copyWith(
+        trimEndMs: ms.clamp(
+          start + _minTrimMs,
+          min(duration, start + _maxTrimMs),
+        ),
+      ),
+    );
+  }
+
+  /// Slides the shared part so it starts at [startMs]; its length stays and it stays inside the video.
+  void trimMove(int startMs) {
+    if (!state.isTrimmable) return;
+    final start = startMs.clamp(
+      0,
+      (state.media.durationMs ?? 0) - state.trimLengthMs,
+    );
+    emit(
+      state.copyWith(trimStartMs: start, trimEndMs: start + state.trimLengthMs),
+    );
+  }
+
   void toggleMute() => emit(state.copyWith(isMuted: !state.isMuted));
 
   /// Hands the story to the upload. The screen goes back to Home when [StoryEditState.isShared] turns on.
@@ -137,7 +215,8 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
           thumbFilePath: thumb,
           width: media.width ?? fallbackWidth,
           height: media.height ?? fallbackHeight,
-          durationMs: isVideo ? (media.durationMs ?? 0) : null,
+          durationMs: isVideo ? state.trimLengthMs : null,
+          edit: isVideo ? _videoEdit() : null,
           blurhash: blurhash,
           overlays: [for (final s in state.stickers) s.overlay],
         ),
@@ -157,6 +236,17 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
     }
   }
 
+  /// What is done to the video before it goes out; null when it goes as it is.
+  VideoEdit? _videoEdit() {
+    final isTrimmed = state.isTrimmable;
+    if (!state.isMuted && !isTrimmed) return null;
+    return VideoEdit(
+      removeAudio: state.isMuted,
+      trimStartMs: isTrimmed ? state.trimStartMs : null,
+      trimEndMs: isTrimmed ? state.trimEndMs : null,
+    );
+  }
+
   /// Saves a photo with its stickers drawn on ([bytes] come from the screen's snapshot).
   Future<void> saveImage(Uint8List? bytes) => _saveWith(
     () => bytes == null
@@ -164,23 +254,64 @@ class StoryEditCubit extends BaseCubit<StoryEditState> {
         : _gallery.saveImage(bytes),
   );
 
-  /// Saves the video; with stickers on it they are drawn onto a copy first ([overlayPng] comes from the
-  /// screen's snapshot), and the copy is deleted afterwards.
+  /// Saves the video as it will be posted: only the shared part and with the sound as chosen. With stickers
+  /// on it they are drawn on in the same pass ([overlayPng] comes from the screen's snapshot); without, the
+  /// part is cut into a copy. The copy is deleted afterwards. [StoryEditState.saveProgress] tells how far it
+  /// is.
   Future<void> saveVideo(Uint8List? overlayPng) => _saveWith(() async {
-    final path = state.media.path;
-    if (state.stickers.isEmpty) return _gallery.saveVideoFile(path);
-    if (overlayPng == null) throw const UnexpectedFailure();
-    final burned = await _videoOverlay.burn(path, overlayPng);
+    if (state.stickers.isNotEmpty && overlayPng == null) {
+      throw const UnexpectedFailure();
+    }
+    final edit = _videoEdit();
+    final path = state.stickers.isEmpty
+        ? await _cutOrSource(edit)
+        : await _videoOverlay.burn(
+            state.media.path,
+            overlayPng!,
+            edit: edit,
+            onProgress: _reportSave,
+          );
     try {
-      await _gallery.saveVideoFile(burned);
+      await _gallery.saveVideoFile(path);
     } finally {
-      await _videoOverlay.delete(burned);
+      if (path != state.media.path) {
+        await _discardCopy(path, isCut: state.stickers.isEmpty);
+      }
     }
   });
 
+  /// The path to save: a cut copy when there is an edit, else the video itself.
+  Future<String> _cutOrSource(VideoEdit? edit) async {
+    if (edit == null) return state.media.path;
+    final limits = MediaPolicy.videoLimits(ContentKind.story);
+    final cut = await _compressor.compress(
+      state.media.path,
+      maxLongSide: limits.maxLongSide,
+      videoBitrate: limits.maxBitrate,
+      audioBitrate: MediaPolicy.audioBitrate,
+      edit: edit,
+      onProgress: _reportSave,
+    );
+    return cut.path;
+  }
+
+  Future<void> _discardCopy(String path, {required bool isCut}) =>
+      isCut ? _compressor.delete(path) : _videoOverlay.delete(path);
+
+  void _reportSave(double progress) {
+    if (!isClosed) emit(state.copyWith(saveProgress: progress));
+  }
+
   Future<void> _saveWith(Future<void> Function() save) async {
     if (state.isSaving) return;
-    emit(state.copyWith(isSaving: true));
+    // The library is asked for first: the dialog comes on the tap, not after the long work.
+    try {
+      await _gallery.ensureAccess();
+    } on Failure {
+      emit(state.copyWith(notice: StoryEditNotice.saveFailed));
+      return;
+    }
+    emit(state.copyWith(isSaving: true, saveProgress: 0));
     await run(
       save,
       onSuccess: (_) =>

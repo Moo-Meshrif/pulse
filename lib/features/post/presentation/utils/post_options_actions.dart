@@ -21,6 +21,7 @@ class PostOptionsActions {
     required this.onAudienceChanged,
     required this.onEdit,
     required this.onRemoveMyTag,
+    required this.onShare,
   });
 
   final Future<void> Function() onSave;
@@ -46,4 +47,7 @@ class PostOptionsActions {
 
   /// Takes your tag off the post at once; throws a `Failure` (after putting the tag back) when it fails.
   final Future<void> Function() onRemoveMyTag;
+
+  /// Opens the Share sheet of the post (the Share tile only exists where the sheet has something to offer).
+  final VoidCallback onShare;
 }

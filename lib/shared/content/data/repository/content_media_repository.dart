@@ -22,6 +22,7 @@ class MediaToSend extends Equatable {
     this.height,
     this.durationMs,
     this.sizeBytes,
+    this.edit,
   });
 
   final String filePath;
@@ -31,8 +32,13 @@ class MediaToSend extends Equatable {
   final String? thumbFilePath;
   final int? width;
   final int? height;
+
+  /// The length that goes out: that of the kept part when the video is trimmed.
   final int? durationMs;
   final int? sizeBytes;
+
+  /// Sound removed or a part kept; such a video is re-encoded.
+  final VideoEdit? edit;
 
   @override
   List<Object?> get props => [
@@ -43,6 +49,7 @@ class MediaToSend extends Equatable {
     height,
     durationMs,
     sizeBytes,
+    edit,
   ];
 }
 
@@ -258,6 +265,7 @@ class ContentMediaRepository {
       sizeBytes:
           item.sizeBytes ??
           (item.isVideo ? await _lengthOf(item.filePath) : null),
+      mustEncode: item.isVideo && item.edit != null,
     );
     if (decision is MediaRejected) {
       throw const ServerFailure(statusCode: _tooLarge);
@@ -281,6 +289,7 @@ class ContentMediaRepository {
       maxLongSide: target.longSide,
       videoBitrate: target.videoBitrate,
       audioBitrate: target.audioBitrate,
+      edit: item.edit,
       onProgress: (done) => onProgress?.call(_encodeShare * done),
     );
     _checkShrunk(item, video);

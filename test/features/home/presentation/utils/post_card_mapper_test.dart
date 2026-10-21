@@ -5,6 +5,7 @@ import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
+import 'package:pulse/features/post/presentation/utils/post_card_media.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 import '../../../post/post_fixtures.dart';
@@ -31,6 +32,98 @@ PostEntity _post({String? fullName, ContentAudience? visibility}) {
 
 void main() {
   group('postCardData', () {
+    group('a share', () {
+      PostEntity share({PostEntity? original}) {
+        final base = testPost('s1', authorId: 'a1');
+        return PostEntity(
+          id: base.id,
+          authorId: base.authorId,
+          username: base.username,
+          likeCount: 14,
+          commentCount: 2,
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+          createdAt: base.createdAt,
+          likedByMe: false,
+          savedByMe: false,
+          media: const [],
+          isShare: true,
+          original: original,
+        );
+      }
+
+      test(
+        'carries its original with the original media, and its own counts',
+        () {
+          const shown = PostCardMedia(
+            isVideo: false,
+            url: 'https://x.test/o.jpg',
+            width: 10,
+            height: 10,
+          );
+          final card = postCardData(
+            share(original: _post(fullName: 'Nour Adel')),
+            const [],
+            originalMedia: const [shown],
+          );
+
+          expect(card.isShare, isTrue);
+          expect(card.likeCount, 14);
+          expect(card.original!.authorName, 'Nour Adel');
+          expect(card.original!.media, [shown]);
+        },
+      );
+
+      test('a share with no original has none to draw', () {
+        final card = postCardData(share(), const []);
+
+        expect(card.isShare, isTrue);
+        expect(card.original, isNull);
+      });
+
+      test('a share of an unavailable original has no send icon', () {
+        expect(postCardData(share(), const []).canShare, isFalse);
+      });
+
+      test('a share of a public original has one', () {
+        final card = postCardData(share(original: _post()), const []);
+
+        expect(card.canShare, isTrue);
+      });
+
+      test('a plain post is not a share', () {
+        expect(postCardData(_post(), const []).isShare, isFalse);
+      });
+    });
+
+    test('the send icon follows the audience and the author', () {
+      expect(postCardData(_post(), const []).canShare, isTrue);
+      expect(
+        postCardData(
+          _post(visibility: ContentAudience.followers),
+          const [],
+          userId: 'a1',
+        ).canShare,
+        isTrue,
+      );
+      expect(
+        postCardData(
+          _post(visibility: ContentAudience.followers),
+          const [],
+          userId: 'u9',
+        ).canShare,
+        isFalse,
+      );
+      expect(
+        postCardData(
+          _post(visibility: ContentAudience.closeFriends),
+          const [],
+          userId: 'a1',
+        ).canShare,
+        isFalse,
+      );
+    });
+
     test('carries the post and shows the place as the city', () {
       final card = postCardData(_post(fullName: 'Nour Adel'), const []);
       expect(card.id, 'p1');

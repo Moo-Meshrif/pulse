@@ -1151,6 +1151,27 @@ void main() {
         verifyNever(() => drafts.save(any()));
       });
     });
+    test('a share saves without words or media once something changed', () {
+      final share = PostEntity(
+        id: 's',
+        authorId: 'u',
+        username: 'omar',
+        likeCount: 0,
+        commentCount: 0,
+        commentsEnabled: true,
+        visibility: ContentAudience.public,
+        createdAt: DateTime(2026),
+        likedByMe: false,
+        savedByMe: false,
+        media: const [],
+        isShare: true,
+      );
+      final cubit = build(share);
+      expect(cubit.state.isShare, isTrue);
+      expect(cubit.state.canSave, isFalse);
+      cubit.locationChanged('Cairo');
+      expect(cubit.state.canSave, isTrue);
+    });
   });
 
   group('uploading on pick', () {

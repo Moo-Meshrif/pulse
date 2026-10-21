@@ -64,6 +64,7 @@ void main() {
         ),
       ),
       retry,
+      FakeLastAccount(),
     );
     addTearDown(cubit.close);
   });

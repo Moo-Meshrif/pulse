@@ -1185,8 +1185,8 @@
   "@storyRecordingTime": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "storyVideoTooLong": "اختر فيديو لا تزيد مدته عن 60 ثانية",
-  "@storyVideoTooLong": {
+  "storyTrimHint": "اسحب لاختيار الجزء الذي تريد مشاركته",
+  "@storyTrimHint": {
     "x-review": "Arabic draft: pending user approval"
   },
   "storyCaptureFailed": "تعذّر الالتقاط. حاول مرة أخرى.",
@@ -1271,6 +1271,14 @@
   },
   "storyRailFailed": "تعذّر تحميل القصص",
   "@storyRailFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPostOffline": "لا يوجد اتصال. سيتم نشر قصتك عند عودة الإنترنت.",
+  "@storyPostOffline": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storySavingVideo": "جارٍ حفظ الفيديو… {percent}٪",
+  "@storySavingVideo": {
     "x-review": "Arabic draft: pending user approval"
   },
   "storyPostFailed": "تعذّر نشر قصتك",
@@ -1982,6 +1990,116 @@
       }
     }
   },
+    "postHeadlineShared": " شارك منشور ",
+  "@postHeadlineShared": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHeadlineSharedPostOf": "",
+  "@postHeadlineSharedPostOf": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postHeadlineSharedAPost": " شارك منشورًا",
+  "@postHeadlineSharedAPost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postSharedSemantics": "منشور مشارك من {name}",
+  "@postSharedSemantics": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postUnavailableTitle": "هذا المنشور غير متاح",
+  "@postUnavailableTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnavailableBody": "تم حذفه، أو تغيّر جمهوره ولا يمكنك رؤيته.",
+  "@postUnavailableBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postUnavailableSemantics": "المنشور غير متاح",
+  "@postUnavailableSemantics": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareTitle": "مشاركة",
+  "@shareTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareFieldHint": "قل شيئًا عن هذا...",
+  "@shareFieldHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareTagPeople": "وسم الأشخاص",
+  "@shareTagPeople": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareFeeling": "المشاعر",
+  "@shareFeeling": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareLocation": "الموقع",
+  "@shareLocation": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareNow": "شارك الآن",
+  "@shareNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareCounter": "{count} / 2000",
+  "@shareCounter": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareAddToStory": "أضف إلى القصة",
+  "@shareAddToStory": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareCopyLink": "نسخ الرابط",
+  "@shareCopyLink": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareWhatsApp": "واتساب",
+  "@shareWhatsApp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareMore": "المزيد...",
+  "@shareMore": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "sharedToFeedTitle": "تمت المشاركة في صفحتك",
+  "@sharedToFeedTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "sharedToFeedPublic": "يمكن للجميع رؤيتها الآن.",
+  "@sharedToFeedPublic": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "sharedToFeedFollowers": "يمكن لمتابعيك رؤيتها الآن.",
+  "@sharedToFeedFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "sharedToFeedCloseFriends": "يمكن لأصدقائك المقربين رؤيتها الآن.",
+  "@sharedToFeedCloseFriends": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "sharedToFeedOnlyMe": "أنت فقط من يمكنه رؤيتها.",
+  "@sharedToFeedOnlyMe": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "sharedToFeedView": "عرض",
+  "@sharedToFeedView": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "shareFailed": "تعذّرت المشاركة. حاول مرة أخرى.",
+  "@shareFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "postCommentsOffTitle": "التعليقات متوقفة",
   "@postCommentsOffTitle": {
     "x-review": "Arabic draft: pending user approval"
@@ -2363,5 +2481,55 @@
         "type": "String"
       }
     }
+  },
+  "storyToolBackground": "الخلفية",
+  "@storyToolBackground": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPostStickerHint": "اضغط على المنشور لتغيير شكله · اسحب بإصبعين لتغيير الحجم",
+  "@storyPostStickerHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyBackgroundOption": "الخلفية {number}",
+  "@storyBackgroundOption": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "storyPostSemantics": "منشور من {username}: {caption}",
+  "@storyPostSemantics": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "caption": {
+        "type": "String"
+      }
+    }
+  },
+  "storyPostSemanticsNoCaption": "منشور من {username}",
+  "@storyPostSemanticsNoCaption": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "storyViewPost": "عرض المنشور",
+  "@storyViewPost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPostUnavailableTitle": "المنشور غير متاح",
+  "@storyPostUnavailableTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "storyPostUnavailableBody": "تم حذفه، أو لا يمكنك رؤيته.",
+  "@storyPostUnavailableBody": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

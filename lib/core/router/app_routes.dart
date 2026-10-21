@@ -84,4 +84,7 @@ abstract final class AppRoutes {
   /// Story camera, then its edit and share screen; pushed over the shell.
   static const createStory = '/create/story';
   static const createStoryEdit = '/create/story/edit';
+
+  /// The story editor for a post sticker; the argument is a `StoryPostArgs`.
+  static const createStoryPost = '/create/story/post';
 }

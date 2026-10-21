@@ -55,6 +55,7 @@ void main() {
       ),
     ),
     retry,
+    FakeLastAccount(),
   );
 
   Future<void> flush() => Future<void>.delayed(Duration.zero);

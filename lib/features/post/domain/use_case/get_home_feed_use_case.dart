@@ -74,8 +74,13 @@ class GetHomeFeedUseCase {
       tags: [for (final tag in post.tags ?? const <PostTagModel>[]) ?_tag(tag)],
       tagCount: post.tagCount ?? 0,
       iAmTagged: post.iAmTagged ?? false,
+      isShare: post.isShare ?? false,
+      original: _original(post.sharedPost),
     );
   }
+
+  PostEntity? _original(PostModel? original) =>
+      original == null ? null : _post(original);
 
   PostMoodEntity? _mood(PostModel post) {
     final kind = post.moodKind;

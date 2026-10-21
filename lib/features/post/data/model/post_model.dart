@@ -31,6 +31,13 @@ class PostModel extends Equatable {
   final List<PostTagModel>? tags;
   final bool? iAmTagged;
 
+  /// True for a post that shares another post; it has no media of its own.
+  final bool? isShare;
+  final String? sharedPostId;
+
+  /// The original of a share (feed columns only, no counts); null when it was deleted or you can't see it.
+  final PostModel? sharedPost;
+
   const PostModel({
     this.id,
     this.authorId,
@@ -53,6 +60,9 @@ class PostModel extends Equatable {
     this.tagCount,
     this.tags,
     this.iAmTagged,
+    this.isShare,
+    this.sharedPostId,
+    this.sharedPost,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
@@ -85,6 +95,11 @@ class PostModel extends Equatable {
           item is Map<String, dynamic> ? PostTagModel.fromJson(item) : null,
     ),
     iAmTagged: JsonMapper.boolean(json['i_am_tagged']),
+    isShare: JsonMapper.boolean(json['is_share']),
+    sharedPostId: JsonMapper.string(json['shared_post_id']),
+    sharedPost: json['shared_post'] is Map<String, dynamic>
+        ? PostModel.fromJson(json['shared_post'] as Map<String, dynamic>)
+        : null,
   );
 
   @override
@@ -110,5 +125,8 @@ class PostModel extends Equatable {
     tagCount,
     tags,
     iAmTagged,
+    isShare,
+    sharedPostId,
+    sharedPost,
   ];
 }

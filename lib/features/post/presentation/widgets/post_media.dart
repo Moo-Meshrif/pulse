@@ -25,6 +25,7 @@ class PostMedia extends StatefulWidget {
     required this.postId,
     required this.items,
     this.onDoubleTap,
+    this.onTap,
     this.tags = const [],
     this.viewerId,
     this.onTaggedPerson,
@@ -35,6 +36,9 @@ class PostMedia extends StatefulWidget {
   final String postId;
   final List<PostCardMedia> items;
   final VoidCallback? onDoubleTap;
+
+  /// Every tap on the media (the framed original of a share opens its post).
+  final VoidCallback? onTap;
 
   /// The people tagged on the post: a person badge shows on each photo, and a tap puts their names at the
   /// spots they were tagged on that photo.
@@ -90,6 +94,7 @@ class _PostMediaState extends State<PostMedia> {
   }
 
   void _onTap() {
+    widget.onTap?.call();
     final now = clock.now();
     final last = _lastTap;
     if (last != null && now.difference(last) <= _doubleTapWindow) {

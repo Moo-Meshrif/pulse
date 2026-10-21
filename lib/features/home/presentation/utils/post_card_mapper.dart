@@ -4,6 +4,7 @@ import '../../../post/presentation/utils/content_audience_display.dart';
 import '../../../post/presentation/utils/post_card_data.dart';
 import '../../../post/presentation/utils/post_card_media.dart';
 import '../../../post/presentation/utils/post_options_data.dart';
+import '../../../post/presentation/utils/share_access_of.dart';
 
 /// What the card draws for [post]: the name people know them by, the place, the small audience icon, the
 /// feeling and the tagged people. [userId] is the signed-in user, so their own post reads "You".
@@ -11,7 +12,9 @@ PostCardData postCardData(
   PostEntity post,
   List<PostCardMedia> media, {
   String? userId,
+  List<PostCardMedia> originalMedia = const [],
 }) {
+  final original = post.original;
   final fullName = post.fullName?.trim();
   return PostCardData(
     id: post.id,
@@ -34,6 +37,11 @@ PostCardData postCardData(
     mood: post.mood,
     tags: post.tags,
     tagCount: post.tagCount,
+    isShare: post.isShare,
+    canShare: shareAccessOf(post, userId: userId).isShown,
+    original: original == null
+        ? null
+        : postCardData(original, originalMedia, userId: userId),
   );
 }
 
@@ -47,4 +55,8 @@ PostOptionsData postOptionsData(PostEntity post, {required String? userId}) =>
       commentsEnabled: post.commentsEnabled,
       visibility: post.visibility,
       iAmTagged: post.iAmTagged && post.authorId != userId,
+      isShare: post.isShare,
+      shareAccessOverride: post.isShare
+          ? shareAccessOf(post, userId: userId)
+          : null,
     );

@@ -57,6 +57,7 @@ abstract final class AppAssets {
   static const search = '$_icons/ic_search.svg';
   static const settings = '$_icons/ic_settings.svg';
   static const share = '$_icons/ic_share.svg';
+  static const shareForward = '$_icons/ic_share_forward.svg';
   static const shorts = '$_icons/ic_shorts.svg';
   static const shortsFilled = '$_icons/ic_shorts_filled.svg';
   static const smile = '$_icons/ic_smile.svg';
@@ -71,6 +72,7 @@ abstract final class AppAssets {
   static const audience = '$_icons/ic_audience.svg';
   static const cameraFlip = '$_icons/ic_camera_flip.svg';
   static const cameraOff = '$_icons/ic_camera_off.svg';
+  static const palette = '$_icons/ic_palette.svg';
   static const download = '$_icons/ic_download.svg';
   static const flash = '$_icons/ic_flash.svg';
   static const link = '$_icons/ic_link.svg';

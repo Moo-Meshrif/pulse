@@ -30,6 +30,32 @@ extension PostEntityEdit on PostEntity {
     tags: tags,
     tagCount: tagCount,
     iAmTagged: iAmTagged ?? this.iAmTagged,
+    isShare: isShare,
+    original: original,
+  );
+
+  /// A share whose original was deleted: it shows as unavailable.
+  PostEntity withoutOriginal() => PostEntity(
+    id: id,
+    authorId: authorId,
+    username: username,
+    fullName: fullName,
+    avatarUrl: avatarUrl,
+    caption: caption,
+    location: location,
+    likeCount: likeCount,
+    commentCount: commentCount,
+    commentsEnabled: commentsEnabled,
+    visibility: visibility,
+    createdAt: createdAt,
+    likedByMe: likedByMe,
+    savedByMe: savedByMe,
+    media: media,
+    mood: mood,
+    tags: tags,
+    tagCount: tagCount,
+    iAmTagged: iAmTagged,
+    isShare: isShare,
   );
 
   /// The post without [userId]'s tag: they removed it.
@@ -56,5 +82,7 @@ extension PostEntityEdit on PostEntity {
     ],
     tagCount: tagCount > 0 ? tagCount - 1 : 0,
     iAmTagged: false,
+    isShare: isShare,
+    original: original,
   );
 }

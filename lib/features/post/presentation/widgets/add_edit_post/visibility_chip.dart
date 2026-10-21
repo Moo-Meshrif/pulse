@@ -16,6 +16,8 @@ class VisibilityChip extends StatelessWidget {
     super.key,
     required this.audience,
     this.isNarrowed = false,
+    this.height,
+    this.color,
     this.onTap,
   });
 
@@ -23,6 +25,12 @@ class VisibilityChip extends StatelessWidget {
 
   /// Narrower than the account's default: `primarySoft` fill with a `primary` border and ink.
   final bool isNarrowed;
+
+  /// The chip's height; the composer's when null.
+  final double? height;
+
+  /// The fill of a chip that is not narrowed; `background` when null.
+  final Color? color;
   final VoidCallback? onTap;
 
   @override
@@ -39,14 +47,14 @@ class VisibilityChip extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          height: PostComposerDimens.chipHeight,
+          height: height ?? PostComposerDimens.chipHeight,
           padding: EdgeInsets.symmetric(
             horizontal: PostComposerDimens.chipPadding,
           ),
           decoration: BoxDecoration(
-            color: isNarrowed ? colors.primarySoft : colors.background,
+            color: isNarrowed ? colors.primarySoft : color ?? colors.background,
             borderRadius: BorderRadius.circular(
-              PostComposerDimens.chipHeight / 2,
+              (height ?? PostComposerDimens.chipHeight) / 2,
             ),
             border: Border.all(
               color: isNarrowed ? colors.primary : colors.border,

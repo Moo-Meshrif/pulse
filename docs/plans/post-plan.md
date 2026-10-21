@@ -1,6 +1,6 @@
 # Plan: post
-Source specs: docs/specs/post/ (schemas: `schema-post-visibility.sql`, `schema-shared-content-actions.sql`, `schema-post-tags-mood.sql`), docs/specs/_theme/ (post card tokens also in docs/specs/home/01-design-tokens.md and home/source-tokens.md section 2.3)
-Status: approved (Phases 13-18 added and approved 2026-10-15)
+Source specs: docs/specs/post/ (schemas: `schema-post-visibility.sql`, `schema-shared-content-actions.sql`, `schema-post-tags-mood.sql`, `schema-post-share.sql`), docs/specs/_theme/ (post card tokens also in docs/specs/home/01-design-tokens.md and home/source-tokens.md section 2.3)
+Status: approved (Phases 13-18 approved 2026-10-15; Phases 19-25 added and approved 2026-10-21)
 Mode: one-by-one
 Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers in `test/helpers/pump_app.dart`, datasource tests with `test/helpers/backend_double.dart`; widget tests EN + AR/RTL + 1.5x text)
 
@@ -24,6 +24,13 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 | 16 S6 Tag people + S7 Tag in photo | **done** on doubles (device check against board panels 1-3 tested by the user 2026-10-15) |
 | 17 S8 Feelings + New/Edit post rows | **done** on doubles (device check against board panels 4 and 7 tested by the user 2026-10-15) |
 | 18 Integration + polish (tags, mood) | **done**; the live run on a device and the board comparisons of 14-17 tested by the user 2026-10-15 |
+| 19 Share backend + data | not started |
+| 20 Shared post card (P10, P11) | not started |
+| 21 Share sheet (S12) | not started |
+| 22 Edit a share | not started |
+| 23 Add to story: editor (S13) | not started |
+| 24 Story viewer: post sticker | not started |
+| 25 Integration + polish (share, sticker) | not started |
 
 Open before / during Phase 5: the dark confirm dialog and the option / audience row widgets are built in the post feature first and move to `core/widgets` only when story or short actually reuses them (then as a variant or tone of the one widget, default look unchanged; search `core/widgets` and `confirmation_strategy` before adding). Still open: whether the close-friends list moves into `lib/shared/content`.
 
@@ -33,8 +40,48 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 - **Data:** post feature (feed page, signed media URLs, create post with visibility), post actions (like, save, hide, comments toggle, delete) in the post feature, and report / change audience / mute / audience counts / account privacy as shared use cases in `lib/shared/content` (Q13, superseded 2026-10-14) [user], post visibility backend (migration from the S4 board), places (Edge Function `places` over OSM, recent places on device, one-time device position).
 - **Goal:** a person can write a post with up to 10 photos/videos, a place, an audience and comments on/off, and share it; the card, options sheet and visibility picker are ready for Home.
 - **Added 2026-10-15 (Phases 13-18):** S6 Tag people, S7 Tag in photo, S8 Feelings (Feelings tab only), S10 Tagged people sheet, S11 Remove your tag, card headline / meta / tag badge and labels / comments-off (`02-components.md` P2a-P2c, P5), S1/S2/S5 deltas, backend `schema-post-tags-mood.sql`. Boards: `screenshots/s6-tag-feeling-board.png`, `s10-card-details-board.png`, `s11-remove-tag-board.png`.
-- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), activities (S8 Activities tab = "Coming soon", S9 deferred, source API or database undecided [user]), the profile Tagged tab (profile spec; `tagged_posts` RPC only), Settings > Privacy "Allow tags" toggle, Activity screen UI for tag notifications, the post page / comments page comments-off bar (comments page is a placeholder, home-plan H3), blocked accounts in tag search (no blocks table), sharing a post by link (Copy link / Share are coming soon, Q-V3), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
+- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), activities (S8 Activities tab = "Coming soon", S9 deferred, source API or database undecided [user]), the profile Tagged tab (profile spec; `tagged_posts` RPC only), Settings > Privacy "Allow tags" toggle, Activity screen UI for tag notifications, the post page / comments page comments-off bar (comments page is a placeholder, home-plan H3), blocked accounts in tag search (no blocks table), sharing a post by link (Copy link, WhatsApp and More in the Share sheet stay coming soon until the user provides the deep link, T7), Send in chat (T20), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
 - **Build order** (progress.md): control-page (done), story (done), **post**, home.
+
+## Share and Add to story: what you will see (Phases 19-25, added 2026-10-21)
+Source: `screens/s12-share-sheet.md`, `screens/s13-add-to-story.md`, `02-components.md` P10-P11, boards `screenshots/s12-share-board.png` and `s13-add-to-story-board.png`.
+
+**Today's problem:** the send icon on a post, and Share in post options, only say "Coming soon". You can't pass a post on.
+
+**1. You tap the send icon on a public post**
+→ A Share sheet opens with a box "Say something about this...", a Public chip, and three small buttons: Tag people, Feeling and Location.
+→ Below it you see Add to story, Copy link, WhatsApp and More. Copy link, WhatsApp and More still say "Coming soon" until you give us the link.
+→ On your own Followers-only post the sheet only has Add to story. On other people's Followers-only posts, and on Close friends or Only me posts, there is no send icon.
+
+**2. You tap Share now (with or without words)**
+→ The sheet closes. A notice says "Shared to your feed", and the line under it matches your audience ("Everyone can see it now.", "Your followers can see it now.", and so on). You tap View and Home scrolls to the top.
+→ Your share shows "You shared Nour Adel's post", your words, and the original post in a framed card. Likes and comments are on your share, not the original.
+→ If it fails (offline, or the post was deleted meanwhile), the sheet stays open with your words and a notice says what happened.
+
+**3. You share a post that is itself a share**
+→ The original post is shared, not the share.
+
+**4. You tap the dots on a share**
+→ On your own share: edit your words, feeling, place and tags (no photos, so tags have no spot on a picture), change who can see it, turn comments off, or delete it.
+→ On someone else's share: the usual options for a post that isn't yours.
+→ You tap the framed original: it opens that post's comments (a post page comes later).
+
+**5. The original is deleted, or you can no longer see it**
+→ The frame turns into "This post isn't available" with a lock. The share and its words stay, and the header says "Omar Khaled shared a post".
+
+**6. You tap Add to story**
+→ The story editor opens with the post as a white card on a background made from the photo's colors. You drag, pinch (half to double size) and rotate it. Tap it to switch to a photo-only or a compact look.
+→ You can add text above it. You pick the story audience: your post's audience or narrower. A Followers post can't go to everyone.
+→ Share posts the story.
+
+**7. Someone views your story and taps the post card**
+→ The story pauses, the screen dims a little, and a "View post" button appears. Tap it to open the post's comments. Tap anywhere else to go on.
+→ If the post was deleted or they can't see it, the card is replaced by a grey "Post unavailable" card.
+
+**8. The author of the post you shared**
+→ Gets a notification row of type share, one per post. No screen shows it yet (Activity comes later).
+
+**What it can't do yet:** Send in chat (needs the chat feature), Copy link, WhatsApp and More (wait for your deep link and the share text), opening the post on its own page, the "shared in their story" notification, and showing the share notification in an Activity screen.
 
 ## Reuse
 - Theme: `context.appColors` (`background`, `surface`, `primary`, `primarySoft`, `textPrimary`, `textSecondary`, `border`, `divider`, `dashed` #9AA6A2, `danger`, `like`, `storyRing`, `warningSoft`, `warningText`; check `switchOff` #C9D3D0 and `mediaChip` #161A19 @ 55% exist before adding), `context.text` (`title`, `titleSm`, `name`, `caption`, `section`, `button`, `body`), `AppSpacing` / `AppRadius` / `AppScale` (fixed values need `// unscaled: <reason>`, `no_unscaled_literals_test`).
@@ -49,7 +96,7 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 
 ## Decisions [user, 2026-10-14]
 - Shared code: business data/domain used by 2+ features lives in `lib/shared/<concept>/{data,domain}` with generic names, Cubits call its use cases; `shared` imports only `core`, `core` never imports `shared`. Done for `content`: report, change audience, mute (posts and stories independent), file cleanup, audience counts, account privacy, enums `ContentKind` / `MuteScope` / `ContentAudience` (was `PostVisibility`). One RPC per action with `p_kind` (post | story | short). Still open: shared dark confirm dialog, shared option / audience row widgets (waiting on the dark dialog look), moving the close-friends list into shared, applying both migrations (B7, `post_visibility` first).
-- Packages: `geolocator`, `blurhash_ffi` (encode + decode); `share_plus` approved but added only when post sharing by link is built (S2 Share is coming soon now).
+- Packages: `geolocator`, `blurhash_ffi` (encode + decode); `share_plus` approved but added only when post sharing by link is built (Copy link, WhatsApp and More stay coming soon); no palette package: `PaletteService` reads the story sticker background colors itself (Phase 23).
 - Image resize: a presets enum, default **Instagram-like 1080 px longest side, quality 80**; other presets 1440 / 85 and 2048 / 85; switched by changing one flag in code (no user setting).
 - `places` Edge Function: builder writes and tests it locally, then asks the user before deploying.
 - Visibility built now from the S4 board; default Public unless "Use for future posts" saved another, Followers on a private account.
@@ -64,6 +111,10 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | B6 | Real-device checks: picker with videos (10 min / 50 MB), upload on slow network, location permission iOS + Android | 11 | user | **done**: tested by the user 2026-10-15 |
 | B8 | Migration `edit_post` (`update_post` rpc) reviewed and applied | 12 live save | user | **done 2026-10-15** (in the linked project's history as `edit_post`) |
 | B9 | Migration `post_tags_mood` (from `schema-post-tags-mood.sql`) validated in a rolled-back batch, then applied after the user approves | 13 apply; live checks of 14-18 | user approval | **done 2026-10-15** (applied as `post_tags_mood`, version 20261015162526) |
+| B11 | Migration `post_share` (from `schema-post-share.sql`: `posts.shared_post_id`, `share_to_feed`, `home_feed` embed, notification type `share`, `stories.shared_post_id` / `sticker`, `create_story`) validated in a rolled-back batch, then applied after the user approves | 19 apply; live checks of 20-25 | user approval | open |
+| B12 | ~~Palette tool icon~~ `ic_palette.svg` added by the user 2026-10-21 (register it) | 23 | user | **done** |
+| B14 | ~~Title icon `ic_share_forward`~~ added by the user 2026-10-21 (register it) | 21 | user | **done** |
+| B13 | Arabic copy for S12, S13 and P10-P11 (`x-review`) | none | user review | open, no code marker |
 | B10 | Arabic copy for S6-S11, headline connectors and the ten drafted feeling nouns (`x-review`; user gave سعادة، حماس، امتنان، تعب and the noun rule) | none | user review | open, no code marker |
 
 ## Code TODOs
@@ -74,7 +125,7 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | T4 | Camera capture not in the New post picker (gallery only now) | the post media picking (`MediaIntake.pick`) | 6; marker added in Phase 12 |
 | T5 | ~~Home feed refresh after "Post shared"~~ done 2026-10-14: `CreatePostUseCase` asks for a feed refresh once the post exists; marker removed | `NewPostScreen` (`TODO(post-plan T5)`) | 6 |
 | T6 | ~~Edit caption opens no page~~ done: Edit post screen (`s5-edit-post.md`), marker removed | `PostOptionsActions.onEdit` | 5 |
-| T7 | Copy link and Share are "coming soon" until post deep links (`https://pulse.app/p/{post_id}`) and `share_plus` are added (Q-V3) | `PostOptionsFlow` (`TODO(post-plan T7)`) | 5 |
+| T7 | Copy link in S2, and Copy link, WhatsApp and More in the Share sheet are "coming soon" until the user provides the deep link (`https://pulse.app/p/{post_id}`) and the share text, and `share_plus` is added (Q-V3). S2 Share itself opens the sheet from Phase 21 | `PostOptionsFlow` Copy link tile and the Share sheet's external row (`TODO(post-plan T7)`) | 5 -> 21 |
 | T8 | ~~Story plan's `TODO(story-plan T6)`: Mute / Unfollow rows~~ done in Phase 5 (`ReportSentRow`), marker removed | the shared report sheet | 5 |
 | T12 | ~~The visibility chip says "Coming soon" until the picker exists~~ done in Phase 7 | - | 7 |
 | T11 | "Privacy settings" link shows "Coming soon" until a Settings > Privacy screen is specced (Q-V1) | `PostVisibilitySheet` private note (`TODO(post-plan T11)`) | 7 |
@@ -87,6 +138,9 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 | T16 | Profile Tagged tab and its long-press sheet (`s11-remove-tag.md` entry 3); `tagged_posts` RPC exists, no Dart call | - | no code marker (profile spec) |
 | T17 | Comments-off bar on the post / comments page (`02-components.md` "Post page when comments are off") | - | no code marker (comments page is home-plan H3's placeholder) |
 | T18 | Tag notifications (type `tag`) are written but no screen shows them | - | no code marker (Activity not specced) |
+| T20 | Send in chat (panels 5-7 of the board) is hidden until the Chat tables and screens exist; `share_targets` / `share_post` are specced but not written | the Share sheet (`TODO(post-plan T20)` where the chat row would sit) | 21 |
+| T21 | The post page doesn't exist: tapping the framed original on a share and "View post" on a story sticker open the post's comments route | the shared card's original tap and the story viewer pill (`TODO(post-plan T21)`) | 20, 24 |
+| T22 | Notification type `share` is written but no screen shows it; the "shared your post in their story" notification (`story_mention` style) is not written | - | no code marker (Activity not specced) |
 
 ## Phases
 
@@ -392,6 +446,118 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 **Verify:** full test suite, analyze, device run (user).
 
 **Notes:** `test/app/post_integration_test.dart` now boots the real app and runs Create > New post > photo > S6 > S7 (a spot for one person, one tagged in the post only) > S8 > Share, and checks `create_post` receives the tags with the spot and the feeling; a second test shows the feed card (headline, comments-off notice, badge, labels, your own label) and removes your tag. `test/features/post/presentation/tags_mood_responsive_test.dart` runs S6, S7, S8, the tagged people sheet, the remove dialog and the card at 320 dp / 2.0x, 390 dp / 1.5x and 1200 dp in EN and AR. It found two layout bugs, both fixed: Tag in photo overflowed at large text (the hint, strip and card now scroll under a photo that takes 55 % of the page) and a long username overflowed its label on the photo. Markers left in code: T4, T7, T11, T13, each with an open row. Live run (task 3): the SQL side was already checked in a rolled-back batch on the project (Phase 13); the app run with a real account was tested by the user 2026-10-15.
+
+### Phase 19: Share backend + data (added 2026-10-21)
+**Status:** [x] done 2026-10-21 (migration applied)
+- **Goal:** the server and the post feature's data can create a share, return it in the feed with its embedded original, and accept a post sticker on a story.
+- **Depends on:** 18; B11 to apply.
+- **Spec refs:** `post/schema-post-share.sql` (all), `post/screens/s12-share-sheet.md` Data, `post/screens/s13-add-to-story.md` Data, `post/00-data-layer.md`.
+- **Tasks:**
+  - [x] Write the migration `supabase/migrations/<timestamp>_post_share.sql` from the spec copy (keep both in sync). The spec has two TODOs for the builder: relax the posts constraints for a share (no media, optional caption) and write the full `home_feed` replacement (drop + create, re-grant), also the story read that returns the embedded post.
+  - [x] Validate in one rolled-back batch with several test users: Public post shared; share of a share resolves to the original; Followers / Close friends / Only me original refused; deleted original leaves the share with a null embed; hidden original (author became private) gives a null embed; caption over 2000 refused; feeling, location and tags saved on the share (tag limits and `allow_tags` as for a post, no photo spot); notification written once per original post and none for self-share; `create_story` accepts a post sticker only for allowed posts and audiences (a Followers post only to Followers or Close friends); nothing left behind. Report to the user, then apply after approval (B11). (Validated and applied 2026-10-21.)
+  - [x] Wire models: feed row gains `shared_post_id` and the embedded original (nullable); story row gains the sticker (style, x, y, scale, rotation, background) and the embedded post (nullable).
+  - [x] `ShareToFeedUseCase` (post's public API: post id, caption, audience, feeling, location, tags; returns the new id and asks for a feed refresh like `CreatePostUseCase`); the post entity carries the embedded original.
+- **Out of scope:** UI; chat sending (`share_targets`, `share_post`, T20).
+- **Done when:** migration validated (and applied once approved); models, datasource and use case tested; a null embed maps to "unavailable".
+- **Verify:** datasource tests on `backend_double`, use case tests; the rolled-back SQL report. **I ask you first:** applying the migration to the live project.
+**Notes:** posts also gets `is_share` (a deleted original sets `shared_post_id` to null, so the flag keeps the card a share: "unavailable"); `stories.sticker` may outlive its post, so the spec's `stories_sticker_needs_post` check is dropped. There is no `create_story` function: the sticker travels in the `share_content` story request (`shared_post_id`, `sticker`), checked by `check_story_post` in `share_content` and `publish_pending`. Refusals: `P0002 post_unavailable` (maps to `NotFoundFailure` in `shareToFeed`), `22023 post_not_shareable`. A share can't go on a story (use its original). Feed rows and `author_stories` embed the original through `post_embed`; the embed has no counts. Story side: `StoryModel.sticker` / `sharedPost` (own models), no request model yet (Phase 23). Signing the original's media links is Phase 20.
+
+### Phase 20: Shared post card (P10, P11)
+**Status:** [x] done 2026-10-21 (device check with the board is yours)
+- **Goal:** a share shows in the feed with its header, your words, the framed original, and the share's own actions.
+- **Depends on:** 19 (data on doubles; live after B11).
+- **Spec refs:** `post/02-components.md` P10, P11 and their acceptance list; board `post/screenshots/s12-share-board.png` panels 3-4; `post/01-design-tokens.md` (estimated sizes are marked, confirm against the board).
+- **Tasks:**
+  - [x] Share header "{sharer} shared {author}'s post" (names bold, connectors grey; "shared a post" when the author is unknown) with the share's feeling and tags in the headline ("N others" opens S10), location, time and audience icon in the meta line (as P2a-P2b); caption with more / less; no media of its own.
+  - [x] Framed original (1 px border): author row, caption, media, no action bar; its own like / comment counts are not shown. Tap opens the original's comments route; leave `// TODO(post-plan T21): ...` there.
+  - [x] P11 unavailable tile (lock, title, body) when the embed is null; share and its actions stay.
+  - [x] The share's action bar: like, comment and save belong to the share; no share count.
+  - [x] The share's "..." opens S2: your own share keeps Change who can see, Turn off comments, Delete, and Edit post (opens Phase 22's screen; hidden until then); someone else's share shows the usual options. Public card widget gets the new input and Home maps it.
+  - [x] Strings EN + AR (`x-review`), semantics ("Shared post by ...", "Post unavailable"), RTL.
+- **Out of scope:** the Share sheet (21), editing a share (22).
+- **Done when:** the P10-P11 acceptance items pass; the board panels 3-4 look like the app.
+- **Verify:** widget tests (share with caption, without caption, unavailable, unknown author, 2-line ellipsis in header, EN + AR + 1.5x), cubit test for the share's own like / save; compare with the board.
+**Notes:** `PostCardData` gains `isShare` and `original` (the framed post is a `PostCardData` too); `PostHeadline` builds "shared {author}'s post" / "shared a post" from three strings (Arabic order differs, so the connector before the author and the one after are separate); `SharedPostEmbed` and `PostUnavailableEmbed` are in `post/presentation/widgets`; the embed's videos are keyed `{shareId}/original`. `FeedPost.originalMedia` is signed with the feed's single request. A share's options hide Edit post (`TODO(post-plan Phase 22)` in `PostOptionLayout`). Embedded sizes are the estimated ones (r16, padding 10, avatar 32, media r12, tile r14). The original's "N others" is not tappable, and the original's like and comment counts are not shown. The share's own like and save go through `PostActionsCubit` by id like any post (no new cubit code, no new test).
+
+### Phase 21: Share sheet (S12)
+**Status:** [x] done 2026-10-21 (device check is yours)
+- **Goal:** the send icon opens the sheet, and Share now puts a share on your feed.
+- **Depends on:** 19, 20 (View needs the card); S4 picker from Phase 7.
+- **Spec refs:** `post/screens/s12-share-sheet.md` (all); `post/screens/s6-tag-people.md` (no Tag in photo here), `s8-feeling-activity.md`, `s3-add-location.md`; `post/screens/s2-post-options.md` Share row; board `s12-share-board.png` panels 1-3.
+- **Tasks:**
+  - [x] Visibility rule helper: icon and sheet content by post audience and ownership (table in the spec). Used by the card's send icon and by S2's Share tile.
+  - [x] Sheet: header with `ic_share_forward` (register it), composer (avatar, name, audience chip opening the S4 picker, field, tools Tag people / Feeling / Location opening S6 / S8 / S3 with the values kept in the sheet's Cubit, Share now), divider, external row (Add to story, Copy link, WhatsApp, More). Chat section is not drawn; leave `// TODO(post-plan T20): ...` where it would be.
+  - [x] Caption: sheet rides above the keyboard, field grows to 4 lines then scrolls, counter `n / 2000` (max 2000), Done or tap outside closes the keyboard. Share now works with an empty caption.
+  - [x] Cubit: share, loader on the button, success -> close + notice with the line for the audience + View (scrolls Home to the top, feed refresh), failure -> stays open with the text and a notice, unavailable original -> notice and close.
+  - [x] Copy link, WhatsApp and More show "Coming soon" with `// TODO(post-plan T7): ...`; Add to story shows "Coming soon" with `// TODO(post-plan T19): ...`.
+  - [x] Wire the card's send icon (remove `TODO(home-plan H6)` and its "Coming soon") and S2's Share tile (S2 Copy link keeps its T7 marker).
+  - [x] Strings EN + AR (`x-review`), semantics, RTL, 1.5x (external row scrolls if needed).
+- **Out of scope:** Add to story (23), chat (T20), real links (T7).
+- **Done when:** the S12 acceptance list passes for panels 1-3 with chat hidden; the icon appears only where the table says.
+- **Verify:** cubit tests (share, empty caption, failure keeps text, offline, unavailable original, audience default), widget tests EN/AR/1.5x for each audience variant; compare with panels 1-3. **I ask you first:** nothing new (no package here).
+**Notes:** `ShareAccess` (`utils/enums/share_access.dart`) is the table: Public = full, your own Followers = story only, the rest = none; `shareAccessOf(post)` follows the original for a share and is used by the card (`PostCardData.canShare`) and S2 (`PostOptionsData.shareAccess`; the Share tile needs it, Copy link needs a Public post, which also fixes the old "hidden when not public" S2 tests). `PostPickers` is the one place that opens the place, feeling and tag pages (New post uses it too). `ShareSheetCubit` (freezed state, `ShareResult` one-shot) calls `ShareToFeedUseCase`; the sheet is `widgets/share_sheet/`. "View" scrolls the Home list to the top through the `PrimaryScrollController` taken when the icon was tapped. The WhatsApp tile uses the chat icon as a stand-in until the official brand icon is provided. The audience chip got an optional `height`. `PostOptionsActions` has a required `onShare`. The counter shows while the field has focus.
+
+### Phase 22: Edit a share
+**Status:** [x] done 2026-10-21 (device check is yours)
+- **Goal:** change the words, feeling, place, tags, audience and comments of your own share.
+- **Depends on:** 20, 21; Phase 12 (edit screen).
+- **Spec refs:** `post/02-components.md` P10 taps; `post/screens/s5-edit-post.md`; Q-S8.
+- **Tasks:**
+  - [x] Edit post on a share: the S5 screen without the media row, the original shown read-only under the words, and the Tag people (no Tag in photo), Feeling and Location rows.
+  - [x] Save through the existing update path (caption, mood, location, tags, comments); the share can't gain media.
+  - [x] Strings, RTL, 1.5x; the share's S2 Edit post row opens this screen.
+- **Out of scope:** changing which post is shared.
+- **Done when:** your share can be edited and its card updates; there is no way to add media.
+- **Verify:** cubit and widget tests; device run (user).
+**Notes:** it is the same `AddEditPostScreen` and cubit: `AddEditPostState.isShare` (from the edited post) hides the media strip and the Photo / video row, and `canSave` needs only a change (no words or media). The read-only original is `SharedPostEmbed` / `PostUnavailableEmbed` in `ComposerCard`; Home passes it through `AddEditPostArgs.original` (built with the feed's already signed links). The share's S2 Edit post row is shown (marker removed). `update_post` already accepts a share (kind `post`, no media, empty words allowed), so no migration; `UpdatePostUseCase` now keeps `isShare` and `original` on the returned post. Tests: layout, cubit `canSave` for a share; no widget test for the screen yet.
+
+### Phase 23: Add to story: editor (S13)
+**Status:** [x] done 2026-10-21 (device check against the board is yours)
+- **Goal:** Add to story opens the story editor with the post as a sticker and posts the story.
+- **Depends on:** 19; 21 (the tile); `ic_palette` registered; no palette package.
+- **Spec refs:** `post/screens/s13-add-to-story.md` (editor part), `story/screens/s3-create-edit.md`, `story/screens/s4-posting-rail.md`; board `post/screenshots/s13-add-to-story-board.png` panels 1-3.
+- **Tasks:**
+  - [x] No palette package (`palette_generator` is discontinued): read two dominant colors of the first media (poster frame for video); fall back to a primary gradient.
+  - [x] Sticker model and draw: three styles (card, media only, compact), tap cycles, drag, pinch 0.5x-2x, rotate, dashed selection outline, style dots, hint text; saved as fractions of the screen.
+  - [x] Palette tool shows the six swatches (from media, dark, primary, three gradients); text and download tools keep working; the background plus your text and drawing are rendered to the story photo, the sticker is not.
+  - [x] Audience: the story picker offers only the post's audience or narrower; the app blocks anything wider before the server does.
+  - [x] Entry point: Add to story in S12 opens story create with the post; remove `TODO(post-plan T19)`.
+  - [x] Share goes through the existing story upload path with the sticker and the shared post id.
+  - [x] Strings EN + AR (`x-review`), semantics, RTL (position not mirrored).
+- **Out of scope:** the viewer (24), the "shared in their story" notification (T22).
+- **Done when:** the S13 editor checks pass: default card, three styles, gestures, background from media, audience limit; a story posts with the sticker.
+- **Verify:** cubit tests (style cycle, clamp of scale, background fallback, audience limit), widget tests for the sticker styles EN/AR; compare with panels 1-3.
+**Notes:** a separate screen, `StoryPostEditScreen` (`/create/story/post`, argument `StoryPostArgs` in `core/utils`, built by Home from the shared post and the links the feed signed), with its own `StoryPostEditCubit`; the photo editor is untouched except `StoryEditTools` (location, palette and mute are optional) and the notice and discard code both screens use (`StoryEditEffects`). The text tool and the sticker canvas are the photo editor's. Share renders the gradient and your text to a PNG (`renderStoryBackdrop`) and enqueues a `NewStoryModel` with `sharedPostId` and `sticker`; `StoryUploadRepository` sends such a story through `share_content` + `publish_content` under the file's id (a plain story still inserts the row). `PaletteService` counts the pixels of a 100 px copy itself (`palette_generator` was dropped 2026-10-21: it is discontinued), so there is no package. Audience: the editor has no audience picker yet (Q18), every story goes to Followers, which is never wider than a post the Share sheet allows, so the "block anything wider" task is met by the sheet's `ShareAccess` rule and the server's `check_story_post`; the picker rule waits for Q18. The drawing tool does not exist yet. Estimated from the board: the sticker widths of the media and compact styles, the swatch colors (grey-blue, light, orange), swatch size. The server's refusal (`post_not_shareable`, `post_unavailable`) shows as the rail's failed state with Retry; `storyPostNotShareable` is not added (it needs the job to carry the reason). T19 is removed.
+
+### Phase 24: Story viewer: post sticker
+**Status:** [x] done 2026-10-21 (device check against the board is yours)
+- **Goal:** viewers see the post card on the story and can open the post.
+- **Depends on:** 19, 23.
+- **Spec refs:** `post/screens/s13-add-to-story.md` panels 4-5; `story/screens/s1-story-viewer.md`; board panels 4-5.
+- **Tasks:**
+  - [x] Draw the sticker on top of the story photo with the saved style, position, scale and rotation.
+  - [x] Tap pauses the story, dims 25 %, shows the "View post" pill (44, pointer up) under the sticker; tapping the pill opens the post's comments route (leave `// TODO(post-plan T21): ...`); tap elsewhere resumes.
+  - [x] Null post: the frosted "Post unavailable" card replaces the sticker, not tappable.
+  - [x] Strings EN + AR (`x-review`), semantics, RTL.
+- **Out of scope:** a post page (T21), the story mention notification (T22).
+- **Done when:** panels 4-5 match; a deleted post shows the unavailable card; pause and resume behave.
+- **Verify:** viewer cubit and widget tests, compare with panels 4-5.
+**Notes:** `StoryPostLayer` (`story/presentation/widgets/story_post`) sits above the chrome in `StoryPerson` for a story with a `sticker`; it reuses `StoryPostSticker` and `StoryOverlayPlacement`. Open state is local to the layer and pauses the story with the new `StoryPauseReason.post`; the pill hangs from the sticker's measured bottom edge. `author_stories` links are signed in `StoriesDatasource` (`StorySharedPostModel.pictureKey` / `pictureUrl`: first photo, or a video's poster). No tests yet (asked).
+
+### Phase 25: Integration + polish (share, sticker)
+**Status:** [~] code done 2026-10-21 (live run, device checks and the story-sticker boot test are open)
+- **Goal:** both flows work end to end and pass RTL, a11y and responsive checks.
+- **Depends on:** 19-24; B11 applied for the live run.
+- **Spec refs:** `post/00-overview.md` Navigation map; acceptance lists of S12, S13, P10-P11.
+- **Tasks:**
+  - [x] App boot test: Home > send icon > Share now > notice > the share on top (View tap itself not driven); Home > send icon > Add to story opens the editor. Not covered: Share in the editor > the story shows the sticker.
+  - [x] DI wiring (`build_runner`), new routes in `AppRouter`.
+  - [ ] Live run (after B11): share a public post with and without words; share a share; delete the original and reload; story with a sticker, viewed by a second account; a Followers post limited to Followers or Close friends; the author gets a share notification row.
+  - [ ] RTL, 1.5x, 2.0x, 320 dp and wide window for the sheet, the shared card and the sticker.
+  - [x] `grep -rn "TODO(post-plan"`: markers match open Code TODOs rows (T7, T19 removed, T20, T21 new).
+**Notes:** boot tests added to `test/app/post_integration_test.dart`. The T20 marker was missing and is now in `share_sheet.dart`; open markers: T4, T7, T11, T13, T20, T21. RTL / 1.5x / 2.0x / 320 dp checks were done per phase (20-24 widget tests); not rerun here. Full suite has 5 failures not from this phase: 2 progress-weight tests in `content_media_repository_test`, 1 in `story_upload_repository_test`, `story_integration_test` camera > Share, and the post restart test (`boot` finds no `ControlScreen` after the kill).
+- **Done when:** all new acceptance lists ticked; analyze clean; full suite green.
+- **Verify:** full test suite, analyze, device run (user).
 
 ## Verification
 Each phase: `fvm flutter analyze` clean, `fvm flutter test` green, its "Done when" items ticked, screenshots compared where the phase has UI. The builder ticks the phase Status and notes deviations in the phase.

@@ -83,6 +83,9 @@ abstract class AddEditPostState with _$AddEditPostState {
 
   bool get isEditing => original != null;
 
+  /// Editing a share: it has no media, and its words may be empty.
+  bool get isShare => original?.isShare ?? false;
+
   int get mediaCount => kept.length + media.length;
 
   /// Something to lose when closing: written content when adding, any edit when editing.
@@ -108,10 +111,10 @@ abstract class AddEditPostState with _$AddEditPostState {
         !listEquals(tags, [for (final tag in post.tags) TagChoice.tag(tag)]);
   }
 
-  /// Text or at least one photo or video, and something to save when editing.
+  /// Text or at least one photo or video (a share needs neither), and something to save when editing.
   bool get canSave =>
       (!isEditing || hasChanges) &&
-      (caption.trim().isNotEmpty || mediaCount > 0);
+      (isShare || caption.trim().isNotEmpty || mediaCount > 0);
 
   bool get isVisibilityNarrowed => visibility.isNarrowerThan(defaultVisibility);
 

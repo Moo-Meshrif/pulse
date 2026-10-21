@@ -952,7 +952,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get storyVideoTooLong => 'اختر فيديو لا تزيد مدته عن 60 ثانية';
+  String get storyTrimHint => 'اسحب لاختيار الجزء الذي تريد مشاركته';
 
   @override
   String get storyCaptureFailed => 'تعذّر الالتقاط. حاول مرة أخرى.';
@@ -1019,6 +1019,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get storyRailFailed => 'تعذّر تحميل القصص';
+
+  @override
+  String get storyPostOffline =>
+      'لا يوجد اتصال. سيتم نشر قصتك عند عودة الإنترنت.';
+
+  @override
+  String storySavingVideo(int percent) {
+    return 'جارٍ حفظ الفيديو… $percent٪';
+  }
 
   @override
   String get storyPostFailed => 'تعذّر نشر قصتك';
@@ -1664,6 +1673,85 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get postHeadlineShared => ' شارك منشور ';
+
+  @override
+  String get postHeadlineSharedPostOf => '';
+
+  @override
+  String get postHeadlineSharedAPost => ' شارك منشورًا';
+
+  @override
+  String postSharedSemantics(String name) {
+    return 'منشور مشارك من $name';
+  }
+
+  @override
+  String get postUnavailableTitle => 'هذا المنشور غير متاح';
+
+  @override
+  String get postUnavailableBody => 'تم حذفه، أو تغيّر جمهوره ولا يمكنك رؤيته.';
+
+  @override
+  String get postUnavailableSemantics => 'المنشور غير متاح';
+
+  @override
+  String get shareTitle => 'مشاركة';
+
+  @override
+  String get shareFieldHint => 'قل شيئًا عن هذا...';
+
+  @override
+  String get shareTagPeople => 'وسم الأشخاص';
+
+  @override
+  String get shareFeeling => 'المشاعر';
+
+  @override
+  String get shareLocation => 'الموقع';
+
+  @override
+  String get shareNow => 'شارك الآن';
+
+  @override
+  String shareCounter(int count) {
+    return '$count / 2000';
+  }
+
+  @override
+  String get shareAddToStory => 'أضف إلى القصة';
+
+  @override
+  String get shareCopyLink => 'نسخ الرابط';
+
+  @override
+  String get shareWhatsApp => 'واتساب';
+
+  @override
+  String get shareMore => 'المزيد...';
+
+  @override
+  String get sharedToFeedTitle => 'تمت المشاركة في صفحتك';
+
+  @override
+  String get sharedToFeedPublic => 'يمكن للجميع رؤيتها الآن.';
+
+  @override
+  String get sharedToFeedFollowers => 'يمكن لمتابعيك رؤيتها الآن.';
+
+  @override
+  String get sharedToFeedCloseFriends => 'يمكن لأصدقائك المقربين رؤيتها الآن.';
+
+  @override
+  String get sharedToFeedOnlyMe => 'أنت فقط من يمكنه رؤيتها.';
+
+  @override
+  String get sharedToFeedView => 'عرض';
+
+  @override
+  String get shareFailed => 'تعذّرت المشاركة. حاول مرة أخرى.';
+
+  @override
   String get postCommentsOffTitle => 'التعليقات متوقفة';
 
   @override
@@ -1904,4 +1992,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String postFeelingValue(String emoji, String word) {
     return '$emoji $word';
   }
+
+  @override
+  String get storyToolBackground => 'الخلفية';
+
+  @override
+  String get storyPostStickerHint =>
+      'اضغط على المنشور لتغيير شكله · اسحب بإصبعين لتغيير الحجم';
+
+  @override
+  String storyBackgroundOption(int number) {
+    return 'الخلفية $number';
+  }
+
+  @override
+  String storyPostSemantics(String username, String caption) {
+    return 'منشور من $username: $caption';
+  }
+
+  @override
+  String storyPostSemanticsNoCaption(String username) {
+    return 'منشور من $username';
+  }
+
+  @override
+  String get storyViewPost => 'عرض المنشور';
+
+  @override
+  String get storyPostUnavailableTitle => 'المنشور غير متاح';
+
+  @override
+  String get storyPostUnavailableBody => 'تم حذفه، أو لا يمكنك رؤيته.';
 }

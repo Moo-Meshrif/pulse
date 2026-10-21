@@ -4,15 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
 import '../error/failures.dart';
+import 'video_compress_service.dart';
 
 /// Draws a transparent picture (stickers, text) over every frame of a video on the device with its
 /// hardware encoder, one at a time (each one is heavy on CPU, battery and heat).
 abstract interface class VideoOverlayService {
   /// Writes an H.264 copy of the video at [videoPath] with [overlayPng] stretched over the whole frame, and
-  /// returns its path. [onProgress] is told how far it is (0..1). Throws [UnexpectedFailure] when it fails.
+  /// returns its path, with [edit] applied in the same pass (only a part kept, sound removed). [onProgress] is told how far it is (0..1). Throws [UnexpectedFailure] when it fails.
   Future<String> burn(
     String videoPath,
     Uint8List overlayPng, {
+    VideoEdit? edit,
     void Function(double progress)? onProgress,
   });
 
@@ -39,19 +41,21 @@ final class ChannelVideoOverlayService implements VideoOverlayService {
   Future<String> burn(
     String videoPath,
     Uint8List overlayPng, {
+    VideoEdit? edit,
     void Function(double progress)? onProgress,
   }) {
     final done = Completer<void>();
     final previous = _previous;
     _previous = done.future;
     return previous
-        .then((_) => _run(videoPath, overlayPng, onProgress))
+        .then((_) => _run(videoPath, overlayPng, edit, onProgress))
         .whenComplete(done.complete);
   }
 
   Future<String> _run(
     String videoPath,
     Uint8List overlayPng,
+    VideoEdit? edit,
     void Function(double progress)? onProgress,
   ) async {
     _onProgress = onProgress;
@@ -59,6 +63,9 @@ final class ChannelVideoOverlayService implements VideoOverlayService {
       final output = await _channel.invokeMethod<String>('burn', {
         'videoPath': videoPath,
         'overlayPng': overlayPng,
+        'trimStartMs': edit?.trimStartMs,
+        'trimEndMs': edit?.trimEndMs,
+        'removeAudio': edit?.removeAudio ?? false,
       });
       if (output == null) throw const UnexpectedFailure();
       return output;

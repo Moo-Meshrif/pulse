@@ -55,3 +55,24 @@ Cards repeat once per post, so they must stay cheap in a long feed:
 - A value that changes on swipe or scroll (the media page index) lives in a `ValueNotifier` read by the counter, the dots and the items; the card's `State` never calls `setState` for it.
 - P3 measures whether the caption overflows 3 lines once per text, width and text scale (cached), not on every build.
 - The video scope (one video plays at a time) does not notify its dependents; each video item listens to the coordinator itself, so a pick or mute change touches each built video once.
+
+## Shared post on the card (P10, P11; board `screenshots/s12-share-board.png` panels 3-4) [added 2026-10-21]
+A **share** is a post with no media of its own that embeds an original post. It is a normal row in the feed, owned by the sharer.
+
+| ID | Component | Anatomy / notes |
+|---|---|---|
+| P10 | SharedPostCard (a PostCard variant) | Sharer's author row as P2/P2a with the headline "{sharer} shared {author}'s post" (names 700 `textPrimary`, "shared" and "'s post" 400 `textSecondary`; AR no gendered verbs, `x-review`); meta = relative time + audience icon (no location unless the share has one). Then the share's own caption (P3 expandable), then the **embedded original** in a bordered card (1 px `border`, white, r16 [estimated], padding 10 [estimated]): the original's author row (avatar 32 [estimated] + headline/meta as P2a/P2b, no "···"), its caption, its media (P4, r12 [estimated]). The embedded card has **no action bar**. Then the **share's** action bar (P5): likes and comments belong to the share, not the original. No share count |
+| P11 | UnavailableEmbed | Replaces the embedded card when the viewer can't see the original (deleted, or its audience changed): `background` tile r14, lock icon in a 40 circle (`surface`), title "This post isn't available" 14/700, body "It was deleted, or its audience changed and you can't see it." 12 `textSecondary` (2 lines). The share, its caption and its actions stay. Header reads "{sharer} shared a post" (author unknown) |
+
+Taps ("make it as Facebook" [user, 2026-10-21]):
+- The share's "···" = options **of the share**. Your own share: Edit post (caption, feeling, location, tags; **no media**), Change who can see, Turn off comments, Delete post. Someone else's share: the usual options for a post that isn't yours (S2).
+- Tapping the embedded original opens the **original post** (its comments route until a post page exists). Its options aren't shown on the share card.
+- The send icon on a share shares the **original** (server resolves it) and follows the visibility rule of the original (`screens/s12-share-sheet.md`).
+- Edit post on a share is S5 with the media row hidden and the original shown read-only under the caption; Tag people (without "Tag in photo"), Feeling and Location rows stay [user, 2026-10-21].
+- The share's headline shows its own feeling, tags ("with ...", "N others" opens S10) and location in the meta line, like a post (P2a-P2b). No tag badge (no media).
+
+Acceptance:
+- [ ] Share header "X shared Y's post" with names bold, connectors grey; embedded original in a bordered card; no action bar inside it.
+- [ ] The like, comment and save counts are the share's own.
+- [ ] Original deleted, hidden or no longer visible: P11 tile, share and caption stay; header says "shared a post".
+- [ ] Share's "···" shows share options; tapping the embedded card opens the original.

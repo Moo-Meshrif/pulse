@@ -36,17 +36,23 @@ import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart'
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/share_to_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions/post_actions_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/share_sheet/share_sheet_cubit.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
+import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_line.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
+import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_line_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
@@ -55,7 +61,18 @@ import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 import '../../../post/post_fixtures.dart';
 
+class _Status extends Fake implements GetPublishStatusUseCase {
+  @override
+  ContentPublishStatus call(ContentKind kind) => ContentPublishIdle(kind);
+}
+
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
+
+class _ShareToFeed extends Mock implements ShareToFeedUseCase {}
+
+class _Privacy extends Mock implements GetPrivacyUseCase {}
+
+class _Account extends Mock implements GetLastAccountUseCase {}
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -213,8 +230,27 @@ void main() {
             ),
           ),
           retryUpload,
+          FakeLastAccount(),
         ),
-      );
+      )
+      ..registerFactoryParam<ShareSheetCubit, String, void>((postId, _) {
+        final privacy = _Privacy();
+        when(privacy.call).thenAnswer(
+          (_) async => const PrivacyEntity(
+            isPrivate: false,
+            defaultVisibility: ContentAudience.public,
+          ),
+        );
+        final account = _Account();
+        when(account.call).thenReturn(null);
+        return ShareSheetCubit(
+          _ShareToFeed(),
+          privacy,
+          _Status(),
+          account,
+          postId,
+        );
+      });
     addTearDown(getIt.reset);
   });
 
@@ -270,11 +306,13 @@ void main() {
       expect(find.text(AppRoutes.commentsOf('p1')), findsOneWidget);
     });
 
-    testView('Share says it is coming soon', (tester) async {
+    testView('Share opens the share sheet of the post', (tester) async {
       await show(tester);
       await tester.tap(_icon(AppAssets.share).first);
-      await tester.pump();
-      expect(find.text(l10nEn.comingSoon), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.text(l10nEn.shareTitle), findsOneWidget);
+      expect(find.text(l10nEn.shareNow), findsOneWidget);
+      expect(find.text(l10nEn.comingSoon), findsNothing);
     });
   });
 
@@ -282,10 +320,7 @@ void main() {
     testView('a failed post says so and Retry sends it again', (tester) async {
       await show(tester);
       bus.fire(
-        const ContentPublishFailed(
-          ContentKind.story,
-          failure: NetworkFailure(),
-        ),
+        const ContentPublishFailed(ContentKind.story, failure: ServerFailure()),
       );
       await tester.pump();
       await tester.pump();
@@ -298,6 +333,26 @@ void main() {
         ),
       );
       verify(() => retryUpload(ContentKind.story)).called(1);
+    });
+  });
+
+  group('story posting offline', () {
+    testView('a lost connection says it posts by itself, with no Retry', (
+      tester,
+    ) async {
+      await show(tester);
+      bus.fire(
+        const ContentPublishFailed(
+          ContentKind.story,
+          failure: NetworkFailure(),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text(l10nEn.storyPostOffline), findsOneWidget);
+      expect(find.text(l10nEn.storyPostFailed), findsNothing);
     });
   });
 

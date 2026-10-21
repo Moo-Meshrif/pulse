@@ -25,6 +25,7 @@ class PostActionBar extends StatelessWidget {
     this.onSave,
     this.onlySave = false,
     this.commentsEnabled = true,
+    this.showShare = true,
   });
 
   final int likeCount;
@@ -41,6 +42,9 @@ class PostActionBar extends StatelessWidget {
 
   /// False dims the comment button into the comments-off icon, with no count.
   final bool commentsEnabled;
+
+  /// False leaves the send icon out (a post nobody can be sent).
+  final bool showShare;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,7 @@ class PostActionBar extends StatelessWidget {
                 count: commentsEnabled ? commentCount : null,
                 onTap: onComment,
               ),
-              ...[
+              if (showShare) ...[
                 SizedBox(width: PostCardDimens.actionGap),
                 _ActionButton(
                   label: l10n.postShare,

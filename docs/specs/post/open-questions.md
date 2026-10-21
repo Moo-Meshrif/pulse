@@ -41,3 +41,15 @@
 | Q28 | Arabic wording | - | **answered** [user, 2026-10-15]: no gendered verbs; feelings are nouns (سعادة، حماس، امتنان، تعب…), activities verbal nouns ("📺 مشاهدة الديربي"), headline "نور عادل · 😊 سعادة · مع عمر خالد و٢ آخرين". Everything else stays `x-review` |
 | Q30 | Entry to S7 | - | **answered** [user]: a "Tag in photo" button on S6 (photos only, needs >= 1 person chosen); button placement/size estimated |
 | Q29 | Estimated sizes | - | **answered** [user, board 3.16]: S7 thumbs 56 r12 etc., S6 counter/empty/button; see `01-design-tokens.md` (only S9 row sizes remain estimated, deferred) |
+| Q-S1 | Share sheet scope | - | **answered** [user, 2026-10-21]: composer, notice, shared card and unavailable embed built; Send in chat hidden until Chat exists; Copy link / WhatsApp / More = "Coming soon" (T7) until the user provides the deep link |
+| Q-S2 | Share icon visibility | - | **answered** [user]: shown for Public and Followers posts; for Followers only on your own post (Add to story only) [assumption for others' Followers posts: hidden, confirm] |
+| Q-S3 | Notice per audience, notification | - | **answered** [user]: one line per audience; author notified (type share, grouped per post) |
+| Q-S4 | Share card taps | - | **answered** [user, "as Facebook"]: share "···" = share options (own: edit without media, audience, delete); embedded card opens the original |
+| Q-S5 | Add to story | - | **answered** [user]: built now, board s13; viewer sticker tap opens the post's comments route |
+| Q-S6 | New package `palette_generator` (background from media colors) | approve / use another way | pending, ask in the phase |
+| Q-S7 | Audience chip default and View target | - | [estimated]: default = account default audience; View scrolls Home to top. Confirm |
+| Q-S8 | Edit post on a share | - | **answered** [user, 2026-10-21]: S5 without media, original read-only; Tag people, Feeling and Location kept |
+| Q-S9 | Palette tool icon | - | **answered** [user]: `assets/icons/ic_palette.svg` added (register in `app_assets.dart`) |
+| Q-S10 | Title icon `ic_share_forward` | - | **answered** [user]: added to `assets/icons` (register it) |
+| Q-S11 | Followers posts | - | **answered** [user]: Public = anyone can share; Followers = only people who can see it, via chat later (hidden icon until chat exists, except own post's Add to story) |
+

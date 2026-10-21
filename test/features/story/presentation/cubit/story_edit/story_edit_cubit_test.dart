@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_compress_service.dart';
 import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
@@ -27,6 +28,8 @@ class _NoBlurhash implements BlurhashService {
 }
 
 class _Gallery extends Mock implements GalleryService {}
+
+class _Compressor extends Mock implements VideoCompressService {}
 
 class _VideoOverlay extends Mock implements VideoOverlayService {}
 
@@ -74,10 +77,17 @@ void main() {
     when(() => account()).thenReturn(null);
     when(() => uploads.enqueue(any())).thenReturn(true);
     when(() => thumbs.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
+    when(gallery.ensureAccess).thenAnswer((_) async {});
     when(() => gallery.saveImage(any())).thenAnswer((_) async {});
     when(() => gallery.saveVideoFile(any())).thenAnswer((_) async {});
-    when(() => videoOverlay.burn(any(), any()))
-        .thenAnswer((_) async => '/b.mp4');
+    when(
+      () => videoOverlay.burn(
+        any(),
+        any(),
+        edit: any(named: 'edit'),
+        onProgress: any(named: 'onProgress'),
+      ),
+    ).thenAnswer((_) async => '/b.mp4');
     when(() => videoOverlay.delete(any())).thenAnswer((_) async {});
   });
 
@@ -87,6 +97,7 @@ void main() {
     _NoBlurhash(),
     gallery,
     videoOverlay,
+    _Compressor(),
     account,
     media,
   );
@@ -238,7 +249,14 @@ void main() {
       final cubit = build(_video);
       await cubit.saveVideo(null);
       verify(() => gallery.saveVideoFile('/v.mp4')).called(1);
-      verifyNever(() => videoOverlay.burn(any(), any()));
+      verifyNever(
+        () => videoOverlay.burn(
+          any(),
+          any(),
+          edit: any(named: 'edit'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      );
       expect(cubit.state.notice, StoryEditNotice.saved);
     });
 
@@ -248,7 +266,12 @@ void main() {
         final cubit = build(_video)..addText('Hi');
         await cubit.saveVideo(Uint8List.fromList([1]));
         verifyInOrder([
-          () => videoOverlay.burn('/v.mp4', any()),
+          () => videoOverlay.burn(
+            '/v.mp4',
+            any(),
+            edit: any(named: 'edit'),
+            onProgress: any(named: 'onProgress'),
+          ),
           () => gallery.saveVideoFile('/b.mp4'),
           () => videoOverlay.delete('/b.mp4'),
         ]);
@@ -258,8 +281,14 @@ void main() {
     );
 
     test('a failed burn is a failed save and saves nothing', () async {
-      when(() => videoOverlay.burn(any(), any()))
-          .thenThrow(const UnexpectedFailure());
+      when(
+        () => videoOverlay.burn(
+          any(),
+          any(),
+          edit: any(named: 'edit'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenThrow(const UnexpectedFailure());
       final cubit = build(_video)..addText('Hi');
       await cubit.saveVideo(Uint8List.fromList([1]));
       verifyNever(() => gallery.saveVideoFile(any()));
@@ -278,7 +307,14 @@ void main() {
     test('stickers but no snapshot is a failed save', () async {
       final cubit = build(_video)..addText('Hi');
       await cubit.saveVideo(null);
-      verifyNever(() => videoOverlay.burn(any(), any()));
+      verifyNever(
+        () => videoOverlay.burn(
+          any(),
+          any(),
+          edit: any(named: 'edit'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      );
       expect(cubit.state.notice, StoryEditNotice.saveFailed);
     });
 

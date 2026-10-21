@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -79,7 +80,36 @@ class _PagedScrollViewState<C extends StateStreamable<S>, S>
     super.dispose();
   }
 
+  // The control arms on any overscroll, also the bounce after a fast fling and a quick swipe up that runs
+  // past the top. Only a finger that pulls past the trigger distance, slowly, counts as a refresh.
+  static const _triggerPull = 100.0;
+  static const _maxPullSpeed = 1200.0; // pixels per second
+  bool _fingerPulled = false;
+  int _lastMicros = 0;
+  double _lastPixels = 0;
+
+  bool _trackFinger(ScrollNotification notification) {
+    if (notification.depth != 0) return false;
+    final pixels = notification.metrics.pixels;
+    final now = clock.now().microsecondsSinceEpoch;
+    if (notification is ScrollStartNotification) {
+      _fingerPulled = false;
+    } else if (notification is ScrollUpdateNotification) {
+      final seconds = (now - _lastMicros) / Duration.microsecondsPerSecond;
+      final speed = seconds <= 0 ? 0 : (pixels - _lastPixels).abs() / seconds;
+      _fingerPulled =
+          notification.dragDetails != null &&
+          pixels <= -_triggerPull &&
+          speed <= _maxPullSpeed;
+    }
+    _lastMicros = now;
+    _lastPixels = pixels;
+    return false;
+  }
+
   Future<void> _pullRefresh() async {
+    if (!_fingerPulled) return;
+    _fingerPulled = false;
     _isPulling.value = true;
     try {
       await widget.onRefresh();
@@ -99,66 +129,72 @@ class _PagedScrollViewState<C extends StateStreamable<S>, S>
   @override
   Widget build(BuildContext context) => LoadMoreListener(
     onLoadMore: () => _loadMoreIfIdle(context),
-    child: CustomScrollView(
-      physics: const BouncingScrollPhysics(
-        parent: AlwaysScrollableScrollPhysics(),
-      ),
-      slivers: [
-        ...widget.headerSlivers,
-        CupertinoSliverRefreshControl(
-          onRefresh: _pullRefresh,
-          refreshIndicatorExtent: LoadingDimens.refreshBand,
-          builder: _buildRefreshIndicator,
+    child: NotificationListener<ScrollNotification>(
+      onNotification: _trackFinger,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
         ),
-        SliverToBoxAdapter(
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _isPulling,
-            builder: (context, isPulling, _) => BlocSelector<C, S, bool>(
-              selector: (state) => widget.paging(state).isRefreshing,
-              builder: (context, isRefreshing) => TweenAnimationBuilder<double>(
-                tween: Tween(end: isRefreshing && !isPulling ? 1 : 0),
-                duration: _bandDuration,
-                curve: Curves.easeOut,
-                builder: (context, t, child) => t == 0
-                    ? const SizedBox(width: double.infinity)
-                    : ClipRect(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          heightFactor: t,
-                          child: Opacity(opacity: t, child: child),
+        slivers: [
+          ...widget.headerSlivers,
+          CupertinoSliverRefreshControl(
+            onRefresh: _pullRefresh,
+            refreshIndicatorExtent: LoadingDimens.refreshBand,
+            builder: _buildRefreshIndicator,
+          ),
+          SliverToBoxAdapter(
+            child: ValueListenableBuilder<bool>(
+              valueListenable: _isPulling,
+              builder: (context, isPulling, _) => BlocSelector<C, S, bool>(
+                selector: (state) => widget.paging(state).isRefreshing,
+                builder: (context, isRefreshing) =>
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(end: isRefreshing && !isPulling ? 1 : 0),
+                      duration: _bandDuration,
+                      curve: Curves.easeOut,
+                      builder: (context, t, child) => t == 0
+                          ? const SizedBox(width: double.infinity)
+                          : ClipRect(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: t,
+                                child: Opacity(opacity: t, child: child),
+                              ),
+                            ),
+                      child: SizedBox(
+                        height: LoadingDimens.refreshBand,
+                        child: Center(
+                          child: _icon(progress: 1, isRefreshing: true),
                         ),
                       ),
-                child: SizedBox(
-                  height: LoadingDimens.refreshBand,
-                  child: Center(child: _icon(progress: 1, isRefreshing: true)),
-                ),
+                    ),
               ),
             ),
           ),
-        ),
-        ...widget.slivers,
-        SliverToBoxAdapter(
-          child: BlocSelector<C, S, (LoadMoreStatus, bool)>(
-            selector: (state) {
-              final info = widget.paging(state);
-              return (info.loadMore, info.hasMore);
-            },
-            builder: (context, step) => switch (step) {
-              (LoadMoreStatus.loading, _) =>
-                widget.loadMoreSkeleton ?? const AppInlineLoading.loadMore(),
-              (LoadMoreStatus.failed, _) => RetryRow(
-                label: widget.retryLabel,
-                onTap: widget.onLoadMore,
-              ),
-              (LoadMoreStatus.idle, false) => CaughtUpRow(
-                label: widget.caughtUpLabel,
-              ),
-              (LoadMoreStatus.idle, true) => const SizedBox.shrink(),
-            },
+          ...widget.slivers,
+          SliverToBoxAdapter(
+            child: BlocSelector<C, S, (LoadMoreStatus, bool)>(
+              selector: (state) {
+                final info = widget.paging(state);
+                return (info.loadMore, info.hasMore);
+              },
+              builder: (context, step) => switch (step) {
+                (LoadMoreStatus.loading, _) =>
+                  widget.loadMoreSkeleton ?? const AppInlineLoading.loadMore(),
+                (LoadMoreStatus.failed, _) => RetryRow(
+                  label: widget.retryLabel,
+                  onTap: widget.onLoadMore,
+                ),
+                (LoadMoreStatus.idle, false) => CaughtUpRow(
+                  label: widget.caughtUpLabel,
+                ),
+                (LoadMoreStatus.idle, true) => const SizedBox.shrink(),
+              },
+            ),
           ),
-        ),
-        SliverToBoxAdapter(child: SizedBox(height: widget.bottomSpace)),
-      ],
+          SliverToBoxAdapter(child: SizedBox(height: widget.bottomSpace)),
+        ],
+      ),
     ),
   );
 

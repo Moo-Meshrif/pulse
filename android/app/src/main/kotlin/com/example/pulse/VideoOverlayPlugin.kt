@@ -25,7 +25,8 @@ import java.io.File
 
 /**
  * `pulse/video_overlay`: `burn(videoPath, overlayPng)` writes an H.264/AAC copy of the video with the
- * picture stretched over every frame (Media3 Transformer, hardware encoder), `delete(path)` removes a copy.
+ * picture stretched over every frame, optionally keeping only `trimStartMs`..`trimEndMs` and without sound
+ * (Media3 Transformer, hardware encoder), `delete(path)` removes a copy.
  * Progress goes back as `progress` calls (0..1). Transformer must run on the main thread.
  */
 class VideoOverlayPlugin(
@@ -44,6 +45,9 @@ class VideoOverlayPlugin(
             "burn" -> burn(
                 call.argument<String>("videoPath"),
                 call.argument<ByteArray>("overlayPng"),
+                call.argument<Number>("trimStartMs")?.toLong(),
+                call.argument<Number>("trimEndMs")?.toLong(),
+                call.argument<Boolean>("removeAudio") ?: false,
                 result,
             )
             "delete" -> {
@@ -54,7 +58,14 @@ class VideoOverlayPlugin(
         }
     }
 
-    private fun burn(videoPath: String?, png: ByteArray?, result: MethodChannel.Result) {
+    private fun burn(
+        videoPath: String?,
+        png: ByteArray?,
+        trimStartMs: Long?,
+        trimEndMs: Long?,
+        removeAudio: Boolean,
+        result: MethodChannel.Result,
+    ) {
         val bitmap = png?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
         if (videoPath == null || bitmap == null) {
             result.error("bad_args", "Missing video or overlay", null)
@@ -63,7 +74,17 @@ class VideoOverlayPlugin(
         val output = File(context.cacheDir, "pulse_overlay_${System.nanoTime()}.mp4")
         val overlay = OverlayEffect(listOf(BitmapOverlay.createStaticBitmapOverlay(bitmap)))
         val effects = Effects(emptyList<AudioProcessor>(), listOf<Effect>(overlay))
-        val item = EditedMediaItem.Builder(MediaItem.fromUri(Uri.fromFile(File(videoPath))))
+        val media = MediaItem.Builder().setUri(Uri.fromFile(File(videoPath)))
+        if (trimStartMs != null && trimEndMs != null) {
+            media.setClippingConfiguration(
+                MediaItem.ClippingConfiguration.Builder()
+                    .setStartPositionMs(trimStartMs)
+                    .setEndPositionMs(trimEndMs)
+                    .build(),
+            )
+        }
+        val item = EditedMediaItem.Builder(media.build())
+            .setRemoveAudio(removeAudio)
             .setEffects(effects)
             .build()
 

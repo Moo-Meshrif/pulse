@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/services/connectivity_service.dart';
+import 'package:pulse/features/profile/domain/entity/last_account_entity.dart';
+import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/enums/mute_scope.dart';
@@ -139,4 +141,10 @@ MockGetAudienceSummary okGetAudienceSummary([
   final mock = MockGetAudienceSummary();
   when(() => mock()).thenAnswer((_) async => summary);
   return mock;
+}
+
+/// No saved account: the posting ring shows an empty circle.
+class FakeLastAccount extends Fake implements GetLastAccountUseCase {
+  @override
+  LastAccountEntity? call() => null;
 }

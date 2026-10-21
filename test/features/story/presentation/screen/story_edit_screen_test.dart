@@ -5,6 +5,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/gallery_service.dart';
+import 'package:pulse/core/services/video_compress_service.dart';
 import 'package:pulse/core/services/video_overlay_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
@@ -29,6 +30,8 @@ class _NoBlurhash implements BlurhashService {
 class _Thumbs extends Mock implements VideoThumbnailService {}
 
 class _Gallery extends Mock implements GalleryService {}
+
+class _Compressor extends Mock implements VideoCompressService {}
 
 class _VideoOverlay extends Fake implements VideoOverlayService {}
 
@@ -70,6 +73,7 @@ void main() {
     final account = _Account();
     when(() => account()).thenReturn(null);
     when(() => uploads.enqueue(any())).thenAnswer((_) => started);
+    when(gallery.ensureAccess).thenAnswer((_) async {});
     when(() => gallery.saveVideoFile(any())).thenAnswer((_) async {});
     await getIt.reset();
     getIt.registerFactoryParam<StoryEditCubit, CapturedStoryMedia, void>(
@@ -79,6 +83,7 @@ void main() {
         _NoBlurhash(),
         gallery,
         _VideoOverlay(),
+        _Compressor(),
         account,
         media,
       ),

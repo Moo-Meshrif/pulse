@@ -66,6 +66,9 @@ final class ContentPublishFailed extends ContentPublishStatus {
 
   bool get canRetry => failure is! RejectedFailure;
 
+  /// Failed only for the connection: it is sent again by itself when the connection is back.
+  bool get isOffline => failure is NetworkFailure || failure is TimeoutFailure;
+
   final String? previewPath;
   final String? previewUrl;
   final String? previewCacheKey;

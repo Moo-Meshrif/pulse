@@ -103,6 +103,8 @@ class UpdatePostUseCase {
       tags: post.tags,
       tagCount: post.tags.length,
       iAmTagged: before.iAmTagged,
+      isShare: before.isShare,
+      original: before.original,
       media: [
         ...post.kept,
         for (final item in added)

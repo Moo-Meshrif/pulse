@@ -21,6 +21,12 @@ abstract final class StoryColors {
   /// Edit tool circles, viewers dim (#000000 @ 35%).
   static const tool = Color(0x59000000);
 
+  /// The author chip on the media-only post sticker (#161A19 @ 62%).
+  static const postChip = Color(0x9E161A19);
+
+  /// The time bubble over the trim bar (#8E8E93 @ 85% [estimated]).
+  static const bubble = Color(0xD98E8E93);
+
   /// Camera background gradient start (#1F2A2C).
   static const cameraStart = Color(0xFF1F2A2C);
 

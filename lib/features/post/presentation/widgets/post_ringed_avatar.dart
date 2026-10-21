@@ -14,16 +14,20 @@ class PostRingedAvatar extends StatelessWidget {
     required this.authorId,
     required this.name,
     required this.avatarUrl,
+    this.size,
   });
 
   final String authorId;
   final String name;
   final String? avatarUrl;
 
+  /// The picture's side; the card's author size when null.
+  final double? size;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final size = PostCardDimens.avatar;
+    final size = this.size ?? PostCardDimens.avatar;
     final initials = AvatarInitials(name: name, seed: authorId, size: size);
     final url = avatarUrl;
     return Container(

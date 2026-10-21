@@ -108,11 +108,19 @@ final class SupabaseStoriesDatasource implements StoriesDatasource {
             .map(StoryModel.fromJson)
             .toList();
         final urls = await _sign([
-          for (final s in stories) ...[?s.path, ?s.thumbPath],
+          for (final s in stories) ...[
+            ?s.path,
+            ?s.thumbPath,
+            ?s.sharedPost?.pictureKey,
+          ],
         ]);
         return [
           for (final s in stories)
-            s.withUrls(mediaUrl: urls[s.path], thumbUrl: urls[s.thumbPath]),
+            s.withUrls(
+              mediaUrl: urls[s.path],
+              thumbUrl: urls[s.thumbPath],
+              postPictureUrl: urls[s.sharedPost?.pictureKey],
+            ),
         ];
       });
 

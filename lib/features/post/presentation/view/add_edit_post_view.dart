@@ -9,6 +9,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../cubit/add_edit_post/add_edit_post_cubit.dart';
 import '../cubit/add_edit_post/add_edit_post_state.dart';
 import '../dimens/post_composer_dimens.dart';
+import '../utils/post_card_data.dart';
 import '../widgets/add_edit_post/add_edit_post_options_card.dart';
 import '../widgets/add_edit_post/add_edit_post_submit_bar.dart';
 import '../widgets/add_edit_post/add_edit_post_title_row.dart';
@@ -17,9 +18,16 @@ import '../widgets/add_edit_post/composer_card.dart';
 /// The New post layout (docs/specs/post/screens/s1-new-post.md): title row, the composer and options
 /// cards in a scroll area, and the Share pill pinned under it. Nothing answers taps while it uploads.
 class AddEditPostView extends StatelessWidget {
-  const AddEditPostView({super.key, required this.onClose});
+  const AddEditPostView({
+    super.key,
+    required this.onClose,
+    this.sharedOriginal,
+  });
 
   final VoidCallback onClose;
+
+  /// Editing a share: the post it shares; null when that post is gone or hidden.
+  final PostCardData? sharedOriginal;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +54,7 @@ class AddEditPostView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const ComposerCard(),
+                  ComposerCard(sharedOriginal: sharedOriginal),
                   const _SectionLabel(),
                   const AddEditPostOptionsCard(),
                 ],

@@ -38,6 +38,15 @@ class PostCardData extends Equatable {
   /// The signed-in user, so their own tag on a photo can remove itself.
   final String? viewerId;
 
+  /// The post shares another one: it has no media, and [original] is what it shows under its words.
+  final bool isShare;
+
+  /// The shared post; null for a share whose original is gone or hidden from you.
+  final PostCardData? original;
+
+  /// The send icon is drawn (the Share sheet has something to offer for this post).
+  final bool canShare;
+
   const PostCardData({
     required this.id,
     required this.authorId,
@@ -59,6 +68,9 @@ class PostCardData extends Equatable {
     this.tags = const [],
     this.tagCount = 0,
     this.viewerId,
+    this.isShare = false,
+    this.original,
+    this.canShare = true,
   });
 
   @override
@@ -83,5 +95,8 @@ class PostCardData extends Equatable {
     tags,
     tagCount,
     viewerId,
+    isShare,
+    original,
+    canShare,
   ];
 }

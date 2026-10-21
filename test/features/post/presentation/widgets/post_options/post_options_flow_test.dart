@@ -35,6 +35,7 @@ void main() {
     onCommitDelete: () => calls.add('commitDelete'),
     onAudienceChanged: (audience) => calls.add('audience ${audience.wire}'),
     onEdit: () => calls.add('edit'),
+    onShare: () => calls.add('share'),
     onRemoveMyTag: () => step('removeMyTag'),
   );
 
@@ -239,6 +240,14 @@ void main() {
       await tester.tap(find.text(l10nEn.postEditPost));
       await tester.pumpAndSettle();
       expect(calls, ['edit']);
+    });
+
+    testWidgets('Share opens the share sheet through the list', (tester) async {
+      await open(tester, others);
+      await tester.tap(find.text(l10nEn.postShare));
+      await tester.pumpAndSettle();
+
+      expect(calls, ['share']);
     });
 
     testWidgets('Copy link says coming soon and calls nothing', (tester) async {

@@ -247,9 +247,9 @@ final class ContentPublishRepositoryImpl implements ContentPublishRepository {
         .where((job) => job.state == ContentLineState.waiting)
         .firstOrNull;
     if (next == null) return false;
-    next
-      ..state = ContentLineState.sending
-      ..progress = 0;
+    // A try that goes again keeps the progress it reached: the bar waits there and goes on once the new try
+    // is past it, instead of starting from zero.
+    next.state = ContentLineState.sending;
     _changed(kind);
     unawaited(_run(next));
     return true;

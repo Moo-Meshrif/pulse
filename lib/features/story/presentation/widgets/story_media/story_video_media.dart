@@ -69,7 +69,14 @@ class _StoryVideoMediaState extends State<StoryVideoMedia> {
 
   @override
   void dispose() {
-    _player?.removeListener(_onValue);
+    final player = _player;
+    player?.removeListener(_onValue);
+    // The preloader keeps the controller alive after this story leaves; it must not go on playing.
+    if (player != null &&
+        player.value.isInitialized &&
+        player.value.isPlaying) {
+      player.pause().ignore();
+    }
     super.dispose();
   }
 

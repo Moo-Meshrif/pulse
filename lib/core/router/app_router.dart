@@ -23,11 +23,13 @@ import '../../features/story/domain/entity/story_viewer_args.dart';
 import '../../features/story/presentation/screen/audience_list_screen.dart';
 import '../../features/story/presentation/screen/story_camera_screen.dart';
 import '../../features/story/presentation/screen/story_edit_screen.dart';
+import '../../features/story/presentation/screen/story_post_edit_screen.dart';
 import '../../features/story/presentation/screen/story_viewer_screen.dart';
 import '../../features/story/presentation/utils/story_page_route.dart';
 import '../di/injection.dart';
 import '../enums/legal_document.dart';
 import '../enums/signed_out_reason.dart';
+import '../utils/story_post_args.dart';
 import 'app_routes.dart';
 import 'end_slide_page_route.dart';
 import 'not_found_screen.dart';
@@ -137,6 +139,14 @@ abstract final class AppRouter {
         final CapturedStoryMedia media => _page(
           settings,
           StoryEditScreen(media: media),
+        ),
+        _ => _page(settings, const NotFoundScreen()),
+      },
+      // The Share sheet passes the post as the route argument.
+      AppRoutes.createStoryPost => switch (settings.arguments) {
+        final StoryPostArgs post => _page(
+          settings,
+          StoryPostEditScreen(post: post),
         ),
         _ => _page(settings, const NotFoundScreen()),
       },

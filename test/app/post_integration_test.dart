@@ -37,6 +37,7 @@ import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/post/presentation/widgets/tag_in_photo/tag_photo_canvas.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/data/model/profile_model.dart';
+import 'package:pulse/features/story/presentation/screen/story_post_edit_screen.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/pending_content_datasource.dart';
@@ -573,6 +574,113 @@ void main() {
       Notices.clear();
     },
   );
+
+  testWidgets(
+    'the send icon opens the Share sheet; Share now shares the post and the new share tops the feed',
+    (tester) async {
+      var shared = false;
+      when(
+        () => posts.getHomeFeed(
+          limit: any(named: 'limit'),
+          beforeCreated: any(named: 'beforeCreated'),
+          beforeId: any(named: 'beforeId'),
+        ),
+      ).thenAnswer((_) async {
+        final original = PostModel(
+          id: 'feed-post',
+          authorId: 'someone-else',
+          username: 'nour.adel',
+          fullName: 'Nour Adel',
+          caption: 'Hello',
+          likeCount: 3,
+          commentCount: 1,
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+          createdAt: DateTime(2026, 10, 14),
+          likedByMe: false,
+          savedByMe: false,
+          media: const [],
+        );
+        return FeedPageModel(
+          posts: [
+            if (shared)
+              PostModel(
+                id: 'my-share',
+                authorId: 'me',
+                username: 'me',
+                fullName: 'Me Myself',
+                caption: 'Worth a look',
+                likeCount: 0,
+                commentCount: 0,
+                commentsEnabled: true,
+                visibility: ContentAudience.public,
+                createdAt: DateTime(2026, 10, 21),
+                likedByMe: false,
+                savedByMe: false,
+                media: const [],
+                isShare: true,
+                sharedPostId: 'feed-post',
+                sharedPost: original,
+              ),
+            original,
+          ],
+        );
+      });
+      when(
+        () => posts.shareToFeed(
+          postId: any(named: 'postId'),
+          caption: any(named: 'caption'),
+          audience: any(named: 'audience'),
+          moodKind: any(named: 'moodKind'),
+          moodKey: any(named: 'moodKey'),
+          moodText: any(named: 'moodText'),
+          location: any(named: 'location'),
+          tags: any(named: 'tags'),
+        ),
+      ).thenAnswer((_) async {
+        shared = true;
+        return 'my-share';
+      });
+      await boot(tester);
+
+      await tester.tap(find.bySemanticsLabel(l10nEn.postShare));
+      await settle(tester);
+      expect(find.text(l10nEn.shareNow), findsOneWidget);
+      expect(find.text(l10nEn.shareAddToStory), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'Worth a look');
+      await tester.pump();
+      await tester.tap(find.text(l10nEn.shareNow));
+      await settle(tester);
+
+      verify(
+        () => posts.shareToFeed(
+          postId: 'feed-post',
+          caption: 'Worth a look',
+          audience: any(named: 'audience'),
+          moodKind: any(named: 'moodKind'),
+          moodKey: any(named: 'moodKey'),
+          moodText: any(named: 'moodText'),
+          location: any(named: 'location'),
+          tags: any(named: 'tags'),
+        ),
+      ).called(1);
+      expect(find.text(l10nEn.shareNow), findsNothing);
+    },
+  );
+
+  testWidgets('Add to story in the Share sheet opens the story editor', (
+    tester,
+  ) async {
+    await boot(tester);
+
+    await tester.tap(find.bySemanticsLabel(l10nEn.postShare));
+    await settle(tester);
+    await tester.tap(find.bySemanticsLabel(l10nEn.shareAddToStory));
+    await settle(tester);
+
+    expect(find.byType(StoryPostEditScreen), findsOneWidget);
+  });
 
   group('restart', () {
     late _DeviceDrafts device;

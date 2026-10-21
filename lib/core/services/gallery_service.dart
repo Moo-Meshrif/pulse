@@ -22,11 +22,17 @@ abstract interface class GalleryService {
 
   /// Saves the video file at [path]. Throws [PermissionFailure] like [saveImage].
   Future<void> saveVideoFile(String path);
+
+  /// Asks for the library now if it was not asked yet, so a long job does not wait for the dialog at its
+  /// end. Throws [PermissionFailure] when it is off limits.
+  Future<void> ensureAccess();
 }
 
 /// [GalleryService] over `gal`.
 @LazySingleton(as: GalleryService)
 final class GalGalleryService implements GalleryService {
+  static const _retryDelay = Duration(milliseconds: 500);
+
   GalGalleryService(this._http);
 
   final http.Client _http;
@@ -66,14 +72,28 @@ final class GalGalleryService implements GalleryService {
   }
 
   @override
+  Future<void> ensureAccess() => _guarded(() async {});
+
+  @override
   Future<void> saveVideoFile(String path) => _guarded(() => Gal.putVideo(path));
 
   Future<void> _guarded(Future<void> Function() save) =>
       Guard.run(() => _save(save));
 
+  /// Asks for the library first (the first save of a fresh install used to fail while the dialog was up),
+  /// and tries once more when a save fails for another reason.
   Future<void> _save(Future<void> Function() save) async {
     try {
-      await save();
+      if (!await Gal.hasAccess() && !await Gal.requestAccess()) {
+        throw const PermissionFailure();
+      }
+      try {
+        await save();
+      } on GalException catch (error) {
+        if (error.type == GalExceptionType.accessDenied) rethrow;
+        await Future<void>.delayed(_retryDelay);
+        await save();
+      }
     } on GalException catch (error) {
       if (error.type == GalExceptionType.accessDenied) {
         throw const PermissionFailure();

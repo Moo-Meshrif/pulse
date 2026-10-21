@@ -30,6 +30,13 @@ class PostEntity extends Equatable {
   final int tagCount;
   final bool iAmTagged;
 
+  /// True for a post that shares another post: it has no media, and its words are [caption].
+  final bool isShare;
+
+  /// What a share shows under its words (its counts are zero, they are not shown); null when the original was
+  /// deleted or you can't see it, see [isOriginalUnavailable].
+  final PostEntity? original;
+
   const PostEntity({
     required this.id,
     required this.authorId,
@@ -50,7 +57,12 @@ class PostEntity extends Equatable {
     this.tags = const [],
     this.tagCount = 0,
     this.iAmTagged = false,
+    this.isShare = false,
+    this.original,
   });
+
+  /// A share whose original is gone or hidden from you.
+  bool get isOriginalUnavailable => isShare && original == null;
 
   @override
   List<Object?> get props => [
@@ -73,5 +85,7 @@ class PostEntity extends Equatable {
     tags,
     tagCount,
     iAmTagged,
+    isShare,
+    original,
   ];
 }

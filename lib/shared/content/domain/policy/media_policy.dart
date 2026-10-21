@@ -90,6 +90,7 @@ abstract final class MediaPolicy {
     int? width,
     int? height,
     int? sizeBytes,
+    bool mustEncode = false,
   }) {
     final bytes = sizeBytes ?? 0;
     if (!isVideo) {
@@ -107,7 +108,8 @@ abstract final class MediaPolicy {
     final longSide = (width ?? 0) > (height ?? 0) ? width ?? 0 : height ?? 0;
     final bitrate = seconds == 0 ? 0 : bytes * 8 / seconds;
     final fits = bytes <= maxBytes;
-    if (fits &&
+    if (!mustEncode &&
+        fits &&
         longSide <= limits.maxLongSide &&
         bitrate <= limits.maxBitrate + audioBitrate) {
       return const MediaAsIs();
@@ -118,16 +120,15 @@ abstract final class MediaPolicy {
         : (maxBytes * _budgetShare * 8 / seconds - audioBitrate).floor();
     final target = budget < limits.maxBitrate ? budget : limits.maxBitrate;
     if (target < minVideoBitrate) {
-      // Too long to shrink well; it still goes as it is when it fits.
-      return fits
-          ? const MediaAsIs()
-          : const MediaRejected(MediaRejection.tooLong);
+      // Too long to shrink well; it still goes as it is when it fits, unless it has an edit to apply.
+      if (!fits) return const MediaRejected(MediaRejection.tooLong);
+      if (!mustEncode) return const MediaAsIs();
     }
     return MediaShrink(
       longSide: longSide == 0 || longSide > limits.maxLongSide
           ? limits.maxLongSide
           : longSide,
-      videoBitrate: target,
+      videoBitrate: target < minVideoBitrate ? minVideoBitrate : target,
       audioBitrate: audioBitrate,
     );
   }

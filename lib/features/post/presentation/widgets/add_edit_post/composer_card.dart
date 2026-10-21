@@ -14,19 +14,25 @@ import '../../utils/post_card_data.dart';
 import '../post_headline.dart';
 import '../post_meta_line.dart';
 import '../post_ringed_avatar.dart';
+import '../post_unavailable_embed.dart';
 import '../post_visibility/post_visibility_sheet.dart';
 import '../post_visibility/visibility_toast.dart';
+import '../shared_post_embed.dart';
 import 'caption_field.dart';
 import 'media_strip.dart';
 import 'visibility_chip.dart';
 
 /// The white card at the top: who is posting and for whom, the caption and the media strip.
 class ComposerCard extends StatelessWidget {
-  const ComposerCard({super.key});
+  const ComposerCard({super.key, this.sharedOriginal});
+
+  /// Editing a share: shown instead of the media strip; null when the original is unavailable.
+  final PostCardData? sharedOriginal;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final cubit = context.read<AddEditPostCubit>();
     return Container(
       padding: EdgeInsets.all(PostComposerDimens.cardPadding),
       decoration: BoxDecoration(
@@ -43,10 +49,36 @@ class ComposerCard extends StatelessWidget {
             onChanged: context.read<AddEditPostCubit>().captionChanged,
           ),
           SizedBox(height: AppSpacing.s12),
-          const MediaStrip(),
+          if (cubit.state.isShare)
+            _SharedOriginal(
+              original: sharedOriginal,
+              shareId: cubit.state.postId,
+            )
+          else
+            const MediaStrip(),
         ],
       ),
     );
+  }
+}
+
+/// The shared post under the words of a share, as on the feed card but not tappable.
+class _SharedOriginal extends StatelessWidget {
+  const _SharedOriginal({required this.original, required this.shareId});
+
+  final PostCardData? original;
+  final String shareId;
+
+  @override
+  Widget build(BuildContext context) {
+    final data = original;
+    return data == null
+        ? const PostUnavailableEmbed()
+        : SharedPostEmbed(
+            shareId: shareId,
+            original: data,
+            callbacks: const PostCardCallbacks(),
+          );
   }
 }
 

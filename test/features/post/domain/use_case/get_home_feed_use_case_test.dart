@@ -147,4 +147,53 @@ void main() {
     expect(plain.tagCount, 0);
     expect(plain.iAmTagged, isFalse);
   });
+
+  test('a share carries its original; a missing one is unavailable', () async {
+    answer(
+      FeedPageModel(
+        posts: [
+          PostModel(
+            id: 's1',
+            authorId: 'a1',
+            username: 'dip',
+            createdAt: createdAt,
+            caption: 'Look',
+            isShare: true,
+            sharedPostId: 'o1',
+            sharedPost: PostModel(
+              id: 'o1',
+              authorId: 'a2',
+              username: 'sam',
+              createdAt: createdAt,
+              caption: 'Original',
+            ),
+          ),
+          PostModel(
+            id: 's2',
+            authorId: 'a1',
+            username: 'dip',
+            createdAt: createdAt,
+            isShare: true,
+          ),
+          PostModel(
+            id: 'p3',
+            authorId: 'a1',
+            username: 'dip',
+            createdAt: createdAt,
+          ),
+        ],
+      ),
+    );
+
+    final posts = (await useCase()).posts;
+
+    expect(posts[0].isShare, isTrue);
+    expect(posts[0].original!.username, 'sam');
+    expect(posts[0].original!.caption, 'Original');
+    expect(posts[0].isOriginalUnavailable, isFalse);
+    expect(posts[1].isShare, isTrue);
+    expect(posts[1].isOriginalUnavailable, isTrue);
+    expect(posts[2].isShare, isFalse);
+    expect(posts[2].isOriginalUnavailable, isFalse);
+  });
 }

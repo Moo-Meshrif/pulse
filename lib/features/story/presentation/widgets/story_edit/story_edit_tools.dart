@@ -7,23 +7,26 @@ import '../../../../../core/theme/colors/app_colors.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/story_dimens.dart';
 
-/// The tool column at the end: text, location, mute for a video, save.
+/// The tool column at the end: text, location, background palette, mute for a video, save. A tool whose
+/// callback is null is left out (a story that shows a post has no location, a photo story no palette).
 class StoryEditTools extends StatelessWidget {
   const StoryEditTools({
     super.key,
-    required this.isVideo,
-    required this.isMuted,
+    this.isVideo = false,
+    this.isMuted = false,
     required this.onText,
-    required this.onLocation,
-    required this.onMute,
+    this.onLocation,
+    this.onPalette,
+    this.onMute,
     required this.onSave,
   });
 
   final bool isVideo;
   final bool isMuted;
   final VoidCallback onText;
-  final VoidCallback onLocation;
-  final VoidCallback onMute;
+  final VoidCallback? onLocation;
+  final VoidCallback? onPalette;
+  final VoidCallback? onMute;
   final VoidCallback onSave;
 
   @override
@@ -34,16 +37,23 @@ class StoryEditTools extends StatelessWidget {
       spacing: StoryCameraDimens.toolGap,
       children: [
         _Tool(asset: AppAssets.text, label: l10n.storyToolText, onTap: onText),
-        _Tool(
-          asset: AppAssets.location,
-          label: l10n.storyToolLocation,
-          onTap: onLocation,
-        ),
-        if (isVideo)
+        if (onLocation != null)
+          _Tool(
+            asset: AppAssets.location,
+            label: l10n.storyToolLocation,
+            onTap: onLocation!,
+          ),
+        if (onPalette != null)
+          _Tool(
+            asset: AppAssets.palette,
+            label: l10n.storyToolBackground,
+            onTap: onPalette!,
+          ),
+        if (isVideo && onMute != null)
           _Tool(
             asset: isMuted ? AppAssets.volumeOff : AppAssets.volume,
             label: isMuted ? l10n.storyToolUnmute : l10n.storyToolMute,
-            onTap: onMute,
+            onTap: onMute!,
           ),
         _Tool(
           asset: AppAssets.download,

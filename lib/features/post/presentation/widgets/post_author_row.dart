@@ -20,11 +20,15 @@ class PostAuthorRow extends StatelessWidget {
     required this.data,
     required this.callbacks,
     this.isOptionsOpen = false,
+    this.isEmbedded = false,
   });
 
   final PostCardData data;
   final PostCardCallbacks callbacks;
   final bool isOptionsOpen;
+
+  /// Inside the frame of a share: a smaller picture and no options button.
+  final bool isEmbedded;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -42,6 +46,7 @@ class PostAuthorRow extends StatelessWidget {
             authorId: data.authorId,
             name: data.authorName,
             avatarUrl: data.authorAvatarUrl,
+            size: isEmbedded ? PostCardDimens.embedAvatar : null,
           ),
         ),
       ),
@@ -60,7 +65,8 @@ class PostAuthorRow extends StatelessWidget {
           ],
         ),
       ),
-      _MoreButton(isOpen: isOptionsOpen, onTap: callbacks.onOptions),
+      if (!isEmbedded)
+        _MoreButton(isOpen: isOptionsOpen, onTap: callbacks.onOptions),
     ],
   );
 }

@@ -18,6 +18,8 @@ Video: `video_flux` [user]. Backend: Supabase now, REST later; schema `../home/s
 | S9 | Activity: what (**deferred, TODO**) | screens/s9-activity-what.md | screenshots/s6-tag-feeling-board.png (panel 6) | `/create/post/feeling/activity` |
 | S10 | Tagged people sheet | screens/s10-tagged-people.md | screenshots/s10-card-details-board.png (panel 3) | sheet |
 | S11 | Remove your tag | screens/s11-remove-tag.md | screenshots/s11-remove-tag-board.png | dialog |
+| S12 | Share sheet (send icon, S2 Share) | screens/s12-share-sheet.md | screenshots/s12-share-board.png | sheet |
+| S13 | Add post to story: sticker card | screens/s13-add-to-story.md | screenshots/s13-add-to-story-board.png | story editor / viewer |
 | S2 | Post options sheet + report flow (opened from a post's "···") | screens/s2-post-options.md | screenshots/s2-post-options.png | sheet |
 
 Public post widgets (post card, options flow, visibility sheet): specced in `02-components.md`, built in `features/post/presentation/` and exported for other features [user, 2026-10-14].
@@ -26,6 +28,8 @@ Not specced yet: media picker, settings > privacy (incl. "Allow tags" toggle), p
 
 ## Navigation map
 ```
+Send icon on a card / S2 Share --> S12 (Public; own Followers posts: Add to story only) --> Share now --> notice + View (Home top)
+S12 Add to story --> story editor with the post sticker (S13) --> Share --> story posted; viewers tap the sticker --> View post --> the post's comments route
 Control page Create sheet --Post--> /create/post (S1)
 "···" on a post --> S2 (any feature that shows a PostCard)
 S1 Location row --> S3 (returns a place name or none)
@@ -35,4 +39,4 @@ S1 X (or system back) --> discard confirm if there is content, else close
 S1 Share post ok --> close, notice "Post shared" (Home feed refreshes)
 S2 Edit post (own post) --> /edit/post (S5); Save ok --> close, notice "Post updated" (Home feed reloads)
 ```
-Schema: `schema-post-tags-mood.sql`. Files: `00-data-layer.md` · `01-design-tokens.md` · `02-components.md` · `screens/s1-new-post.md` · `screens/s2-post-options.md` · `screens/s3-add-location.md` · `open-questions.md` · `progress.md`
+Schema: `schema-post-tags-mood.sql`, `schema-post-share.sql` (not applied). Files: `00-data-layer.md` · `01-design-tokens.md` · `02-components.md` · `screens/s1-new-post.md` · `screens/s2-post-options.md` · `screens/s3-add-location.md` · `open-questions.md` · `progress.md`

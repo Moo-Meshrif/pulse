@@ -3,7 +3,8 @@ import Flutter
 import UIKit
 
 /// `pulse/video_overlay`: `burn(videoPath, overlayPng)` writes an H.264 copy of the video with the picture
-/// stretched over every frame (AVFoundation, hardware encoder), `delete(path)` removes a copy. Progress goes
+/// stretched over every frame, optionally keeping only `trimStartMs`..`trimEndMs` and without sound
+/// (AVFoundation, hardware encoder), `delete(path)` removes a copy. Progress goes
 /// back as `progress` calls (0..1).
 final class VideoOverlayPlugin {
   private let channel: FlutterMethodChannel
@@ -27,7 +28,11 @@ final class VideoOverlayPlugin {
         result(FlutterError(code: "bad_args", message: "Missing video or overlay", details: nil))
         return
       }
-      burn(path: path, overlay: overlay, result: result)
+      let start = args?["trimStartMs"] as? Int
+      let end = args?["trimEndMs"] as? Int
+      burn(
+        path: path, overlay: overlay, trim: start.flatMap { s in end.map { (s, $0) } },
+        removeAudio: args?["removeAudio"] as? Bool ?? false, result: result)
     case "delete":
       if let path = args?["path"] as? String {
         try? FileManager.default.removeItem(atPath: path)
@@ -38,11 +43,14 @@ final class VideoOverlayPlugin {
     }
   }
 
-  private func burn(path: String, overlay: CGImage, result: @escaping FlutterResult) {
-    let asset = AVURLAsset(url: URL(fileURLWithPath: path))
+  private func burn(
+    path: String, overlay: CGImage, trim: (Int, Int)?, removeAudio: Bool,
+    result: @escaping FlutterResult
+  ) {
+    let source = AVURLAsset(url: URL(fileURLWithPath: path))
     Task { @MainActor in
       do {
-        let tracks = try await asset.loadTracks(withMediaType: .video)
+        let tracks = try await source.loadTracks(withMediaType: .video)
         guard let track = tracks.first else { throw VideoOverlayError.noVideo }
 
         // Display size: the natural size turned by the track's rotation.
@@ -51,8 +59,38 @@ final class VideoOverlayPlugin {
         let size = natural.applying(transform)
         let renderSize = CGSize(width: abs(size.width), height: abs(size.height))
 
+        // The kept part is copied into a composition of its own, so the picture is drawn on a video that
+        // starts at zero: an export time range with the animation tool gave black frames.
+        let range: CMTimeRange
+        if let (start, end) = trim {
+          range = CMTimeRange(
+            start: CMTime(value: CMTimeValue(start), timescale: 1000),
+            end: CMTime(value: CMTimeValue(end), timescale: 1000))
+        } else {
+          range = CMTimeRange(start: .zero, duration: try await source.load(.duration))
+        }
+        let asset = AVMutableComposition()
+        guard
+          let videoTrack = asset.addMutableTrack(
+            withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        else { throw VideoOverlayError.noVideo }
+        try videoTrack.insertTimeRange(range, of: track, at: .zero)
+        videoTrack.preferredTransform = transform
+        if !removeAudio {
+          for audio in try await source.loadTracks(withMediaType: .audio) {
+            let audioTrack = asset.addMutableTrack(
+              withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+            try audioTrack?.insertTimeRange(range, of: audio, at: .zero)
+          }
+        }
+
         let composition = AVMutableVideoComposition(propertiesOf: asset)
         composition.renderSize = renderSize
+        // Phone videos are often HDR (HEVC, HLG); drawn on with the animation tool they came out black.
+        // Rendering in the standard colour space (SDR) keeps the picture.
+        composition.colorPrimaries = AVVideoColorPrimaries_ITU_R_709_2
+        composition.colorTransferFunction = AVVideoTransferFunction_ITU_R_709_2
+        composition.colorYCbCrMatrix = AVVideoYCbCrMatrix_ITU_R_709_2
 
         let videoLayer = CALayer()
         videoLayer.frame = CGRect(origin: .zero, size: renderSize)
@@ -71,7 +109,7 @@ final class VideoOverlayPlugin {
           .appendingPathComponent("pulse_overlay_\(UInt64(Date().timeIntervalSince1970 * 1000)).mp4")
         guard
           let session = AVAssetExportSession(
-            asset: asset, presetName: AVAssetExportPresetHighestQuality)
+            asset: asset, presetName: AVAssetExportPreset1920x1080)
         else { throw VideoOverlayError.noSession }
         session.videoComposition = composition
         session.outputURL = output

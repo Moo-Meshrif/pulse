@@ -48,6 +48,7 @@ class YourStoryItem extends StatelessWidget {
                 duration: _progressDuration,
                 builder: (context, value, _) => RingedPhoto(
                   me: state.me,
+                  account: context.read<StoryRailCubit>().account,
                   progress: value,
                   color: colors.primary,
                   track: colors.border,
@@ -60,6 +61,7 @@ class YourStoryItem extends StatelessWidget {
               onTap: context.read<StoryRailCubit>().retryUpload,
               child: RingedPhoto(
                 me: state.me,
+                account: context.read<StoryRailCubit>().account,
                 progress: 1,
                 color: colors.warningInk,
               ),

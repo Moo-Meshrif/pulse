@@ -11,6 +11,8 @@ import '../../../../../shared/content/domain/event/content_delete_event.dart';
 import '../../../../../shared/content/domain/use_case/get_publish_status_use_case.dart';
 import '../../../../../shared/content/domain/use_case/retry_publish_use_case.dart';
 import '../../../../post/domain/event/feed_refresh_requested.dart';
+import '../../../../profile/domain/entity/last_account_entity.dart';
+import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../../story/domain/entity/story_rail_item_entity.dart';
 import '../../../../story/domain/event/story_rail_changed.dart';
 import '../../../../story/domain/use_case/get_story_rail_use_case.dart';
@@ -25,11 +27,16 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
     this._events,
     GetPublishStatusUseCase uploadStatus,
     this._retryUpload,
-  ) : super(StoryRailState(upload: uploadStatus(ContentKind.story)));
+    GetLastAccountUseCase account,
+  ) : account = account(),
+      super(StoryRailState(upload: uploadStatus(ContentKind.story)));
 
   final GetStoryRailUseCase _rail;
   final EventBus _events;
   final RetryPublishUseCase _retryUpload;
+
+  /// You, from the saved account: the photo or initials in the posting ring before you have a story.
+  final LastAccountEntity? account;
 
   @override
   EventBus get events => _events;

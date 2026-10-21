@@ -258,6 +258,7 @@ void main() {
                   onCommitDelete: () {},
                   onAudienceChanged: changed.add,
                   onEdit: () {},
+                  onShare: () {},
                   onRemoveMyTag: () async {},
                 ),
               ),

@@ -14,7 +14,9 @@ class FeedPostSigner {
   /// The posts with the links of all their media signed in a single request. A file whose link could not be
   /// made is left out of its post.
   Future<List<FeedPost>> sign(List<PostEntity> posts) async {
-    final paths = posts.expand((post) => post.media).pathsToSign;
+    final paths = posts
+        .expand((post) => [...post.media, ...?post.original?.media])
+        .pathsToSign;
     final links = paths.isEmpty
         ? const <String, String>{}
         : await _signMedia(paths);
@@ -22,14 +24,20 @@ class FeedPostSigner {
         .map(
           (post) => FeedPost(
             entity: post,
-            media: post.media
-                .map((item) => _cardMedia(item, links))
-                .nonNulls
-                .toList(),
+            media: _cardMediaOf(post.media, links),
+            originalMedia: _cardMediaOf(
+              post.original?.media ?? const [],
+              links,
+            ),
           ),
         )
         .toList();
   }
+
+  List<PostCardMedia> _cardMediaOf(
+    List<PostMediaEntity> media,
+    Map<String, String> links,
+  ) => media.map((item) => _cardMedia(item, links)).nonNulls.toList();
 
   /// Null when the file's link could not be made.
   PostCardMedia? _cardMedia(PostMediaEntity item, Map<String, String> links) {

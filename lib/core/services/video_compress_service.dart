@@ -25,17 +25,42 @@ class CompressedVideo extends Equatable {
   List<Object?> get props => [path, sizeBytes, durationMs, isOriginal];
 }
 
+/// What the user changed in a video before it goes out: its sound removed and/or only a part of it kept.
+/// A video with an edit is always re-encoded, never sent as it is.
+class VideoEdit extends Equatable {
+  const VideoEdit({this.removeAudio = false, this.trimStartMs, this.trimEndMs})
+    : assert(
+        (trimStartMs == null) == (trimEndMs == null),
+        'A trim has a start and an end',
+      );
+
+  final bool removeAudio;
+
+  /// The part of the video to keep, in milliseconds; both or neither.
+  final int? trimStartMs;
+  final int? trimEndMs;
+
+  bool get isTrimmed => trimStartMs != null;
+
+  /// Length of the kept part; null when the video is not trimmed.
+  int? get trimmedMs => isTrimmed ? trimEndMs! - trimStartMs! : null;
+
+  @override
+  List<Object?> get props => [removeAudio, trimStartMs, trimEndMs];
+}
+
 /// Re-encodes videos on the device with its hardware encoder, one at a time (each one is heavy on CPU,
 /// battery and heat).
 abstract interface class VideoCompressService {
   /// Writes an H.264 copy of [path] whose longest side is at most [maxLongSide] pixels, at about
-  /// [videoBitrate] and [audioBitrate] bits per second. [onProgress] is told how far it is (0..1). Throws
-  /// [UnexpectedFailure] when the encode fails.
+  /// [videoBitrate] and [audioBitrate] bits per second, with [edit] applied. [onProgress] is told how far
+  /// it is (0..1). Throws [UnexpectedFailure] when the encode fails.
   Future<CompressedVideo> compress(
     String path, {
     required int maxLongSide,
     required int videoBitrate,
     required int audioBitrate,
+    VideoEdit? edit,
     void Function(double progress)? onProgress,
   });
 
@@ -63,6 +88,7 @@ final class PackageVideoCompressService implements VideoCompressService {
     required int maxLongSide,
     required int videoBitrate,
     required int audioBitrate,
+    VideoEdit? edit,
     void Function(double progress)? onProgress,
   }) {
     final done = Completer<void>();
@@ -75,6 +101,7 @@ final class PackageVideoCompressService implements VideoCompressService {
             maxLongSide: maxLongSide,
             videoBitrate: videoBitrate,
             audioBitrate: audioBitrate,
+            edit: edit,
             onProgress: onProgress,
           ),
         )
@@ -86,6 +113,7 @@ final class PackageVideoCompressService implements VideoCompressService {
     required int maxLongSide,
     required int videoBitrate,
     required int audioBitrate,
+    VideoEdit? edit,
     void Function(double progress)? onProgress,
   }) async {
     try {
@@ -100,6 +128,12 @@ final class PackageVideoCompressService implements VideoCompressService {
           maxWidth: maxLongSide,
           maxHeight: maxLongSide,
           container: VideoContainer.mp4,
+          removeAudio: edit?.removeAudio ?? false,
+          trim: edit?.isTrimmed ?? false
+              ? TrimRange(startMs: edit!.trimStartMs!, endMs: edit.trimEndMs!)
+              : null,
+          // An edited video must come out edited, even when that is not smaller.
+          keepOriginalIfLarger: edit == null,
         ),
         onProgress: onProgress == null ? null : (p) => onProgress(p.progress),
       );

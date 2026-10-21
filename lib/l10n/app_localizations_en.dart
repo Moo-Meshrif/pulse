@@ -956,7 +956,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get storyVideoTooLong => 'Choose a video of 60 seconds or less';
+  String get storyTrimHint => 'Drag to choose the part to share';
 
   @override
   String get storyCaptureFailed => 'Couldn\'t capture. Try again.';
@@ -1023,6 +1023,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storyRailFailed => 'Couldn\'t load stories';
+
+  @override
+  String get storyPostOffline =>
+      'No connection. Your story will post when you\'re back online.';
+
+  @override
+  String storySavingVideo(int percent) {
+    return 'Saving video… $percent%';
+  }
 
   @override
   String get storyPostFailed => 'Couldn\'t post your story';
@@ -1669,6 +1678,86 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get postHeadlineShared => ' shared ';
+
+  @override
+  String get postHeadlineSharedPostOf => '\'s post';
+
+  @override
+  String get postHeadlineSharedAPost => ' shared a post';
+
+  @override
+  String postSharedSemantics(String name) {
+    return 'Shared post by $name';
+  }
+
+  @override
+  String get postUnavailableTitle => 'This post isn\'t available';
+
+  @override
+  String get postUnavailableBody =>
+      'It was deleted, or its audience changed and you can\'t see it.';
+
+  @override
+  String get postUnavailableSemantics => 'Post unavailable';
+
+  @override
+  String get shareTitle => 'Share';
+
+  @override
+  String get shareFieldHint => 'Say something about this...';
+
+  @override
+  String get shareTagPeople => 'Tag people';
+
+  @override
+  String get shareFeeling => 'Feeling';
+
+  @override
+  String get shareLocation => 'Location';
+
+  @override
+  String get shareNow => 'Share now';
+
+  @override
+  String shareCounter(int count) {
+    return '$count / 2000';
+  }
+
+  @override
+  String get shareAddToStory => 'Add to story';
+
+  @override
+  String get shareCopyLink => 'Copy link';
+
+  @override
+  String get shareWhatsApp => 'WhatsApp';
+
+  @override
+  String get shareMore => 'More...';
+
+  @override
+  String get sharedToFeedTitle => 'Shared to your feed';
+
+  @override
+  String get sharedToFeedPublic => 'Everyone can see it now.';
+
+  @override
+  String get sharedToFeedFollowers => 'Your followers can see it now.';
+
+  @override
+  String get sharedToFeedCloseFriends => 'Your close friends can see it now.';
+
+  @override
+  String get sharedToFeedOnlyMe => 'Only you can see it.';
+
+  @override
+  String get sharedToFeedView => 'View';
+
+  @override
+  String get shareFailed => 'Couldn\'t share. Try again.';
+
+  @override
   String get postCommentsOffTitle => 'Comments are off';
 
   @override
@@ -1915,4 +2004,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String postFeelingValue(String emoji, String word) {
     return '${emoji}feeling $word';
   }
+
+  @override
+  String get storyToolBackground => 'Background';
+
+  @override
+  String get storyPostStickerHint =>
+      'Tap the post to change its style · pinch to resize';
+
+  @override
+  String storyBackgroundOption(int number) {
+    return 'Background $number';
+  }
+
+  @override
+  String storyPostSemantics(String username, String caption) {
+    return 'Post by $username: $caption';
+  }
+
+  @override
+  String storyPostSemanticsNoCaption(String username) {
+    return 'Post by $username';
+  }
+
+  @override
+  String get storyViewPost => 'View post';
+
+  @override
+  String get storyPostUnavailableTitle => 'Post unavailable';
+
+  @override
+  String get storyPostUnavailableBody =>
+      'It was deleted, or you can\'t see it.';
 }

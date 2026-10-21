@@ -315,15 +315,15 @@ void main() {
       await cubit.close();
     });
 
-    test('a longer video is refused with a notice', () async {
+    test('a longer video goes to the editor to be trimmed', () async {
       when(() => picker.pick(preset: any(named: 'preset'))).thenAnswer(
         (_) async =>
             const PickedMedia(path: '/g.mp4', isVideo: true, durationMs: 61000),
       );
       final cubit = build();
       await cubit.pickFromGallery();
-      expect(cubit.state.captured, isNull);
-      expect(cubit.state.notice, StoryCameraNotice.videoTooLong);
+      expect(cubit.state.captured?.durationMs, 61000);
+      expect(cubit.state.notice, isNull);
       await cubit.close();
     });
 

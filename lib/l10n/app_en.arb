@@ -1198,9 +1198,9 @@
       }
     }
   },
-  "storyVideoTooLong": "Choose a video of 60 seconds or less",
-  "@storyVideoTooLong": {
-    "description": "Story camera screen"
+  "storyTrimHint": "Drag to choose the part to share",
+  "@storyTrimHint": {
+    "description": "Story edit screen: under the trim bar of a video longer than 60 seconds"
   },
   "storyCaptureFailed": "Couldn't capture. Try again.",
   "@storyCaptureFailed": {
@@ -1290,6 +1290,19 @@
   "storyRailFailed": "Couldn't load stories",
   "@storyRailFailed": {
     "description": "Story rail on the Home tab"
+  },
+  "storyPostOffline": "No connection. Your story will post when you're back online.",
+  "@storyPostOffline": {
+    "description": "Notice on Home: posting a story paused because the connection is lost; it goes on by itself"
+  },
+  "storySavingVideo": "Saving video… {percent}%",
+  "@storySavingVideo": {
+    "description": "Story edit screen: shown over the screen while a video is saved to the device",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
   },
   "storyPostFailed": "Couldn't post your story",
   "@storyPostFailed": {
@@ -2153,6 +2166,116 @@
       }
     }
   },
+    "postHeadlineShared": " shared ",
+  "@postHeadlineShared": {
+    "description": "Share headline: between the sharer and the author of the shared post"
+  },
+  "postHeadlineSharedPostOf": "'s post",
+  "@postHeadlineSharedPostOf": {
+    "description": "Share headline: after the author's name"
+  },
+  "postHeadlineSharedAPost": " shared a post",
+  "@postHeadlineSharedAPost": {
+    "description": "Share headline when the shared post's author is not known"
+  },
+  "postSharedSemantics": "Shared post by {name}",
+  "@postSharedSemantics": {
+    "description": "Screen reader label of the framed post inside a share",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postUnavailableTitle": "This post isn't available",
+  "@postUnavailableTitle": {
+    "description": "Title of the tile that replaces a shared post you can't see"
+  },
+  "postUnavailableBody": "It was deleted, or its audience changed and you can't see it.",
+  "@postUnavailableBody": {
+    "description": "Body of the tile that replaces a shared post you can't see"
+  },
+  "postUnavailableSemantics": "Post unavailable",
+  "@postUnavailableSemantics": {
+    "description": "Screen reader label of the tile that replaces a shared post you can't see"
+  },
+  "shareTitle": "Share",
+  "@shareTitle": {
+    "description": "Title of the share sheet"
+  },
+  "shareFieldHint": "Say something about this...",
+  "@shareFieldHint": {
+    "description": "Hint of the words field in the share sheet"
+  },
+  "shareTagPeople": "Tag people",
+  "@shareTagPeople": {
+    "description": "Screen reader label of the tag people tool in the share sheet"
+  },
+  "shareFeeling": "Feeling",
+  "@shareFeeling": {
+    "description": "Screen reader label of the feeling tool in the share sheet"
+  },
+  "shareLocation": "Location",
+  "@shareLocation": {
+    "description": "Screen reader label of the location tool in the share sheet"
+  },
+  "shareNow": "Share now",
+  "@shareNow": {
+    "description": "Button that shares the post to your feed"
+  },
+  "shareCounter": "{count} / 2000",
+  "@shareCounter": {
+    "description": "Characters written in the share words field",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareAddToStory": "Add to story",
+  "@shareAddToStory": {
+    "description": "Share sheet: put the post on your story"
+  },
+  "shareCopyLink": "Copy link",
+  "@shareCopyLink": {
+    "description": "Share sheet: copy the post link"
+  },
+  "shareWhatsApp": "WhatsApp",
+  "@shareWhatsApp": {
+    "description": "Share sheet: send the post with WhatsApp"
+  },
+  "shareMore": "More...",
+  "@shareMore": {
+    "description": "Share sheet: other apps"
+  },
+  "sharedToFeedTitle": "Shared to your feed",
+  "@sharedToFeedTitle": {
+    "description": "Notice after a post was shared to your feed"
+  },
+  "sharedToFeedPublic": "Everyone can see it now.",
+  "@sharedToFeedPublic": {
+    "description": "Notice line when the share is public"
+  },
+  "sharedToFeedFollowers": "Your followers can see it now.",
+  "@sharedToFeedFollowers": {
+    "description": "Notice line when the share is for followers"
+  },
+  "sharedToFeedCloseFriends": "Your close friends can see it now.",
+  "@sharedToFeedCloseFriends": {
+    "description": "Notice line when the share is for close friends"
+  },
+  "sharedToFeedOnlyMe": "Only you can see it.",
+  "@sharedToFeedOnlyMe": {
+    "description": "Notice line when the share is only for you"
+  },
+  "sharedToFeedView": "View",
+  "@sharedToFeedView": {
+    "description": "Notice action that shows the new share at the top of the feed"
+  },
+  "shareFailed": "Couldn't share. Try again.",
+  "@shareFailed": {
+    "description": "Notice when sharing failed"
+  },
   "postCommentsOffTitle": "Comments are off",
   "@postCommentsOffTitle": {
     "description": "Notice when the comment button of a post with comments off is tapped"
@@ -2534,5 +2657,55 @@
         "type": "String"
       }
     }
+  },
+  "storyToolBackground": "Background",
+  "@storyToolBackground": {
+    "description": "Story editor for a post"
+  },
+  "storyPostStickerHint": "Tap the post to change its style · pinch to resize",
+  "@storyPostStickerHint": {
+    "description": "Story editor for a post"
+  },
+  "storyBackgroundOption": "Background {number}",
+  "@storyBackgroundOption": {
+    "description": "Story editor for a post",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "storyPostSemantics": "Post by {username}: {caption}",
+  "@storyPostSemantics": {
+    "description": "Story editor for a post",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "caption": {
+        "type": "String"
+      }
+    }
+  },
+  "storyPostSemanticsNoCaption": "Post by {username}",
+  "@storyPostSemanticsNoCaption": {
+    "description": "Story editor for a post",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "storyViewPost": "View post",
+  "@storyViewPost": {
+    "description": "Pill under a post sticker in the story viewer"
+  },
+  "storyPostUnavailableTitle": "Post unavailable",
+  "@storyPostUnavailableTitle": {
+    "description": "Card that replaces a story's post sticker when the post is gone"
+  },
+  "storyPostUnavailableBody": "It was deleted, or you can't see it.",
+  "@storyPostUnavailableBody": {
+    "description": "Under the Post unavailable title"
   }
 }

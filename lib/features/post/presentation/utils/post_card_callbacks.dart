@@ -15,6 +15,8 @@ class PostCardCallbacks {
     this.onTaggedPeople,
     this.onLocation,
     this.onRemoveMyTag,
+    this.onOriginalProfile,
+    this.onOriginal,
   });
 
   final VoidCallback? onProfile;
@@ -38,4 +40,10 @@ class PostCardCallbacks {
 
   /// Your own label on a photo: remove your tag.
   final VoidCallback? onRemoveMyTag;
+
+  /// A share: the shared post's author (their name in the headline, their avatar in the framed post).
+  final VoidCallback? onOriginalProfile;
+
+  /// A share: a tap on the framed original.
+  final VoidCallback? onOriginal;
 }

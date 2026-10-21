@@ -2,22 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/error/failures.dart';
-import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/extensions/notice_context.dart';
-import '../../../../../core/notice/notices.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
+import '../../../../../core/utils/story_post_args.dart';
 import '../../../../post/domain/entity/post_entity.dart';
 import '../../../../post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import '../../../../post/presentation/cubit/post_actions/post_actions_state.dart';
 import '../../../../post/presentation/screen/add_edit_post_screen.dart';
 import '../../../../post/presentation/utils/enums/post_row.dart';
 import '../../../../post/presentation/utils/post_card_callbacks.dart';
+import '../../../../post/presentation/utils/post_card_data.dart';
+import '../../../../post/presentation/utils/post_entity_edit.dart';
 import '../../../../post/presentation/utils/post_options_actions.dart';
 import '../../../../post/presentation/utils/post_tag_removal.dart';
+import '../../../../post/presentation/utils/share_access_of.dart';
 import '../../../../post/presentation/widgets/hidden_post_row.dart';
 import '../../../../post/presentation/widgets/post_card.dart';
 import '../../../../post/presentation/widgets/post_options/post_options_flow.dart';
+import '../../../../post/presentation/widgets/share_sheet/share_sheet.dart';
 import '../../../../post/presentation/widgets/tagged_people/tagged_people_sheet.dart';
 import '../../cubit/feed/feed_cubit.dart';
 import '../../dimens/home_dimens.dart';
@@ -56,13 +59,26 @@ class _FeedPostItemState extends State<FeedPostItem> {
 
   /// Only what the cubit changed is selected: the post itself comes from the widget at build time, so an
   /// edited post is never drawn from a copy the selector kept.
-  ({PostEntity? changed, PostRow row, bool muted}) _current(
-    PostActionsState state,
-  ) => (
+  ({PostEntity? changed, PostRow row, bool muted, bool isOriginalGone})
+  _current(PostActionsState state) => (
     changed: state.posts[_loaded.id],
     row: state.rows[_loaded.id] ?? PostRow.card,
     muted: state.mutedAuthors.contains(_loaded.authorId),
+    isOriginalGone: _isOriginalGone(state),
   );
+
+  /// The original of this share was deleted from this list (maybe still with Undo): the share shows the
+  /// "unavailable" tile now, without loading the feed again.
+  bool _isOriginalGone(PostActionsState state) {
+    final id = _loaded.original?.id;
+    final row = id == null ? null : state.rows[id];
+    return row == PostRow.deleting || row == PostRow.removed;
+  }
+
+  PostEntity _shown(PostEntity? changed, bool isOriginalGone) {
+    final entity = changed ?? widget.post.entity;
+    return isOriginalGone ? entity.withoutOriginal() : entity;
+  }
 
   PostCardCallbacks _callbacks() => PostCardCallbacks(
     onProfile: _openProfile,
@@ -75,6 +91,8 @@ class _FeedPostItemState extends State<FeedPostItem> {
     onTaggedPerson: _openProfileOf,
     onTaggedPeople: _openTaggedPeople,
     onRemoveMyTag: _removeMyTag,
+    onOriginalProfile: _openOriginalProfile,
+    onOriginal: _openOriginal,
   );
 
   /// The delete's Undo and commit run when the notice ends, maybe after this card has scrolled away:
@@ -103,9 +121,22 @@ class _FeedPostItemState extends State<FeedPostItem> {
     onAudienceChanged: (audience) => actions.audienceChanged(loaded, audience),
     onEdit: _openEdit,
     onRemoveMyTag: () => _removeMyTagOf(actions, loaded),
+    onShare: _share,
   );
 
   void _openProfile() => _openProfileOf(_loaded.authorId);
+
+  void _openOriginalProfile() {
+    final original = _loaded.original;
+    if (original != null) _openProfileOf(original.authorId);
+  }
+
+  void _openOriginal() {
+    final original = _loaded.original;
+    if (original == null) return;
+    // TODO(post-plan T21): open the original post's page when it exists; its comments route until then.
+    AppNavigator.push<void>(context, AppRoutes.commentsOf(original.id));
+  }
 
   void _openProfileOf(String userId) =>
       AppNavigator.push<void>(context, AppRoutes.profileOf(userId));
@@ -142,15 +173,55 @@ class _FeedPostItemState extends State<FeedPostItem> {
     arguments: AddEditPostArgs(
       post: _actions.postOf(_loaded),
       signedUrls: _signedUrls,
+      original: _editedOriginal(),
     ),
   );
+
+  /// A share under edit shows the shared post read-only, with the links the feed already signed.
+  PostCardData? _editedOriginal() {
+    final original = _loaded.original;
+    if (original == null) return null;
+    return postCardData(
+      original,
+      widget.post.originalMedia,
+      userId: context.read<FeedCubit>().state.userId,
+    );
+  }
 
   void _openComments() =>
       AppNavigator.push<void>(context, AppRoutes.commentsOf(_loaded.id));
 
+  /// Opens the Share sheet of this post, or of the original when it is a share.
   void _share() {
-    // TODO(home-plan H6): the system share sheet waits for post links and share_plus (post-plan T7).
-    Notices.info(context.l10n.comingSoon);
+    final userId = context.read<FeedCubit>().state.userId;
+    final target = shareTarget(_loaded);
+    final access = shareAccessOf(_loaded, userId: userId);
+    if (target == null || !access.isShown) return;
+    ShareSheet.show(
+      context,
+      postId: target.id,
+      access: access,
+      story: _storyPost(target),
+    );
+  }
+
+  /// The post a story would show: its author, words and first picture (a video's poster). A share's
+  /// original uses the links signed for it.
+  StoryPostArgs _storyPost(PostEntity target) {
+    final signed = _loaded.isShare
+        ? widget.post.originalMedia
+        : widget.post.media;
+    final first = signed.firstOrNull;
+    final isPoster = first != null && first.isVideo;
+    return StoryPostArgs(
+      postId: target.id,
+      username: target.username,
+      avatarUrl: target.avatarUrl,
+      caption: target.caption,
+      mediaUrl: isPoster ? first.posterUrl : first?.url,
+      mediaCacheKey: isPoster ? first.posterCacheKey : first?.cacheKey,
+      mediaAspect: first == null ? null : first.width / first.height,
+    );
   }
 
   Future<void> _openOptions() async {
@@ -177,7 +248,7 @@ class _FeedPostItemState extends State<FeedPostItem> {
       BlocSelector<
         PostActionsCubit,
         PostActionsState,
-        ({PostEntity? changed, PostRow row, bool muted})
+        ({PostEntity? changed, PostRow row, bool muted, bool isOriginalGone})
       >(
         selector: _current,
         builder: (context, current) => current.muted
@@ -192,9 +263,10 @@ class _FeedPostItemState extends State<FeedPostItem> {
                   padding: EdgeInsets.only(bottom: HomeDimens.cardGap),
                   child: PostCard(
                     data: postCardData(
-                      current.changed ?? widget.post.entity,
+                      _shown(current.changed, current.isOriginalGone),
                       widget.post.media,
                       userId: context.read<FeedCubit>().state.userId,
+                      originalMedia: widget.post.originalMedia,
                     ),
                     callbacks: _callbacks(),
                     isOptionsOpen: _isOptionsOpen,

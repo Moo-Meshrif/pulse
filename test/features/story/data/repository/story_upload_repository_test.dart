@@ -9,10 +9,14 @@ import 'package:pulse/core/services/video_compress_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/features/story/data/enums/story_media_type.dart';
+import 'package:pulse/features/story/data/enums/story_post_sticker_style.dart';
 import 'package:pulse/features/story/data/model/new_story_model.dart';
+import 'package:pulse/features/story/data/model/story_post_sticker_model.dart';
 import 'package:pulse/features/story/data/repository/story_upload_repository.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/pending_content_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/enums/pending_content_state.dart';
 import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
@@ -20,6 +24,8 @@ import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 import '../../../../helpers/content_mocks.dart';
 
 class _MockStories extends Mock implements StoriesDatasource {}
+
+class _MockPending extends Mock implements PendingContentDatasource {}
 
 class _MockUploader extends Mock implements MediaFilesDatasource {}
 
@@ -33,6 +39,7 @@ void main() {
   late File thumb;
   late _MockStories stories;
   late _MockUploader uploader;
+  late _MockPending pending;
   late StoryUploadRepositoryImpl repository;
   late EventBus bus;
   late ContentPublishRepositoryImpl publish;
@@ -50,7 +57,15 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(File('x'));
-    registerFallbackValue(video0());
+    registerFallbackValue(ContentKind.story);
+    registerFallbackValue(
+      NewStoryModel(
+        filePath: 'x',
+        type: StoryMediaType.image,
+        width: 1,
+        height: 1,
+      ),
+    );
   });
 
   setUp(() async {
@@ -59,6 +74,7 @@ void main() {
     thumb = File('${dir.path}/t.jpg')..writeAsBytesSync(List.filled(100, 1));
     stories = _MockStories();
     uploader = _MockUploader();
+    pending = _MockPending();
     when(() => stories.currentUserId).thenReturn('u1');
     when(
       () => stories.insertStory(
@@ -91,6 +107,7 @@ void main() {
       stories,
       ContentMediaRepository(uploader, _MockThumbnails(), _MockCompressor()),
       publish,
+      pending,
     );
     seen = [];
     bus.on<ContentPublishStatus>().listen(seen.add);
@@ -338,11 +355,75 @@ void main() {
       );
     });
   });
-}
 
-NewStoryModel video0() => NewStoryModel(
-  filePath: 'x',
-  type: StoryMediaType.image,
-  width: 1,
-  height: 1,
-);
+  group('a story with a post sticker', () {
+    NewStoryModel withSticker() => NewStoryModel(
+      filePath: media.path,
+      type: StoryMediaType.image,
+      width: 1080,
+      height: 1920,
+      sharedPostId: 'post-1',
+      sticker: const StoryPostStickerModel(
+        style: StoryPostStickerStyle.card,
+        x: 0.5,
+        y: 0.45,
+        scale: 1,
+        rotation: -2,
+        backgroundKind: 'media',
+        backgroundColors: ['#112233', '#445566'],
+      ),
+    );
+
+    setUp(() {
+      when(() => pending.share(any(), any(), any()))
+          .thenAnswer((_) async => PendingContentState.waiting);
+      when(() => pending.publish(any()))
+          .thenAnswer((_) async => PendingContentState.published);
+    });
+
+    test(
+      'is shared under the id of its file, then posted by the server',
+      () async {
+        repository.enqueue(withSticker());
+        await pumpEventQueue();
+
+        final shared = verify(
+          () => pending.share(captureAny(), ContentKind.story, captureAny()),
+        ).captured;
+        final id = shared[0] as String;
+        final request = shared[1] as Map<String, dynamic>;
+        expect(request['path'], 'u1/stories/$id.jpg');
+        expect(request['shared_post_id'], 'post-1');
+        expect(request['audience'], 'followers');
+        expect((request['sticker'] as Map)['style'], 'card');
+        verify(() => pending.publish(id)).called(1);
+        verifyNever(
+          () => stories.insertStory(
+            any(),
+            mediaPath: any(named: 'mediaPath'),
+            thumbPath: any(named: 'thumbPath'),
+          ),
+        );
+        expect(seen.whereType<ContentPublishDone>(), isNotEmpty);
+      },
+    );
+
+    test('is not posted again when the server already has it', () async {
+      when(() => pending.share(any(), any(), any()))
+          .thenAnswer((_) async => PendingContentState.published);
+      repository.enqueue(withSticker());
+      await pumpEventQueue();
+
+      verifyNever(() => pending.publish(any()));
+    });
+
+    test('fails when the server refuses it', () async {
+      when(() => pending.publish(any()))
+          .thenAnswer((_) async => PendingContentState.rejected);
+      repository.enqueue(withSticker());
+      await pumpEventQueue();
+
+      expect(seen.whereType<ContentPublishFailed>(), isNotEmpty);
+    });
+  });
+}

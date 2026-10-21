@@ -135,3 +135,104 @@ abstract final class StorySheetDimens {
   static double get dialogDeleteHeight => AppScale.scale(52);
   static const double dialogCancelHeight = 44; // tap target: fixed
 }
+
+/// The post sticker and its editor (docs/specs/post/screens/s13-add-to-story.md). Values the board does not
+/// give are [estimated] from it.
+abstract final class StoryPostDimens {
+  /// Share of the screen width: the card is 280 of 390 (72 %); the others are estimated.
+  static const double cardWidth = 0.72;
+  static const double mediaWidth = 0.65;
+  static const double compactWidth = 0.79;
+  static const double maxWidth = 400;
+
+  static const double defaultTilt = -2;
+  static const double minScale = 0.5;
+  static const double maxScale = 2;
+  static const double defaultY = 0.45;
+
+  static double get cardRadius => AppScale.scale(20);
+  static double get cardPadding => AppScale.scale(10);
+  static EdgeInsetsDirectional get authorPadding =>
+      EdgeInsetsDirectional.fromSTEB(
+        AppScale.scale(2),
+        AppScale.scale(2),
+        AppScale.scale(2),
+        AppScale.scale(8),
+      );
+  static double get chipGap => AppScale.scale(6);
+  static double get authorAvatar => AppScale.scale(28);
+  static double get mediaRadius => AppScale.scale(14);
+  static const double mediaAspect = 4 / 5;
+  static const int captionLines = 2;
+  static const double captionHeight = 1.4;
+  static double get shadowBlur => AppScale.scale(40);
+  static double get shadowOffset => AppScale.scale(16);
+
+  static double get mediaOnlyRadius => AppScale.scale(22);
+  static double get chipHeight => AppScale.scale(30);
+  static double get chipAvatar => AppScale.scale(22);
+  static double get chipInset => AppScale.scale(10);
+
+  static double get compactRadius => AppScale.scale(18);
+  static double get compactThumb => AppScale.scale(64);
+  static double get compactThumbRadius => AppScale.scale(12);
+
+  static double get outlineWidth => AppScale.scale(2);
+  static double get outlineOffset => AppScale.scale(8);
+  static double get dashLength => AppScale.scale(6);
+  static double get dashGap => AppScale.scale(4);
+
+  static double get dotHeight => AppScale.scale(6);
+  static double get dotActiveWidth => AppScale.scale(18);
+  static double get dotGap => AppScale.scale(6);
+  static double get swatch => AppScale.scale(32);
+  static double get swatchGap => AppScale.scale(12);
+  static double get swatchRing => AppScale.scale(2);
+
+  /// Space between the hint (or swatches) and the bottom actions.
+  static double get hintAboveActions => AppScale.scale(16);
+  static double get hintGap => AppScale.scale(12);
+
+  /// The viewer's "View post" pill (S13 panel 4).
+  static double get viewPillHeight => AppScale.scale(44);
+  static double get viewPillGap => AppScale.scale(10);
+  static double get pointerWidth => AppScale.scale(16);
+  static double get pointerHeight => AppScale.scale(8);
+
+  /// The frosted "Post unavailable" card (S13 panel 5): estimated from the board.
+  static double get unavailableWidth => AppScale.scale(260);
+  static double get unavailableRadius => AppScale.scale(20);
+  static double get unavailablePadding => AppScale.scale(20);
+  static double get unavailableIcon => AppScale.scale(28);
+  static double get unavailableBlur => AppScale.scale(20);
+}
+
+/// The trim bar under a long video on the story edit screen ([estimated]: no board for it).
+abstract final class StoryTrimDimens {
+  static double get barHeight => AppScale.scale(44);
+  static double get radius => AppScale.scale(10);
+  static double get border => AppScale.scale(3);
+
+  /// Width of the grip at each end of the window.
+  static double get grip => AppScale.scale(10);
+
+  /// Touch width over each grip (at least 48 dp wide would overlap on a short window, so 32).
+  static double get gripHit => AppScale.scale(32);
+  static double get gap => AppScale.scale(8);
+
+  /// The time bubble above the bar and the line down to it.
+  static double get bubblePadding => AppScale.scale(12);
+  static double get bubblePaddingV => AppScale.scale(6);
+  static double get lineHeight => AppScale.scale(16);
+  static const double lineWidth = 2; // unscaled: stroke
+
+  /// Space between the bar and the bottom action pills.
+  static double get aboveActions => AppScale.scale(16);
+}
+
+/// The "Saving video" overlay on the story edit screen ([estimated]: no board for it).
+abstract final class StorySavingDimens {
+  static double get ring => AppScale.scale(56);
+  static const double stroke = 4; // unscaled: stroke
+  static double get gap => AppScale.scale(16);
+}

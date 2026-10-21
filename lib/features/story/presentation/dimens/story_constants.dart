@@ -11,6 +11,18 @@ abstract final class StoryOpacity {
   static const double pausedHeader = 0.4;
   static const double viewersDim = 0.35;
 
+  /// The rest of the screen while a post sticker is open (S13 panel 4: 25 %).
+  static const double postDim = 0.25;
+
+  /// Black over the frames outside the shared part of a trimmed video ([estimated]).
+  static const double trimDim = 0.6;
+
+  /// Black over the edit screen while a video is saved ([estimated]).
+  static const double savingScrim = 0.55;
+
+  /// White over the blur of the "Post unavailable" card ([estimated] from the board).
+  static const double unavailableFill = 0.18;
+
   /// The delete circle of the viewers sheet: `dangerOnDark` over the dark sheet ([estimated] from the board).
   static const double dangerTint = 0.18;
 }
@@ -20,6 +32,9 @@ abstract final class StoryTiming {
   static const image = Duration(seconds: 5);
   static const maxVideo = Duration(seconds: 60);
   static const minVideo = Duration(seconds: 1);
+
+  /// The shortest part of a long video that can be shared.
+  static const minTrim = Duration(seconds: 20);
   static const markSeenAfter = Duration(seconds: 1);
   static const bufferLoaderDelay = Duration(milliseconds: 400);
   static const lifetime = Duration(hours: 24);

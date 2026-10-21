@@ -16,7 +16,11 @@ T _$identity<T>(T value) => value;
 mixin _$StoryEditState {
 
  CapturedStoryMedia get media; List<StorySticker> get stickers;/// Video only: the preview plays without sound.
- bool get isMuted; bool get isSharing; bool get isSaving;/// One-shot: the story was handed to the upload; the screen goes back to Home.
+ bool get isMuted;/// Video over 60 s only: where the shared part starts and ends, in milliseconds. It starts as the first
+/// 60 s and the user moves either end, but never makes it longer than that.
+ int get trimStartMs; int get trimEndMs;/// Video over 60 s only: frames along the video for the trim bar; empty until they are read.
+ List<Uint8List> get trimFrames; bool get isSharing; bool get isSaving;/// How far saving a video is (0..1), while [isSaving].
+ double get saveProgress;/// One-shot: the story was handed to the upload; the screen goes back to Home.
  bool get isShared;/// One-shot message for the screen.
  StoryEditNotice? get notice;
 /// Create a copy of StoryEditState
@@ -30,20 +34,20 @@ $StoryEditStateCopyWith<StoryEditState> get copyWith => _$StoryEditStateCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as StoryEditState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryEditState&&(identical(other.media, _this.media) || other.media == _this.media)&&const DeepCollectionEquality().equals(other.stickers, _this.stickers)&&(identical(other.isMuted, _this.isMuted) || other.isMuted == _this.isMuted)&&(identical(other.isSharing, _this.isSharing) || other.isSharing == _this.isSharing)&&(identical(other.isSaving, _this.isSaving) || other.isSaving == _this.isSaving)&&(identical(other.isShared, _this.isShared) || other.isShared == _this.isShared)&&(identical(other.notice, _this.notice) || other.notice == _this.notice));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryEditState&&(identical(other.media, _this.media) || other.media == _this.media)&&const DeepCollectionEquality().equals(other.stickers, _this.stickers)&&(identical(other.isMuted, _this.isMuted) || other.isMuted == _this.isMuted)&&(identical(other.trimStartMs, _this.trimStartMs) || other.trimStartMs == _this.trimStartMs)&&(identical(other.trimEndMs, _this.trimEndMs) || other.trimEndMs == _this.trimEndMs)&&const DeepCollectionEquality().equals(other.trimFrames, _this.trimFrames)&&(identical(other.isSharing, _this.isSharing) || other.isSharing == _this.isSharing)&&(identical(other.isSaving, _this.isSaving) || other.isSaving == _this.isSaving)&&(identical(other.saveProgress, _this.saveProgress) || other.saveProgress == _this.saveProgress)&&(identical(other.isShared, _this.isShared) || other.isShared == _this.isShared)&&(identical(other.notice, _this.notice) || other.notice == _this.notice));
 }
 
 
 @override
 int get hashCode {
   final _this = this as StoryEditState;
-  return Object.hash(runtimeType,_this.media,const DeepCollectionEquality().hash(_this.stickers),_this.isMuted,_this.isSharing,_this.isSaving,_this.isShared,_this.notice);
+  return Object.hash(runtimeType,_this.media,const DeepCollectionEquality().hash(_this.stickers),_this.isMuted,_this.trimStartMs,_this.trimEndMs,const DeepCollectionEquality().hash(_this.trimFrames),_this.isSharing,_this.isSaving,_this.saveProgress,_this.isShared,_this.notice);
 }
 
 @override
 String toString() {
   final _this = this as StoryEditState;
-  return 'StoryEditState(media: ${_this.media}, stickers: ${_this.stickers}, isMuted: ${_this.isMuted}, isSharing: ${_this.isSharing}, isSaving: ${_this.isSaving}, isShared: ${_this.isShared}, notice: ${_this.notice})';
+  return 'StoryEditState(media: ${_this.media}, stickers: ${_this.stickers}, isMuted: ${_this.isMuted}, trimStartMs: ${_this.trimStartMs}, trimEndMs: ${_this.trimEndMs}, trimFrames: ${_this.trimFrames}, isSharing: ${_this.isSharing}, isSaving: ${_this.isSaving}, saveProgress: ${_this.saveProgress}, isShared: ${_this.isShared}, notice: ${_this.notice})';
 }
 
 
@@ -54,7 +58,7 @@ abstract mixin class $StoryEditStateCopyWith<$Res>  {
   factory $StoryEditStateCopyWith(StoryEditState value, $Res Function(StoryEditState) _then) = _$StoryEditStateCopyWithImpl;
 @useResult
 $Res call({
- CapturedStoryMedia media, List<StorySticker> stickers, bool isMuted, bool isSharing, bool isSaving, bool isShared, StoryEditNotice? notice
+ CapturedStoryMedia media, List<StorySticker> stickers, bool isMuted, int trimStartMs, int trimEndMs, List<Uint8List> trimFrames, bool isSharing, bool isSaving, double saveProgress, bool isShared, StoryEditNotice? notice
 });
 
 
@@ -71,14 +75,18 @@ class _$StoryEditStateCopyWithImpl<$Res>
 
 /// Create a copy of StoryEditState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? media = null,Object? stickers = null,Object? isMuted = null,Object? isSharing = null,Object? isSaving = null,Object? isShared = null,Object? notice = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? media = null,Object? stickers = null,Object? isMuted = null,Object? trimStartMs = null,Object? trimEndMs = null,Object? trimFrames = null,Object? isSharing = null,Object? isSaving = null,Object? saveProgress = null,Object? isShared = null,Object? notice = freezed,}) {
   return _then(StoryEditState(
 media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
 as CapturedStoryMedia,stickers: null == stickers ? _self.stickers : stickers // ignore: cast_nullable_to_non_nullable
 as List<StorySticker>,isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
-as bool,isSharing: null == isSharing ? _self.isSharing : isSharing // ignore: cast_nullable_to_non_nullable
+as bool,trimStartMs: null == trimStartMs ? _self.trimStartMs : trimStartMs // ignore: cast_nullable_to_non_nullable
+as int,trimEndMs: null == trimEndMs ? _self.trimEndMs : trimEndMs // ignore: cast_nullable_to_non_nullable
+as int,trimFrames: null == trimFrames ? _self.trimFrames : trimFrames // ignore: cast_nullable_to_non_nullable
+as List<Uint8List>,isSharing: null == isSharing ? _self.isSharing : isSharing // ignore: cast_nullable_to_non_nullable
 as bool,isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
-as bool,isShared: null == isShared ? _self.isShared : isShared // ignore: cast_nullable_to_non_nullable
+as bool,saveProgress: null == saveProgress ? _self.saveProgress : saveProgress // ignore: cast_nullable_to_non_nullable
+as double,isShared: null == isShared ? _self.isShared : isShared // ignore: cast_nullable_to_non_nullable
 as bool,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as StoryEditNotice?,
   ));
@@ -165,10 +173,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CapturedStoryMedia media,  List<StorySticker> stickers,  bool isMuted,  bool isSharing,  bool isSaving,  bool isShared,  StoryEditNotice? notice)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CapturedStoryMedia media,  List<StorySticker> stickers,  bool isMuted,  int trimStartMs,  int trimEndMs,  List<Uint8List> trimFrames,  bool isSharing,  bool isSaving,  double saveProgress,  bool isShared,  StoryEditNotice? notice)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryEditState() when $default != null:
-return $default(_that.media,_that.stickers,_that.isMuted,_that.isSharing,_that.isSaving,_that.isShared,_that.notice);case _:
+return $default(_that.media,_that.stickers,_that.isMuted,_that.trimStartMs,_that.trimEndMs,_that.trimFrames,_that.isSharing,_that.isSaving,_that.saveProgress,_that.isShared,_that.notice);case _:
   return orElse();
 
 }
@@ -186,10 +194,10 @@ return $default(_that.media,_that.stickers,_that.isMuted,_that.isSharing,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CapturedStoryMedia media,  List<StorySticker> stickers,  bool isMuted,  bool isSharing,  bool isSaving,  bool isShared,  StoryEditNotice? notice)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CapturedStoryMedia media,  List<StorySticker> stickers,  bool isMuted,  int trimStartMs,  int trimEndMs,  List<Uint8List> trimFrames,  bool isSharing,  bool isSaving,  double saveProgress,  bool isShared,  StoryEditNotice? notice)  $default,) {final _that = this;
 switch (_that) {
 case _StoryEditState():
-return $default(_that.media,_that.stickers,_that.isMuted,_that.isSharing,_that.isSaving,_that.isShared,_that.notice);case _:
+return $default(_that.media,_that.stickers,_that.isMuted,_that.trimStartMs,_that.trimEndMs,_that.trimFrames,_that.isSharing,_that.isSaving,_that.saveProgress,_that.isShared,_that.notice);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +214,10 @@ return $default(_that.media,_that.stickers,_that.isMuted,_that.isSharing,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CapturedStoryMedia media,  List<StorySticker> stickers,  bool isMuted,  bool isSharing,  bool isSaving,  bool isShared,  StoryEditNotice? notice)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CapturedStoryMedia media,  List<StorySticker> stickers,  bool isMuted,  int trimStartMs,  int trimEndMs,  List<Uint8List> trimFrames,  bool isSharing,  bool isSaving,  double saveProgress,  bool isShared,  StoryEditNotice? notice)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryEditState() when $default != null:
-return $default(_that.media,_that.stickers,_that.isMuted,_that.isSharing,_that.isSaving,_that.isShared,_that.notice);case _:
+return $default(_that.media,_that.stickers,_that.isMuted,_that.trimStartMs,_that.trimEndMs,_that.trimFrames,_that.isSharing,_that.isSaving,_that.saveProgress,_that.isShared,_that.notice);case _:
   return null;
 
 }
@@ -221,7 +229,7 @@ return $default(_that.media,_that.stickers,_that.isMuted,_that.isSharing,_that.i
 
 
 class _StoryEditState implements StoryEditState {
-  const _StoryEditState({required this.media,  List<StorySticker> stickers = const [], this.isMuted = false, this.isSharing = false, this.isSaving = false, this.isShared = false, this.notice}): _stickers = stickers;
+  const _StoryEditState({required this.media,  List<StorySticker> stickers = const [], this.isMuted = false, this.trimStartMs = 0, this.trimEndMs = 0,  List<Uint8List> trimFrames = const <Uint8List>[], this.isSharing = false, this.isSaving = false, this.saveProgress = 0, this.isShared = false, this.notice}): _stickers = stickers,_trimFrames = trimFrames;
   
 
 @override final  CapturedStoryMedia media;
@@ -234,8 +242,23 @@ class _StoryEditState implements StoryEditState {
 
 /// Video only: the preview plays without sound.
 @override@JsonKey() final  bool isMuted;
+/// Video over 60 s only: where the shared part starts and ends, in milliseconds. It starts as the first
+/// 60 s and the user moves either end, but never makes it longer than that.
+@override@JsonKey() final  int trimStartMs;
+@override@JsonKey() final  int trimEndMs;
+/// Video over 60 s only: frames along the video for the trim bar; empty until they are read.
+ final  List<Uint8List> _trimFrames;
+/// Video over 60 s only: frames along the video for the trim bar; empty until they are read.
+@override@JsonKey() List<Uint8List> get trimFrames {
+  if (_trimFrames is EqualUnmodifiableListView) return _trimFrames;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_trimFrames);
+}
+
 @override@JsonKey() final  bool isSharing;
 @override@JsonKey() final  bool isSaving;
+/// How far saving a video is (0..1), while [isSaving].
+@override@JsonKey() final  double saveProgress;
 /// One-shot: the story was handed to the upload; the screen goes back to Home.
 @override@JsonKey() final  bool isShared;
 /// One-shot message for the screen.
@@ -251,18 +274,18 @@ _$StoryEditStateCopyWith<_StoryEditState> get copyWith => __$StoryEditStateCopyW
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryEditState&&(identical(other.media, media) || other.media == media)&&const DeepCollectionEquality().equals(other.stickers, _stickers)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isSharing, isSharing) || other.isSharing == isSharing)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.isShared, isShared) || other.isShared == isShared)&&(identical(other.notice, notice) || other.notice == notice));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryEditState&&(identical(other.media, media) || other.media == media)&&const DeepCollectionEquality().equals(other.stickers, _stickers)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.trimStartMs, trimStartMs) || other.trimStartMs == trimStartMs)&&(identical(other.trimEndMs, trimEndMs) || other.trimEndMs == trimEndMs)&&const DeepCollectionEquality().equals(other.trimFrames, _trimFrames)&&(identical(other.isSharing, isSharing) || other.isSharing == isSharing)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.saveProgress, saveProgress) || other.saveProgress == saveProgress)&&(identical(other.isShared, isShared) || other.isShared == isShared)&&(identical(other.notice, notice) || other.notice == notice));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,media,const DeepCollectionEquality().hash(_stickers),isMuted,isSharing,isSaving,isShared,notice);
+    return Object.hash(runtimeType,media,const DeepCollectionEquality().hash(_stickers),isMuted,trimStartMs,trimEndMs,const DeepCollectionEquality().hash(_trimFrames),isSharing,isSaving,saveProgress,isShared,notice);
 }
 
 @override
 String toString() {
-    return 'StoryEditState(media: $media, stickers: $stickers, isMuted: $isMuted, isSharing: $isSharing, isSaving: $isSaving, isShared: $isShared, notice: $notice)';
+    return 'StoryEditState(media: $media, stickers: $stickers, isMuted: $isMuted, trimStartMs: $trimStartMs, trimEndMs: $trimEndMs, trimFrames: $trimFrames, isSharing: $isSharing, isSaving: $isSaving, saveProgress: $saveProgress, isShared: $isShared, notice: $notice)';
 }
 
 
@@ -273,7 +296,7 @@ abstract mixin class _$StoryEditStateCopyWith<$Res> implements $StoryEditStateCo
   factory _$StoryEditStateCopyWith(_StoryEditState value, $Res Function(_StoryEditState) _then) = __$StoryEditStateCopyWithImpl;
 @override @useResult
 $Res call({
- CapturedStoryMedia media, List<StorySticker> stickers, bool isMuted, bool isSharing, bool isSaving, bool isShared, StoryEditNotice? notice
+ CapturedStoryMedia media, List<StorySticker> stickers, bool isMuted, int trimStartMs, int trimEndMs, List<Uint8List> trimFrames, bool isSharing, bool isSaving, double saveProgress, bool isShared, StoryEditNotice? notice
 });
 
 
@@ -290,14 +313,18 @@ class __$StoryEditStateCopyWithImpl<$Res>
 
 /// Create a copy of StoryEditState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? media = null,Object? stickers = null,Object? isMuted = null,Object? isSharing = null,Object? isSaving = null,Object? isShared = null,Object? notice = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? media = null,Object? stickers = null,Object? isMuted = null,Object? trimStartMs = null,Object? trimEndMs = null,Object? trimFrames = null,Object? isSharing = null,Object? isSaving = null,Object? saveProgress = null,Object? isShared = null,Object? notice = freezed,}) {
   return _then(_StoryEditState(
 media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
 as CapturedStoryMedia,stickers: null == stickers ? _self._stickers : stickers // ignore: cast_nullable_to_non_nullable
 as List<StorySticker>,isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
-as bool,isSharing: null == isSharing ? _self.isSharing : isSharing // ignore: cast_nullable_to_non_nullable
+as bool,trimStartMs: null == trimStartMs ? _self.trimStartMs : trimStartMs // ignore: cast_nullable_to_non_nullable
+as int,trimEndMs: null == trimEndMs ? _self.trimEndMs : trimEndMs // ignore: cast_nullable_to_non_nullable
+as int,trimFrames: null == trimFrames ? _self._trimFrames : trimFrames // ignore: cast_nullable_to_non_nullable
+as List<Uint8List>,isSharing: null == isSharing ? _self.isSharing : isSharing // ignore: cast_nullable_to_non_nullable
 as bool,isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
-as bool,isShared: null == isShared ? _self.isShared : isShared // ignore: cast_nullable_to_non_nullable
+as bool,saveProgress: null == saveProgress ? _self.saveProgress : saveProgress // ignore: cast_nullable_to_non_nullable
+as double,isShared: null == isShared ? _self.isShared : isShared // ignore: cast_nullable_to_non_nullable
 as bool,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as StoryEditNotice?,
   ));
