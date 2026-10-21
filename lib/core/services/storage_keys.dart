@@ -20,6 +20,15 @@ abstract final class StorageKeys {
   static String postVisibilityNoticeSeen(String wire) =>
       'post_visibility_notice_seen_$wire';
 
+  // post: the New post draft of one user (caption, settings, the names of its files in post_drafts/)
+  static String postDraft(String userId) => 'post_draft_$userId';
+
+  // post: the posts one user shared that are not out yet (each like a draft, its files in post_drafts/)
+  static String postShared(String userId) => 'post_shared_$userId';
+
+  // content: the discards of one user the server has not confirmed yet (id and kind of each)
+  static String contentDiscards(String userId) => 'content_discards_$userId';
+
   // places: the last places picked (a post's location), newest first
   static const recentPlaces = 'recent_places';
 

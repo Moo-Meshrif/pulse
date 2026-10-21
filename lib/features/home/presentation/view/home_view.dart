@@ -20,7 +20,7 @@ import '../widgets/feed/feed_failed.dart';
 import '../widgets/feed/feed_header.dart';
 import '../widgets/feed/feed_post_list.dart';
 import '../widgets/feed/feed_skeleton.dart';
-import '../widgets/feed/publish_banner.dart';
+import '../widgets/feed/publish_banner/publish_banner.dart';
 import '../widgets/story_rail/story_rail.dart';
 
 /// The Home tab: the header, the Stories rail and the posts of the feed, or the page for a feed that is

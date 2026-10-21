@@ -39,6 +39,9 @@ abstract class AddEditPostState with _$AddEditPostState {
 
     /// The post being edited, as it was when the screen opened; null when adding.
     PostEntity? original,
+
+    /// Adding: the screen opened with the saved draft, so its audience is kept.
+    @Default(false) bool fromDraft,
     @Default('') String caption,
 
     /// The media already on the post that stay; empty when adding.
@@ -52,6 +55,12 @@ abstract class AddEditPostState with _$AddEditPostState {
 
     /// A frame of each picked video, by video path; a video without one draws a plain tile.
     @Default({}) Map<String, String> posters,
+
+    /// Adding: the name of each picked file on the server, by path; it never changes.
+    @Default({}) Map<String, String> mediaIds,
+
+    /// Adding: the picked files whose upload failed, by path; a tap tries again.
+    @Default({}) Set<String> failedUploads,
     String? location,
     @Default(true) bool commentsEnabled,
     @Default(ContentAudience.public) ContentAudience visibility,

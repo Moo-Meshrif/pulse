@@ -14,7 +14,9 @@ class BackdropBlur extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strength = context.isLowTier ? sigma * DeviceTier.lowSigmaFactor : sigma;
+    final strength = context.isLowTier
+        ? sigma * DeviceTier.lowSigmaFactor
+        : sigma;
     return BackdropFilter(
       filter: ui.ImageFilter.blur(sigmaX: strength, sigmaY: strength),
       child: child,

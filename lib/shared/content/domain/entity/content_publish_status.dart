@@ -50,7 +50,7 @@ final class ContentPublishing extends ContentPublishStatus {
   ];
 }
 
-/// Sending failed; retrying sends it again, discarding drops it.
+/// Sending failed; retrying sends it again, discarding drops it. A [RejectedFailure] cannot be retried.
 final class ContentPublishFailed extends ContentPublishStatus {
   const ContentPublishFailed(
     super.kind, {
@@ -63,6 +63,9 @@ final class ContentPublishFailed extends ContentPublishStatus {
 
   final Failure failure;
   final bool isEdit;
+
+  bool get canRetry => failure is! RejectedFailure;
+
   final String? previewPath;
   final String? previewUrl;
   final String? previewCacheKey;
@@ -86,4 +89,10 @@ final class ContentPublishDone extends ContentPublishStatus {
 
   @override
   List<Object?> get props => [kind, isEdit];
+}
+
+/// A discard came too late: the content had already gone out, so nothing was deleted. Announced once,
+/// then the status goes back to what it was.
+final class ContentDiscardRefused extends ContentPublishStatus {
+  const ContentDiscardRefused(super.kind);
 }

@@ -35,6 +35,14 @@ abstract final class HomeDimens {
   static EdgeInsets get publishPadding => EdgeInsets.all(AppScale.scale(12));
   static double get publishThumb => AppScale.scale(48);
   static double get publishProgress => AppScale.scale(4);
+  static double get publishRowThumb => AppScale.scale(40);
+  static double get publishRowGap => AppScale.scale(12);
+  static double get publishStackOffset => AppScale.scale(8);
+  static double get publishChevron => AppScale.scale(32);
+  static double get publishOutline => AppScale.scale(1.5);
+  static const int publishStackLayers = 3;
+  static const publishDoneStay = Duration(milliseconds: 1500);
+  static const publishExpand = Duration(milliseconds: 200);
   // First-load skeleton.
   static const int skeletonCards = 3;
   static const int skeletonStories = 4;

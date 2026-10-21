@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/app/app.dart';
@@ -19,10 +22,14 @@ import 'package:pulse/features/follow/domain/use_case/get_suggested_profiles_use
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/legal/data/datasource/legal_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_actions_datasource.dart';
+import 'package:pulse/features/post/data/datasource/post_draft_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_tags_datasource.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/model/feed_page_model.dart';
+import 'package:pulse/features/post/data/model/post_draft_model.dart';
 import 'package:pulse/features/post/data/model/post_model.dart';
+import 'package:pulse/features/post/domain/use_case/has_open_post_draft_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/resume_shared_posts_use_case.dart';
 import 'package:pulse/features/profile/data/datasource/interests_datasource.dart';
 import 'package:pulse/features/profile/data/datasource/profile_datasource.dart';
 import 'package:pulse/features/profile/data/repository/profile_repository.dart';
@@ -38,8 +45,14 @@ import 'package:pulse/features/profile/domain/use_case/save_profile_details_use_
 import 'package:pulse/features/story/data/datasource/stories_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/audience_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/content_actions_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/content_discards_datasource.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
+import 'package:pulse/shared/content/data/datasource/pending_content_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
+import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/enums/pending_content_state.dart';
+import 'package:pulse/shared/content/data/model/content_discard_model.dart';
+import 'package:pulse/shared/content/data/repository/media_upload_queue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockActivityDatasource extends Mock implements ActivityDatasource {}
@@ -89,6 +102,91 @@ class MockFollowsDatasource extends Mock implements FollowsDatasource {}
 class MockStoriesDatasource extends Mock implements StoriesDatasource {}
 
 class MockPostsDatasource extends Mock implements PostsDatasource {}
+
+class MockPostDraftDatasource extends Mock implements PostDraftDatasource {}
+
+class MockMediaUploadQueue extends Mock implements MediaUploadQueue {}
+
+class MockPendingContentDatasource extends Mock
+    implements PendingContentDatasource {}
+
+/// An upload queue that never reports a change.
+MockMediaUploadQueue idleUploads() {
+  final uploads = MockMediaUploadQueue();
+  when(() => uploads.changes).thenAnswer((_) => const Stream.empty());
+  when(() => uploads.remove(any())).thenAnswer((_) async {});
+  when(() => uploads.isUploading).thenReturn(false);
+  when(uploads.settled).thenAnswer((_) async {});
+  return uploads;
+}
+
+/// A server whose drafts always open, and that posts what is shared at once.
+MockPendingContentDatasource serverDraftOk() {
+  registerFallbackValue(ContentKind.post);
+  registerFallbackValue(<String, dynamic>{});
+  final pending = MockPendingContentDatasource();
+  when(() => pending.openDraft(any(), any()))
+      .thenAnswer((_) async => PendingContentState.draft);
+  when(() => pending.share(any(), any(), any()))
+      .thenAnswer((_) async => PendingContentState.waiting);
+  when(() => pending.publish(any()))
+      .thenAnswer((_) async => PendingContentState.published);
+  when(() => pending.discard(any(), any()))
+      .thenAnswer((_) async => PendingContentState.discarded);
+  when(() => pending.status(any())).thenAnswer((_) async => const []);
+  when(pending.cleanupList).thenAnswer((_) async => const []);
+  when(() => pending.confirmCleanup(any())).thenAnswer((_) async => 0);
+  return pending;
+}
+
+/// No discards saved on this device; adding and removing keep nothing.
+class EmptyContentDiscards implements ContentDiscardsDatasource {
+  @override
+  List<ContentDiscardModel> read() => const [];
+
+  @override
+  Future<void> add(ContentDiscardModel discard) async {}
+
+  @override
+  Future<void> remove(String id) async {}
+}
+
+/// A draft store with no draft, whose writes do nothing.
+class MockResumeSharedPosts extends Mock implements ResumeSharedPostsUseCase {}
+
+/// A [MockResumeSharedPosts] that does nothing.
+MockResumeSharedPosts okResumeSharedPosts() {
+  final mock = MockResumeSharedPosts();
+  when(mock.call).thenAnswer((_) async {});
+  return mock;
+}
+
+class MockHasOpenPostDraft extends Mock implements HasOpenPostDraftUseCase {}
+
+/// A [MockHasOpenPostDraft] that says whether the draft was left open.
+MockHasOpenPostDraft hasOpenPostDraft({bool isOpen = false}) {
+  final mock = MockHasOpenPostDraft();
+  when(mock.call).thenReturn(isOpen);
+  return mock;
+}
+
+MockPostDraftDatasource noPostDraft() {
+  registerFallbackValue(const PostDraftModel());
+  final drafts = MockPostDraftDatasource();
+  when(drafts.read).thenReturn(null);
+  when(() => drafts.save(any())).thenAnswer((_) async {});
+  when(drafts.forget).thenAnswer((_) async {});
+  when(drafts.readShared).thenReturn(const []);
+  when(() => drafts.saveShared(any())).thenAnswer((_) async {});
+  when(() => drafts.forgetShared(any())).thenAnswer((_) async {});
+  when(() => drafts.deleteFoldersExcept(any())).thenAnswer((_) async {});
+  when(() => drafts.deleteFiles(any())).thenAnswer((_) async {});
+  when(() => drafts.deleteFile(any())).thenAnswer((_) async {});
+  when(() => drafts.keep(any(), any())).thenAnswer(
+    (invocation) async => invocation.positionalArguments[1] as String,
+  );
+  return drafts;
+}
 
 class MockPostActionsDatasource extends Mock implements PostActionsDatasource {}
 
@@ -190,6 +288,7 @@ extension PumpApp on WidgetTester {
     LegalDatasource? legal,
     StoriesDatasource? stories,
     Future<void> Function()? configure,
+    bool settle = true,
   }) async {
     await setUpRealWiring(
       prefs: prefs,
@@ -202,7 +301,7 @@ extension PumpApp on WidgetTester {
     await configure?.call();
     Notices.autoDismiss = false;
     await pumpWidget(App(key: UniqueKey()));
-    await pumpAndSettle();
+    if (settle) await pumpAndSettle();
   }
 }
 
@@ -217,6 +316,13 @@ Future<void> setUpRealWiring({
 }) async {
   SharedPreferences.resetStatic();
   SharedPreferences.setMockInitialValues(prefs);
+  // AppFolders is read at start-up; path_provider has no platform side in tests.
+  TestWidgetsFlutterBinding.ensureInitialized();
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(
+        const MethodChannel('plugins.flutter.io/path_provider'),
+        (_) async => Directory.systemTemp.path,
+      );
   await getIt.reset();
   await configureDependencies();
   // The Supabase adapters need a Supabase session: tests get signed-out mocks unless they pass their own.
@@ -238,6 +344,12 @@ Future<void> setUpRealWiring({
   await getIt.unregister<ContentActionsDatasource>();
   await getIt.unregister<MediaFilesDatasource>();
   await getIt.unregister<AudienceDatasource>();
+  await getIt.unregister<PostDraftDatasource>();
+  getIt.registerSingleton<PostDraftDatasource>(noPostDraft());
+  await getIt.unregister<PendingContentDatasource>();
+  getIt.registerSingleton<PendingContentDatasource>(serverDraftOk());
+  await getIt.unregister<ContentDiscardsDatasource>();
+  getIt.registerSingleton<ContentDiscardsDatasource>(EmptyContentDiscards());
   getIt.registerSingleton<ActivityDatasource>(MockActivityDatasource());
   getIt.registerSingleton<AuthDatasource>(auth ?? signedOut);
   getIt.registerSingleton<ProfileDatasource>(

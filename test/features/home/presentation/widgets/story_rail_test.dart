@@ -19,6 +19,8 @@ import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
+import '../../../../helpers/content_mocks.dart';
+
 import '../../../../helpers/pump_app.dart';
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
@@ -54,7 +56,13 @@ void main() {
     cubit = StoryRailCubit(
       getRail,
       bus,
-      GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+      GetPublishStatusUseCase(
+        ContentPublishRepositoryImpl(
+          bus,
+          FakeContentDiscards(),
+          FakeConnectivity(),
+        ),
+      ),
       retry,
     );
     addTearDown(cubit.close);

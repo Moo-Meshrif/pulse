@@ -63,6 +63,11 @@ void main() {
       expect(called, isFalse);
     });
 
+    test('checkOffline false makes the call offline', () async {
+      Guard.isOffline = () async => true;
+      expect(await Guard.run(() async => 5, checkOffline: false), 5);
+    });
+
     test('online makes the call', () async {
       Guard.isOffline = () async => false;
       expect(await Guard.run(() async => 5), 5);

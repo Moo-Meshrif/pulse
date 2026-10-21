@@ -29,6 +29,7 @@ export 'logo_lockup.dart';
 export 'logo_tile.dart';
 export 'nav_clearance.dart';
 export 'notice/notice_host.dart';
+export 'on_app_visibility.dart';
 export 'paged_scroll_view/paged_scroll_view.dart';
 export 'phone_field.dart';
 export 'photo_picker_avatar.dart';

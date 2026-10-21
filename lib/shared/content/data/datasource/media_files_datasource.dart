@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
+import '../../../../core/utils/cancel_signal.dart';
 
 /// The files of posts, shorts and stories: the private `post-media` bucket, `{uid}/{id}/…` for a post
 /// and `{uid}/stories/…` for a story. Cleanup after a delete is best effort: [listFolder] and [remove]
@@ -16,13 +17,18 @@ import '../../../../core/error/guard.dart';
 abstract interface class MediaFilesDatasource {
   /// Uploads [file] to [path] (an existing object is replaced, so a retry is safe). A dropped connection
   /// or a busy server is tried again a few times before it throws. [onBytes] is told the bytes sent so
-  /// far, growing to the file's length; a retry counts again from zero.
+  /// far, growing to the file's length; a retry counts again from zero. [cancel] stops it at once and it
+  /// throws; a cancelled upload is not tried again.
   Future<void> upload({
     required String path,
     required File file,
     required String contentType,
     void Function(int sentBytes)? onBytes,
+    CancelSignal? cancel,
   });
+
+  /// The signed-in user's folder [name], as a full path (`{uid}/{name}`); no session throws.
+  String folderOf(String name);
 
   /// The names of the files in [folder] (a full path such as `{uid}/{postId}`).
   Future<List<String>> listFiles(String folder);
@@ -68,14 +74,25 @@ final class SupabaseMediaFilesDatasource implements MediaFilesDatasource {
     required File file,
     required String contentType,
     void Function(int sentBytes)? onBytes,
+    CancelSignal? cancel,
   }) => Guard.run(() async {
     final length = await file.length();
     for (var attempt = 1; ; attempt++) {
       final http.Response response;
       try {
-        response = await _send(path, file, length, contentType, onBytes);
+        response = await _send(
+          path,
+          file,
+          length,
+          contentType,
+          onBytes,
+          cancel,
+        );
       } on Object catch (error) {
-        if (attempt == _maxTries || !_isTransient(error)) rethrow;
+        final isCancelled = cancel?.isCancelled ?? false;
+        if (isCancelled || attempt == _maxTries || !_isTransient(error)) {
+          rethrow;
+        }
         await _backoff(attempt);
         continue;
       }
@@ -95,12 +112,14 @@ final class SupabaseMediaFilesDatasource implements MediaFilesDatasource {
     int length,
     String contentType,
     void Function(int sentBytes)? onBytes,
+    CancelSignal? cancel,
   ) async {
     final token = _client.auth.currentSession?.accessToken;
     final request =
-        http.StreamedRequest(
+        http.AbortableStreamedRequest(
             'POST',
             Uri.parse('${_client.storage.url}/object/$_bucket/$path'),
+            abortTrigger: cancel?.whenCancelled,
           )
           ..contentLength = length
           ..headers.addAll({
@@ -139,6 +158,9 @@ final class SupabaseMediaFilesDatasource implements MediaFilesDatasource {
     final full = _firstRetryDelay * (1 << (attempt - 1));
     return _wait(full * (0.5 + _random.nextDouble() / 2));
   }
+
+  @override
+  String folderOf(String name) => '$_uid/$name';
 
   @override
   Future<List<String>> listFiles(String folder) => Guard.run(() async {

@@ -21,7 +21,8 @@ class MediaStrip extends StatelessWidget {
           before.kept != now.kept ||
           before.urls != now.urls ||
           before.media != now.media ||
-          before.posters != now.posters,
+          before.posters != now.posters ||
+          before.failedUploads != now.failedUploads,
       builder: (context, state) {
         final count = state.mediaCount;
         return SizedBox(
@@ -55,6 +56,9 @@ class MediaStrip extends StatelessWidget {
                 filePath: picture,
                 durationMs: media.isVideo ? media.durationMs : null,
                 onRemove: () => cubit.removeMedia(index),
+                onRetryUpload: state.failedUploads.contains(media.path)
+                    ? () => cubit.retryUpload(media.path)
+                    : null,
               );
             },
           ),

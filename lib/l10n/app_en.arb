@@ -1720,13 +1720,21 @@
   "@newPostShared": {
     "description": "Notice after sharing a post"
   },
-  "newPostDiscardTitle": "Discard post?",
-  "@newPostDiscardTitle": {
-    "description": "Discard dialog title"
+  "newPostDraftTitle": "Save as draft?",
+  "@newPostDraftTitle": {
+    "description": "New post close dialog title (something was written)"
   },
-  "newPostDiscardBody": "Your post won't be saved.",
-  "@newPostDiscardBody": {
-    "description": "Discard dialog body"
+  "newPostDraftBody": "You can finish it the next time you open New post.",
+  "@newPostDraftBody": {
+    "description": "New post close dialog body"
+  },
+  "newPostSaveDraft": "Save draft",
+  "@newPostSaveDraft": {
+    "description": "New post close dialog: keep the draft and close"
+  },
+  "newPostDiscardPost": "Discard post",
+  "@newPostDiscardPost": {
+    "description": "New post close dialog: delete the draft and close"
   },
   "newPostKeepEditing": "Keep editing",
   "@newPostKeepEditing": {
@@ -1766,6 +1774,10 @@
         "type": "int"
       }
     }
+  },
+  "newPostUploadFailed": "Upload failed. Tap to retry",
+  "@newPostUploadFailed": {
+    "description": "Semantics: a picked photo or video whose upload failed; a tap tries again"
   },
   "newPostRemoveMedia": "Remove photo {number}",
   "@newPostRemoveMedia": {
@@ -2041,9 +2053,72 @@
   "@postPublishDiscard": {
     "description": "Banner action that drops a post that failed to send"
   },
-  "newPostPublishBusy": "Your previous post is still being sent. Try again in a moment.",
+  "postDiscardTooLate": "Your post was already shared, so it wasn't discarded.",
+  "@postDiscardTooLate": {
+    "description": "Notice when Discard reached the server after the post had already gone out"
+  },
+  "newPostPublishBusy": "You already have 3 posts waiting. Try again when one is out.",
   "@newPostPublishBusy": {
     "description": "Notice when sharing while another post is still being sent"
+  },
+  "postPublishingMany": "Posting {count} posts…",
+  "@postPublishingMany": {
+    "description": "Banner title while several posts are being sent",
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "postPublishProgress": "{done} of {total} done · {percent}%",
+  "@postPublishProgress": {
+    "description": "Banner line under the title while several posts are being sent",
+    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}, "percent": {"type": "int"}}
+  },
+  "postPublishDoneOf": "{done} of {total} done",
+  "@postPublishDoneOf": {
+    "description": "Banner line when every post in the line is out",
+    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}
+  },
+  "postPublishRowTitle": "Post {n}",
+  "@postPublishRowTitle": {
+    "description": "Name of a post in the expanded banner list",
+    "placeholders": {"n": {"type": "int"}}
+  },
+  "postPublishRowPosted": "Posted",
+  "@postPublishRowPosted": {
+    "description": "Expanded banner row: this post is out"
+  },
+  "postPublishRowWaiting": "Waiting",
+  "@postPublishRowWaiting": {
+    "description": "Expanded banner row: this post waits for the ones before it"
+  },
+  "postPublishAllPosted": "All posted",
+  "@postPublishAllPosted": {
+    "description": "Banner title when every post in the line is out"
+  },
+  "postPublishOffline": "Waiting for connection",
+  "@postPublishOffline": {
+    "description": "Banner title when posts wait for the internet"
+  },
+  "postPublishOfflineSub": "{count, plural, =1{1 post paused} other{{count} posts paused}} · resumes automatically",
+  "@postPublishOfflineSub": {
+    "description": "Banner line when posts wait for the internet",
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "postPublishSomePosted": "{done} of {total} posted",
+  "@postPublishSomePosted": {
+    "description": "Banner title when some posts are out and one failed",
+    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}
+  },
+  "postPublishSomeFailed": "{count, plural, =1{1 post didn't upload} other{{count} posts didn't upload}}",
+  "@postPublishSomeFailed": {
+    "description": "Banner line when posts failed to send",
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "postPublishShowAll": "Show all posts",
+  "@postPublishShowAll": {
+    "description": "Label of the button that opens the list of posts being sent"
+  },
+  "postPublishHideAll": "Hide the list",
+  "@postPublishHideAll": {
+    "description": "Label of the button that closes the list of posts being sent"
   },
   "postHeadlineYou": "You",
   "@postHeadlineYou": {

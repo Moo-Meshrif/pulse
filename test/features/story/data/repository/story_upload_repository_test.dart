@@ -17,6 +17,8 @@ import 'package:pulse/shared/content/data/repository/content_media_repository.da
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 
+import '../../../../helpers/content_mocks.dart';
+
 class _MockStories extends Mock implements StoriesDatasource {}
 
 class _MockUploader extends Mock implements MediaFilesDatasource {}
@@ -80,7 +82,11 @@ void main() {
       onBytes?.call(file.lengthSync());
     });
     bus = EventBus();
-    publish = ContentPublishRepositoryImpl(bus);
+    publish = ContentPublishRepositoryImpl(
+      bus,
+      FakeContentDiscards(),
+      FakeConnectivity(),
+    );
     repository = StoryUploadRepositoryImpl(
       stories,
       ContentMediaRepository(uploader, _MockThumbnails(), _MockCompressor()),

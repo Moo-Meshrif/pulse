@@ -7,8 +7,10 @@ import '../../../../../core/utils/format_countdown.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/post_composer_dimens.dart';
 import '../media/post_media_chip.dart';
+import '../media/post_retry_badge.dart';
 
-/// A photo or video in the strip, with its remove button and, for a video, its length.
+/// A photo or video in the strip, with its remove button and, for a video, its length. A file whose upload
+/// failed is dimmed under a retry badge; a tap tries again.
 class MediaThumb extends StatelessWidget {
   const MediaThumb({
     super.key,
@@ -18,6 +20,7 @@ class MediaThumb extends StatelessWidget {
     this.filePath,
     this.durationMs,
     required this.onRemove,
+    this.onRetryUpload,
   });
 
   /// Position in the strip, from 0.
@@ -32,6 +35,9 @@ class MediaThumb extends StatelessWidget {
   /// A video's length; null for a photo.
   final int? durationMs;
   final VoidCallback onRemove;
+
+  /// Set only when the upload failed.
+  final VoidCallback? onRetryUpload;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +59,8 @@ class MediaThumb extends StatelessWidget {
               child: _buildImage(remote, cacheWidth, fallback, local),
             ),
           ),
+          if (onRetryUpload != null)
+            Positioned.fill(child: _UploadFailed(onRetry: onRetryUpload!)),
           if (durationMs != null)
             PositionedDirectional(
               start: PostComposerDimens.durationInset,
@@ -101,6 +109,25 @@ class MediaThumb extends StatelessWidget {
     }
     return fallback;
   }
+}
+
+class _UploadFailed extends StatelessWidget {
+  const _UploadFailed({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(PostComposerDimens.thumbRadius),
+    child: ColoredBox(
+      color: context.appColors.scrim,
+      child: PostRetryBadge(
+        icon: AppAssets.upload,
+        label: context.l10n.newPostUploadFailed,
+        onRetry: onRetry,
+      ),
+    ),
+  );
 }
 
 class _RemoveButton extends StatelessWidget {

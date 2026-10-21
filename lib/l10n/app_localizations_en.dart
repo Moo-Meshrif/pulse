@@ -1327,10 +1327,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newPostShared => 'Post shared';
 
   @override
-  String get newPostDiscardTitle => 'Discard post?';
+  String get newPostDraftTitle => 'Save as draft?';
 
   @override
-  String get newPostDiscardBody => 'Your post won\'t be saved.';
+  String get newPostDraftBody =>
+      'You can finish it the next time you open New post.';
+
+  @override
+  String get newPostSaveDraft => 'Save draft';
+
+  @override
+  String get newPostDiscardPost => 'Discard post';
 
   @override
   String get newPostKeepEditing => 'Keep editing';
@@ -1355,6 +1362,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String newPostMediaLimit(int count) {
     return 'You can add up to $count photos and videos.';
   }
+
+  @override
+  String get newPostUploadFailed => 'Upload failed. Tap to retry';
 
   @override
   String newPostRemoveMedia(int number) {
@@ -1567,8 +1577,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postPublishDiscard => 'Discard';
 
   @override
+  String get postDiscardTooLate =>
+      'Your post was already shared, so it wasn\'t discarded.';
+
+  @override
   String get newPostPublishBusy =>
-      'Your previous post is still being sent. Try again in a moment.';
+      'You already have 3 posts waiting. Try again when one is out.';
+
+  @override
+  String postPublishingMany(int count) {
+    return 'Posting $count posts…';
+  }
+
+  @override
+  String postPublishProgress(int done, int total, int percent) {
+    return '$done of $total done · $percent%';
+  }
+
+  @override
+  String postPublishDoneOf(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String postPublishRowTitle(int n) {
+    return 'Post $n';
+  }
+
+  @override
+  String get postPublishRowPosted => 'Posted';
+
+  @override
+  String get postPublishRowWaiting => 'Waiting';
+
+  @override
+  String get postPublishAllPosted => 'All posted';
+
+  @override
+  String get postPublishOffline => 'Waiting for connection';
+
+  @override
+  String postPublishOfflineSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count posts paused',
+      one: '1 post paused',
+    );
+    return '$_temp0 · resumes automatically';
+  }
+
+  @override
+  String postPublishSomePosted(int done, int total) {
+    return '$done of $total posted';
+  }
+
+  @override
+  String postPublishSomeFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count posts didn\'t upload',
+      one: '1 post didn\'t upload',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postPublishShowAll => 'Show all posts';
+
+  @override
+  String get postPublishHideAll => 'Hide the list';
 
   @override
   String get postHeadlineYou => 'You';

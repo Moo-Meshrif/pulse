@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/services/video_compress_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
+import 'package:pulse/core/utils/cancel_signal.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
@@ -165,6 +166,51 @@ void main() {
     expect(await media.existing('u1/p1'), {'0.jpg'});
     await media.removeQuietly(['u1/p1/0.jpg']);
     verify(() => files.remove(['u1/p1/0.jpg'])).called(1);
+  });
+
+  group('target', () {
+    test(
+      'a file is named, typed and sized as send uploads it, its frame too',
+      () async {
+        final target = await media.target(
+          ContentKind.post,
+          clip(thumb: frame.path),
+          folder: 'u1/p1',
+          stem: 'm1',
+        );
+        expect(
+          target,
+          const MediaTarget(
+            path: 'u1/p1/m1.mov',
+            mimeType: 'video/quicktime',
+            sizeBytes: 300,
+            thumbPath: 'u1/p1/m1_thumb.jpg',
+            thumbSizeBytes: 100,
+          ),
+        );
+        verifyZeroInteractions(files);
+      },
+    );
+
+    test('a video to shrink goes as MP4 of a size not known yet', () async {
+      final target = await media.target(
+        ContentKind.post,
+        MediaToSend(
+          filePath: video.path,
+          isVideo: true,
+          width: 2160,
+          height: 3840,
+          durationMs: 60000,
+          sizeBytes: 300 * 1024 * 1024,
+        ),
+        folder: 'u1/p1',
+        stem: 'm1',
+      );
+      expect(target.path, 'u1/p1/m1.mp4');
+      expect(target.mimeType, 'video/mp4');
+      expect(target.sizeBytes, isNull);
+      expect(target.thumbSizeBytes, isNull); // its frame is made at upload
+    });
   });
 
   group('shrinking', () {
@@ -418,6 +464,64 @@ void main() {
               as File;
       expect(file.path, video.path);
       verifyNever(() => compressor.delete(any()));
+    });
+  });
+
+  group('cancel', () {
+    test('a cancelled send uploads nothing and fails', () async {
+      final cancel = CancelSignal()..cancel();
+      await expectLater(
+        media.send(
+          ContentKind.post,
+          clip(thumb: frame.path),
+          folder: 'u1/p1',
+          stem: '0',
+          cancel: cancel,
+        ),
+        throwsA(isA<Failure>()),
+      );
+      verifyNever(
+        () => files.upload(
+          path: any(named: 'path'),
+          file: any(named: 'file'),
+          contentType: any(named: 'contentType'),
+          onBytes: any(named: 'onBytes'),
+          cancel: any(named: 'cancel'),
+        ),
+      );
+    });
+
+    test('cancelled after the video went out, its frame is not sent', () async {
+      final cancel = CancelSignal();
+      when(
+        () => files.upload(
+          path: any(named: 'path'),
+          file: any(named: 'file'),
+          contentType: any(named: 'contentType'),
+          onBytes: any(named: 'onBytes'),
+          cancel: any(named: 'cancel'),
+        ),
+      ).thenAnswer((_) async => cancel.cancel());
+      await expectLater(
+        media.send(
+          ContentKind.post,
+          clip(thumb: frame.path),
+          folder: 'u1/p1',
+          stem: '0',
+          cancel: cancel,
+        ),
+        throwsA(isA<Failure>()),
+      );
+      final paths = verify(
+        () => files.upload(
+          path: captureAny(named: 'path'),
+          file: any(named: 'file'),
+          contentType: any(named: 'contentType'),
+          onBytes: any(named: 'onBytes'),
+          cancel: any(named: 'cancel', that: same(cancel)),
+        ),
+      ).captured;
+      expect(paths, ['u1/p1/0.mov']);
     });
   });
 }

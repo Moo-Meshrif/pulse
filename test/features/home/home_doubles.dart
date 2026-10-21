@@ -5,6 +5,7 @@ import 'package:pulse/features/activity/domain/use_case/get_unread_activity_coun
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/home/presentation/cubit/bell_dot/bell_dot_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/feed/feed_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/post_publish/post_line_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/post_publish/post_publish_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cubit.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
@@ -21,10 +22,12 @@ import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_c
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/get_publish_line_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../helpers/content_mocks.dart';
+import '../../helpers/pump_app.dart';
 import '../post/post_fixtures.dart';
 
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
@@ -65,7 +68,11 @@ void registerHomeDoubles() {
   when(unread.call).thenAnswer((_) async => 0);
   when(getRail.call).thenAnswer((_) async => []);
   // Nothing is being sent.
-  final publish = ContentPublishRepositoryImpl(EventBus());
+  final publish = ContentPublishRepositoryImpl(
+    EventBus(),
+    FakeContentDiscards(),
+    FakeConnectivity(),
+  );
   getIt
     ..registerFactory(
       () => FeedCubit(getFeed, _Sign(), EventBus(), currentUser),
@@ -89,7 +96,14 @@ void registerHomeDoubles() {
         GetPublishStatusUseCase(publish),
         RetryPublishUseCase(publish),
         DiscardPublishUseCase(publish),
+        okResumeContent(),
+        okResumeSharedPosts(),
+        currentUser,
+        hasOpenPostDraft(),
       ),
+    )
+    ..registerFactory(
+      () => PostLineCubit(EventBus(), GetPublishLineUseCase(publish)),
     )
     ..registerFactory(() => BellDotCubit(unread, EventBus()))
     ..registerFactory(

@@ -4,6 +4,7 @@ import UIKit
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var videoOverlay: VideoOverlayPlugin?
+  private var backup: BackupPlugin?
 
   override func application(
     _ application: UIApplication,
@@ -16,5 +17,7 @@ import UIKit
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "VideoOverlayPlugin")
     videoOverlay = VideoOverlayPlugin(messenger: registrar!.messenger())
+    let backupRegistrar = engineBridge.pluginRegistry.registrar(forPlugin: "BackupPlugin")
+    backup = BackupPlugin(messenger: backupRegistrar!.messenger())
   }
 }

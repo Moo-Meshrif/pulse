@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+: post drafts (photos and videos waiting in New post) stay on this phone. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="post_drafts/" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="post_drafts/" />
+    </device-transfer>
+</data-extraction-rules>

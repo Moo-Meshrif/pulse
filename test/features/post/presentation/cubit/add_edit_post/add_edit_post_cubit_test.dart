@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
@@ -7,6 +8,12 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
+import 'package:pulse/features/post/data/model/post_draft_media_model.dart';
+import 'package:pulse/features/post/data/model/post_draft_model.dart';
+import 'package:pulse/features/post/data/model/post_draft_tag_model.dart';
+import 'package:pulse/features/post/data/repository/post_draft_repository.dart';
+import 'package:pulse/features/post/data/repository/post_share_repository.dart';
+import 'package:pulse/features/post/data/repository/shared_posts_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
@@ -15,7 +22,6 @@ import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/event/post_saved.dart';
-import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart';
@@ -26,13 +32,18 @@ import 'package:pulse/features/post/presentation/utils/tag_choice.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
+import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/data/repository/media_upload_queue.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/publish_content_use_case.dart';
 
-class _CreatePost extends Mock implements CreatePostUseCase {}
+import '../../../../../helpers/content_mocks.dart';
+import '../../../../../helpers/pump_app.dart';
+
+class _Share extends Mock implements PostShareRepository {}
 
 class _UpdatePost extends Mock implements UpdatePostUseCase {}
 
@@ -45,6 +56,8 @@ class _Privacy extends Mock implements GetPrivacyUseCase {}
 class _Thumbnails extends Mock implements VideoThumbnailService {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
+
+class _MediaRepo extends Mock implements ContentMediaRepository {}
 
 PickedMedia photo([String path = '/p.jpg']) =>
     PickedMedia(path: path, isVideo: false, width: 800, height: 600);
@@ -60,7 +73,7 @@ PickedMedia video({int durationMs = 30000, int sizeBytes = 1000}) =>
     );
 
 void main() {
-  late _CreatePost createPost;
+  late _Share share;
   late _UpdatePost updatePost;
   late _SignUrls signUrls;
   late _Picker picker;
@@ -69,6 +82,10 @@ void main() {
   late _Account account;
   late ContentPublishRepositoryImpl publish;
   late EventBus bus;
+  late MockPostDraftDatasource drafts;
+  late MediaUploadQueue uploads;
+  late MockPendingContentDatasource server;
+  late FakeContentDiscards discards;
 
   setUpAll(() {
     registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
@@ -83,7 +100,7 @@ void main() {
   });
 
   setUp(() {
-    createPost = _CreatePost();
+    share = _Share();
     updatePost = _UpdatePost();
     signUrls = _SignUrls();
     picker = _Picker();
@@ -91,20 +108,34 @@ void main() {
     thumbnails = _Thumbnails();
     account = _Account();
     bus = EventBus();
-    publish = ContentPublishRepositoryImpl(bus);
+    discards = FakeContentDiscards();
+    publish = ContentPublishRepositoryImpl(bus, discards, FakeConnectivity());
+    drafts = noPostDraft();
+    uploads = idleUploads();
+    server = serverDraftOk();
     when(account.call).thenReturn(null);
     when(() => picker.describe(any())).thenAnswer(
       (invocation) async => invocation.positionalArguments.first as PickedMedia,
     );
-    when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-        .thenAnswer((_) async => null);
+    // Like the real one: the uploads still going are waited for first.
+    when(
+      () => share.share(
+        any(),
+        beforeUpload: any(named: 'beforeUpload'),
+        onProgress: any(named: 'onProgress'),
+      ),
+    ).thenAnswer((invocation) async {
+      final beforeUpload =
+          invocation.namedArguments[#beforeUpload] as Future<void> Function()?;
+      await beforeUpload?.call();
+      return null;
+    });
     when(() => thumbnails.thumbnail(any())).thenAnswer((_) async => '/t.jpg');
   });
 
   //urls --> which passign from post card
   AddEditPostCubit build([PostEntity? post, Map<String, String>? urls]) =>
       AddEditPostCubit(
-        createPost,
         updatePost,
         PublishContentUseCase(publish),
         bus,
@@ -113,6 +144,13 @@ void main() {
         privacy,
         thumbnails,
         account,
+        PostDraftRepository(
+          drafts,
+          uploads,
+          server,
+          SharedPostsRepository(drafts, server, share, publish, bus),
+          discards,
+        ),
         post,
         urls,
       );
@@ -186,7 +224,11 @@ void main() {
       expect(cubit.state.isSaved, isTrue);
       await pumpEventQueue();
       verifyNever(
-        () => createPost(any(), onProgress: any(named: 'onProgress')),
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
       );
 
       read.complete(
@@ -195,8 +237,9 @@ void main() {
       await pumpEventQueue();
       final sent =
           verify(
-                () => createPost(
+                () => share.share(
                   captureAny(),
+                  beforeUpload: any(named: 'beforeUpload'),
                   onProgress: any(named: 'onProgress'),
                 ),
               ).captured.single
@@ -319,8 +362,9 @@ void main() {
 
       final sent =
           verify(
-                () => createPost(
+                () => share.share(
                   captureAny(),
+                  beforeUpload: any(named: 'beforeUpload'),
                   onProgress: any(named: 'onProgress'),
                 ),
               ).captured.single
@@ -335,8 +379,13 @@ void main() {
 
     test('closes at once, before the post is sent', () {
       final done = Completer<PostEntity?>();
-      when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-          .thenAnswer((_) => done.future);
+      when(
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenAnswer((_) => done.future);
       final cubit = build()..captionChanged('hello');
       cubit.save();
       expect(cubit.state.isSaved, isTrue);
@@ -346,38 +395,94 @@ void main() {
     test(
       'a failure is kept by the sender, then Retry sends the same id',
       () async {
-        when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-            .thenThrow(const UnexpectedFailure());
+        when(
+          () => share.share(
+            any(),
+            beforeUpload: any(named: 'beforeUpload'),
+            onProgress: any(named: 'onProgress'),
+          ),
+        ).thenThrow(const UnexpectedFailure());
         final cubit = build()..captionChanged('hello');
         cubit.save();
         await pumpEventQueue();
         expect(cubit.state.isSaved, isTrue);
         expect(publish.current(ContentKind.post), isA<ContentPublishFailed>());
 
-        when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-            .thenAnswer((_) async => null);
+        when(
+          () => share.share(
+            any(),
+            beforeUpload: any(named: 'beforeUpload'),
+            onProgress: any(named: 'onProgress'),
+          ),
+        ).thenAnswer((_) async => null);
         publish.retry(ContentKind.post);
         await pumpEventQueue();
         final ids = verify(
-          () => createPost(captureAny(), onProgress: any(named: 'onProgress')),
+          () => share.share(
+            captureAny(),
+            beforeUpload: any(named: 'beforeUpload'),
+            onProgress: any(named: 'onProgress'),
+          ),
         ).captured.cast<NewPostEntity>().map((p) => p.id).toSet();
         expect(ids, {cubit.state.postId});
         expect(publish.current(ContentKind.post), isA<ContentPublishIdle>());
       },
     );
 
-    test('another post is refused while one is waiting for Retry', () async {
-      when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-          .thenThrow(const UnexpectedFailure());
-      build()
-        ..captionChanged('first')
+    test('a second tap while the screen closes sends nothing more', () async {
+      final cubit = build()..captionChanged('hello');
+      cubit
+        ..save()
         ..save();
       await pumpEventQueue();
+      verify(
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).called(1);
+      expect(cubit.state.notice, isNull);
+    });
 
-      final second = build()..captionChanged('second');
-      second.save();
-      expect(second.state.isSaved, isFalse);
-      expect(second.state.notice, NewPostNotice.publishBusy);
+    test('Discard on Home after a failure discards it on the server', () async {
+      when(
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenThrow(const NetworkFailure());
+      final cubit = build()..captionChanged('hello');
+      cubit.save();
+      await pumpEventQueue();
+
+      publish.discard(ContentKind.post);
+      await pumpEventQueue();
+      expect(discards.saved, [cubit.state.postId]);
+      expect(discards.sent, [cubit.state.postId]);
+      verify(() => drafts.deleteFiles(cubit.state.postId)).called(1);
+    });
+
+    test('a 4th post is refused while 3 are waiting for Retry', () async {
+      when(
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenThrow(const UnexpectedFailure());
+      for (final text in ['first', 'second', 'third']) {
+        build()
+          ..captionChanged(text)
+          ..save();
+        await pumpEventQueue();
+      }
+
+      final fourth = build()..captionChanged('fourth');
+      fourth.save();
+      expect(fourth.state.isSaved, isFalse);
+      expect(fourth.state.notice, NewPostNotice.publishBusy);
     });
 
     test('tells the feed to load again when the author is unknown', () async {
@@ -394,7 +499,11 @@ void main() {
       build().save();
       await pumpEventQueue();
       verifyNever(
-        () => createPost(any(), onProgress: any(named: 'onProgress')),
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
       );
     });
   });
@@ -585,7 +694,11 @@ void main() {
       expect(edited.caption, 'Changed');
       expect(edited.kept, [m0, m1]);
       verifyNever(
-        () => createPost(any(), onProgress: any(named: 'onProgress')),
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
       );
       expect(cubit.state.isSaved, isTrue);
     });
@@ -606,8 +719,13 @@ void main() {
     }
 
     test('what is chosen is something to lose, and goes in the post', () async {
-      when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-          .thenAnswer((_) async => null);
+      when(
+        () => share.share(
+          any(),
+          beforeUpload: any(named: 'beforeUpload'),
+          onProgress: any(named: 'onProgress'),
+        ),
+      ).thenAnswer((_) async => null);
       final cubit = build()
         ..captionChanged('hi')
         ..tagsChanged([omar.withSpot(0, 0.5, 0.25), laila]);
@@ -618,8 +736,9 @@ void main() {
 
       final sent =
           verify(
-                () => createPost(
+                () => share.share(
                   captureAny(),
+                  beforeUpload: any(named: 'beforeUpload'),
                   onProgress: any(named: 'onProgress'),
                 ),
               ).captured.single
@@ -716,8 +835,13 @@ void main() {
     test(
       'a chosen feeling is something to lose, and goes in the post',
       () async {
-        when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-            .thenAnswer((_) async => null);
+        when(
+          () => share.share(
+            any(),
+            beforeUpload: any(named: 'beforeUpload'),
+            onProgress: any(named: 'onProgress'),
+          ),
+        ).thenAnswer((_) async => null);
         final cubit = build()
           ..captionChanged('hi')
           ..moodChanged(happy);
@@ -728,8 +852,9 @@ void main() {
 
         final sent =
             verify(
-                  () => createPost(
+                  () => share.share(
                     captureAny(),
+                    beforeUpload: any(named: 'beforeUpload'),
                     onProgress: any(named: 'onProgress'),
                   ),
                 ).captured.single
@@ -803,6 +928,426 @@ void main() {
               ).captured.single
               as EditPostEntity;
       expect(sent.mood, isNull);
+    });
+  });
+
+  group('the draft on the device', () {
+    const savedDraft = PostDraftModel(
+      id: 'draft-1',
+      caption: 'half written',
+      location: 'Riyadh',
+      commentsEnabled: false,
+      visibility: 'followers',
+      moodKind: 'feeling',
+      moodKey: 'happy',
+      tags: [PostDraftTagModel(userId: 'u2', username: 'bob')],
+      media: [
+        PostDraftMediaModel(
+          path: '/drafts/draft-1/a.mp4',
+          isVideo: true,
+          width: 1080,
+          height: 1920,
+          durationMs: 5000,
+          poster: '/drafts/draft-1/a.jpg',
+        ),
+      ],
+    );
+
+    PostDraftModel savedModel() =>
+        verify(() => drafts.save(captureAny())).captured.last as PostDraftModel;
+
+    test('opening New post restores everything the draft kept', () async {
+      when(drafts.read).thenReturn(savedDraft);
+      when(privacy.call).thenAnswer(
+        (_) async => const PrivacyEntity(
+          isPrivate: false,
+          defaultVisibility: ContentAudience.public,
+        ),
+      );
+      final cubit = build();
+      await cubit.loadDefaultVisibility();
+
+      final state = cubit.state;
+      expect(state.postId, 'draft-1');
+      expect(state.caption, 'half written');
+      expect(state.location, 'Riyadh');
+      expect(state.commentsEnabled, isFalse);
+      expect(state.visibility, ContentAudience.followers);
+      expect(
+        state.mood,
+        const PostMoodEntity(kind: MoodKind.feeling, key: 'happy'),
+      );
+      expect(state.tags.single.id, 'u2');
+      expect(state.media.single.path, '/drafts/draft-1/a.mp4');
+      expect(state.posters, {'/drafts/draft-1/a.mp4': '/drafts/draft-1/a.jpg'});
+      verifyNever(() => picker.describe(any()));
+    });
+
+    test('a restored file that was never read is read again', () async {
+      when(drafts.read).thenReturn(
+        const PostDraftModel(
+          id: 'draft-1',
+          media: [PostDraftMediaModel(path: '/drafts/draft-1/b.jpg')],
+        ),
+      );
+      build();
+      await pumpEventQueue();
+      verify(() => picker.describe(any())).called(1);
+    });
+
+    test('a change is saved after a short pause, once', () {
+      fakeAsync((async) {
+        build()
+          ..captionChanged('h')
+          ..captionChanged('hi');
+        async.elapse(const Duration(milliseconds: 100));
+        verifyNever(() => drafts.save(any()));
+        async.elapse(const Duration(milliseconds: 400));
+        final saves = verify(() => drafts.save(captureAny())).captured;
+        expect(saves, hasLength(1));
+        expect((saves.single as PostDraftModel).caption, 'hi');
+      });
+    });
+
+    test('a draft emptied of everything is forgotten', () {
+      fakeAsync((async) {
+        build()
+          ..captionChanged('hi')
+          ..captionChanged('');
+        async.elapse(const Duration(seconds: 1));
+        verify(drafts.forget).called(1);
+        verifyNever(() => drafts.save(any()));
+      });
+    });
+
+    test('Save draft saves at once', () async {
+      final cubit = build()..captionChanged('hi');
+      await cubit.saveDraft();
+      final saved = savedModel();
+      expect(saved.caption, 'hi');
+      expect(saved.id, cubit.state.postId);
+    });
+
+    test(
+      'Discard post of a draft that never reached the server only forgets it',
+      () {
+        fakeAsync((async) {
+          final cubit = build()..captionChanged('hi');
+          unawaited(cubit.discardDraft());
+          async.flushMicrotasks();
+          verify(drafts.forget).called(1);
+          expect(discards.saved, isEmpty);
+          expect(discards.sent, isEmpty);
+          verify(() => drafts.deleteFiles(cubit.state.postId)).called(1);
+
+          cubit.captionChanged('more');
+          async.elapse(const Duration(seconds: 1));
+          verifyNever(() => drafts.save(any()));
+        });
+      },
+    );
+
+    test('Discard post of a draft that reached the server tells it', () {
+      fakeAsync((async) {
+        when(drafts.read).thenReturn(
+          const PostDraftModel(id: 'draft-1', caption: 'hi', isOnServer: true),
+        );
+        final cubit = build();
+        unawaited(cubit.discardDraft());
+        async.flushMicrotasks();
+        expect(discards.saved, ['draft-1']);
+        expect(discards.sent, ['draft-1']);
+      });
+    });
+
+    test(
+      'Save draft is saved closed, and the app going away saves it open',
+      () async {
+        final cubit = build()..captionChanged('hi');
+        await cubit.saveDraft();
+        expect(savedModel().isOpen, isFalse);
+
+        clearInteractions(drafts);
+        await cubit.saveDraftOpen();
+        expect(savedModel().isOpen, isTrue);
+      },
+    );
+
+    test('picked files are moved into the draft folder', () async {
+      when(() => picker.pickMany(limit: any(named: 'limit')))
+          .thenAnswer((_) async => [photo('/tmp/a.jpg')]);
+      when(() => drafts.keep(any(), '/tmp/a.jpg'))
+          .thenAnswer((_) async => '/drafts/x/1.jpg');
+      final cubit = build();
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      expect(cubit.state.media.single.path, '/drafts/x/1.jpg');
+      verify(() => drafts.keep(cubit.state.postId, '/tmp/a.jpg')).called(1);
+    });
+
+    test('a file that cannot be moved is kept where it is', () async {
+      when(() => picker.pickMany(limit: any(named: 'limit')))
+          .thenAnswer((_) async => [photo('/tmp/a.jpg')]);
+      when(() => drafts.keep(any(), any()))
+          .thenThrow(const UnexpectedFailure());
+      final cubit = build();
+      await cubit.pickMedia();
+      expect(cubit.state.media.single.path, '/tmp/a.jpg');
+    });
+
+    test('removing a photo deletes its file', () async {
+      when(() => picker.pickMany(limit: any(named: 'limit')))
+          .thenAnswer((_) async => [photo('/drafts/x/1.jpg')]);
+      final cubit = build();
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      cubit.removeMedia(0);
+      verify(() => drafts.deleteFile('/drafts/x/1.jpg')).called(1);
+    });
+
+    test(
+      'Share forgets the draft at once and deletes its files once sent',
+      () async {
+        final sent = Completer<PostEntity?>();
+        when(
+          () => share.share(
+            any(),
+            beforeUpload: any(named: 'beforeUpload'),
+            onProgress: any(named: 'onProgress'),
+          ),
+        ).thenAnswer((_) => sent.future);
+        final cubit = build()..captionChanged('hello');
+        cubit.save();
+        await pumpEventQueue();
+        verify(drafts.forget).called(1);
+        verifyNever(() => drafts.deleteFiles(any()));
+
+        sent.complete(null);
+        await pumpEventQueue();
+        verify(() => drafts.deleteFiles(cubit.state.postId)).called(1);
+      },
+    );
+
+    test('editing a post never reads or writes the draft', () {
+      fakeAsync((async) {
+        build(
+          PostEntity(
+            id: 'p',
+            authorId: 'u',
+            username: 'omar',
+            caption: 'Hello',
+            likeCount: 0,
+            commentCount: 0,
+            commentsEnabled: true,
+            visibility: ContentAudience.public,
+            createdAt: DateTime(2026),
+            likedByMe: false,
+            savedByMe: false,
+            media: const [],
+          ),
+        ).captionChanged('changed');
+        async.elapse(const Duration(seconds: 1));
+        verifyNever(drafts.read);
+        verifyNever(() => drafts.save(any()));
+      });
+    });
+  });
+
+  group('uploading on pick', () {
+    late _MediaRepo media;
+
+    /// File names in the post's folder on the server.
+    late Set<String> onServer;
+
+    /// The uploads in progress, by stem.
+    late Map<String, Completer<SentMedia>> sends;
+
+    setUpAll(() {
+      registerFallbackValue(ContentKind.post);
+      registerFallbackValue(const MediaToSend(filePath: '/x', isVideo: false));
+    });
+
+    setUp(() {
+      media = _MediaRepo();
+      onServer = {};
+      sends = {};
+      when(() => media.folderOf(any())).thenAnswer(
+        (invocation) => 'u1/${invocation.positionalArguments.first}',
+      );
+      when(() => media.existing(any())).thenAnswer((_) async => {...onServer});
+      when(() => media.removeQuietly(any())).thenAnswer((invocation) async {
+        for (final path in invocation.positionalArguments.first as List) {
+          onServer.remove((path as String).split('/').last);
+        }
+      });
+      when(
+        () => media.send(
+          any(),
+          any(),
+          folder: any(named: 'folder'),
+          stem: any(named: 'stem'),
+          existing: any(named: 'existing'),
+          onProgress: any(named: 'onProgress'),
+          cancel: any(named: 'cancel'),
+        ),
+      ).thenAnswer((invocation) async {
+        final stem = invocation.namedArguments[#stem] as String;
+        final sent = await (sends[stem] = Completer<SentMedia>()).future;
+        onServer.add('$stem.jpg');
+        return sent;
+      });
+      uploads = MediaUploadQueue(media);
+    });
+
+    void finish(String stem) =>
+        sends[stem]!.complete(SentMedia(path: 'u1/p/$stem.jpg'));
+
+    List<String> sentStems() => verify(
+      () => media.send(
+        any(),
+        any(),
+        folder: any(named: 'folder'),
+        stem: captureAny(named: 'stem'),
+        existing: any(named: 'existing'),
+        onProgress: any(named: 'onProgress'),
+        cancel: any(named: 'cancel'),
+      ),
+    ).captured.cast<String>();
+
+    Future<AddEditPostCubit> pickThree() async {
+      when(() => picker.pickMany(limit: any(named: 'limit'))).thenAnswer(
+        (_) async => [photo('/a.jpg'), photo('/b.jpg'), photo('/c.jpg')],
+      );
+      final cubit = build();
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      return cubit;
+    }
+
+    test('the first pick opens the draft on the server, once', () async {
+      final cubit = await pickThree();
+      when(() => picker.pickMany(limit: any(named: 'limit')))
+          .thenAnswer((_) async => [photo('/d.jpg')]);
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      verify(() => server.openDraft(cubit.state.postId, ContentKind.post))
+          .called(1);
+    });
+
+    test(
+      'pick 3, remove 1 mid-upload, edit the text: 2 files, each sent once',
+      () async {
+        final cubit = await pickThree();
+        final ids = cubit.state.mediaIds;
+        final (a, b, c) = (ids['/a.jpg']!, ids['/b.jpg']!, ids['/c.jpg']!);
+        expect(sends.keys, [a, b], reason: 'two at a time');
+
+        cubit.removeMedia(1);
+        await pumpEventQueue();
+        finish(b); // a late answer for the removed photo
+        finish(a);
+        await pumpEventQueue();
+        finish(c);
+        cubit.captionChanged('hello');
+        await pumpEventQueue();
+
+        expect(onServer, {'$a.jpg', '$c.jpg'});
+        expect(sentStems(), unorderedEquals([a, b, c]));
+      },
+    );
+
+    test('a failed upload shows on the photo; a tap tries it again', () async {
+      when(() => picker.pickMany(limit: any(named: 'limit')))
+          .thenAnswer((_) async => [photo('/a.jpg')]);
+      final cubit = build();
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      final id = cubit.state.mediaIds['/a.jpg']!;
+      sends[id]!.completeError(const NetworkFailure());
+      await pumpEventQueue();
+      expect(cubit.state.failedUploads, {'/a.jpg'});
+
+      cubit.retryUpload('/a.jpg');
+      await pumpEventQueue();
+      expect(cubit.state.failedUploads, isEmpty);
+      finish(id);
+      await pumpEventQueue();
+      expect(onServer, {'$id.jpg'});
+    });
+
+    test(
+      'Share waits for the uploads still going and names files by their id',
+      () async {
+        when(() => picker.pickMany(limit: any(named: 'limit')))
+            .thenAnswer((_) async => [photo('/a.jpg')]);
+        final cubit = build();
+        await cubit.pickMedia();
+        await pumpEventQueue();
+        cubit.save();
+        await pumpEventQueue();
+        final sent =
+            verify(
+                  () => share.share(
+                    captureAny(),
+                    beforeUpload: any(named: 'beforeUpload'),
+                    onProgress: any(named: 'onProgress'),
+                  ),
+                ).captured.single
+                as NewPostEntity;
+        final id = cubit.state.mediaIds['/a.jpg']!;
+        expect(sent.media.single.id, id);
+        expect(publish.current(ContentKind.post), isA<ContentPublishing>());
+
+        finish(id);
+        await pumpEventQueue();
+        expect(publish.current(ContentKind.post), isA<ContentPublishIdle>());
+      },
+    );
+
+    test('a restored draft uploads its files again', () async {
+      when(drafts.read).thenReturn(
+        const PostDraftModel(
+          id: 'draft-1',
+          media: [
+            PostDraftMediaModel(
+              id: 'm1',
+              path: '/drafts/draft-1/a.jpg',
+              isVideo: false,
+              width: 4,
+              height: 3,
+            ),
+          ],
+        ),
+      );
+      build();
+      await pumpEventQueue();
+      expect(sends.keys, ['m1']);
+      verify(() => server.openDraft('draft-1', ContentKind.post)).called(1);
+    });
+
+    test('editing a post uploads nothing on pick', () async {
+      when(() => picker.pickMany(limit: any(named: 'limit')))
+          .thenAnswer((_) async => [photo('/a.jpg')]);
+      final cubit = build(
+        PostEntity(
+          id: 'p',
+          authorId: 'u',
+          username: 'omar',
+          caption: 'Hello',
+          likeCount: 0,
+          commentCount: 0,
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+          createdAt: DateTime(2026),
+          likedByMe: false,
+          savedByMe: false,
+          media: const [],
+        ),
+      );
+      await cubit.pickMedia();
+      await pumpEventQueue();
+      expect(sends, isEmpty);
+      verifyNever(() => server.openDraft(any(), any()));
     });
   });
 }

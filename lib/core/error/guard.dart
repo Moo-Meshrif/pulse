@@ -19,9 +19,14 @@ abstract final class Guard {
 
   /// Runs a call and returns its value, or throws the matching [Failure]. Offline, it throws
   /// [NetworkFailure] without making the call.
-  static Future<T> run<T>(Future<T> Function() call) async {
+  ///
+  /// [checkOffline] false is for work that stays on the device (local storage, files): it works offline too.
+  static Future<T> run<T>(
+    Future<T> Function() call, {
+    bool checkOffline = true,
+  }) async {
     try {
-      if (await isOffline?.call() ?? false) throw const NetworkFailure();
+      if (checkOffline) await _throwIfOffline();
       return await call();
     } catch (error, stackTrace) {
       final failure = toFailure(error, stackTrace);
@@ -30,6 +35,10 @@ abstract final class Guard {
       }
       throw failure;
     }
+  }
+
+  static Future<void> _throwIfOffline() async {
+    if (await isOffline?.call() ?? false) throw const NetworkFailure();
   }
 
   /// The [Failure] for any error. A [Failure] that was already thrown passes through untouched.

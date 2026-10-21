@@ -21,14 +21,14 @@ void main() {
         ),
       );
       final render = renderStoryOverlay(
-      context,
-      overlays: const [],
-      width: 800,
-      height: 1600,
-    );
-    await tester.pump();
-    final bytes = (await tester.runAsync(() => render))!;
-    final image = await tester.runAsync(() async {
+        context,
+        overlays: const [],
+        width: 800,
+        height: 1600,
+      );
+      await tester.pump();
+      final bytes = (await tester.runAsync(() => render))!;
+      final image = await tester.runAsync(() async {
         final codec = await ui.instantiateImageCodec(Uint8List.fromList(bytes));
         return (await codec.getNextFrame()).image;
       });

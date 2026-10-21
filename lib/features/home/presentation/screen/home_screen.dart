@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,9 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/extensions/notice_context.dart';
 import '../../../../core/notice/notices.dart';
+import '../../../../core/router/app_navigator.dart';
+import '../../../../core/router/app_routes.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../../post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import '../../../post/presentation/cubit/post_actions/post_actions_state.dart';
@@ -13,6 +18,7 @@ import '../../../post/presentation/utils/enums/post_row.dart';
 import '../cubit/bell_dot/bell_dot_cubit.dart';
 import '../cubit/feed/feed_cubit.dart';
 import '../cubit/feed/feed_state.dart';
+import '../cubit/post_publish/post_line_cubit.dart';
 import '../cubit/post_publish/post_publish_cubit.dart';
 import '../cubit/story_rail/story_rail_cubit.dart';
 import '../cubit/story_rail/story_rail_state.dart';
@@ -73,6 +79,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  bool _discardRefused(
+    ContentPublishStatus before,
+    ContentPublishStatus status,
+  ) => status is ContentDiscardRefused;
+
+  /// The post had gone out before the discard reached the server: say so, and load it into the feed.
+  void _showDiscardRefused(BuildContext context, ContentPublishStatus status) {
+    Notices.info(context.l10n.postDiscardTooLate);
+    unawaited(context.read<FeedCubit>().refresh());
+  }
+
   bool _uploadJustFailed(StoryRailState before, StoryRailState state) =>
       state.upload is ContentPublishFailed &&
       before.upload is! ContentPublishFailed;
@@ -88,6 +105,25 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  /// Opens New post with the draft the app was closed on, once, when Home first opens.
+  PostPublishCubit _createPostPublish(BuildContext context) {
+    final cubit = getIt<PostPublishCubit>();
+    final reopenDraft = cubit.hasOpenDraft;
+    cubit.start();
+    if (reopenDraft) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          AppNavigator.push<void>(
+            context,
+            AppRoutes.createPost,
+            rootNavigator: true,
+          );
+        }
+      });
+    }
+    return cubit;
+  }
+
   @override
   Widget build(BuildContext context) => MultiBlocProvider(
     providers: [
@@ -95,7 +131,8 @@ class HomeScreen extends StatelessWidget {
       BlocProvider(create: (_) => getIt<PostActionsCubit>()),
       BlocProvider(create: (_) => getIt<BellDotCubit>()..start()),
       BlocProvider(create: (_) => getIt<StoryRailCubit>()..start()),
-      BlocProvider(create: (_) => getIt<PostPublishCubit>()..start()),
+      BlocProvider(create: _createPostPublish),
+      BlocProvider(create: (_) => getIt<PostLineCubit>()..start()),
     ],
     // Independent effects, each with its own condition: do not merge them.
     child: MultiBlocListener(
@@ -120,12 +157,21 @@ class HomeScreen extends StatelessWidget {
           listenWhen: _publishJustDone,
           listener: _showPublishDone,
         ),
+        BlocListener<PostPublishCubit, ContentPublishStatus>(
+          listenWhen: _discardRefused,
+          listener: _showDiscardRefused,
+        ),
         BlocListener<StoryRailCubit, StoryRailState>(
           listenWhen: _uploadJustFailed,
           listener: _showUploadFailedWithRetry,
         ),
       ],
-      child: const HomeView(),
+      child: Builder(
+        builder: (context) => OnAppVisibility(
+          onShow: context.read<PostPublishCubit>().resume,
+          child: const HomeView(),
+        ),
+      ),
     ),
   );
 }

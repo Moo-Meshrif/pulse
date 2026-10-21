@@ -18,6 +18,7 @@ import 'package:pulse/features/activity/domain/use_case/get_unread_activity_coun
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/home/presentation/cubit/bell_dot/bell_dot_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/feed/feed_cubit.dart';
+import 'package:pulse/features/home/presentation/cubit/post_publish/post_line_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/post_publish/post_publish_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cubit.dart';
 import 'package:pulse/features/home/presentation/screen/home_screen.dart';
@@ -43,8 +44,10 @@ import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_c
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
+import 'package:pulse/shared/content/domain/entity/content_publish_line.dart';
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/get_publish_line_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
@@ -170,9 +173,31 @@ void main() {
       ..registerFactory(
         () => PostPublishCubit(
           bus,
-          GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+          GetPublishStatusUseCase(
+            ContentPublishRepositoryImpl(
+              bus,
+              FakeContentDiscards(),
+              FakeConnectivity(),
+            ),
+          ),
           retryPublish,
           discardPublish,
+          okResumeContent(),
+          okResumeSharedPosts(),
+          currentUser,
+          hasOpenPostDraft(),
+        ),
+      )
+      ..registerFactory(
+        () => PostLineCubit(
+          bus,
+          GetPublishLineUseCase(
+            ContentPublishRepositoryImpl(
+              bus,
+              FakeContentDiscards(),
+              FakeConnectivity(),
+            ),
+          ),
         ),
       )
       ..registerFactory(() => BellDotCubit(requestCount, bus))
@@ -180,7 +205,13 @@ void main() {
         () => StoryRailCubit(
           getRail,
           bus,
-          GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+          GetPublishStatusUseCase(
+            ContentPublishRepositoryImpl(
+              bus,
+              FakeContentDiscards(),
+              FakeConnectivity(),
+            ),
+          ),
           retryUpload,
         ),
       );
@@ -271,18 +302,81 @@ void main() {
   });
 
   group('post publishing', () {
+    void line(List<ContentLineItem> items) =>
+        bus.fire(ContentPublishLine(ContentKind.post, items));
+
+    ContentLineItem item(
+      ContentLineState state, {
+      String id = 'p1',
+      double progress = 0,
+      Failure? failure,
+    }) => ContentLineItem(
+      id: id,
+      state: state,
+      progress: progress,
+      failure: failure,
+    );
+
+    testView('several posts are one card with the line, opened to a row each', (
+      tester,
+    ) async {
+      await show(tester);
+      line([
+        item(ContentLineState.done, id: 'a', progress: 1),
+        item(ContentLineState.sending, id: 'b', progress: 0.5),
+        item(ContentLineState.waiting, id: 'c'),
+      ]);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.postPublishingMany(3)), findsOneWidget);
+      expect(find.text(l10nEn.postPublishProgress(1, 3, 50)), findsOneWidget);
+      expect(find.text(l10nEn.postPublishRowPosted), findsNothing);
+
+      await tester.tap(find.byTooltip(l10nEn.postPublishShowAll));
+      await tester.pumpAndSettle();
+      expect(find.text(l10nEn.postPublishRowPosted), findsOneWidget);
+      expect(find.text(l10nEn.postPublishRowWaiting), findsOneWidget);
+    });
+
+    testView('with one failed post, Retry and Discard name that post', (
+      tester,
+    ) async {
+      await show(tester);
+      line([
+        item(ContentLineState.done, id: 'a', progress: 1),
+        item(ContentLineState.failed, id: 'b', failure: const ServerFailure()),
+      ]);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.postPublishSomePosted(1, 2)), findsOneWidget);
+
+      await tester.tap(find.text(l10nEn.retry));
+      verify(() => retryPublish(ContentKind.post, id: 'b')).called(1);
+    });
+
+    testView('posts waiting for the connection say so', (tester) async {
+      await show(tester);
+      line([
+        item(ContentLineState.failed, id: 'a', failure: const NetworkFailure()),
+        item(ContentLineState.failed, id: 'b', failure: const NetworkFailure()),
+      ]);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.postPublishOffline), findsOneWidget);
+    });
+
     testView('a post going out shows the banner, done shows the notice', (
       tester,
     ) async {
       await show(tester);
-      bus.fire(const ContentPublishing(ContentKind.post));
+      line([item(ContentLineState.sending)]);
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.postPublishing), findsOneWidget);
 
       bus
         ..fire(const ContentPublishDone(ContentKind.post))
-        ..fire(const ContentPublishIdle(ContentKind.post));
+        ..fire(const ContentPublishLine(ContentKind.post, []));
       await tester.pump();
       await tester.pump();
       await tester.pump(const Duration(seconds: 1)); // the notice slides in
@@ -298,12 +392,12 @@ void main() {
         find.byType(LinearProgressIndicator),
       );
 
-      bus.fire(const ContentPublishing(ContentKind.post));
+      line([item(ContentLineState.sending)]);
       await tester.pump();
       await tester.pump();
       expect(bar().value, isNull);
 
-      bus.fire(const ContentPublishing(ContentKind.post, progress: 0.4));
+      line([item(ContentLineState.sending, progress: 0.4)]);
       await tester.pump();
       expect(bar().value, 0.4);
     });
@@ -323,7 +417,7 @@ void main() {
       await show(tester, settle: false);
       await tester.pump();
       await tester.pump();
-      bus.fire(const ContentPublishing(ContentKind.post));
+      line([item(ContentLineState.sending)]);
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.homeEmptyTitle), findsOneWidget);
@@ -332,17 +426,50 @@ void main() {
 
     testView('a failed post offers Retry and Discard', (tester) async {
       await show(tester);
-      bus.fire(
-        const ContentPublishFailed(ContentKind.post, failure: NetworkFailure()),
-      );
+      line([item(ContentLineState.failed, failure: const ServerFailure())]);
       await tester.pump();
       await tester.pump();
       expect(find.text(l10nEn.postPublishFailed), findsOneWidget);
 
       await tester.tap(find.text(l10nEn.retry));
-      verify(() => retryPublish(ContentKind.post)).called(1);
+      verify(() => retryPublish(ContentKind.post, id: 'p1')).called(1);
       await tester.tap(find.text(l10nEn.postPublishDiscard));
-      verify(() => discardPublish(ContentKind.post)).called(1);
+      verify(() => discardPublish(ContentKind.post, id: 'p1')).called(1);
+    });
+  });
+
+  group('post discarding', () {
+    testView('a post the server rejected offers Discard only', (tester) async {
+      await show(tester);
+      bus.fire(
+        const ContentPublishLine(ContentKind.post, [
+          ContentLineItem(
+            id: 'p1',
+            state: ContentLineState.failed,
+            failure: RejectedFailure(),
+          ),
+        ]),
+      );
+      await tester.pump();
+      await tester.pump();
+      expect(find.text(l10nEn.postPublishFailed), findsOneWidget);
+      expect(find.text(l10nEn.postPublishDiscard), findsOneWidget);
+      expect(find.text(l10nEn.retry), findsNothing);
+    });
+
+    testView('a discard that came too late says so and reloads the feed', (
+      tester,
+    ) async {
+      await show(tester);
+      clearInteractions(getFeed);
+      bus
+        ..fire(const ContentDiscardRefused(ContentKind.post))
+        ..fire(const ContentPublishIdle(ContentKind.post));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1)); // the notice slides in
+      expect(find.text(l10nEn.postDiscardTooLate), findsOneWidget);
+      verify(() => getFeed(cursor: null)).called(1);
     });
   });
 

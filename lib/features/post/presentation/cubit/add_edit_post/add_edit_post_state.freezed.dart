@@ -17,11 +17,14 @@ mixin _$AddEditPostState {
 
 /// Made once, so Retry finds the files an earlier attempt uploaded; the post's own id when editing.
  String get postId;/// The post being edited, as it was when the screen opened; null when adding.
- PostEntity? get original; String get caption;/// The media already on the post that stay; empty when adding.
+ PostEntity? get original;/// Adding: the screen opened with the saved draft, so its audience is kept.
+ bool get fromDraft; String get caption;/// The media already on the post that stay; empty when adding.
  List<PostMediaEntity> get kept;/// Signed links for [kept] by object path; empty until they load.
  Map<String, String> get urls;/// Files picked on this device; they go after [kept].
  List<PickedMedia> get media;/// A frame of each picked video, by video path; a video without one draws a plain tile.
- Map<String, String> get posters; String? get location; bool get commentsEnabled; ContentAudience get visibility;/// The people tagged, with the spot each has on a photo when one was set.
+ Map<String, String> get posters;/// Adding: the name of each picked file on the server, by path; it never changes.
+ Map<String, String> get mediaIds;/// Adding: the picked files whose upload failed, by path; a tap tries again.
+ Set<String> get failedUploads; String? get location; bool get commentsEnabled; ContentAudience get visibility;/// The people tagged, with the spot each has on a photo when one was set.
  List<TagChoice> get tags;/// How the author feels, shown in the headline.
  PostMoodEntity? get mood;/// The audience the account starts new posts with; a narrower choice looks different on the chip.
  ContentAudience get defaultVisibility;/// One-shot: the post was handed over to be sent; the screen closes.
@@ -38,20 +41,20 @@ $AddEditPostStateCopyWith<AddEditPostState> get copyWith => _$AddEditPostStateCo
 @override
 bool operator ==(Object other) {
   final _this = this as AddEditPostState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddEditPostState&&(identical(other.postId, _this.postId) || other.postId == _this.postId)&&(identical(other.original, _this.original) || other.original == _this.original)&&(identical(other.caption, _this.caption) || other.caption == _this.caption)&&const DeepCollectionEquality().equals(other.kept, _this.kept)&&const DeepCollectionEquality().equals(other.urls, _this.urls)&&const DeepCollectionEquality().equals(other.media, _this.media)&&const DeepCollectionEquality().equals(other.posters, _this.posters)&&(identical(other.location, _this.location) || other.location == _this.location)&&(identical(other.commentsEnabled, _this.commentsEnabled) || other.commentsEnabled == _this.commentsEnabled)&&(identical(other.visibility, _this.visibility) || other.visibility == _this.visibility)&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&(identical(other.mood, _this.mood) || other.mood == _this.mood)&&(identical(other.defaultVisibility, _this.defaultVisibility) || other.defaultVisibility == _this.defaultVisibility)&&(identical(other.isSaved, _this.isSaved) || other.isSaved == _this.isSaved)&&(identical(other.notice, _this.notice) || other.notice == _this.notice));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddEditPostState&&(identical(other.postId, _this.postId) || other.postId == _this.postId)&&(identical(other.original, _this.original) || other.original == _this.original)&&(identical(other.fromDraft, _this.fromDraft) || other.fromDraft == _this.fromDraft)&&(identical(other.caption, _this.caption) || other.caption == _this.caption)&&const DeepCollectionEquality().equals(other.kept, _this.kept)&&const DeepCollectionEquality().equals(other.urls, _this.urls)&&const DeepCollectionEquality().equals(other.media, _this.media)&&const DeepCollectionEquality().equals(other.posters, _this.posters)&&const DeepCollectionEquality().equals(other.mediaIds, _this.mediaIds)&&const DeepCollectionEquality().equals(other.failedUploads, _this.failedUploads)&&(identical(other.location, _this.location) || other.location == _this.location)&&(identical(other.commentsEnabled, _this.commentsEnabled) || other.commentsEnabled == _this.commentsEnabled)&&(identical(other.visibility, _this.visibility) || other.visibility == _this.visibility)&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&(identical(other.mood, _this.mood) || other.mood == _this.mood)&&(identical(other.defaultVisibility, _this.defaultVisibility) || other.defaultVisibility == _this.defaultVisibility)&&(identical(other.isSaved, _this.isSaved) || other.isSaved == _this.isSaved)&&(identical(other.notice, _this.notice) || other.notice == _this.notice));
 }
 
 
 @override
 int get hashCode {
   final _this = this as AddEditPostState;
-  return Object.hash(runtimeType,_this.postId,_this.original,_this.caption,const DeepCollectionEquality().hash(_this.kept),const DeepCollectionEquality().hash(_this.urls),const DeepCollectionEquality().hash(_this.media),const DeepCollectionEquality().hash(_this.posters),_this.location,_this.commentsEnabled,_this.visibility,const DeepCollectionEquality().hash(_this.tags),_this.mood,_this.defaultVisibility,_this.isSaved,_this.notice);
+  return Object.hash(runtimeType,_this.postId,_this.original,_this.fromDraft,_this.caption,const DeepCollectionEquality().hash(_this.kept),const DeepCollectionEquality().hash(_this.urls),const DeepCollectionEquality().hash(_this.media),const DeepCollectionEquality().hash(_this.posters),const DeepCollectionEquality().hash(_this.mediaIds),const DeepCollectionEquality().hash(_this.failedUploads),_this.location,_this.commentsEnabled,_this.visibility,const DeepCollectionEquality().hash(_this.tags),_this.mood,_this.defaultVisibility,_this.isSaved,_this.notice);
 }
 
 @override
 String toString() {
   final _this = this as AddEditPostState;
-  return 'AddEditPostState(postId: ${_this.postId}, original: ${_this.original}, caption: ${_this.caption}, kept: ${_this.kept}, urls: ${_this.urls}, media: ${_this.media}, posters: ${_this.posters}, location: ${_this.location}, commentsEnabled: ${_this.commentsEnabled}, visibility: ${_this.visibility}, tags: ${_this.tags}, mood: ${_this.mood}, defaultVisibility: ${_this.defaultVisibility}, isSaved: ${_this.isSaved}, notice: ${_this.notice})';
+  return 'AddEditPostState(postId: ${_this.postId}, original: ${_this.original}, fromDraft: ${_this.fromDraft}, caption: ${_this.caption}, kept: ${_this.kept}, urls: ${_this.urls}, media: ${_this.media}, posters: ${_this.posters}, mediaIds: ${_this.mediaIds}, failedUploads: ${_this.failedUploads}, location: ${_this.location}, commentsEnabled: ${_this.commentsEnabled}, visibility: ${_this.visibility}, tags: ${_this.tags}, mood: ${_this.mood}, defaultVisibility: ${_this.defaultVisibility}, isSaved: ${_this.isSaved}, notice: ${_this.notice})';
 }
 
 
@@ -62,7 +65,7 @@ abstract mixin class $AddEditPostStateCopyWith<$Res>  {
   factory $AddEditPostStateCopyWith(AddEditPostState value, $Res Function(AddEditPostState) _then) = _$AddEditPostStateCopyWithImpl;
 @useResult
 $Res call({
- String postId, PostEntity? original, String caption, List<PostMediaEntity> kept, Map<String, String> urls, List<PickedMedia> media, Map<String, String> posters, String? location, bool commentsEnabled, ContentAudience visibility, List<TagChoice> tags, PostMoodEntity? mood, ContentAudience defaultVisibility, bool isSaved, NewPostNotice? notice
+ String postId, PostEntity? original, bool fromDraft, String caption, List<PostMediaEntity> kept, Map<String, String> urls, List<PickedMedia> media, Map<String, String> posters, Map<String, String> mediaIds, Set<String> failedUploads, String? location, bool commentsEnabled, ContentAudience visibility, List<TagChoice> tags, PostMoodEntity? mood, ContentAudience defaultVisibility, bool isSaved, NewPostNotice? notice
 });
 
 
@@ -79,16 +82,19 @@ class _$AddEditPostStateCopyWithImpl<$Res>
 
 /// Create a copy of AddEditPostState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? postId = null,Object? original = freezed,Object? caption = null,Object? kept = null,Object? urls = null,Object? media = null,Object? posters = null,Object? location = freezed,Object? commentsEnabled = null,Object? visibility = null,Object? tags = null,Object? mood = freezed,Object? defaultVisibility = null,Object? isSaved = null,Object? notice = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? postId = null,Object? original = freezed,Object? fromDraft = null,Object? caption = null,Object? kept = null,Object? urls = null,Object? media = null,Object? posters = null,Object? mediaIds = null,Object? failedUploads = null,Object? location = freezed,Object? commentsEnabled = null,Object? visibility = null,Object? tags = null,Object? mood = freezed,Object? defaultVisibility = null,Object? isSaved = null,Object? notice = freezed,}) {
   return _then(AddEditPostState(
 postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as String,original: freezed == original ? _self.original : original // ignore: cast_nullable_to_non_nullable
-as PostEntity?,caption: null == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
+as PostEntity?,fromDraft: null == fromDraft ? _self.fromDraft : fromDraft // ignore: cast_nullable_to_non_nullable
+as bool,caption: null == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
 as String,kept: null == kept ? _self.kept : kept // ignore: cast_nullable_to_non_nullable
 as List<PostMediaEntity>,urls: null == urls ? _self.urls : urls // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
 as List<PickedMedia>,posters: null == posters ? _self.posters : posters // ignore: cast_nullable_to_non_nullable
-as Map<String, String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,mediaIds: null == mediaIds ? _self.mediaIds : mediaIds // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,failedUploads: null == failedUploads ? _self.failedUploads : failedUploads // ignore: cast_nullable_to_non_nullable
+as Set<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as String?,commentsEnabled: null == commentsEnabled ? _self.commentsEnabled : commentsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,visibility: null == visibility ? _self.visibility : visibility // ignore: cast_nullable_to_non_nullable
 as ContentAudience,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
@@ -181,10 +187,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String postId,  PostEntity? original,  String caption,  List<PostMediaEntity> kept,  Map<String, String> urls,  List<PickedMedia> media,  Map<String, String> posters,  String? location,  bool commentsEnabled,  ContentAudience visibility,  List<TagChoice> tags,  PostMoodEntity? mood,  ContentAudience defaultVisibility,  bool isSaved,  NewPostNotice? notice)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String postId,  PostEntity? original,  bool fromDraft,  String caption,  List<PostMediaEntity> kept,  Map<String, String> urls,  List<PickedMedia> media,  Map<String, String> posters,  Map<String, String> mediaIds,  Set<String> failedUploads,  String? location,  bool commentsEnabled,  ContentAudience visibility,  List<TagChoice> tags,  PostMoodEntity? mood,  ContentAudience defaultVisibility,  bool isSaved,  NewPostNotice? notice)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AddEditPostState() when $default != null:
-return $default(_that.postId,_that.original,_that.caption,_that.kept,_that.urls,_that.media,_that.posters,_that.location,_that.commentsEnabled,_that.visibility,_that.tags,_that.mood,_that.defaultVisibility,_that.isSaved,_that.notice);case _:
+return $default(_that.postId,_that.original,_that.fromDraft,_that.caption,_that.kept,_that.urls,_that.media,_that.posters,_that.mediaIds,_that.failedUploads,_that.location,_that.commentsEnabled,_that.visibility,_that.tags,_that.mood,_that.defaultVisibility,_that.isSaved,_that.notice);case _:
   return orElse();
 
 }
@@ -202,10 +208,10 @@ return $default(_that.postId,_that.original,_that.caption,_that.kept,_that.urls,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String postId,  PostEntity? original,  String caption,  List<PostMediaEntity> kept,  Map<String, String> urls,  List<PickedMedia> media,  Map<String, String> posters,  String? location,  bool commentsEnabled,  ContentAudience visibility,  List<TagChoice> tags,  PostMoodEntity? mood,  ContentAudience defaultVisibility,  bool isSaved,  NewPostNotice? notice)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String postId,  PostEntity? original,  bool fromDraft,  String caption,  List<PostMediaEntity> kept,  Map<String, String> urls,  List<PickedMedia> media,  Map<String, String> posters,  Map<String, String> mediaIds,  Set<String> failedUploads,  String? location,  bool commentsEnabled,  ContentAudience visibility,  List<TagChoice> tags,  PostMoodEntity? mood,  ContentAudience defaultVisibility,  bool isSaved,  NewPostNotice? notice)  $default,) {final _that = this;
 switch (_that) {
 case _AddEditPostState():
-return $default(_that.postId,_that.original,_that.caption,_that.kept,_that.urls,_that.media,_that.posters,_that.location,_that.commentsEnabled,_that.visibility,_that.tags,_that.mood,_that.defaultVisibility,_that.isSaved,_that.notice);case _:
+return $default(_that.postId,_that.original,_that.fromDraft,_that.caption,_that.kept,_that.urls,_that.media,_that.posters,_that.mediaIds,_that.failedUploads,_that.location,_that.commentsEnabled,_that.visibility,_that.tags,_that.mood,_that.defaultVisibility,_that.isSaved,_that.notice);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -222,10 +228,10 @@ return $default(_that.postId,_that.original,_that.caption,_that.kept,_that.urls,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String postId,  PostEntity? original,  String caption,  List<PostMediaEntity> kept,  Map<String, String> urls,  List<PickedMedia> media,  Map<String, String> posters,  String? location,  bool commentsEnabled,  ContentAudience visibility,  List<TagChoice> tags,  PostMoodEntity? mood,  ContentAudience defaultVisibility,  bool isSaved,  NewPostNotice? notice)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String postId,  PostEntity? original,  bool fromDraft,  String caption,  List<PostMediaEntity> kept,  Map<String, String> urls,  List<PickedMedia> media,  Map<String, String> posters,  Map<String, String> mediaIds,  Set<String> failedUploads,  String? location,  bool commentsEnabled,  ContentAudience visibility,  List<TagChoice> tags,  PostMoodEntity? mood,  ContentAudience defaultVisibility,  bool isSaved,  NewPostNotice? notice)?  $default,) {final _that = this;
 switch (_that) {
 case _AddEditPostState() when $default != null:
-return $default(_that.postId,_that.original,_that.caption,_that.kept,_that.urls,_that.media,_that.posters,_that.location,_that.commentsEnabled,_that.visibility,_that.tags,_that.mood,_that.defaultVisibility,_that.isSaved,_that.notice);case _:
+return $default(_that.postId,_that.original,_that.fromDraft,_that.caption,_that.kept,_that.urls,_that.media,_that.posters,_that.mediaIds,_that.failedUploads,_that.location,_that.commentsEnabled,_that.visibility,_that.tags,_that.mood,_that.defaultVisibility,_that.isSaved,_that.notice);case _:
   return null;
 
 }
@@ -237,13 +243,15 @@ return $default(_that.postId,_that.original,_that.caption,_that.kept,_that.urls,
 
 
 class _AddEditPostState extends AddEditPostState {
-  const _AddEditPostState({required this.postId, this.original, this.caption = '',  List<PostMediaEntity> kept = const [],  Map<String, String> urls = const {},  List<PickedMedia> media = const [],  Map<String, String> posters = const {}, this.location, this.commentsEnabled = true, this.visibility = ContentAudience.public,  List<TagChoice> tags = const <TagChoice>[], this.mood, this.defaultVisibility = ContentAudience.public, this.isSaved = false, this.notice}): _kept = kept,_urls = urls,_media = media,_posters = posters,_tags = tags,super._();
+  const _AddEditPostState({required this.postId, this.original, this.fromDraft = false, this.caption = '',  List<PostMediaEntity> kept = const [],  Map<String, String> urls = const {},  List<PickedMedia> media = const [],  Map<String, String> posters = const {},  Map<String, String> mediaIds = const {},  Set<String> failedUploads = const {}, this.location, this.commentsEnabled = true, this.visibility = ContentAudience.public,  List<TagChoice> tags = const <TagChoice>[], this.mood, this.defaultVisibility = ContentAudience.public, this.isSaved = false, this.notice}): _kept = kept,_urls = urls,_media = media,_posters = posters,_mediaIds = mediaIds,_failedUploads = failedUploads,_tags = tags,super._();
   
 
 /// Made once, so Retry finds the files an earlier attempt uploaded; the post's own id when editing.
 @override final  String postId;
 /// The post being edited, as it was when the screen opened; null when adding.
 @override final  PostEntity? original;
+/// Adding: the screen opened with the saved draft, so its audience is kept.
+@override@JsonKey() final  bool fromDraft;
 @override@JsonKey() final  String caption;
 /// The media already on the post that stay; empty when adding.
  final  List<PostMediaEntity> _kept;
@@ -281,6 +289,24 @@ class _AddEditPostState extends AddEditPostState {
   return EqualUnmodifiableMapView(_posters);
 }
 
+/// Adding: the name of each picked file on the server, by path; it never changes.
+ final  Map<String, String> _mediaIds;
+/// Adding: the name of each picked file on the server, by path; it never changes.
+@override@JsonKey() Map<String, String> get mediaIds {
+  if (_mediaIds is EqualUnmodifiableMapView) return _mediaIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_mediaIds);
+}
+
+/// Adding: the picked files whose upload failed, by path; a tap tries again.
+ final  Set<String> _failedUploads;
+/// Adding: the picked files whose upload failed, by path; a tap tries again.
+@override@JsonKey() Set<String> get failedUploads {
+  if (_failedUploads is EqualUnmodifiableSetView) return _failedUploads;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableSetView(_failedUploads);
+}
+
 @override final  String? location;
 @override@JsonKey() final  bool commentsEnabled;
 @override@JsonKey() final  ContentAudience visibility;
@@ -312,18 +338,18 @@ _$AddEditPostStateCopyWith<_AddEditPostState> get copyWith => __$AddEditPostStat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddEditPostState&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.original, original) || other.original == original)&&(identical(other.caption, caption) || other.caption == caption)&&const DeepCollectionEquality().equals(other.kept, _kept)&&const DeepCollectionEquality().equals(other.urls, _urls)&&const DeepCollectionEquality().equals(other.media, _media)&&const DeepCollectionEquality().equals(other.posters, _posters)&&(identical(other.location, location) || other.location == location)&&(identical(other.commentsEnabled, commentsEnabled) || other.commentsEnabled == commentsEnabled)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&const DeepCollectionEquality().equals(other.tags, _tags)&&(identical(other.mood, mood) || other.mood == mood)&&(identical(other.defaultVisibility, defaultVisibility) || other.defaultVisibility == defaultVisibility)&&(identical(other.isSaved, isSaved) || other.isSaved == isSaved)&&(identical(other.notice, notice) || other.notice == notice));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddEditPostState&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.original, original) || other.original == original)&&(identical(other.fromDraft, fromDraft) || other.fromDraft == fromDraft)&&(identical(other.caption, caption) || other.caption == caption)&&const DeepCollectionEquality().equals(other.kept, _kept)&&const DeepCollectionEquality().equals(other.urls, _urls)&&const DeepCollectionEquality().equals(other.media, _media)&&const DeepCollectionEquality().equals(other.posters, _posters)&&const DeepCollectionEquality().equals(other.mediaIds, _mediaIds)&&const DeepCollectionEquality().equals(other.failedUploads, _failedUploads)&&(identical(other.location, location) || other.location == location)&&(identical(other.commentsEnabled, commentsEnabled) || other.commentsEnabled == commentsEnabled)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&const DeepCollectionEquality().equals(other.tags, _tags)&&(identical(other.mood, mood) || other.mood == mood)&&(identical(other.defaultVisibility, defaultVisibility) || other.defaultVisibility == defaultVisibility)&&(identical(other.isSaved, isSaved) || other.isSaved == isSaved)&&(identical(other.notice, notice) || other.notice == notice));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,postId,original,caption,const DeepCollectionEquality().hash(_kept),const DeepCollectionEquality().hash(_urls),const DeepCollectionEquality().hash(_media),const DeepCollectionEquality().hash(_posters),location,commentsEnabled,visibility,const DeepCollectionEquality().hash(_tags),mood,defaultVisibility,isSaved,notice);
+    return Object.hash(runtimeType,postId,original,fromDraft,caption,const DeepCollectionEquality().hash(_kept),const DeepCollectionEquality().hash(_urls),const DeepCollectionEquality().hash(_media),const DeepCollectionEquality().hash(_posters),const DeepCollectionEquality().hash(_mediaIds),const DeepCollectionEquality().hash(_failedUploads),location,commentsEnabled,visibility,const DeepCollectionEquality().hash(_tags),mood,defaultVisibility,isSaved,notice);
 }
 
 @override
 String toString() {
-    return 'AddEditPostState(postId: $postId, original: $original, caption: $caption, kept: $kept, urls: $urls, media: $media, posters: $posters, location: $location, commentsEnabled: $commentsEnabled, visibility: $visibility, tags: $tags, mood: $mood, defaultVisibility: $defaultVisibility, isSaved: $isSaved, notice: $notice)';
+    return 'AddEditPostState(postId: $postId, original: $original, fromDraft: $fromDraft, caption: $caption, kept: $kept, urls: $urls, media: $media, posters: $posters, mediaIds: $mediaIds, failedUploads: $failedUploads, location: $location, commentsEnabled: $commentsEnabled, visibility: $visibility, tags: $tags, mood: $mood, defaultVisibility: $defaultVisibility, isSaved: $isSaved, notice: $notice)';
 }
 
 
@@ -334,7 +360,7 @@ abstract mixin class _$AddEditPostStateCopyWith<$Res> implements $AddEditPostSta
   factory _$AddEditPostStateCopyWith(_AddEditPostState value, $Res Function(_AddEditPostState) _then) = __$AddEditPostStateCopyWithImpl;
 @override @useResult
 $Res call({
- String postId, PostEntity? original, String caption, List<PostMediaEntity> kept, Map<String, String> urls, List<PickedMedia> media, Map<String, String> posters, String? location, bool commentsEnabled, ContentAudience visibility, List<TagChoice> tags, PostMoodEntity? mood, ContentAudience defaultVisibility, bool isSaved, NewPostNotice? notice
+ String postId, PostEntity? original, bool fromDraft, String caption, List<PostMediaEntity> kept, Map<String, String> urls, List<PickedMedia> media, Map<String, String> posters, Map<String, String> mediaIds, Set<String> failedUploads, String? location, bool commentsEnabled, ContentAudience visibility, List<TagChoice> tags, PostMoodEntity? mood, ContentAudience defaultVisibility, bool isSaved, NewPostNotice? notice
 });
 
 
@@ -351,16 +377,19 @@ class __$AddEditPostStateCopyWithImpl<$Res>
 
 /// Create a copy of AddEditPostState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? original = freezed,Object? caption = null,Object? kept = null,Object? urls = null,Object? media = null,Object? posters = null,Object? location = freezed,Object? commentsEnabled = null,Object? visibility = null,Object? tags = null,Object? mood = freezed,Object? defaultVisibility = null,Object? isSaved = null,Object? notice = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? original = freezed,Object? fromDraft = null,Object? caption = null,Object? kept = null,Object? urls = null,Object? media = null,Object? posters = null,Object? mediaIds = null,Object? failedUploads = null,Object? location = freezed,Object? commentsEnabled = null,Object? visibility = null,Object? tags = null,Object? mood = freezed,Object? defaultVisibility = null,Object? isSaved = null,Object? notice = freezed,}) {
   return _then(_AddEditPostState(
 postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as String,original: freezed == original ? _self.original : original // ignore: cast_nullable_to_non_nullable
-as PostEntity?,caption: null == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
+as PostEntity?,fromDraft: null == fromDraft ? _self.fromDraft : fromDraft // ignore: cast_nullable_to_non_nullable
+as bool,caption: null == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
 as String,kept: null == kept ? _self._kept : kept // ignore: cast_nullable_to_non_nullable
 as List<PostMediaEntity>,urls: null == urls ? _self._urls : urls // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,media: null == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
 as List<PickedMedia>,posters: null == posters ? _self._posters : posters // ignore: cast_nullable_to_non_nullable
-as Map<String, String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,mediaIds: null == mediaIds ? _self._mediaIds : mediaIds // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,failedUploads: null == failedUploads ? _self._failedUploads : failedUploads // ignore: cast_nullable_to_non_nullable
+as Set<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as String?,commentsEnabled: null == commentsEnabled ? _self.commentsEnabled : commentsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,visibility: null == visibility ? _self.visibility : visibility // ignore: cast_nullable_to_non_nullable
 as ContentAudience,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable

@@ -11,7 +11,7 @@ abstract interface class ActivityDatasource {
 }
 
 /// [ActivityDatasource] as an adapter over Supabase: the `activity_unread_count` function
-/// (supabase/migrations/20261014120000_notifications.sql).
+/// (supabase/migrations/20261014213146_notifications.sql).
 @LazySingleton(as: ActivityDatasource)
 final class SupabaseActivityDatasource implements ActivityDatasource {
   SupabaseActivityDatasource(this._client);

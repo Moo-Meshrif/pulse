@@ -36,11 +36,13 @@ import '../../features/auth/domain/use_case/watch_password_recovery_use_case.dar
 import '../../features/auth/domain/use_case/watch_session_ended_use_case.dart'
     as _i793;
 import '../../features/auth/presentation/cubit/forgot_password/forgot_password_cubit.dart'
-    as _i104;
+    as _i344;
 import '../../features/auth/presentation/cubit/reset_password/reset_password_cubit.dart'
-    as _i476;
-import '../../features/auth/presentation/cubit/sign_in/sign_in_cubit.dart' as _i329;
-import '../../features/auth/presentation/cubit/sign_up/sign_up_cubit.dart' as _i102;
+    as _i260;
+import '../../features/auth/presentation/cubit/sign_in/sign_in_cubit.dart'
+    as _i302;
+import '../../features/auth/presentation/cubit/sign_up/sign_up_cubit.dart'
+    as _i781;
 import '../../features/control/presentation/cubit/control_cubit.dart' as _i598;
 import '../../features/follow/data/datasource/follows_datasource.dart'
     as _i1001;
@@ -56,11 +58,15 @@ import '../../features/follow/domain/use_case/respond_to_follow_request_use_case
     as _i534;
 import '../../features/follow/domain/use_case/toggle_follow_use_case.dart'
     as _i130;
-import '../../features/home/presentation/cubit/bell_dot/bell_dot_cubit.dart' as _i472;
-import '../../features/home/presentation/cubit/feed/feed_cubit.dart' as _i646;
+import '../../features/home/presentation/cubit/bell_dot/bell_dot_cubit.dart'
+    as _i639;
+import '../../features/home/presentation/cubit/feed/feed_cubit.dart' as _i592;
+import '../../features/home/presentation/cubit/post_publish/post_line_cubit.dart'
+    as _i803;
 import '../../features/home/presentation/cubit/post_publish/post_publish_cubit.dart'
-    as _i704;
-import '../../features/home/presentation/cubit/story_rail/story_rail_cubit.dart' as _i363;
+    as _i613;
+import '../../features/home/presentation/cubit/story_rail/story_rail_cubit.dart'
+    as _i308;
 import '../../features/legal/data/datasource/legal_datasource.dart' as _i604;
 import '../../features/legal/presentation/cubit/legal_cubit.dart' as _i736;
 import '../../features/onboarding/data/datasource/onboarding_datasource.dart'
@@ -77,20 +83,31 @@ import '../../features/places/presentation/cubit/add_location_cubit.dart'
     as _i490;
 import '../../features/post/data/datasource/post_actions_datasource.dart'
     as _i512;
+import '../../features/post/data/datasource/post_draft_datasource.dart'
+    as _i1007;
 import '../../features/post/data/datasource/post_tags_datasource.dart' as _i518;
 import '../../features/post/data/datasource/posts_datasource.dart' as _i141;
 import '../../features/post/data/datasource/visibility_notice_datasource.dart'
     as _i722;
-import '../../features/post/domain/entity/post_entity.dart' as _i569;
-import '../../features/post/domain/use_case/create_post_use_case.dart' as _i592;
+import '../../features/post/data/repository/post_draft_repository.dart'
+    as _i1017;
+import '../../features/post/data/repository/post_share_repository.dart'
+    as _i837;
+import '../../features/post/data/repository/shared_posts_repository.dart'
+    as _i749;
+import '../../features/post/domain/entity/post_entity.dart' as _i570;
 import '../../features/post/domain/use_case/delete_post_use_case.dart' as _i898;
 import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i280;
 import '../../features/post/domain/use_case/get_tagged_people_use_case.dart'
     as _i846;
+import '../../features/post/domain/use_case/has_open_post_draft_use_case.dart'
+    as _i371;
 import '../../features/post/domain/use_case/hide_post_use_case.dart' as _i856;
 import '../../features/post/domain/use_case/remove_my_tag_use_case.dart'
     as _i491;
+import '../../features/post/domain/use_case/resume_shared_posts_use_case.dart'
+    as _i401;
 import '../../features/post/domain/use_case/search_tag_people_use_case.dart'
     as _i983;
 import '../../features/post/domain/use_case/set_comments_enabled_use_case.dart'
@@ -103,15 +120,17 @@ import '../../features/post/domain/use_case/sign_post_media_urls_use_case.dart'
     as _i599;
 import '../../features/post/domain/use_case/update_post_use_case.dart' as _i908;
 import '../../features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart'
-    as _i897;
-import '../../features/post/presentation/cubit/post_actions/post_actions_cubit.dart' as _i72;
+    as _i80;
+import '../../features/post/presentation/cubit/post_actions/post_actions_cubit.dart'
+    as _i238;
 import '../../features/post/presentation/cubit/post_visibility/post_visibility_cubit.dart'
-    as _i264;
+    as _i922;
 import '../../features/post/presentation/cubit/tag_in_photo/tag_in_photo_cubit.dart'
-    as _i962;
-import '../../features/post/presentation/cubit/tag_people/tag_people_cubit.dart' as _i442;
+    as _i125;
+import '../../features/post/presentation/cubit/tag_people/tag_people_cubit.dart'
+    as _i96;
 import '../../features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart'
-    as _i932;
+    as _i118;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
@@ -152,35 +171,45 @@ import '../../features/story/data/repository/story_upload_repository.dart'
     as _i618;
 import '../../features/story/domain/entity/captured_story_media.dart' as _i2;
 import '../../features/story/domain/use_case/get_story_rail_use_case.dart'
-    as _i849;
+    as _i850;
 import '../../features/story/presentation/cubit/audience_list/audience_list_cubit.dart'
-    as _i117;
+    as _i133;
 import '../../features/story/presentation/cubit/story_audience/story_audience_cubit.dart'
-    as _i219;
+    as _i376;
 import '../../features/story/presentation/cubit/story_camera/story_camera_cubit.dart'
-    as _i507;
-import '../../features/story/presentation/cubit/story_edit/story_edit_cubit.dart' as _i144;
+    as _i569;
+import '../../features/story/presentation/cubit/story_edit/story_edit_cubit.dart'
+    as _i378;
 import '../../features/story/presentation/cubit/story_viewer/story_viewer_cubit.dart'
-    as _i125;
+    as _i465;
 import '../../features/story/presentation/cubit/story_viewers/story_viewers_cubit.dart'
-    as _i56;
+    as _i427;
 import '../../shared/content/data/datasource/audience_datasource.dart' as _i61;
 import '../../shared/content/data/datasource/content_actions_datasource.dart'
     as _i719;
+import '../../shared/content/data/datasource/content_discards_datasource.dart'
+    as _i142;
 import '../../shared/content/data/datasource/media_files_datasource.dart'
     as _i285;
+import '../../shared/content/data/datasource/pending_content_datasource.dart'
+    as _i591;
 import '../../shared/content/data/datasource/privacy_datasource.dart' as _i885;
 import '../../shared/content/data/enums/content_audience.dart' as _i248;
+import '../../shared/content/data/repository/content_discard_repository.dart'
+    as _i1034;
 import '../../shared/content/data/repository/content_media_repository.dart'
     as _i463;
 import '../../shared/content/data/repository/content_publish_repository.dart'
     as _i999;
+import '../../shared/content/data/repository/media_upload_queue.dart' as _i148;
 import '../../shared/content/domain/use_case/discard_publish_use_case.dart'
     as _i453;
 import '../../shared/content/domain/use_case/get_audience_summary_use_case.dart'
     as _i77;
 import '../../shared/content/domain/use_case/get_privacy_use_case.dart'
     as _i660;
+import '../../shared/content/domain/use_case/get_publish_line_use_case.dart'
+    as _i46;
 import '../../shared/content/domain/use_case/get_publish_status_use_case.dart'
     as _i541;
 import '../../shared/content/domain/use_case/publish_content_use_case.dart'
@@ -189,6 +218,8 @@ import '../../shared/content/domain/use_case/remove_media_files_use_case.dart'
     as _i76;
 import '../../shared/content/domain/use_case/report_content_use_case.dart'
     as _i1021;
+import '../../shared/content/domain/use_case/resume_content_use_case.dart'
+    as _i1013;
 import '../../shared/content/domain/use_case/retry_publish_use_case.dart'
     as _i108;
 import '../../shared/content/domain/use_case/save_default_audience_use_case.dart'
@@ -198,7 +229,9 @@ import '../../shared/content/domain/use_case/set_content_audience_use_case.dart'
 import '../../shared/content/domain/use_case/set_mute_use_case.dart' as _i71;
 import '../events/event_bus.dart' as _i557;
 import '../router/recovery_link_handler.dart' as _i358;
-import '../router/session_guard.dart' as _i96;
+import '../router/session_guard.dart' as _i97;
+import '../services/app_folders.dart' as _i849;
+import '../services/backup_exclusion_service.dart' as _i690;
 import '../services/blurhash_service.dart' as _i905;
 import '../services/camera_device.dart' as _i64;
 import '../services/camera_permission_service.dart' as _i754;
@@ -232,6 +265,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => appModule.deviceTier,
       preResolve: true,
     );
+    await gh.lazySingletonAsync<_i849.AppFolders>(
+      () => appModule.appFolders,
+      preResolve: true,
+    );
     gh.lazySingleton<_i454.SupabaseClient>(() => appModule.supabaseClient);
     gh.lazySingleton<_i519.Client>(() => appModule.httpClient);
     gh.lazySingleton<_i895.Connectivity>(() => appModule.connectivity);
@@ -249,8 +286,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i905.BlurhashService>(
       () => _i905.PackageBlurhashService(),
     );
-    gh.factoryParam<_i962.TagInPhotoCubit, _i425.TagPeopleArgs, dynamic>(
-      (args, _) => _i962.TagInPhotoCubit(args),
+    gh.factoryParam<_i125.TagInPhotoCubit, _i425.TagPeopleArgs, dynamic>(
+      (args, _) => _i125.TagInPhotoCubit(args),
     );
     gh.lazySingleton<_i794.VideoCompressService>(
       () => _i794.PackageVideoCompressService(),
@@ -283,6 +320,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i841.GalleryService>(
       () => _i841.GalGalleryService(gh<_i519.Client>()),
     );
+    gh.lazySingleton<_i690.BackupExclusionService>(
+      () => _i690.PlatformBackupExclusionService(),
+    );
     gh.lazySingleton<_i754.CameraPermissionService>(
       () => _i754.HandlerCameraPermissionService(),
     );
@@ -314,17 +354,20 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i527.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i591.PendingContentDatasource>(
+      () => _i591.SupabasePendingContentDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i719.ContentActionsDatasource>(
       () => _i719.SupabaseContentActionsDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
     );
-    gh.factory<_i849.GetStoryRailUseCase>(
-      () => _i849.GetStoryRailUseCase(gh<_i474.StoriesDatasource>()),
+    gh.factory<_i850.GetStoryRailUseCase>(
+      () => _i850.GetStoryRailUseCase(gh<_i474.StoriesDatasource>()),
     );
-    gh.factory<_i56.StoryViewersCubit>(
-      () => _i56.StoryViewersCubit(gh<_i474.StoriesDatasource>()),
+    gh.factory<_i427.StoryViewersCubit>(
+      () => _i427.StoryViewersCubit(gh<_i474.StoriesDatasource>()),
     );
     gh.lazySingleton<_i1001.FollowsDatasource>(
       () => _i1001.SupabaseFollowsDatasource(gh<_i454.SupabaseClient>()),
@@ -356,9 +399,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i47.ConnectivityService>(
       () => _i47.PlusConnectivityService(gh<_i895.Connectivity>()),
-    );
-    gh.lazySingleton<_i999.ContentPublishRepository>(
-      () => _i999.ContentPublishRepositoryImpl(gh<_i557.EventBus>()),
     );
     gh.lazySingleton<_i438.PlacesDatasource>(
       () => _i438.SupabasePlacesDatasource(gh<_i454.SupabaseClient>()),
@@ -393,29 +433,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i520.SetPostSaveUseCase>(
       () => _i520.SetPostSaveUseCase(gh<_i512.PostActionsDatasource>()),
     );
-    gh.factoryParam<_i117.AudienceListCubit, _i338.AudienceList, dynamic>(
-      (list, _) => _i117.AudienceListCubit(
+    gh.factoryParam<_i133.AudienceListCubit, _i338.AudienceList, dynamic>(
+      (list, _) => _i133.AudienceListCubit(
         gh<_i474.StoriesDatasource>(),
         gh<_i77.GetAudienceSummaryUseCase>(),
         list,
       ),
     );
-    gh.factory<_i453.DiscardPublishUseCase>(
-      () => _i453.DiscardPublishUseCase(gh<_i999.ContentPublishRepository>()),
-    );
-    gh.factory<_i541.GetPublishStatusUseCase>(
-      () => _i541.GetPublishStatusUseCase(gh<_i999.ContentPublishRepository>()),
-    );
-    gh.factory<_i1032.PublishContentUseCase>(
-      () => _i1032.PublishContentUseCase(gh<_i999.ContentPublishRepository>()),
-    );
-    gh.factory<_i108.RetryPublishUseCase>(
-      () => _i108.RetryPublishUseCase(gh<_i999.ContentPublishRepository>()),
-    );
     gh.factory<_i898.DeletePostUseCase>(
       () => _i898.DeletePostUseCase(
         gh<_i512.PostActionsDatasource>(),
         gh<_i285.MediaFilesDatasource>(),
+      ),
+    );
+    gh.lazySingleton<_i1007.PostDraftDatasource>(
+      () => _i1007.LocalPostDraftDatasource(
+        gh<_i527.LocalStorageService>(),
+        gh<_i849.AppFolders>(),
+        gh<_i690.BackupExclusionService>(),
+        gh<_i454.SupabaseClient>(),
       ),
     );
     gh.factory<_i586.GetInterestsUseCase>(
@@ -458,22 +494,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i983.SearchTagPeopleUseCase>(
       () => _i983.SearchTagPeopleUseCase(gh<_i518.PostTagsDatasource>()),
     );
+    gh.lazySingleton<_i142.ContentDiscardsDatasource>(
+      () => _i142.LocalContentDiscardsDatasource(
+        gh<_i527.LocalStorageService>(),
+        gh<_i454.SupabaseClient>(),
+      ),
+    );
     gh.factory<_i91.GetCurrentUserIdUseCase>(
       () => _i91.GetCurrentUserIdUseCase(gh<_i320.ProfileDatasource>()),
     );
-    gh.lazySingleton<_i618.StoryUploadRepository>(
-      () => _i618.StoryUploadRepositoryImpl(
-        gh<_i474.StoriesDatasource>(),
+    gh.factory<_i837.PostShareRepository>(
+      () => _i837.PostShareRepository(
+        gh<_i591.PendingContentDatasource>(),
         gh<_i463.ContentMediaRepository>(),
-        gh<_i999.ContentPublishRepository>(),
+        gh<_i141.PostsDatasource>(),
       ),
+    );
+    gh.factory<_i148.MediaUploadQueue>(
+      () => _i148.MediaUploadQueue(gh<_i463.ContentMediaRepository>()),
     );
     gh.factory<_i807.OnboardingCubit>(
       () => _i807.OnboardingCubit(gh<_i834.OnboardingDatasource>()),
     );
-    gh.factoryParam<_i442.TagPeopleCubit, _i425.TagPeopleArgs, dynamic>(
+    gh.factoryParam<_i96.TagPeopleCubit, _i425.TagPeopleArgs, dynamic>(
       (args, _) =>
-          _i442.TagPeopleCubit(gh<_i983.SearchTagPeopleUseCase>(), args),
+          _i96.TagPeopleCubit(gh<_i983.SearchTagPeopleUseCase>(), args),
     );
     gh.factory<_i1021.ReportContentUseCase>(
       () => _i1021.ReportContentUseCase(gh<_i719.ContentActionsDatasource>()),
@@ -494,14 +539,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1035.SaveDefaultAudienceUseCase>(
       () => _i1035.SaveDefaultAudienceUseCase(gh<_i885.PrivacyDatasource>()),
     );
-    gh.factory<_i592.CreatePostUseCase>(
-      () => _i592.CreatePostUseCase(
-        gh<_i141.PostsDatasource>(),
-        gh<_i463.ContentMediaRepository>(),
+    gh.lazySingleton<_i1034.ContentDiscardRepository>(
+      () => _i1034.ContentDiscardRepositoryImpl(
+        gh<_i142.ContentDiscardsDatasource>(),
+        gh<_i591.PendingContentDatasource>(),
+        gh<_i285.MediaFilesDatasource>(),
+        gh<_i47.ConnectivityService>(),
       ),
     );
-    gh.factory<_i72.PostActionsCubit>(
-      () => _i72.PostActionsCubit(
+    gh.factory<_i238.PostActionsCubit>(
+      () => _i238.PostActionsCubit(
         gh<_i804.SetPostLikeUseCase>(),
         gh<_i520.SetPostSaveUseCase>(),
         gh<_i856.HidePostUseCase>(),
@@ -513,9 +560,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i491.RemoveMyTagUseCase>(),
       ),
     );
-    gh.factory<_i125.StoryViewerCubit>(
-      () => _i125.StoryViewerCubit(
-        gh<_i849.GetStoryRailUseCase>(),
+    gh.factory<_i465.StoryViewerCubit>(
+      () => _i465.StoryViewerCubit(
+        gh<_i850.GetStoryRailUseCase>(),
         gh<_i474.StoriesDatasource>(),
         gh<_i841.GalleryService>(),
         gh<_i327.VideoOverlayService>(),
@@ -525,6 +572,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.EventBus>(),
       ),
     );
+    gh.factory<_i592.FeedCubit>(
+      () => _i592.FeedCubit(
+        gh<_i280.GetHomeFeedUseCase>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i999.ContentPublishRepository>(
+      () => _i999.ContentPublishRepositoryImpl(
+        gh<_i557.EventBus>(),
+        gh<_i1034.ContentDiscardRepository>(),
+        gh<_i47.ConnectivityService>(),
+      ),
+    );
     gh.lazySingleton<_i43.AuthDatasource>(
       () => _i43.SupabaseAuthDatasource(
         gh<_i454.SupabaseClient>(),
@@ -532,38 +594,23 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
-    gh.factory<_i704.PostPublishCubit>(
-      () => _i704.PostPublishCubit(
+    gh.lazySingleton<_i749.SharedPostsRepository>(
+      () => _i749.SharedPostsRepository(
+        gh<_i1007.PostDraftDatasource>(),
+        gh<_i591.PendingContentDatasource>(),
+        gh<_i837.PostShareRepository>(),
+        gh<_i999.ContentPublishRepository>(),
         gh<_i557.EventBus>(),
-        gh<_i541.GetPublishStatusUseCase>(),
-        gh<_i108.RetryPublishUseCase>(),
-        gh<_i453.DiscardPublishUseCase>(),
       ),
     );
-    gh.factory<_i363.StoryRailCubit>(
-      () => _i363.StoryRailCubit(
-        gh<_i849.GetStoryRailUseCase>(),
-        gh<_i557.EventBus>(),
-        gh<_i541.GetPublishStatusUseCase>(),
-        gh<_i108.RetryPublishUseCase>(),
-      ),
-    );
-    gh.factory<_i646.FeedCubit>(
-      () => _i646.FeedCubit(
-        gh<_i280.GetHomeFeedUseCase>(),
-        gh<_i599.SignPostMediaUrlsUseCase>(),
-        gh<_i557.EventBus>(),
-        gh<_i91.GetCurrentUserIdUseCase>(),
-      ),
-    );
-    gh.factory<_i104.ForgotPasswordCubit>(
-      () => _i104.ForgotPasswordCubit(
+    gh.factory<_i344.ForgotPasswordCubit>(
+      () => _i344.ForgotPasswordCubit(
         gh<_i43.AuthDatasource>(),
         gh<_i1016.LaunchService>(),
       ),
     );
-    gh.factory<_i507.StoryCameraCubit>(
-      () => _i507.StoryCameraCubit(
+    gh.factory<_i569.StoryCameraCubit>(
+      () => _i569.StoryCameraCubit(
         gh<_i64.CameraDevice>(),
         gh<_i715.MediaPickerService>(),
         gh<_i996.StoryCameraHintDatasource>(),
@@ -575,8 +622,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i126.ProfileLocalDatasource>(),
       ),
     );
-    gh.factoryParam<_i219.StoryAudienceCubit, String, _i248.ContentAudience>(
-      (storyId, audience) => _i219.StoryAudienceCubit(
+    gh.factory<_i453.DiscardPublishUseCase>(
+      () => _i453.DiscardPublishUseCase(gh<_i999.ContentPublishRepository>()),
+    );
+    gh.factory<_i46.GetPublishLineUseCase>(
+      () => _i46.GetPublishLineUseCase(gh<_i999.ContentPublishRepository>()),
+    );
+    gh.factory<_i541.GetPublishStatusUseCase>(
+      () => _i541.GetPublishStatusUseCase(gh<_i999.ContentPublishRepository>()),
+    );
+    gh.factory<_i1032.PublishContentUseCase>(
+      () => _i1032.PublishContentUseCase(gh<_i999.ContentPublishRepository>()),
+    );
+    gh.factory<_i108.RetryPublishUseCase>(
+      () => _i108.RetryPublishUseCase(gh<_i999.ContentPublishRepository>()),
+    );
+    gh.factoryParam<_i376.StoryAudienceCubit, String, _i248.ContentAudience>(
+      (storyId, audience) => _i376.StoryAudienceCubit(
         gh<_i77.GetAudienceSummaryUseCase>(),
         gh<_i998.SetContentAudienceUseCase>(),
         storyId,
@@ -597,15 +659,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i998.SetContentAudienceUseCase>(),
       ),
     );
-    gh.factoryParam<_i932.TaggedPeopleCubit, String, dynamic>(
-      (postId, _) => _i932.TaggedPeopleCubit(
+    gh.factoryParam<_i118.TaggedPeopleCubit, String, dynamic>(
+      (postId, _) => _i118.TaggedPeopleCubit(
         gh<_i846.GetTaggedPeopleUseCase>(),
         gh<_i130.ToggleFollowUseCase>(),
         postId,
       ),
     );
-    gh.factoryParam<_i264.PostVisibilityCubit, String?, _i248.ContentAudience>(
-      (postId, audience) => _i264.PostVisibilityCubit(
+    gh.factoryParam<_i922.PostVisibilityCubit, String?, _i248.ContentAudience>(
+      (postId, audience) => _i922.PostVisibilityCubit(
         gh<_i660.GetPrivacyUseCase>(),
         gh<_i77.GetAudienceSummaryUseCase>(),
         gh<_i1035.SaveDefaultAudienceUseCase>(),
@@ -621,6 +683,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i508.ProfileRepository>(),
       ),
     );
+    gh.factory<_i401.ResumeSharedPostsUseCase>(
+      () => _i401.ResumeSharedPostsUseCase(gh<_i749.SharedPostsRepository>()),
+    );
     gh.factoryParam<_i490.AddLocationCubit, String?, dynamic>(
       (current, _) => _i490.AddLocationCubit(
         gh<_i974.PlacesRepository>(),
@@ -630,8 +695,8 @@ extension GetItInjectableX on _i174.GetIt {
         current,
       ),
     );
-    gh.factory<_i472.BellDotCubit>(
-      () => _i472.BellDotCubit(
+    gh.factory<_i639.BellDotCubit>(
+      () => _i639.BellDotCubit(
         gh<_i575.GetUnreadActivityCountUseCase>(),
         gh<_i557.EventBus>(),
       ),
@@ -666,15 +731,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i815.SessionEvents>(),
       ),
     );
-    gh.factory<_i329.SignInCubit>(
-      () => _i329.SignInCubit(
+    gh.lazySingleton<_i618.StoryUploadRepository>(
+      () => _i618.StoryUploadRepositoryImpl(
+        gh<_i474.StoriesDatasource>(),
+        gh<_i463.ContentMediaRepository>(),
+        gh<_i999.ContentPublishRepository>(),
+      ),
+    );
+    gh.factory<_i302.SignInCubit>(
+      () => _i302.SignInCubit(
         gh<_i43.AuthDatasource>(),
         gh<_i697.GetSignupStepUseCase>(),
         gh<_i727.GetLastAccountUseCase>(),
         gh<_i1067.ForgetLastAccountUseCase>(),
       ),
     );
-    gh.lazySingleton<_i96.SessionGuard>(
+    gh.lazySingleton<_i97.SessionGuard>(
       () => appModule.sessionGuard(
         gh<_i718.GlobalKey<_i718.NavigatorState>>(),
         gh<_i793.WatchSessionEndedUseCase>(),
@@ -693,8 +765,32 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i121.WatchPasswordRecoveryUseCase>(
       () => _i121.WatchPasswordRecoveryUseCase(gh<_i43.AuthDatasource>()),
     );
-    gh.factory<_i476.ResetPasswordCubit>(
-      () => _i476.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
+    gh.factory<_i260.ResetPasswordCubit>(
+      () => _i260.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i1017.PostDraftRepository>(
+      () => _i1017.PostDraftRepository(
+        gh<_i1007.PostDraftDatasource>(),
+        gh<_i148.MediaUploadQueue>(),
+        gh<_i591.PendingContentDatasource>(),
+        gh<_i749.SharedPostsRepository>(),
+        gh<_i1034.ContentDiscardRepository>(),
+      ),
+    );
+    gh.factory<_i1013.ResumeContentUseCase>(
+      () => _i1013.ResumeContentUseCase(
+        gh<_i999.ContentPublishRepository>(),
+        gh<_i1034.ContentDiscardRepository>(),
+      ),
+    );
+    gh.factory<_i803.PostLineCubit>(
+      () => _i803.PostLineCubit(
+        gh<_i557.EventBus>(),
+        gh<_i46.GetPublishLineUseCase>(),
+      ),
+    );
+    gh.factory<_i371.HasOpenPostDraftUseCase>(
+      () => _i371.HasOpenPostDraftUseCase(gh<_i1017.PostDraftRepository>()),
     );
     gh.factory<_i127.SplashCubit>(
       () => _i127.SplashCubit(
@@ -705,8 +801,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i47.ConnectivityService>(),
       ),
     );
-    gh.factoryParam<_i144.StoryEditCubit, _i2.CapturedStoryMedia, dynamic>(
-      (media, _) => _i144.StoryEditCubit(
+    gh.factoryParam<_i378.StoryEditCubit, _i2.CapturedStoryMedia, dynamic>(
+      (media, _) => _i378.StoryEditCubit(
         gh<_i618.StoryUploadRepository>(),
         gh<_i143.VideoThumbnailService>(),
         gh<_i905.BlurhashService>(),
@@ -716,8 +812,8 @@ extension GetItInjectableX on _i174.GetIt {
         media,
       ),
     );
-    gh.factory<_i102.SignUpCubit>(
-      () => _i102.SignUpCubit(
+    gh.factory<_i781.SignUpCubit>(
+      () => _i781.SignUpCubit(
         gh<_i43.AuthDatasource>(),
         gh<_i357.SaveAboutYouUseCase>(),
         gh<_i255.SaveProfileDetailsUseCase>(),
@@ -739,13 +835,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.EventBus>(),
       ),
     );
+    gh.factory<_i308.StoryRailCubit>(
+      () => _i308.StoryRailCubit(
+        gh<_i850.GetStoryRailUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i541.GetPublishStatusUseCase>(),
+        gh<_i108.RetryPublishUseCase>(),
+      ),
+    );
     gh.factoryParam<
-      _i897.AddEditPostCubit,
-      _i569.PostEntity?,
+      _i80.AddEditPostCubit,
+      _i570.PostEntity?,
       Map<String, String>?
     >(
-      (post, signedUrls) => _i897.AddEditPostCubit(
-        gh<_i592.CreatePostUseCase>(),
+      (post, signedUrls) => _i80.AddEditPostCubit(
         gh<_i908.UpdatePostUseCase>(),
         gh<_i1032.PublishContentUseCase>(),
         gh<_i557.EventBus>(),
@@ -754,6 +857,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i660.GetPrivacyUseCase>(),
         gh<_i143.VideoThumbnailService>(),
         gh<_i727.GetLastAccountUseCase>(),
+        gh<_i1017.PostDraftRepository>(),
         post,
         signedUrls,
       ),
@@ -764,6 +868,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i121.WatchPasswordRecoveryUseCase>(),
       ),
       dispose: _i431.disposeRecoveryLinkHandler,
+    );
+    gh.factory<_i613.PostPublishCubit>(
+      () => _i613.PostPublishCubit(
+        gh<_i557.EventBus>(),
+        gh<_i541.GetPublishStatusUseCase>(),
+        gh<_i108.RetryPublishUseCase>(),
+        gh<_i453.DiscardPublishUseCase>(),
+        gh<_i1013.ResumeContentUseCase>(),
+        gh<_i401.ResumeSharedPostsUseCase>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        gh<_i371.HasOpenPostDraftUseCase>(),
+      ),
     );
     return this;
   }

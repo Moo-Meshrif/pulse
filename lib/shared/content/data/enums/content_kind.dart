@@ -7,4 +7,11 @@ enum ContentKind {
   const ContentKind(this.wire);
 
   final String wire;
+
+  static ContentKind? fromWire(Object? wire) {
+    for (final kind in values) {
+      if (kind.wire == wire) return kind;
+    }
+    return null;
+  }
 }

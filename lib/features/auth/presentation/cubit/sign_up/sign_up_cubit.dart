@@ -578,8 +578,9 @@ class SignUpCubit extends BaseCubit<SignUpState> {
   FollowStatus _expectedStatus(String id) =>
       FollowChanges.expectedStatus(state.people.values, id);
 
-  void _setLocalFollows(Map<String, FollowStatus?> changes) =>
-      emit(state.copyWith(follows: FollowChanges.apply(state.follows, changes)));
+  void _setLocalFollows(Map<String, FollowStatus?> changes) => emit(
+    state.copyWith(follows: FollowChanges.apply(state.follows, changes)),
+  );
 
   /// "Continue" (once someone is followed) and "Skip" on Follow: sign-up is finished, on to Home.
   Future<void> finishFollow() => _finish();

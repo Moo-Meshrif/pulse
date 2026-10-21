@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/utils/cancel_signal.dart';
 import 'package:pulse/shared/content/data/datasource/media_files_datasource.dart';
 
 import '../../../../helpers/backend_double.dart';
@@ -166,6 +167,38 @@ void main() {
         throwsA(isA<NetworkFailure>()),
       );
       expect(sent, hasLength(3));
+    });
+
+    test('the request can be stopped through the cancel signal', () async {
+      final (files, sent) = await uploader(200);
+      final cancel = CancelSignal();
+      await files.upload(
+        path: 'p',
+        file: file,
+        contentType: 'image/jpeg',
+        cancel: cancel,
+      );
+      final request = sent.single as http.Abortable;
+      expect(request.abortTrigger, same(cancel.whenCancelled));
+    });
+
+    test('a cancelled upload fails and is not tried again', () async {
+      final (files, sent) = await uploader(
+        0,
+        answers: [http.RequestAbortedException()],
+      );
+      final cancel = CancelSignal()..cancel();
+      await expectLater(
+        files.upload(
+          path: 'p',
+          file: file,
+          contentType: 'image/jpeg',
+          cancel: cancel,
+        ),
+        throwsA(isA<Failure>()),
+      );
+      expect(sent, hasLength(1));
+      expect(waits, isEmpty);
     });
 
     test('a missing file fails at once without a request', () async {

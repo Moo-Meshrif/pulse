@@ -5,9 +5,15 @@ import '../../data/model/post_media_model.dart';
 
 /// A photo or video picked for a new post, already resized and measured.
 class NewPostMediaEntity extends Equatable {
+  /// Names its file on the server, so it stays the same when the media moves; null names it by position.
+  final String? id;
+
   /// The file on this device.
   final String filePath;
   final bool isVideo;
+
+  /// A video's frame on this device, sent as its thumb; null makes one at upload.
+  final String? thumbFilePath;
   final int width;
   final int height;
 
@@ -16,8 +22,10 @@ class NewPostMediaEntity extends Equatable {
   final String? blurhash;
 
   const NewPostMediaEntity({
+    this.id,
     required this.filePath,
     required this.isVideo,
+    this.thumbFilePath,
     required this.width,
     required this.height,
     this.durationMs,
@@ -27,6 +35,7 @@ class NewPostMediaEntity extends Equatable {
   MediaToSend toSend() => MediaToSend(
     filePath: filePath,
     isVideo: isVideo,
+    thumbFilePath: thumbFilePath,
     width: width,
     height: height,
     durationMs: durationMs,
@@ -45,8 +54,10 @@ class NewPostMediaEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    id,
     filePath,
     isVideo,
+    thumbFilePath,
     width,
     height,
     durationMs,

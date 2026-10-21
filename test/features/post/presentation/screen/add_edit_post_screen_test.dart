@@ -8,10 +8,14 @@ import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
+import 'package:pulse/features/post/data/model/post_draft_media_model.dart';
+import 'package:pulse/features/post/data/model/post_draft_model.dart';
+import 'package:pulse/features/post/data/repository/post_draft_repository.dart';
+import 'package:pulse/features/post/data/repository/post_share_repository.dart';
+import 'package:pulse/features/post/data/repository/shared_posts_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
-import 'package:pulse/features/post/domain/use_case/create_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart';
@@ -28,9 +32,10 @@ import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/publish_content_use_case.dart';
 
+import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
 
-class _CreatePost extends Mock implements CreatePostUseCase {}
+class _Share extends Mock implements PostShareRepository {}
 
 class _UpdatePost extends Mock implements UpdatePostUseCase {}
 
@@ -45,9 +50,12 @@ class _Thumbnails extends Mock implements VideoThumbnailService {}
 class _Account extends Mock implements GetLastAccountUseCase {}
 
 void main() {
-  late _CreatePost createPost;
+  late _Share share;
   late _Picker picker;
   late _Account account;
+  late MockPostDraftDatasource drafts;
+  late MockMediaUploadQueue uploads;
+  late MockPendingContentDatasource server;
 
   setUpAll(() {
     registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
@@ -63,11 +71,14 @@ void main() {
 
   setUp(() async {
     await getIt.reset();
-    createPost = _CreatePost();
+    share = _Share();
     final bus = EventBus();
     picker = _Picker();
     final privacy = _Privacy();
     account = _Account();
+    drafts = noPostDraft();
+    uploads = idleUploads();
+    server = serverDraftOk();
     when(account.call).thenReturn(null);
     when(privacy.call).thenAnswer(
       (_) async => const PrivacyEntity(
@@ -75,19 +86,35 @@ void main() {
         defaultVisibility: ContentAudience.public,
       ),
     );
-    when(() => createPost(any(), onProgress: any(named: 'onProgress')))
-        .thenAnswer((_) async => null);
+    when(
+      () => share.share(
+        any(),
+        beforeUpload: any(named: 'beforeUpload'),
+        onProgress: any(named: 'onProgress'),
+      ),
+    ).thenAnswer((_) async => null);
+    final publish = ContentPublishRepositoryImpl(
+      bus,
+      FakeContentDiscards(),
+      FakeConnectivity(),
+    );
     getIt.registerFactoryParam<AddEditPostCubit, PostEntity?, dynamic>(
       (post, _) => AddEditPostCubit(
-        createPost,
         _UpdatePost(),
-        PublishContentUseCase(ContentPublishRepositoryImpl(bus)),
+        PublishContentUseCase(publish),
         bus,
         _SignUrls(),
         picker,
         privacy,
         _Thumbnails(),
         account,
+        PostDraftRepository(
+          drafts,
+          uploads,
+          server,
+          SharedPostsRepository(drafts, server, share, publish, bus),
+          FakeContentDiscards(),
+        ),
         post,
         {},
       ),
@@ -231,20 +258,92 @@ void main() {
     await open(tester);
     await tester.tap(find.bySemanticsLabel(l10nEn.close));
     await tester.pumpAndSettle();
-    expect(find.text(l10nEn.newPostDiscardTitle), findsNothing);
+    expect(find.text(l10nEn.newPostDraftTitle), findsNothing);
   });
 
-  testWidgets('closing with text asks; Keep editing stays', (tester) async {
-    await open(tester);
-    await tester.enterText(find.byType(TextField), 'hello');
-    await tester.tap(find.bySemanticsLabel(l10nEn.close));
-    await tester.pumpAndSettle();
-    expect(find.text(l10nEn.newPostDiscardTitle), findsOneWidget);
+  group('closing with text', () {
+    Future<void> closeWithText(
+      WidgetTester tester, {
+      Locale locale = const Locale('en'),
+    }) async {
+      await open(tester, locale: locale);
+      await tester.enterText(find.byType(TextField), 'hello');
+      final l10n = locale.languageCode == 'ar' ? l10nAr : l10nEn;
+      await tester.tap(find.bySemanticsLabel(l10n.close));
+      await tester.pumpAndSettle();
+    }
 
-    await tester.tap(find.text(l10nEn.newPostKeepEditing));
-    await tester.pumpAndSettle();
-    expect(find.text(l10nEn.newPostDiscardTitle), findsNothing);
-    expect(find.text('hello'), findsOneWidget);
+    testWidgets('offers Save draft, Discard post and Keep editing', (
+      tester,
+    ) async {
+      await closeWithText(tester);
+      expect(find.text(l10nEn.newPostDraftTitle), findsOneWidget);
+      expect(find.text(l10nEn.newPostDraftBody), findsOneWidget);
+      expect(find.text(l10nEn.newPostSaveDraft), findsOneWidget);
+      expect(find.text(l10nEn.newPostDiscardPost), findsOneWidget);
+      expect(find.text(l10nEn.newPostKeepEditing), findsOneWidget);
+    });
+
+    testWidgets('in Arabic, right to left', (tester) async {
+      await closeWithText(tester, locale: const Locale('ar'));
+      expect(find.text(l10nAr.newPostDraftTitle), findsOneWidget);
+      expect(find.text(l10nAr.newPostSaveDraft), findsOneWidget);
+      expect(find.text(l10nAr.newPostDiscardPost), findsOneWidget);
+      expect(find.text(l10nAr.newPostKeepEditing), findsOneWidget);
+      final dialogText = find.text(l10nAr.newPostDraftTitle);
+      expect(Directionality.of(tester.element(dialogText)), TextDirection.rtl);
+    });
+
+    testWidgets('Keep editing stays with the text', (tester) async {
+      await closeWithText(tester);
+      await tester.tap(find.text(l10nEn.newPostKeepEditing));
+      await tester.pumpAndSettle();
+      expect(find.text(l10nEn.newPostDraftTitle), findsNothing);
+      expect(find.text('hello'), findsOneWidget);
+      verifyNever(drafts.forget);
+    });
+
+    testWidgets('Save draft saves it', (tester) async {
+      await closeWithText(tester);
+      await tester.tap(find.text(l10nEn.newPostSaveDraft));
+      await tester.pumpAndSettle();
+      final saved =
+          verify(() => drafts.save(captureAny())).captured.last
+              as PostDraftModel;
+      expect(saved.caption, 'hello');
+      verifyNever(drafts.forget);
+    });
+
+    testWidgets('Discard post forgets it and deletes its files', (
+      tester,
+    ) async {
+      await closeWithText(tester);
+      await tester.tap(find.text(l10nEn.newPostDiscardPost));
+      await tester.pumpAndSettle();
+      verify(drafts.forget).called(1);
+      verify(() => drafts.deleteFiles(any())).called(1);
+    });
+  });
+
+  testWidgets('opening New post shows the saved draft', (tester) async {
+    when(drafts.read).thenReturn(
+      const PostDraftModel(
+        id: 'draft-1',
+        caption: 'from last time',
+        media: [
+          PostDraftMediaModel(
+            path: '/drafts/draft-1/a.jpg',
+            isVideo: false,
+            width: 1080,
+            height: 1350,
+          ),
+        ],
+      ),
+    );
+    await open(tester);
+    expect(find.text('from last time'), findsOneWidget);
+    expect(find.bySemanticsLabel(l10nEn.newPostRemoveMedia(1)), findsOneWidget);
+    expect(shareEnabled(tester), isTrue);
   });
 
   testWidgets('Share hands the post over without waiting', (tester) async {
@@ -254,8 +353,13 @@ void main() {
     await tester.tap(shareButton());
     await tester.pump();
 
-    verify(() => createPost(any(), onProgress: any(named: 'onProgress')))
-        .called(1);
+    verify(
+      () => share.share(
+        any(),
+        beforeUpload: any(named: 'beforeUpload'),
+        onProgress: any(named: 'onProgress'),
+      ),
+    ).called(1);
   });
 
   testWidgets('Arabic at 1.5x text does not overflow', (tester) async {

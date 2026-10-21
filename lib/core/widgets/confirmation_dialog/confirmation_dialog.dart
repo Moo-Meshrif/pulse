@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
+import '../../enums/dialog_choice.dart';
 import '../../extensions/context_extensions.dart';
+import '../../router/app_navigator.dart';
 import '../../theme/app_text_styles.dart';
 import '../../theme/dimens/app_dimens.dart';
 import '../app_dialog_shell.dart';
 import '../app_svg_icon.dart';
 import '../app_text.dart';
+import '../pill_button.dart';
+import '../primary_button.dart';
 import 'confirmation_strategy.dart';
 
 /// Confirmation dialogs on [AppDialogShell] (docs/specs/auth/02-components.md C14). Each factory returns
-/// `Future<bool?>`: true confirmed, false cancelled, null dismissed. The layout is fixed per factory
-/// ([ConfirmationStrategy]); callers pass texts only.
+/// `Future<bool?>`: true confirmed, false cancelled, null dismissed, except [choice]. The layout is fixed
+/// per factory ([ConfirmationStrategy]); callers pass texts only.
 abstract final class ConfirmationDialog {
   /// Danger icon; soft cancel (start) + danger confirm (end). Focus starts on cancel.
   static Future<bool?> destructive(
@@ -95,6 +99,35 @@ abstract final class ConfirmationDialog {
     ),
   );
 
+  /// Primary icon; three stacked actions: primary, danger, soft cancel. Focus starts on cancel.
+  static Future<DialogChoice?> choice(
+    BuildContext context, {
+    required String icon,
+    required String title,
+    required String message,
+    required String primaryLabel,
+    required String dangerLabel,
+    required String cancelLabel,
+  }) => AppDialogShell.show<DialogChoice>(
+    context,
+    dismissible: true,
+    builder: (_) => AppDialogShell(
+      semanticLabel: title,
+      child: _Content(
+        strategy: const PrimaryStrategy(),
+        icon: icon,
+        title: title,
+        message: message,
+        confirmLabel: primaryLabel,
+        actions: _ChoiceActions(
+          primaryLabel: primaryLabel,
+          dangerLabel: dangerLabel,
+          cancelLabel: cancelLabel,
+        ),
+      ),
+    ),
+  );
+
   static Future<bool?> _show(
     BuildContext context, {
     required _Content content,
@@ -116,6 +149,7 @@ class _Content extends StatelessWidget {
     required this.message,
     required this.confirmLabel,
     this.cancelLabel,
+    this.actions,
   });
 
   final ConfirmationStrategy strategy;
@@ -124,6 +158,9 @@ class _Content extends StatelessWidget {
   final String message;
   final String confirmLabel;
   final String? cancelLabel;
+
+  /// Replaces the [strategy]'s actions ([ConfirmationDialog.choice]).
+  final Widget? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -153,11 +190,12 @@ class _Content extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         SizedBox(height: DialogDimens.messageToActionsGap),
-        strategy.actions(
-          context,
-          confirmLabel: confirmLabel,
-          cancelLabel: cancelLabel,
-        ),
+        actions ??
+            strategy.actions(
+              context,
+              confirmLabel: confirmLabel,
+              cancelLabel: cancelLabel,
+            ),
       ],
     );
   }
@@ -176,5 +214,42 @@ class _IconCircle extends StatelessWidget {
     decoration: BoxDecoration(color: style.fill, shape: BoxShape.circle),
     alignment: Alignment.center,
     child: AppSvgIcon(icon, size: DialogDimens.icon, color: style.color),
+  );
+}
+
+/// The three stacked actions of [ConfirmationDialog.choice]; each closes the dialog with its [DialogChoice].
+class _ChoiceActions extends StatelessWidget {
+  const _ChoiceActions({
+    required this.primaryLabel,
+    required this.dangerLabel,
+    required this.cancelLabel,
+  });
+
+  final String primaryLabel;
+  final String dangerLabel;
+  final String cancelLabel;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    spacing: DialogDimens.stackedActionGap,
+    children: [
+      PrimaryButton(
+        label: primaryLabel,
+        onPressed: () => AppNavigator.back(context, DialogChoice.primary),
+        expand: true,
+        buttonHeight: ButtonDimens.pillHeight,
+      ),
+      PillButton.danger(
+        label: dangerLabel,
+        onPressed: () => AppNavigator.back(context, DialogChoice.danger),
+      ),
+      PillButton.soft(
+        label: cancelLabel,
+        autofocus: true,
+        onPressed: () => AppNavigator.back(context, DialogChoice.cancel),
+      ),
+    ],
   );
 }

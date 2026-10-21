@@ -4,16 +4,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/guard.dart';
-import '../../../../shared/content/data/enums/content_audience.dart';
-import '../../../../shared/content/data/enums/content_kind.dart';
 import '../enums/mood_kind.dart';
 import '../model/feed_page_model.dart';
 import '../model/post_media_model.dart';
 import '../model/post_model.dart';
 import '../model/post_tag_model.dart';
 
-/// Posts: the home feed, signed links to their media, and creating and editing one. What people do to a post
-/// (like, save, hide, report, delete...) is the core `PostActionsDatasource`.
+/// Posts: the home feed, signed links to their media, and editing one (a new post is shared through
+/// `PendingContentDatasource`). What people do to a post (like, save, hide, report, delete...) is the core
+/// `PostActionsDatasource`.
 abstract interface class PostsDatasource {
   /// The signed-in user's id; no session throws an auth failure.
   String get currentUserId;
@@ -29,22 +28,6 @@ abstract interface class PostsDatasource {
   /// Signed links by object path; a path that cannot be signed is left out.
   Future<Map<String, String>> signMediaUrls(List<String> paths);
 
-  /// Inserts the post [id] whose [media] files are already uploaded. [kind] is a post or a short (a short
-  /// holds exactly one video; the server checks it).
-  Future<void> createPost({
-    required String id,
-    ContentKind kind = ContentKind.post,
-    String? caption,
-    String? location,
-    required bool commentsEnabled,
-    required ContentAudience visibility,
-    required List<PostMediaModel> media,
-    MoodKind? moodKind,
-    String? moodKey,
-    String? moodText,
-    List<PostTagModel> tags = const [],
-  });
-
   /// Replaces the caption, place, media list, mood and tags of the signed-in user's post [id]; the
   /// [media] files are already uploaded.
   Future<void> updatePost({
@@ -59,7 +42,7 @@ abstract interface class PostsDatasource {
   });
 }
 
-/// [PostsDatasource] as an adapter over Supabase: `home_feed`, `create_post` and the private
+/// [PostsDatasource] as an adapter over Supabase: `home_feed`, `update_post` and the private
 /// `post-media` bucket.
 @LazySingleton(as: PostsDatasource)
 final class SupabasePostsDatasource implements PostsDatasource {
@@ -92,7 +75,8 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_before_id': ?beforeId,
       },
     );
-    final posts = List<Map<String, dynamic>>.from(rows).map(PostModel.fromJson)
+    final posts = List<Map<String, dynamic>>.from(rows)
+        .map(PostModel.fromJson)
         .toList();
     // A full page may have more behind it; a short one is the end.
     final last = posts.length < limit ? null : posts.last;
@@ -115,41 +99,6 @@ final class SupabasePostsDatasource implements PostsDatasource {
             result.path: result.signedUrl,
         };
       });
-
-  @override
-  Future<void> createPost({
-    required String id,
-    ContentKind kind = ContentKind.post,
-    String? caption,
-    String? location,
-    required bool commentsEnabled,
-    required ContentAudience visibility,
-    required List<PostMediaModel> media,
-    MoodKind? moodKind,
-    String? moodKey,
-    String? moodText,
-    List<PostTagModel> tags = const [],
-  }) {
-    assert(kind != ContentKind.story, 'A story is not a posts row');
-    return Guard.run(
-      () => _client.rpc<dynamic>(
-        'create_post',
-        params: {
-          'p_id': id,
-          'p_kind': kind.wire,
-          'p_caption': caption,
-          'p_location': location,
-          'p_media': media.map((item) => item.toJson()).toList(),
-          'p_comments_enabled': commentsEnabled,
-          'p_visibility': visibility.wire,
-          'p_mood_kind': moodKind?.wire,
-          'p_mood_key': moodKey,
-          'p_mood_text': moodText,
-          'p_tags': tags.map((tag) => tag.toJson()).toList(),
-        },
-      ),
-    );
-  }
 
   @override
   Future<void> updatePost({

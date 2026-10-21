@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/enums/dialog_choice.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/notice/notices.dart';
 import '../../../../core/router/app_navigator.dart';
@@ -13,7 +14,9 @@ import '../cubit/add_edit_post/add_edit_post_state.dart';
 import '../view/add_edit_post_view.dart';
 
 /// `/create/post`: write and share a post (docs/specs/post/screens/s1-new-post.md). Closing with
-/// something written asks first. Share closes it at once; the post is sent in the background.
+/// something written asks first: a new post offers Save draft / Discard post / Keep editing, an edit asks
+/// to discard the changes. The draft is also saved when the app goes to the background. Share closes it
+/// at once; the post is sent in the background.
 
 class AddEditPostArgs {
   final PostEntity? post;
@@ -43,7 +46,11 @@ class AddEditPostScreen extends StatelessWidget {
           onPopInvokedWithResult: (didPop, _) {
             if (!didPop) _closeAskingFirst(context);
           },
-          child: AddEditPostView(onClose: () => _closeAskingFirst(context)),
+          // A phone may kill the app once it is hidden: the draft is saved at once.
+          child: OnAppVisibility(
+            onHide: () => context.read<AddEditPostCubit>().saveDraftOpen(),
+            child: AddEditPostView(onClose: () => _closeAskingFirst(context)),
+          ),
         ),
       ),
     ),
@@ -59,20 +66,47 @@ class AddEditPostScreen extends StatelessWidget {
       AppNavigator.back(context);
       return;
     }
+    if (state.isEditing) {
+      await _closeEditAskingFirst(context);
+    } else {
+      await _closeNewAskingFirst(context);
+    }
+  }
+
+  Future<void> _closeEditAskingFirst(BuildContext context) async {
     final l10n = context.l10n;
     final discard = await ConfirmationDialog.destructive(
       context,
       icon: AppAssets.trash,
-      title: state.isEditing
-          ? l10n.editPostDiscardTitle
-          : l10n.newPostDiscardTitle,
-      message: state.isEditing
-          ? l10n.editPostDiscardBody
-          : l10n.newPostDiscardBody,
+      title: l10n.editPostDiscardTitle,
+      message: l10n.editPostDiscardBody,
       confirmLabel: l10n.newPostDiscard,
       cancelLabel: l10n.newPostKeepEditing,
     );
     if (discard == true && context.mounted) AppNavigator.back(context);
+  }
+
+  Future<void> _closeNewAskingFirst(BuildContext context) async {
+    final l10n = context.l10n;
+    final cubit = context.read<AddEditPostCubit>();
+    final choice = await ConfirmationDialog.choice(
+      context,
+      icon: AppAssets.document,
+      title: l10n.newPostDraftTitle,
+      message: l10n.newPostDraftBody,
+      primaryLabel: l10n.newPostSaveDraft,
+      dangerLabel: l10n.newPostDiscardPost,
+      cancelLabel: l10n.newPostKeepEditing,
+    );
+    switch (choice) {
+      case DialogChoice.primary:
+        await cubit.saveDraft();
+      case DialogChoice.danger:
+        await cubit.discardDraft();
+      case DialogChoice.cancel || null:
+        return;
+    }
+    if (context.mounted) AppNavigator.back(context);
   }
 
   void _closeOrShowNotice(BuildContext context, AddEditPostState state) {

@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/video_compress_service.dart';
 import '../../../../core/services/video_thumbnail_service.dart';
+import '../../../../core/utils/cancel_signal.dart';
 import '../../../../core/utils/equatable.dart';
 import '../../domain/policy/media_policy.dart';
 import '../datasource/media_files_datasource.dart';
@@ -56,6 +57,37 @@ class SentMedia extends Equatable {
   List<Object?> get props => [path, thumbPath];
 }
 
+/// Where a file and its video thumb will be in the media bucket, and what the server should find there.
+/// A size is null when it is not known before the upload (a video that will be shrunk, a thumb that is
+/// made at upload).
+class MediaTarget extends Equatable {
+  const MediaTarget({
+    required this.path,
+    required this.mimeType,
+    this.sizeBytes,
+    this.thumbPath,
+    this.thumbSizeBytes,
+  });
+
+  /// The type of every video thumb.
+  static const thumbMimeType = 'image/jpeg';
+
+  final String path;
+  final String mimeType;
+  final int? sizeBytes;
+  final String? thumbPath;
+  final int? thumbSizeBytes;
+
+  @override
+  List<Object?> get props => [
+    path,
+    mimeType,
+    sizeBytes,
+    thumbPath,
+    thumbSizeBytes,
+  ];
+}
+
 /// Sends the files of posts, shorts and stories: checks a file against [MediaPolicy], shrinks a video
 /// that is over it, uploads it as `{folder}/{stem}.{ext}` and, for a video, its frame as
 /// `{folder}/{stem}_thumb.jpg`. It is a repository because it combines sources (encoder, thumbnails,
@@ -97,6 +129,9 @@ class ContentMediaRepository {
     'mov': 'video/quicktime',
   };
 
+  /// Where the files of the signed-in user's content [contentId] go.
+  String folderOf(String contentId) => _files.folderOf(contentId);
+
   /// The names of the files already in [folder], so a retry only sends what is missing.
   Future<Set<String>> existing(String folder) async =>
       (await _files.listFiles(folder)).toSet();
@@ -104,11 +139,36 @@ class ContentMediaRepository {
   /// Never throws: a cleanup must not hide why sending failed.
   Future<void> removeQuietly(List<String> paths) => _files.remove(paths);
 
+  /// Where [send] puts [item] in [folder] and what it uploads: the same name and type, and the size of
+  /// the file it sends when that is known now. Throws like [send] for a file the policy refuses.
+  Future<MediaTarget> target(
+    ContentKind kind,
+    MediaToSend item, {
+    required String folder,
+    required String stem,
+  }) async {
+    final decision = await _decide(kind, item);
+    final (extension, contentType) = _typeOf(decision, item);
+    final thumb = item.thumbFilePath;
+    return MediaTarget(
+      path: '$folder/$stem.$extension',
+      mimeType: contentType,
+      sizeBytes: decision is MediaShrink
+          ? null
+          : await _lengthOf(item.filePath),
+      thumbPath: item.isVideo ? '$folder/${stem}_thumb.jpg' : null,
+      thumbSizeBytes: item.isVideo && thumb != null
+          ? await _lengthOf(thumb)
+          : null,
+    );
+  }
+
   /// Uploads [item] unless a file of its name is in [existing] already; each file sent is added to
   /// [existing], so a caller that keeps the set across retries sends nothing twice. [onProgress] is told
   /// how much is done (0..1): the encode, when one runs, then the bytes of the file and its thumb. A file
   /// the policy refuses, or still too big after shrinking, throws a [ServerFailure] 413 before it is
-  /// uploaded, as the bucket would.
+  /// uploaded, as the bucket would. [cancel] stops it between steps and during an upload, and it throws;
+  /// a shrink already running finishes first.
   Future<SentMedia> send(
     ContentKind kind,
     MediaToSend item, {
@@ -116,13 +176,11 @@ class ContentMediaRepository {
     required String stem,
     Set<String>? existing,
     void Function(double progress)? onProgress,
+    CancelSignal? cancel,
   }) async {
     final sent = existing ?? <String>{};
     final decision = await _decide(kind, item);
-    // A shrunk copy is always MP4; the name follows the decision, so it is the same on every try.
-    final (extension, contentType) = decision is MediaShrink
-        ? _defaultVideo
-        : _type(item);
+    final (extension, contentType) = _typeOf(decision, item);
     final name = '$stem.$extension';
     final thumbName = '${stem}_thumb.jpg';
     final sendsMain = !sent.contains(name);
@@ -137,6 +195,7 @@ class ContentMediaRepository {
         uploadStart = _encodeShare;
       }
     }
+    _stopIfCancelled(cancel);
     final thumb = sendsThumb
         ? File(item.thumbFilePath ?? await _thumbnails.thumbnail(item.filePath))
         : null;
@@ -157,19 +216,22 @@ class ContentMediaRepository {
         file: main,
         contentType: contentType,
         onBytes: report,
+        cancel: cancel,
       );
       sent.add(name);
       await _forgetShrunk(item.filePath);
     }
     if (thumb != null) {
+      _stopIfCancelled(cancel);
       await _files.upload(
         path: '$folder/$thumbName',
         file: thumb,
-        contentType: 'image/jpeg',
+        contentType: MediaTarget.thumbMimeType,
         onBytes: (bytes) {
           mainLength ??= sendsMain ? main.lengthSync() : 0;
           report(mainLength! + bytes);
         },
+        cancel: cancel,
       );
       sent.add(thumbName);
     }
@@ -178,6 +240,10 @@ class ContentMediaRepository {
       path: '$folder/$name',
       thumbPath: item.isVideo ? '$folder/$thumbName' : null,
     );
+  }
+
+  void _stopIfCancelled(CancelSignal? cancel) {
+    if (cancel?.isCancelled ?? false) throw const UnexpectedFailure();
   }
 
   /// What [item] needs; a file the policy refuses throws.
@@ -250,6 +316,10 @@ class ContentMediaRepository {
       return null;
     }
   }
+
+  /// A shrunk copy is always MP4; the name follows the decision, so it is the same on every try.
+  (String, String) _typeOf(MediaDecision decision, MediaToSend item) =>
+      decision is MediaShrink ? _defaultVideo : _type(item);
 
   /// The extension and MIME type from the file name; a name that does not match the kind gets the kind's
   /// default (a photo goes as JPEG, a video as MP4).

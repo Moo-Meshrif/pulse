@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/router/recovery_link_handler.dart';
 import '../core/router/session_guard.dart';
+import '../core/services/app_folders.dart';
 import '../core/services/device_tier.dart';
 import '../features/auth/domain/use_case/watch_password_recovery_use_case.dart';
 import '../features/auth/domain/use_case/watch_session_ended_use_case.dart';
@@ -24,6 +25,11 @@ abstract class AppModule {
   @preResolve
   @lazySingleton
   Future<DeviceTier> get deviceTier => DeviceTier.detect();
+
+  /// Resolved before the first frame so New post can open its saved draft at once.
+  @preResolve
+  @lazySingleton
+  Future<AppFolders> get appFolders => AppFolders.resolve();
 
   /// The Supabase client. `main()` initializes Supabase (which restores the stored session) before the
   /// container is built; tests that do not touch the backend never resolve this.

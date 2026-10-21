@@ -16,6 +16,8 @@ import 'package:pulse/shared/content/domain/event/content_delete_event.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
+import '../../../../../helpers/content_mocks.dart';
+
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
 class _Retry extends Mock implements RetryPublishUseCase {}
@@ -45,7 +47,13 @@ void main() {
   StoryRailCubit build() => StoryRailCubit(
     getRail,
     bus,
-    GetPublishStatusUseCase(ContentPublishRepositoryImpl(bus)),
+    GetPublishStatusUseCase(
+      ContentPublishRepositoryImpl(
+        bus,
+        FakeContentDiscards(),
+        FakeConnectivity(),
+      ),
+    ),
     retry,
   );
 

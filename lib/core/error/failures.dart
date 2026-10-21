@@ -63,6 +63,11 @@ final class CameraFailure extends Failure {
   const CameraFailure();
 }
 
+/// The server refused it for good (a post it would not publish); sending it again cannot help.
+final class RejectedFailure extends Failure {
+  const RejectedFailure();
+}
+
 final class ParseFailure extends Failure {
   const ParseFailure();
 }

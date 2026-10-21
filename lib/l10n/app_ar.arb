@@ -1609,12 +1609,20 @@
   "@newPostShared": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "newPostDiscardTitle": "تجاهل المنشور؟",
-  "@newPostDiscardTitle": {
+  "newPostDraftTitle": "حفظ كمسودة؟",
+  "@newPostDraftTitle": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "newPostDiscardBody": "لن يتم حفظ منشورك.",
-  "@newPostDiscardBody": {
+  "newPostDraftBody": "يمكنك إكماله في المرة القادمة التي تفتح فيها منشورًا جديدًا.",
+  "@newPostDraftBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostSaveDraft": "حفظ المسودة",
+  "@newPostSaveDraft": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostDiscardPost": "تجاهل المنشور",
+  "@newPostDiscardPost": {
     "x-review": "Arabic draft: pending user approval"
   },
   "newPostKeepEditing": "متابعة التعديل",
@@ -1639,6 +1647,10 @@
   },
   "newPostMediaLimit": "يمكنك إضافة حتى {count} صور وفيديوهات.",
   "@newPostMediaLimit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostUploadFailed": "تعذّر الرفع. اضغط لإعادة المحاولة",
+  "@newPostUploadFailed": {
     "x-review": "Arabic draft: pending user approval"
   },
   "newPostRemoveMedia": "إزالة الصورة {number}",
@@ -1877,8 +1889,64 @@
   "@postPublishDiscard": {
     "x-review": "Arabic draft: pending user approval"
   },
-  "newPostPublishBusy": "منشورك السابق ما زال قيد الإرسال. حاول بعد قليل.",
+  "postDiscardTooLate": "تمت مشاركة منشورك بالفعل، لذا لم يُحذف.",
+  "@postDiscardTooLate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "newPostPublishBusy": "لديك 3 منشورات في الانتظار. حاول بعد نشر أحدها.",
   "@newPostPublishBusy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishingMany": "نشر {count} منشورات…",
+  "@postPublishingMany": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishProgress": "اكتمل {done} من {total} · {percent}٪",
+  "@postPublishProgress": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishDoneOf": "اكتمل {done} من {total}",
+  "@postPublishDoneOf": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishRowTitle": "المنشور {n}",
+  "@postPublishRowTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishRowPosted": "تم النشر",
+  "@postPublishRowPosted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishRowWaiting": "في الانتظار",
+  "@postPublishRowWaiting": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishAllPosted": "تم نشر الكل",
+  "@postPublishAllPosted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishOffline": "بانتظار الاتصال",
+  "@postPublishOffline": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishOfflineSub": "{count, plural, =1{منشور واحد متوقف} other{{count} منشورات متوقفة}} · يستأنف تلقائيًا",
+  "@postPublishOfflineSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishSomePosted": "تم نشر {done} من {total}",
+  "@postPublishSomePosted": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishSomeFailed": "{count, plural, =1{تعذر رفع منشور واحد} other{تعذر رفع {count} منشورات}}",
+  "@postPublishSomeFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishShowAll": "عرض كل المنشورات",
+  "@postPublishShowAll": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPublishHideAll": "إخفاء القائمة",
+  "@postPublishHideAll": {
     "x-review": "Arabic draft: pending user approval"
   },
   "postHeadlineYou": "أنت",

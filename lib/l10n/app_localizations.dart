@@ -2426,17 +2426,29 @@ abstract class AppLocalizations {
   /// **'Post shared'**
   String get newPostShared;
 
-  /// Discard dialog title
+  /// New post close dialog title (something was written)
   ///
   /// In en, this message translates to:
-  /// **'Discard post?'**
-  String get newPostDiscardTitle;
+  /// **'Save as draft?'**
+  String get newPostDraftTitle;
 
-  /// Discard dialog body
+  /// New post close dialog body
   ///
   /// In en, this message translates to:
-  /// **'Your post won\'t be saved.'**
-  String get newPostDiscardBody;
+  /// **'You can finish it the next time you open New post.'**
+  String get newPostDraftBody;
+
+  /// New post close dialog: keep the draft and close
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get newPostSaveDraft;
+
+  /// New post close dialog: delete the draft and close
+  ///
+  /// In en, this message translates to:
+  /// **'Discard post'**
+  String get newPostDiscardPost;
 
   /// Discard dialog: stay
   ///
@@ -2473,6 +2485,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can add up to {count} photos and videos.'**
   String newPostMediaLimit(int count);
+
+  /// Semantics: a picked photo or video whose upload failed; a tap tries again
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed. Tap to retry'**
+  String get newPostUploadFailed;
 
   /// Semantics: remove a picked photo or video
   ///
@@ -2828,11 +2846,95 @@ abstract class AppLocalizations {
   /// **'Discard'**
   String get postPublishDiscard;
 
+  /// Notice when Discard reached the server after the post had already gone out
+  ///
+  /// In en, this message translates to:
+  /// **'Your post was already shared, so it wasn\'t discarded.'**
+  String get postDiscardTooLate;
+
   /// Notice when sharing while another post is still being sent
   ///
   /// In en, this message translates to:
-  /// **'Your previous post is still being sent. Try again in a moment.'**
+  /// **'You already have 3 posts waiting. Try again when one is out.'**
   String get newPostPublishBusy;
+
+  /// Banner title while several posts are being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Posting {count} posts…'**
+  String postPublishingMany(int count);
+
+  /// Banner line under the title while several posts are being sent
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done · {percent}%'**
+  String postPublishProgress(int done, int total, int percent);
+
+  /// Banner line when every post in the line is out
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String postPublishDoneOf(int done, int total);
+
+  /// Name of a post in the expanded banner list
+  ///
+  /// In en, this message translates to:
+  /// **'Post {n}'**
+  String postPublishRowTitle(int n);
+
+  /// Expanded banner row: this post is out
+  ///
+  /// In en, this message translates to:
+  /// **'Posted'**
+  String get postPublishRowPosted;
+
+  /// Expanded banner row: this post waits for the ones before it
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get postPublishRowWaiting;
+
+  /// Banner title when every post in the line is out
+  ///
+  /// In en, this message translates to:
+  /// **'All posted'**
+  String get postPublishAllPosted;
+
+  /// Banner title when posts wait for the internet
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for connection'**
+  String get postPublishOffline;
+
+  /// Banner line when posts wait for the internet
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 post paused} other{{count} posts paused}} · resumes automatically'**
+  String postPublishOfflineSub(int count);
+
+  /// Banner title when some posts are out and one failed
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} posted'**
+  String postPublishSomePosted(int done, int total);
+
+  /// Banner line when posts failed to send
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 post didn\'t upload} other{{count} posts didn\'t upload}}'**
+  String postPublishSomeFailed(int count);
+
+  /// Label of the button that opens the list of posts being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Show all posts'**
+  String get postPublishShowAll;
+
+  /// Label of the button that closes the list of posts being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the list'**
+  String get postPublishHideAll;
 
   /// Post headline: the signed-in author
   ///

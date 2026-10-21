@@ -50,7 +50,12 @@ class MediaIntake {
   }
 
   /// The files for the sender: each one once it is fully read, without the ones that cannot go in a post.
-  Future<List<NewPostMediaEntity>> readAll(List<PickedMedia> picked) async {
+  /// [ids] names each file on the server and [posters] holds a video's frame, by path.
+  Future<List<NewPostMediaEntity>> readAll(
+    List<PickedMedia> picked, {
+    Map<String, String> ids = const {},
+    Map<String, String> posters = const {},
+  }) async {
     final described = await Future.wait(
       picked.map(
         (item) => _details[item.path] ?? Future.value(DescribedMedia(item)),
@@ -58,13 +63,25 @@ class MediaIntake {
     );
     return described
         .where((item) => item.rejection == null)
-        .map((item) => _newMedia(item.media))
+        .map(
+          (item) => _newMedia(
+            item.media,
+            id: ids[item.media.path],
+            poster: posters[item.media.path],
+          ),
+        )
         .toList();
   }
 
-  NewPostMediaEntity _newMedia(PickedMedia media) => NewPostMediaEntity(
+  NewPostMediaEntity _newMedia(
+    PickedMedia media, {
+    String? id,
+    String? poster,
+  }) => NewPostMediaEntity(
+    id: id,
     filePath: media.path,
     isVideo: media.isVideo,
+    thumbFilePath: media.isVideo ? poster : null,
     width: media.width ?? _fallbackSide,
     height: media.height ?? _fallbackSide,
     durationMs: media.isVideo ? (media.durationMs ?? 0) : null,

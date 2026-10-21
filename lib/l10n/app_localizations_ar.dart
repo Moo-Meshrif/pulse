@@ -1324,10 +1324,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newPostShared => 'تمت مشاركة المنشور';
 
   @override
-  String get newPostDiscardTitle => 'تجاهل المنشور؟';
+  String get newPostDraftTitle => 'حفظ كمسودة؟';
 
   @override
-  String get newPostDiscardBody => 'لن يتم حفظ منشورك.';
+  String get newPostDraftBody =>
+      'يمكنك إكماله في المرة القادمة التي تفتح فيها منشورًا جديدًا.';
+
+  @override
+  String get newPostSaveDraft => 'حفظ المسودة';
+
+  @override
+  String get newPostDiscardPost => 'تجاهل المنشور';
 
   @override
   String get newPostKeepEditing => 'متابعة التعديل';
@@ -1352,6 +1359,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String newPostMediaLimit(int count) {
     return 'يمكنك إضافة حتى $count صور وفيديوهات.';
   }
+
+  @override
+  String get newPostUploadFailed => 'تعذّر الرفع. اضغط لإعادة المحاولة';
 
   @override
   String newPostRemoveMedia(int number) {
@@ -1563,8 +1573,76 @@ class AppLocalizationsAr extends AppLocalizations {
   String get postPublishDiscard => 'تجاهل';
 
   @override
+  String get postDiscardTooLate => 'تمت مشاركة منشورك بالفعل، لذا لم يُحذف.';
+
+  @override
   String get newPostPublishBusy =>
-      'منشورك السابق ما زال قيد الإرسال. حاول بعد قليل.';
+      'لديك 3 منشورات في الانتظار. حاول بعد نشر أحدها.';
+
+  @override
+  String postPublishingMany(int count) {
+    return 'نشر $count منشورات…';
+  }
+
+  @override
+  String postPublishProgress(int done, int total, int percent) {
+    return 'اكتمل $done من $total · $percent٪';
+  }
+
+  @override
+  String postPublishDoneOf(int done, int total) {
+    return 'اكتمل $done من $total';
+  }
+
+  @override
+  String postPublishRowTitle(int n) {
+    return 'المنشور $n';
+  }
+
+  @override
+  String get postPublishRowPosted => 'تم النشر';
+
+  @override
+  String get postPublishRowWaiting => 'في الانتظار';
+
+  @override
+  String get postPublishAllPosted => 'تم نشر الكل';
+
+  @override
+  String get postPublishOffline => 'بانتظار الاتصال';
+
+  @override
+  String postPublishOfflineSub(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count منشورات متوقفة',
+      one: 'منشور واحد متوقف',
+    );
+    return '$_temp0 · يستأنف تلقائيًا';
+  }
+
+  @override
+  String postPublishSomePosted(int done, int total) {
+    return 'تم نشر $done من $total';
+  }
+
+  @override
+  String postPublishSomeFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تعذر رفع $count منشورات',
+      one: 'تعذر رفع منشور واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postPublishShowAll => 'عرض كل المنشورات';
+
+  @override
+  String get postPublishHideAll => 'إخفاء القائمة';
 
   @override
   String get postHeadlineYou => 'أنت';
