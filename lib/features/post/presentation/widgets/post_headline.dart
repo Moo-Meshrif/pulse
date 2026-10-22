@@ -54,26 +54,6 @@ class _PostHeadlineState extends State<PostHeadline> {
     return fullName == null || fullName.isEmpty ? tag.username ?? '' : fullName;
   }
 
-  /// "shared {author}'s post", or "shared a post" when the author is unknown (the original is gone).
-  void _addShared(
-    List<InlineSpan> spans,
-    PostCardData data,
-    PostCardCallbacks callbacks,
-    TextStyle connector,
-    TextStyle name,
-    AppLocalizations l10n,
-  ) {
-    final original = data.original;
-    if (original == null) {
-      spans.add(TextSpan(text: l10n.postHeadlineSharedAPost, style: connector));
-      return;
-    }
-    spans
-      ..add(TextSpan(text: l10n.postHeadlineShared, style: connector))
-      ..add(_name(original.authorName, name, callbacks.onOriginalProfile))
-      ..add(TextSpan(text: l10n.postHeadlineSharedPostOf, style: connector));
-  }
-
   @override
   Widget build(BuildContext context) {
     _disposeRecognizers();
@@ -87,14 +67,8 @@ class _PostHeadlineState extends State<PostHeadline> {
     final name = context.text.headlineName.copyWith(color: colors.textPrimary);
 
     final spans = <InlineSpan>[
-      _name(
-        data.isMine ? l10n.postHeadlineYou : data.authorName,
-        name,
-        callbacks.onProfile,
-      ),
+      _name(data.authorName, name, callbacks.onProfile),
     ];
-
-    if (data.isShare) _addShared(spans, data, callbacks, connector, name, l10n);
 
     final mood = data.mood;
     if (mood != null && mood.kind == MoodKind.feeling) {

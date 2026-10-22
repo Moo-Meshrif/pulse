@@ -40,19 +40,20 @@ class PostOptionsSheet extends StatelessWidget {
         spacing: PostOptionsDimens.groupGap,
         children: [
           if (data.iAmTagged && !data.isMine) const _TaggedLine(),
-          Row(
-            spacing: PostOptionsDimens.quickGap,
-            children: [
-              for (final option in layout.quick)
-                Expanded(
-                  child: PostQuickTile(
-                    option: option,
-                    data: data,
-                    onTap: () => _pick(context, option),
+          if (layout.quick.isNotEmpty)
+            Row(
+              spacing: PostOptionsDimens.quickGap,
+              children: [
+                for (final option in layout.quick)
+                  Expanded(
+                    child: PostQuickTile(
+                      option: option,
+                      data: data,
+                      onTap: () => _pick(context, option),
+                    ),
                   ),
-                ),
-            ],
-          ),
+              ],
+            ),
           PostOptionGroup(
             options: layout.groupA,
             data: data,

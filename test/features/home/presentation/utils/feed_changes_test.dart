@@ -37,7 +37,6 @@ void main() {
     pending: pending,
     fresh: fresh,
     asked: asked ?? [for (final p in fresh) p.id],
-    userId: 'me',
   );
 
   group('applyFreshPosts', () {
@@ -46,15 +45,13 @@ void main() {
 
       expect(ids(result.posts), ['p2', 'p1']);
       expect(ids(result.pending), ['p3']);
-      expect(result.freshIds, isEmpty);
     });
 
-    test('my own new post goes on top at once and is marked fresh', () {
+    test('my own new post waits too, so the feed does not move', () {
       final result = apply(fresh: [feedPost('p3', author: 'me', day: 14)]);
 
-      expect(ids(result.posts), ['p3', 'p2', 'p1']);
-      expect(result.pending, isEmpty);
-      expect(result.freshIds, {'p3'});
+      expect(ids(result.posts), ['p2', 'p1']);
+      expect(ids(result.pending), ['p3']);
     });
 
     test(

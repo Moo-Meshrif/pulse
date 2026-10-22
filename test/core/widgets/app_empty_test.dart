@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/constants/app_assets.dart';
+import 'package:pulse/core/di/injection.dart';
+import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/theme/colors/app_colors.dart';
 import 'package:pulse/core/widgets/widgets.dart';
 
+import '../../helpers/content_mocks.dart';
 import '../../helpers/pump_app.dart';
 
 void main() {
   // The icon floats forever, so these pump with settle: false.
+  setUp(() async {
+    await getIt.reset();
+    getIt.registerSingleton<ConnectivityService>(FakeConnectivity());
+  });
+  tearDown(getIt.reset);
+
   Future<void> show(WidgetTester tester, Widget page) async {
     await tester.pumpApp(Scaffold(body: page), settle: false);
   }
@@ -40,6 +49,7 @@ void main() {
       AppEmpty.failed(onRetry: () => retries++, onGoHome: () => homes++),
     );
     await tester.tap(find.text(l10nEn.tryAgain));
+    await tester.pump();
     await tester.tap(find.text(l10nEn.goToHome));
     expect((retries, homes), (1, 1));
 

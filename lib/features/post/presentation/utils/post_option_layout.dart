@@ -1,7 +1,8 @@
 import 'enums/post_option.dart';
 import 'post_options_data.dart';
 
-/// Which options the sheet shows and in which group, for someone else's post or your own.
+/// Which options the sheet shows and in which group, for someone else's post or your own. An Only me post
+/// has no quick row (no Save, Copy link or Share).
 class PostOptionLayout {
   final List<PostOption> quick;
   final List<PostOption> groupA;
@@ -10,11 +11,13 @@ class PostOptionLayout {
   const PostOptionLayout._(this.quick, this.groupA, this.groupB);
 
   factory PostOptionLayout.of(PostOptionsData data) {
-    final quick = [
-      PostOption.save,
-      if (data.isPublic) PostOption.copyLink,
-      if (data.shareAccess.isShown) PostOption.share,
-    ];
+    final quick = data.isOnlyMe
+        ? const <PostOption>[]
+        : [
+            PostOption.save,
+            if (data.isPublic) PostOption.copyLink,
+            if (data.shareAccess.isShown) PostOption.share,
+          ];
     if (data.isMine) {
       return PostOptionLayout._(
         quick,

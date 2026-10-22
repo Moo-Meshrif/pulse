@@ -1709,15 +1709,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get postHeadlineShared => ' shared ';
-
-  @override
-  String get postHeadlineSharedPostOf => '\'s post';
-
-  @override
-  String get postHeadlineSharedAPost => ' shared a post';
-
-  @override
   String postSharedSemantics(String name) {
     return 'Shared post by $name';
   }

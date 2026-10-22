@@ -5,15 +5,15 @@ Source: user design image "Home · new posts while scrolling" [user, 2026-10-21]
 ## States
 | # | State | What shows |
 |---|---|---|
-| 1 | New posts while scrolled | More than 1 screen down and a post waits: pill slides in under the header (from -12 px, fade, 220 ms). Avatars of up to 3 authors + up arrow + "New posts". It never moves the list. |
+| 1 | New posts while scrolled | Not at the top and a post waits: pill slides in under the header (from -12 px, fade, 220 ms). Avatars of up to 3 authors + up arrow + "New posts". It never moves the list. |
 | 2 | With a count | 2 to 9 posts: "N new posts"; more than 9: "9+ new posts". The pill hides while scrolling down and comes back on scroll up or pause. Auto-hides after 10 s; comes back with the next batch. |
 | 3 | After tapping the pill | The waiting posts go on top, then the list scrolls to the top (450 ms, easeOutCubic; if more than 6 screens down, jump to 1 screen first). New cards get a soft ring that fades. The pill goes away. |
 | 4 | Deep, nothing new | More than 3 screens down and nothing waits: small round "back to top" button above the nav. Tapping it scrolls to the top (same motion). Tapping the Home tab again also scrolls to top (control shell, already built). |
 
 ## Rules
 - Waiting posts are kept apart from the feed and never inserted above what is on screen.
-- Near the top (1 screen or less) a new post goes in at once; no pill.
-- Your own posts (shared or from the upload queue) go in on top at once, no pill.
+- At the very top a new post goes in at once; no pill. Anywhere below, it waits and the pill shows; when the person scrolls back to the top, what waited goes in.
+- Your own posts (shared or from the upload queue) wait silently, with no pill and no notice, so the feed never moves; they go in when the person is at the top, or scrolls back to it. The pill counts only other people's posts.
 - A waiting post that is edited or deleted meanwhile is updated or dropped.
 - Pill: a button; screen reader "Show N new posts and scroll to top", announced once when it appears. Position is the same in RTL (centered); the arrow does not mirror.
 

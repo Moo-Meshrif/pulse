@@ -5,9 +5,13 @@ import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/home_dimens.dart';
 
-/// The one-line name under a rail circle.
+/// The name under a rail circle.
 class RailLabel extends StatelessWidget {
   const RailLabel(this.text, {super.key, this.color});
+
+  /// A name with several words wraps onto up to two lines, one word per line; a single word stays on one.
+  static int maxLinesFor(String text) =>
+      text.trim().contains(RegExp(r'\s')) ? 2 : 1;
 
   final String text;
   final Color? color;
@@ -21,7 +25,7 @@ class RailLabel extends StatelessWidget {
         text,
         style: context.text.caption,
         color: color ?? context.appColors.textSecondary,
-        maxLines: 1,
+        maxLines: maxLinesFor(text),
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.center,
       ),

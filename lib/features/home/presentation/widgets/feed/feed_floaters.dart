@@ -30,7 +30,8 @@ class _FeedFloatersState extends State<FeedFloaters> {
   ScrollController? _scroll;
   Timer? _autoHide;
   bool _isExpired = false;
-  int _pendingCount = 0;
+  int _waitingCount = 0;
+  int _pillCount = 0;
   final _floater = ValueNotifier(_Floater.none);
 
   @override
@@ -71,10 +72,14 @@ class _FeedFloatersState extends State<FeedFloaters> {
     if (position == null) return;
     final offset = position.pixels;
     final viewport = position.viewportDimension;
+    // Back at the top: what waited goes in, nothing the person reads moves.
+    if (_waitingCount > 0 && FeedFloatersRules.isAtTop(offset)) {
+      context.read<FeedCubit>().showPending();
+      return;
+    }
     if (FeedFloatersRules.showPill(
       offset: offset,
-      viewport: viewport,
-      pending: _pendingCount,
+      pending: _pillCount,
       isScrollingDown: position.userScrollDirection == ScrollDirection.reverse,
       isExpired: _isExpired,
     )) {
@@ -82,7 +87,7 @@ class _FeedFloatersState extends State<FeedFloaters> {
     } else if (FeedFloatersRules.showBackToTop(
       offset: offset,
       viewport: viewport,
-      pending: _pendingCount,
+      pending: _pillCount,
     )) {
       _floater.value = _Floater.backToTop;
     } else {
@@ -90,23 +95,21 @@ class _FeedFloatersState extends State<FeedFloaters> {
     }
   }
 
-  bool _isNearTop() {
+  bool _isAtTop() {
     final position = _position;
-    return position == null ||
-        FeedFloatersRules.isNearTop(
-          position.pixels,
-          position.viewportDimension,
-        );
+    return position == null || FeedFloatersRules.isAtTop(position.pixels);
   }
 
   bool _hasPendingChanged(FeedState before, FeedState state) =>
       before.pendingPosts.length != state.pendingPosts.length;
 
   void _pendingChanged(BuildContext context, FeedState state) {
-    final count = state.pendingPosts.length;
-    final isNewBatch = count > _pendingCount;
-    _pendingCount = count;
-    if (count == 0) {
+    final waiting = state.pendingPosts.length;
+    final fromOthers = state.pendingFromOthers.length;
+    final isNewBatch = fromOthers > _pillCount;
+    _waitingCount = waiting;
+    _pillCount = fromOthers;
+    if (fromOthers == 0) {
       _autoHide?.cancel();
     } else if (isNewBatch) {
       _isExpired = false;
@@ -115,11 +118,11 @@ class _FeedFloatersState extends State<FeedFloaters> {
         _isExpired = true;
         _update();
       });
-      // Near the top nothing the person reads moves much: the posts go in at once.
-      if (_isNearTop()) {
-        context.read<FeedCubit>().showPending();
-        return;
-      }
+    }
+    // At the top the new posts push nothing the person reads: they go in at once.
+    if (waiting > 0 && _isAtTop()) {
+      context.read<FeedCubit>().showPending();
+      return;
     }
     _update();
   }
@@ -170,7 +173,7 @@ class _FeedFloatersState extends State<FeedFloaters> {
                   transitionBuilder: _slideDown,
                   child: floater == _Floater.pill
                       ? BlocSelector<FeedCubit, FeedState, List<FeedPost>>(
-                          selector: (state) => state.pendingPosts,
+                          selector: (state) => state.pendingFromOthers,
                           builder: (context, pending) => pending.isEmpty
                               ? const SizedBox.shrink()
                               : NewPostsPill(

@@ -30,15 +30,19 @@ class AvatarInitials extends StatelessWidget {
       child: Container(
         width: size ?? AvatarDimens.list,
         height: size ?? AvatarDimens.list,
+        padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
           color: palette[stablePaletteIndex(seed, palette.length)],
           shape: BoxShape.circle,
         ),
         alignment: Alignment.center,
-        child: AppText(
-          initialsOf(name),
-          style: context.text.name,
-          color: colors.textOnPrimary,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: AppText(
+            initialsOf(name),
+            style: context.text.name,
+            color: colors.textOnPrimary,
+          ),
         ),
       ),
     );

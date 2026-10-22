@@ -56,6 +56,10 @@ abstract class FeedState with _$FeedState {
 
   bool get hasMore => nextCursor != null;
 
+  /// The waiting posts of other people: only these show the pill. The person's own wait silently.
+  List<FeedPost> get pendingFromOthers =>
+      pendingPosts.where((post) => post.entity.authorId != userId).toList();
+
   FeedMode get mode => switch (status) {
     FeedStatus.initial || FeedStatus.loading => FeedMode.skeleton,
     FeedStatus.failed => FeedMode.failed,

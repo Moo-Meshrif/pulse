@@ -2196,18 +2196,6 @@
       }
     }
   },
-    "postHeadlineShared": " shared ",
-  "@postHeadlineShared": {
-    "description": "Share headline: between the sharer and the author of the shared post"
-  },
-  "postHeadlineSharedPostOf": "'s post",
-  "@postHeadlineSharedPostOf": {
-    "description": "Share headline: after the author's name"
-  },
-  "postHeadlineSharedAPost": " shared a post",
-  "@postHeadlineSharedAPost": {
-    "description": "Share headline when the shared post's author is not known"
-  },
   "postSharedSemantics": "Shared post by {name}",
   "@postSharedSemantics": {
     "description": "Screen reader label of the framed post inside a share",

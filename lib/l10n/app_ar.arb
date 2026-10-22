@@ -2010,18 +2010,6 @@
       }
     }
   },
-    "postHeadlineShared": " شارك منشور ",
-  "@postHeadlineShared": {
-    "x-review": "Arabic draft: pending user approval"
-  },
-  "postHeadlineSharedPostOf": "",
-  "@postHeadlineSharedPostOf": {
-    "x-review": "Arabic draft: pending user approval"
-  },
-  "postHeadlineSharedAPost": " شارك منشورًا",
-  "@postHeadlineSharedAPost": {
-    "x-review": "Arabic draft: pending user approval"
-  },
   "postSharedSemantics": "منشور مشارك من {name}",
   "@postSharedSemantics": {
     "x-review": "Arabic draft: pending user approval",

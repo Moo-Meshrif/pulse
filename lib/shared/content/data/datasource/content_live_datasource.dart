@@ -37,6 +37,12 @@ final class SupabaseContentLiveDatasource implements ContentLiveDatasource {
               table: 'posts',
               callback: (_) => ping(ContentKind.post),
             )
+            // A post made Only me can no longer be read by the people who lost it, so Realtime skips
+            // them; the server sends this message to everyone instead.
+            .onBroadcast(
+              event: 'post_narrowed',
+              callback: (_) => ping(ContentKind.post),
+            )
             .onPostgresChanges(
               event: PostgresChangeEvent.all,
               schema: 'public',

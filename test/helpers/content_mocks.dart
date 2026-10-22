@@ -62,6 +62,12 @@ class FakeConnectivity extends Mock implements ConnectivityService {
 
   void back() => _hints.add(null);
 
+  /// Whether the phone has no network; Try again buttons check it first.
+  bool offline = false;
+
+  @override
+  Future<bool> isOffline() async => offline;
+
   @override
   Stream<void> get connectionHints => _hints.stream;
 }

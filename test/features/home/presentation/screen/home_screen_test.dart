@@ -10,6 +10,7 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/router/app_router.dart';
 import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/services/connectivity_service.dart';
 import 'package:pulse/core/theme/app_breakpoints.dart';
 import 'package:pulse/core/widgets/notice/notice_card.dart';
 import 'package:pulse/core/widgets/paged_scroll_view/refresh_icon.dart';
@@ -174,6 +175,7 @@ void main() {
     when(() => hide(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
     getIt
+      ..registerSingleton<ConnectivityService>(FakeConnectivity())
       ..registerFactory(() {
         final changes = quietChangeDoubles();
         return FeedCubit(

@@ -95,4 +95,16 @@ void main() {
     );
     expect(l.groupA, [PostOption.edit, PostOption.changeAudience]);
   });
+
+  test('your Only me post has no save, copy link or share', () {
+    final l = PostOptionLayout.of(
+      const PostOptionsData(
+        postId: 'p1',
+        isMine: true,
+        username: 'sara',
+        visibility: ContentAudience.onlyMe,
+      ),
+    );
+    expect(l.quick, isEmpty);
+  });
 }

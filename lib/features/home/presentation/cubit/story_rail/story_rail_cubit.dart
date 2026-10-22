@@ -17,6 +17,7 @@ import '../../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../../profile/domain/entity/last_account_entity.dart';
 import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../../story/domain/entity/story_rail_item_entity.dart';
+import '../../../../story/domain/event/story_author_seen.dart';
 import '../../../../story/domain/event/story_rail_changed.dart';
 import '../../../../story/domain/use_case/get_story_rail_use_case.dart';
 import 'story_rail_state.dart';
@@ -58,6 +59,7 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
   /// posting, a refresh of Home, or a story that was added or deleted elsewhere (the change check).
   Future<void> start() {
     listenTo<StoryRailChanged>((_) => load());
+    listenTo<StoryAuthorSeen>(_onAuthorSeen);
     listenTo<ContentDeleteEvent>(_onDelete);
     listenTo<FeedRefreshRequested>((_) => load());
     listenTo<ContentPublishStatus>(_onUpload);
@@ -105,6 +107,15 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
       );
     } while (_reloadAgain && !isClosed);
     _isLoading = false;
+  }
+
+  /// The viewer saw the last story of a person: their ring turns grey now, without a read.
+  void _onAuthorSeen(StoryAuthorSeen event) {
+    _loaded = [
+      for (final item in _loaded)
+        item.authorId == event.authorId ? item.copyWith(allSeen: true) : item,
+    ];
+    emit(state.copyWith(items: _visible()));
   }
 
   void _onDelete(ContentDeleteEvent event) {

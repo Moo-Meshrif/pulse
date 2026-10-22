@@ -21,6 +21,7 @@ import '../../../../../shared/content/domain/use_case/set_mute_use_case.dart';
 import '../../../data/datasource/stories_datasource.dart';
 import '../../../data/model/story_model.dart';
 import '../../../domain/entity/story_rail_item_entity.dart';
+import '../../../domain/event/story_author_seen.dart';
 import '../../../domain/event/story_rail_changed.dart';
 import '../../../domain/use_case/get_story_rail_use_case.dart';
 import '../../utils/enums/story_pause_reason.dart';
@@ -432,11 +433,24 @@ class StoryViewerCubit extends BaseCubit<StoryViewerState>
   }
 
   Future<void> _mark(String id) async {
-    _replace(id, (s) => s.copyWith(seenByMe: true));
+    final next = _replace(id, (s) => s.copyWith(seenByMe: true));
+    _fireIfAuthorSeen(next, id);
     try {
       await _stories.markViewed(id);
     } on Failure {
       // Not worth interrupting the viewer for; the next visit marks it again.
+    }
+  }
+
+  /// Tells the rail when the story just seen was the last unseen one of its author.
+  void _fireIfAuthorSeen(StoryViewerState? next, String storyId) {
+    if (next == null) return;
+    for (final entry in next.stories.entries) {
+      if (!entry.value.any((s) => s.id == storyId)) continue;
+      if (entry.value.every((s) => s.seenByMe == true)) {
+        fire(StoryAuthorSeen(entry.key));
+      }
+      return;
     }
   }
 

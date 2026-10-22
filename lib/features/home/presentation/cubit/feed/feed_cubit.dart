@@ -98,13 +98,14 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
 
   /// The newest like and comment counts of the posts on screen; they land in [FeedState.counts].
   Future<void> refreshCounts() => run(
-    () => _counts([for (final post in state.posts) post.id]),
+    () => _counts(state.posts.map((post) => post.id).toList()),
     prevent: state.status != FeedStatus.ready || state.posts.isEmpty,
     onSuccess: (counts) => state.copyWith(
-      counts: {
-        for (final count in counts)
-          if (count.id != null) count.id!: count,
-      },
+      counts: Map.fromEntries(
+        counts
+            .where((count) => count.id != null)
+            .map((count) => MapEntry(count.id!, count)),
+      ),
     ),
     onFailure: (_) => null,
   );
@@ -129,14 +130,11 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
         pending: state.pendingPosts,
         fresh: fresh,
         asked: ids,
-        userId: state.userId,
       );
-      if (result.freshIds.isNotEmpty) _clearFreshLater();
       return state.copyWith(
         posts: result.posts,
         pendingPosts: result.pending,
         replacedIds: result.replacedIds,
-        freshIds: result.freshIds,
       );
     },
     onFailure: (_) => null,
@@ -150,7 +148,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
       state.copyWith(
         posts: withPendingOnTop(state.posts, pending),
         pendingPosts: const [],
-        freshIds: {for (final post in pending) post.id},
+        freshIds: pending.map((post) => post.id).toSet(),
       ),
     );
     _clearFreshLater();
@@ -252,13 +250,19 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     );
   }
 
-  /// A post was shared or edited: a new one goes first, an edited one is replaced where it is.
+  /// A post was shared or edited: a new one waits in the pending list (the feed does not move), an edited
+  /// one is replaced where it is.
   Future<void> _postSaved(PostEntity entity) async {
     final post = await _signOrNull(entity);
     if (post == null) return _reload();
     if (!await _settled()) return;
     if (state.status != FeedStatus.ready) return _reload();
-    emit(state.copyWith(posts: _withPost(post)));
+    final isEdit = state.posts.any((item) => item.id == post.id);
+    if (isEdit) {
+      emit(state.copyWith(posts: _replacedPost(post)));
+    } else if (!state.pendingPosts.any((item) => item.id == post.id)) {
+      emit(state.copyWith(pendingPosts: [post, ...state.pendingPosts]));
+    }
   }
 
   Future<FeedPost?> _signOrNull(PostEntity entity) async {
@@ -269,11 +273,8 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     }
   }
 
-  List<FeedPost> _withPost(FeedPost post) {
-    final isEdit = state.posts.any((item) => item.id == post.id);
-    if (!isEdit) return [post, ...state.posts];
-    return [for (final item in state.posts) item.id == post.id ? post : item];
-  }
+  List<FeedPost> _replacedPost(FeedPost post) =>
+      state.posts.map((item) => item.id == post.id ? post : item).toList();
 
   /// A post was deleted or reported: it leaves the feed, so an empty feed shows its empty page.
   void removePosts(Set<String> ids) => emit(

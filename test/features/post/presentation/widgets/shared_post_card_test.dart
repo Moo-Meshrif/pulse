@@ -87,13 +87,13 @@ void main() {
   );
 
   group('share with its original', () {
-    testView('header names both people, the words and the framed original', (
+    testView('header names the sharer alone, then the framed original', (
       tester,
     ) async {
       await show(tester, share());
 
       expect(rich('Dipprokash Sardar'), findsOneWidget);
-      expect(rich("shared Nour Adel's post"), findsOneWidget);
+      expect(rich('shared'), findsNothing);
       expect(find.text('This is the best spot in Cairo'), findsOneWidget);
       expect(find.byType(SharedPostEmbed), findsOneWidget);
       expect(find.text('Sunset run by the Nile'), findsOneWidget);
@@ -124,7 +124,7 @@ void main() {
         ),
       );
 
-      expect(rich("shared Nour Adel's post is feeling"), findsOneWidget);
+      expect(rich('Dipprokash Sardar is feeling'), findsOneWidget);
     });
 
     testView('without words the original follows the header', (tester) async {
@@ -152,8 +152,12 @@ void main() {
         expect(opened, 1);
 
         final headline = tester.widget<RichText>(
-          find.byWidgetPredicate(
-            (w) => w is RichText && w.text.toPlainText().contains('shared'),
+          find.descendant(
+            of: find.byType(SharedPostEmbed),
+            matching: find.byWidgetPredicate(
+              (w) =>
+                  w is RichText && w.text.toPlainText().contains('Nour Adel'),
+            ),
           ),
         );
         headline.text.visitChildren((span) {
@@ -222,11 +226,11 @@ void main() {
       expect(find.byType(SharedPostEmbed), findsNothing);
     });
 
-    testView('the header says "shared a post"', (tester) async {
+    testView('the header names the sharer alone', (tester) async {
       await show(tester, share(unavailable: true));
 
-      expect(rich('shared a post'), findsOneWidget);
-      expect(rich("'s post"), findsNothing);
+      expect(rich('Dipprokash Sardar'), findsOneWidget);
+      expect(rich('shared'), findsNothing);
     });
 
     testView('the tile reads "Post unavailable"', (tester) async {
@@ -254,7 +258,9 @@ void main() {
 
       final headline = tester.widget<RichText>(
         find.byWidgetPredicate(
-          (w) => w is RichText && w.text.toPlainText().contains('shared'),
+          (w) =>
+              w is RichText &&
+              w.text.toPlainText().contains('A very long sharer'),
         ),
       );
       expect(headline.maxLines, 2);
@@ -279,10 +285,11 @@ void main() {
   });
 
   group('Arabic', () {
-    testView('header reads sharer, "شارك منشور", author', (tester) async {
+    testView('header names the sharer alone', (tester) async {
       await show(tester, share(), locale: const Locale('ar'));
 
-      expect(rich('شارك منشور'), findsOneWidget);
+      expect(rich('Dipprokash Sardar'), findsOneWidget);
+      expect(rich('شارك'), findsNothing);
       expect(find.byType(SharedPostEmbed), findsOneWidget);
     });
 
@@ -290,7 +297,7 @@ void main() {
       await show(tester, share(unavailable: true), locale: const Locale('ar'));
 
       expect(find.text(l10nAr.postUnavailableTitle), findsOneWidget);
-      expect(rich('شارك منشورًا'), findsOneWidget);
+      expect(rich('شارك'), findsNothing);
     });
 
     testWidgets('1.5x text does not overflow', (tester) async {

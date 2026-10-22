@@ -192,10 +192,12 @@ void main() {
 
     Finder rich(String text) => find.textContaining(text, findRichText: true);
 
-    testWidgets('the card says You alone, then what is chosen', (tester) async {
+    testWidgets('the card says the name alone, then what is chosen', (
+      tester,
+    ) async {
       when(account.call).thenReturn(me);
       await open(tester);
-      expect(rich(l10nEn.postHeadlineYou), findsOneWidget);
+      expect(rich('Nour'), findsOneWidget);
       expect(rich('feeling'), findsNothing);
 
       final cubit = cubitOf(tester);
@@ -209,7 +211,7 @@ void main() {
         ..locationChanged('Cairo');
       await tester.pumpAndSettle();
 
-      expect(rich('You is feeling 😊happy with Om'), findsOneWidget);
+      expect(rich('Nour is feeling 😊happy with Om'), findsOneWidget);
       expect(find.text('Cairo'), findsNWidgets(2)); // the preview and the row
     });
 

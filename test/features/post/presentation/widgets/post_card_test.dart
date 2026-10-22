@@ -182,15 +182,13 @@ void main() {
   });
 
   group('headline', () {
-    postTest('names the author alone, or You for your own post', (
-      tester,
-    ) async {
+    postTest('names the author alone, also for your own post', (tester) async {
       await show(tester, data());
       expect(rich('Dipprokash Sardar'), findsOneWidget);
 
       await show(tester, data(isMine: true));
-      expect(rich('You'), findsOneWidget);
-      expect(rich('Dipprokash'), findsNothing);
+      expect(rich('Dipprokash Sardar'), findsOneWidget);
+      expect(rich('You'), findsNothing);
     });
 
     postTest('a feeling reads "is feeling" with the emoji and the word', (

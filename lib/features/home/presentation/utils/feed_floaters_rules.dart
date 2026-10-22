@@ -1,25 +1,19 @@
 import '../dimens/home_dimens.dart';
 
 /// When the "New posts" pill and the back to top button show, from where the feed is scrolled to
-/// (docs/specs/home/screens/s2-new-posts-pill.md). Distances are in viewport heights.
+/// (docs/specs/home/screens/s2-new-posts-pill.md). The top is in pixels, the rest in viewport heights.
 abstract final class FeedFloatersRules {
-  /// The person is near the top: new posts can go in at once, nothing they read moves much.
-  static bool isNearTop(double offset, double viewport) =>
-      offset <= viewport * HomeDimens.pillViewports;
+  /// The person is at the top: new posts can go in at once, nothing they read moves.
+  static bool isAtTop(double offset) => offset <= HomeDimens.atTopOffset;
 
-  /// The pill shows while posts wait and the person is further down than one screen. It steps aside
-  /// while they scroll down, and after its time ran out until the next batch.
+  /// The pill shows while posts wait and the person is not at the top. It steps aside while they
+  /// scroll down, and after its time ran out until the next batch.
   static bool showPill({
     required double offset,
-    required double viewport,
     required int pending,
     required bool isScrollingDown,
     required bool isExpired,
-  }) =>
-      pending > 0 &&
-      !isExpired &&
-      !isScrollingDown &&
-      !isNearTop(offset, viewport);
+  }) => pending > 0 && !isExpired && !isScrollingDown && !isAtTop(offset);
 
   /// The round button shows when nothing waits and the person is more than three screens down.
   static bool showBackToTop({

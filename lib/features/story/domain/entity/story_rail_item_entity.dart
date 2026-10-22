@@ -26,16 +26,17 @@ class StoryRailItemEntity extends Equatable {
     required this.allSeen,
   });
 
-  StoryRailItemEntity copyWith({int? storyCount}) => StoryRailItemEntity(
-    authorId: authorId,
-    username: username,
-    fullName: fullName,
-    avatarUrl: avatarUrl,
-    isMe: isMe,
-    storyCount: storyCount ?? this.storyCount,
-    latestAt: latestAt,
-    allSeen: allSeen,
-  );
+  StoryRailItemEntity copyWith({int? storyCount, bool? allSeen}) =>
+      StoryRailItemEntity(
+        authorId: authorId,
+        username: username,
+        fullName: fullName,
+        avatarUrl: avatarUrl,
+        isMe: isMe,
+        storyCount: storyCount ?? this.storyCount,
+        latestAt: latestAt,
+        allSeen: allSeen ?? this.allSeen,
+      );
 
   @override
   List<Object?> get props => [

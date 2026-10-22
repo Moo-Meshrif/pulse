@@ -65,7 +65,7 @@ abstract final class HomeDimens {
   static double get pillShadowBlur => AppScale.scale(24);
   static double get pillShadowDy => AppScale.scale(8);
   static const scrollToTopDuration = Duration(milliseconds: 450);
-  static const int pillViewports = 1;
+  static const double atTopOffset = 8;
   static const int backToTopViewports = 3;
   static const int jumpFirstViewports = 6;
   static double get backToTopSize => AppScale.scale(48);

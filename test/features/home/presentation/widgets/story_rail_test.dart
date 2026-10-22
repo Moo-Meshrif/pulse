@@ -119,7 +119,7 @@ void main() {
       expect(find.byType(Scrollbar), findsNothing);
     });
 
-    testView('a long username stays on one line', (tester) async {
+    testView('a single-word username stays on one line', (tester) async {
       when(getRail.call).thenAnswer(
         (_) async => [person('a', username: 'a.very.long.user.name.indeed')],
       );
@@ -131,6 +131,18 @@ void main() {
       );
       expect(text.maxLines, 1);
       expect(text.overflow, TextOverflow.ellipsis);
+    });
+
+    testView('a two-word name gets up to two lines', (tester) async {
+      when(getRail.call)
+          .thenAnswer((_) async => [person('a', username: 'mohamed meshrif')]);
+      await show(tester);
+      final text = tester.widget<AppText>(
+        find.byWidgetPredicate(
+          (w) => w is AppText && w.text == 'mohamed meshrif',
+        ),
+      );
+      expect(text.maxLines, 2);
     });
   });
 

@@ -292,17 +292,21 @@ void main() {
       await cubit.close();
     });
 
-    test('a shared post goes first without loading again', () async {
-      pages(FeedPageEntity(posts: [testPost('p1')]));
-      final cubit = build();
-      await cubit.start();
+    test(
+      'a shared post waits without moving the feed or loading again',
+      () async {
+        pages(FeedPageEntity(posts: [testPost('p1')]));
+        final cubit = build();
+        await cubit.start();
 
-      bus.fire(PostSaved(testPost('p9')));
-      await Future<void>.delayed(Duration.zero);
-      expect(cubit.state.posts.map((p) => p.id), ['p9', 'p1']);
-      verify(() => getFeed(cursor: null)).called(1);
-      await cubit.close();
-    });
+        bus.fire(PostSaved(testPost('p9')));
+        await Future<void>.delayed(Duration.zero);
+        expect(cubit.state.posts.map((p) => p.id), ['p1']);
+        expect(cubit.state.pendingPosts.map((p) => p.id), ['p9']);
+        verify(() => getFeed(cursor: null)).called(1);
+        await cubit.close();
+      },
+    );
 
     test('an edited post is replaced where it is', () async {
       pages(FeedPageEntity(posts: [testPost('p1'), testPost('p2')]));
@@ -474,7 +478,7 @@ void main() {
       },
     );
 
-    test('my own new post goes on top at once', () async {
+    test('my own new post waits too, so the feed does not move', () async {
       when(() => postsByIds(['p9']))
           .thenAnswer((_) async => [newer('p9', author: 'me')]);
       final cubit = await started();
@@ -482,8 +486,8 @@ void main() {
       fireNew('p9');
       await pumpEventQueue();
 
-      expect(cubit.state.posts.map((p) => p.id), ['p9', 'p1', 'p2']);
-      expect(cubit.state.pendingPosts, isEmpty);
+      expect(cubit.state.posts.map((p) => p.id), ['p1', 'p2']);
+      expect(cubit.state.pendingPosts.map((p) => p.id), ['p9']);
       await cubit.close();
     });
 

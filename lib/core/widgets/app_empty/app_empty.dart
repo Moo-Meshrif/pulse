@@ -1,8 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../constants/app_assets.dart';
+import '../../di/injection.dart';
+import '../../error/failures.dart';
 import '../../extensions/context_extensions.dart';
 import '../../extensions/l10n.dart';
+import '../../extensions/notice_context.dart';
+import '../../services/connectivity_service.dart';
 import '../../theme/app_text_styles.dart';
 import '../../theme/dimens/app_dimens.dart';
 import '../app_text.dart';
@@ -93,7 +99,7 @@ class AppEmpty extends StatefulWidget {
   /// [linkLabel] when it does something else, e.g. "Close").
   const AppEmpty.failed({
     super.key,
-    required VoidCallback onRetry,
+    required FutureOr<void> Function() onRetry,
     VoidCallback? onGoHome,
     String? linkLabel,
     this.tone = AppEmptyTone.normal,
@@ -126,7 +132,7 @@ class AppEmpty extends StatefulWidget {
   /// The connection is lost; amber. Retries (the screen should also reload on reconnect).
   const AppEmpty.offline({
     super.key,
-    required VoidCallback onRetry,
+    required FutureOr<void> Function() onRetry,
     this.loading = false,
   }) : icon = null,
        title = null,
@@ -142,7 +148,7 @@ class AppEmpty extends StatefulWidget {
   final String? title;
   final String? message;
   final String? primaryLabel;
-  final VoidCallback? onPrimary;
+  final FutureOr<void> Function()? onPrimary;
   final String? secondaryLabel;
   final VoidCallback? onSecondary;
   final AppEmptyTone tone;
@@ -184,6 +190,28 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
     }
   }
 
+  bool _isRunning = false;
+
+  bool get _isRetry =>
+      widget._preset == AppEmptyPreset.failed ||
+      widget._preset == AppEmptyPreset.offline;
+
+  /// Runs the primary action with its button loading. A retry first checks the connection and only
+  /// calls the action when the phone is online; otherwise it says so.
+  Future<void> _runPrimary() async {
+    if (_isRunning) return;
+    setState(() => _isRunning = true);
+    try {
+      if (_isRetry && await getIt<ConnectivityService>().isOffline()) {
+        if (mounted) context.showFailure(const NetworkFailure());
+        return;
+      }
+      await widget.onPrimary!();
+    } finally {
+      if (mounted) setState(() => _isRunning = false);
+    }
+  }
+
   @override
   void dispose() {
     _enter.dispose();
@@ -201,7 +229,8 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
     final message = copy?.message ?? widget.message!;
     final primaryLabel = copy?.primaryLabel ?? widget.primaryLabel;
     final secondaryLabel = widget.secondaryLabel ?? copy?.secondaryLabel;
-    final onPrimary = widget.onPrimary;
+    final onPrimary = widget.onPrimary == null ? null : _runPrimary;
+    final loading = widget.loading || _isRunning;
     final onSecondary = widget.onSecondary;
     final hasPrimary = primaryLabel != null && onPrimary != null;
     final hasSecondary = secondaryLabel != null && onSecondary != null;
@@ -249,12 +278,12 @@ class _AppEmptyState extends State<AppEmpty> with TickerProviderStateMixin {
               label: primaryLabel,
               onPressed: onPrimary,
               tone: widget.tone,
-              loading: widget.loading,
+              loading: loading,
             ),
           if (hasSecondary)
             AppEmptyLink(
               label: secondaryLabel,
-              onPressed: widget.loading ? null : onSecondary,
+              onPressed: loading ? null : onSecondary,
               tone: widget.tone,
             ),
         ],

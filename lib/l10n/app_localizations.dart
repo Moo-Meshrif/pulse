@@ -3008,24 +3008,6 @@ abstract class AppLocalizations {
   /// **'{count} others'**
   String postHeadlineOthers(int count);
 
-  /// Share headline: between the sharer and the author of the shared post
-  ///
-  /// In en, this message translates to:
-  /// **' shared '**
-  String get postHeadlineShared;
-
-  /// Share headline: after the author's name
-  ///
-  /// In en, this message translates to:
-  /// **'\'s post'**
-  String get postHeadlineSharedPostOf;
-
-  /// Share headline when the shared post's author is not known
-  ///
-  /// In en, this message translates to:
-  /// **' shared a post'**
-  String get postHeadlineSharedAPost;
-
   /// Screen reader label of the framed post inside a share
   ///
   /// In en, this message translates to:

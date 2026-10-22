@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pulse/features/home/presentation/dimens/home_dimens.dart';
 import 'package:pulse/features/home/presentation/utils/feed_floaters_rules.dart';
 
 void main() {
@@ -11,21 +12,20 @@ void main() {
     bool expired = false,
   }) => FeedFloatersRules.showPill(
     offset: offset,
-    viewport: viewport,
     pending: pending,
     isScrollingDown: down,
     isExpired: expired,
   );
 
   group('the pill', () {
-    test('shows when posts wait and the person is more than a screen down', () {
+    test('shows when posts wait and the person is not at the top', () {
       expect(pill(), isTrue);
     });
 
-    test('does not show with nothing waiting, near the top, or expired', () {
+    test('does not show with nothing waiting, at the top, or expired', () {
       expect(pill(pending: 0), isFalse);
-      expect(pill(offset: viewport), isFalse);
       expect(pill(offset: 0), isFalse);
+      expect(pill(offset: 300), isTrue);
       expect(pill(expired: true), isFalse);
     });
 
@@ -52,9 +52,11 @@ void main() {
     });
   });
 
-  test('near the top is one screen or less', () {
-    expect(FeedFloatersRules.isNearTop(viewport, viewport), isTrue);
-    expect(FeedFloatersRules.isNearTop(viewport + 1, viewport), isFalse);
+  test('at the top is the very top, a few pixels at most', () {
+    expect(FeedFloatersRules.isAtTop(0), isTrue);
+    expect(FeedFloatersRules.isAtTop(-20), isTrue);
+    expect(FeedFloatersRules.isAtTop(HomeDimens.atTopOffset), isTrue);
+    expect(FeedFloatersRules.isAtTop(HomeDimens.atTopOffset + 1), isFalse);
   });
 
   test('a very deep scroll jumps first, a moderate one does not', () {

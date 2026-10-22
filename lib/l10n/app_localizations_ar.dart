@@ -1710,15 +1710,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get postHeadlineShared => ' شارك منشور ';
-
-  @override
-  String get postHeadlineSharedPostOf => '';
-
-  @override
-  String get postHeadlineSharedAPost => ' شارك منشورًا';
-
-  @override
   String postSharedSemantics(String name) {
     return 'منشور مشارك من $name';
   }
