@@ -168,6 +168,7 @@ class _Rows extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<TagPeopleCubit>();
     final colors = context.appColors;
+    final chosenIds = state.chosen.map((choice) => choice.id).toSet();
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.cardMargin),
       children: [
@@ -181,7 +182,7 @@ class _Rows extends StatelessWidget {
               for (final TagPersonEntity person in state.people)
                 TagPersonPickRow(
                   person: person,
-                  isChosen: state.isChosen(person.id),
+                  isChosen: chosenIds.contains(person.id),
                   isFull: state.isFull,
                   onTap: () => cubit.toggle(person),
                 ),

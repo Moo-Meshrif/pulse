@@ -105,14 +105,16 @@ class _Strip extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<TagInPhotoCubit>();
     return BlocBuilder<TagInPhotoCubit, TagInPhotoState>(
-      builder: (context, state) => state.photos.length < 2
-          ? const SizedBox.shrink()
-          : TagPhotoStrip(
-              photos: state.photos,
-              selected: state.selected,
-              countOf: state.countOn,
-              onSelect: cubit.selectPhoto,
-            ),
+      builder: (context, state) {
+        if (state.photos.length < 2) return const SizedBox.shrink();
+        final counts = state.countsByPosition;
+        return TagPhotoStrip(
+          photos: state.photos,
+          selected: state.selected,
+          countOf: (photo) => counts[photo.position] ?? 0,
+          onSelect: cubit.selectPhoto,
+        );
+      },
     );
   }
 }

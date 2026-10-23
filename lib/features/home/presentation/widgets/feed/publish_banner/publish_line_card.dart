@@ -33,18 +33,14 @@ class _PublishLineCardState extends State<PublishLineCard> {
   bool get _isOffline =>
       _pending.isNotEmpty && _pending.every((i) => i.isOffline);
 
-  bool get _hasFailed => _line.items.any(
-    (item) => item.state == ContentLineState.failed && !item.isOffline,
-  );
+  bool _isFailedRow(ContentLineItem item) =>
+      item.state == ContentLineState.failed && !item.isOffline;
+
+  bool get _hasFailed => _line.items.any(_isFailedRow);
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
-    final failedRows = [
-      for (final item in _line.items)
-        if (item.state == ContentLineState.failed && !item.isOffline) item,
-    ];
-    final rows = _isOpen ? _line.items : failedRows;
     return PublishCardFrame(
       outline: _hasFailed ? colors.warning : null,
       child: Column(
@@ -64,7 +60,7 @@ class _PublishLineCardState extends State<PublishLineCard> {
             child: Column(
               children: [
                 for (final (i, item) in _line.items.indexed)
-                  if (rows.contains(item))
+                  if (_isOpen || _isFailedRow(item))
                     PublishLineRow(item: item, number: i + 1),
               ],
             ),

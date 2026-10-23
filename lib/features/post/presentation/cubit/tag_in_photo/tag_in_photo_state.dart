@@ -40,6 +40,13 @@ abstract class TagInPhotoState with _$TagInPhotoState {
       if (!choice.hasSpot) choice,
   ];
 
-  int countOn(TagPhoto photo) =>
-      chosen.where((choice) => choice.mediaPosition == photo.position).length;
+  /// How many people are tagged on each photo, by the photo's position.
+  Map<int, int> get countsByPosition {
+    final counts = <int, int>{};
+    for (final choice in chosen) {
+      final position = choice.mediaPosition;
+      if (position != null) counts[position] = (counts[position] ?? 0) + 1;
+    }
+    return counts;
+  }
 }
