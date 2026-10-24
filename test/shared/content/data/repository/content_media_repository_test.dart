@@ -135,8 +135,14 @@ void main() {
       stem: '0',
       onProgress: progress.add,
     );
-    // 400 bytes in all: video 150, 300, then frame 300 + 50, 300 + 100.
-    expect(progress, [150 / 400, 300 / 400, 350 / 400, 1.0, 1.0]);
+    // 400 bytes in all: video 150, 300, then frame 300 + 50, 300 + 100; the bytes fill 95 %.
+    expect(progress, [
+      closeTo(0.95 * 150 / 400, 1e-9),
+      closeTo(0.95 * 300 / 400, 1e-9),
+      closeTo(0.95 * 350 / 400, 1e-9),
+      0.95,
+      1.0,
+    ]);
   });
 
   test('a video the policy refuses fails before anything is sent', () async {
@@ -337,13 +343,14 @@ void main() {
         onProgress: progress.add,
       );
       // Encode 0.5, 1; then 300 bytes (copy 200 + frame 100): 100, 200, 250, 300.
+      // The bytes fill 95 % of the upload part.
       expect(progress, [
         0.15,
         0.3,
-        closeTo(0.3 + 0.7 * 100 / 300, 1e-9),
-        closeTo(0.3 + 0.7 * 200 / 300, 1e-9),
-        closeTo(0.3 + 0.7 * 250 / 300, 1e-9),
-        1.0,
+        closeTo(0.3 + 0.7 * 0.95 * 100 / 300, 1e-9),
+        closeTo(0.3 + 0.7 * 0.95 * 200 / 300, 1e-9),
+        closeTo(0.3 + 0.7 * 0.95 * 250 / 300, 1e-9),
+        closeTo(0.3 + 0.7 * 0.95, 1e-9),
         1.0,
       ]);
     });

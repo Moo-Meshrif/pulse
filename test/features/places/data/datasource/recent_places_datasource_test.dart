@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
-import 'package:pulse/core/services/storage_keys.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
+import 'package:pulse/core/services/storage/storage_keys.dart';
 import 'package:pulse/features/places/data/datasource/recent_places_datasource.dart';
 import 'package:pulse/features/places/data/enums/place_kind.dart';
 import 'package:pulse/features/places/data/model/place_model.dart';

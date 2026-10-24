@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/error_reporter.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 import '../../../../shared/content/data/enums/content_audience.dart';
 
 /// Local flags: was the "who will see this" notice shown for Close friends and for Only me? Each shows

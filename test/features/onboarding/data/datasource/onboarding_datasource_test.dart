@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
 import 'package:pulse/features/onboarding/data/datasource/onboarding_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

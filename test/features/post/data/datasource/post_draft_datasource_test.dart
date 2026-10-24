@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/core/services/app_folders.dart';
-import 'package:pulse/core/services/backup_exclusion_service.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
-import 'package:pulse/core/services/storage_keys.dart';
+import 'package:pulse/core/services/storage/app_folders.dart';
+import 'package:pulse/core/services/storage/backup_exclusion.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
+import 'package:pulse/core/services/storage/storage_keys.dart';
 import 'package:pulse/features/post/data/datasource/post_draft_datasource.dart';
 import 'package:pulse/features/post/data/model/post_draft_media_model.dart';
 import 'package:pulse/features/post/data/model/post_draft_model.dart';
@@ -60,7 +60,11 @@ void main() {
     signIn('u1');
     drafts = LocalPostDraftDatasource(
       SharedPrefsStorageService(prefs),
-      AppFolders(support: support.path, temporary: [temporary.path]),
+      AppFolders(
+        support: support.path,
+        temporary: [temporary.path],
+        cache: temporary.path,
+      ),
       backup,
       client,
     );

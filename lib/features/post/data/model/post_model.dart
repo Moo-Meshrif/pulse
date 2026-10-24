@@ -102,6 +102,35 @@ class PostModel extends Equatable {
         : null,
   );
 
+  /// The row of `home_feed()` again, for the copy kept on the device: `fromJson(toJson())` gives the same
+  /// post. Media keep their storage paths only, never a signed link.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'author_id': authorId,
+    'username': username,
+    'full_name': fullName,
+    'avatar_url': avatarUrl,
+    'caption': caption,
+    'location': location,
+    'like_count': likeCount,
+    'comment_count': commentCount,
+    'comments_enabled': commentsEnabled,
+    'visibility': visibility?.wire,
+    'created_at': createdAt?.toIso8601String(),
+    'liked_by_me': likedByMe,
+    'saved_by_me': savedByMe,
+    'media': media?.map((item) => item.toStoredJson()).toList(),
+    'mood_kind': moodKind?.wire,
+    'mood_key': moodKey,
+    'mood_text': moodText,
+    'tag_count': tagCount,
+    'tags': tags?.map((tag) => tag.toStoredJson()).toList(),
+    'i_am_tagged': iAmTagged,
+    'is_share': isShare,
+    'shared_post_id': sharedPostId,
+    'shared_post': sharedPost?.toJson(),
+  };
+
   @override
   List<Object?> get props => [
     id,

@@ -30,6 +30,25 @@ class AppImage extends StatelessWidget {
        bytes = null,
        _source = _Source.network;
 
+  /// A picture that is only read from the device cache under [cacheKey], never from the network.
+  const AppImage.saved(
+    String this.cacheKey, {
+    super.key,
+    this.width,
+    this.height,
+    this.fit = BoxFit.contain,
+    this.cacheWidth,
+    this.placeholder,
+    this.errorBuilder,
+    this.onError,
+    this.frameBuilder,
+    this.gaplessPlayback = false,
+    this.semanticLabel,
+  }) : url = null,
+       path = null,
+       bytes = null,
+       _source = _Source.saved;
+
   const AppImage.file(
     String this.path, {
     super.key,
@@ -89,7 +108,7 @@ class AppImage extends StatelessWidget {
   final Uint8List? bytes;
   final _Source _source;
 
-  /// Network only: the key the picture is cached under (default: the link).
+  /// Network and saved: the key the picture is cached under (network default: the link).
   final String? cacheKey;
   final double? width;
   final double? height;
@@ -104,7 +123,7 @@ class AppImage extends StatelessWidget {
   /// Shown when the picture could not be loaded; nothing when null.
   final Widget Function(BuildContext context)? errorBuilder;
 
-  /// Network only: called with the load error, e.g. to log it.
+  /// Network and saved: called with the load error, e.g. to log it.
   final void Function(Object error, StackTrace? stack)? onError;
 
   /// Called for every frame (to know when the picture is ready); replaces [placeholder].
@@ -117,6 +136,7 @@ class AppImage extends StatelessWidget {
   ImageProvider get _provider {
     final ImageProvider provider = switch (_source) {
       _Source.network => cachedPicture(url!, cacheKey: cacheKey),
+      _Source.saved => savedPicture(cacheKey!),
       _Source.file => FileImage(File(path!)),
       _Source.memory => MemoryImage(bytes!),
       _Source.asset => AssetImage(path!),
@@ -158,4 +178,4 @@ class AppImage extends StatelessWidget {
   }
 }
 
-enum _Source { network, file, memory, asset }
+enum _Source { network, saved, file, memory, asset }

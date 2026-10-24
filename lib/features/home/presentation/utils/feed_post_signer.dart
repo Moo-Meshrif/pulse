@@ -34,6 +34,30 @@ class FeedPostSigner {
         .toList();
   }
 
+  /// The posts with no request: every media is kept with no link, only its cache key, sizes and blurhash.
+  /// For the copy saved on the phone, whose links expired long ago.
+  List<FeedPost> unsigned(List<PostEntity> posts) => posts
+      .map(
+        (post) => FeedPost(
+          entity: post,
+          media: post.media.map(_unsignedMedia).toList(),
+          originalMedia: (post.original?.media ?? const [])
+              .map(_unsignedMedia)
+              .toList(),
+        ),
+      )
+      .toList();
+
+  PostCardMedia _unsignedMedia(PostMediaEntity item) => PostCardMedia(
+    isVideo: item.isVideo,
+    posterCacheKey: item.thumbPath,
+    cacheKey: item.path,
+    width: item.width,
+    height: item.height,
+    durationMs: item.durationMs,
+    blurhash: item.blurhash,
+  );
+
   List<PostCardMedia> _cardMediaOf(
     List<PostMediaEntity> media,
     Map<String, String> links,

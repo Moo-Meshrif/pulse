@@ -14,6 +14,9 @@ abstract class StoryRailState with _$StoryRailState {
     /// The people with an active story: you first when you have one, then unseen, then latest.
     @Default(<StoryRailItemEntity>[]) List<StoryRailItemEntity> items,
 
+    /// The rail has had its first answer. Until then Home shows the rail as a skeleton.
+    @Default(false) bool isLoaded,
+
     /// How posting your own story is going.
     @Default(ContentPublishIdle(ContentKind.story)) ContentPublishStatus upload,
   }) = _StoryRailState;

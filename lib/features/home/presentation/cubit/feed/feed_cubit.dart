@@ -61,20 +61,118 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   static const _freshStay = Duration(seconds: 4);
   Timer? _freshTimer;
 
+  /// Whether the feed is scrolled to the top (the floaters tell): only then may the fresh page replace
+  /// the saved posts.
+  bool _atTop = true;
+
   @override
   EventBus get events => _events;
 
-  /// Loads the feed and loads it again whenever something asks for it (Home was tapped while open). A post
+  void setAtTop(bool atTop) => _atTop = atTop;
+
+  /// Shows the feed saved on the phone at once, then loads the fresh one behind it; with nothing saved it
+  /// loads the feed. Loads it again whenever something asks for it (Home was tapped while open). A post
   /// that was shared or edited is put in the feed without loading.
-  Future<void> start() {
+  Future<void> start() async {
     listenTo<FeedRefreshRequested>((_) => _reload());
     listenTo<PostSaved>((event) => _postSaved(event.post));
     listenTo<ContentChanged>(_contentChanged);
     listenTo<ContentPing>(_onPing);
     resumeLive();
-    final loading = load();
+    await _showSaved();
+    final loading = state.fromPhone ? _freshFirstPage() : load();
     unawaited(checkChanges());
     return loading;
+  }
+
+  /// The saved first page, with no media links, as the feed (nothing happens when none is saved).
+  Future<void> _showSaved() => run(
+    () => _feed(saved: true),
+    onSuccess: (saved) => saved.posts.isEmpty
+        ? null
+        : state.copyWith(
+            status: FeedStatus.ready,
+            posts: _signer.unsigned(saved.posts),
+            nextCursor: saved.nextCursor,
+            fromPhone: true,
+            generation: state.generation + 1,
+          ),
+    onFailure: (_) => null,
+  );
+
+  /// Loads the fresh first page behind the saved posts, quietly. At the top it replaces them; further down
+  /// the posts on screen are updated where they stand and new ones wait for the pill. A failure leaves the
+  /// saved posts as they are.
+  Future<void> _freshFirstPage() async {
+    final generation = state.generation;
+    await run(
+      () => _page(null),
+      prevent: state.isSyncing,
+      loading: state.copyWith(isSyncing: true),
+      onSuccess: (page) => _freshArrived(page, generation),
+      onFailure: (_) => state.copyWith(isSyncing: false),
+    );
+    await _signLeftovers();
+  }
+
+  /// A refresh that ended first wins: its posts are newer than this page's.
+  FeedState _freshArrived(_Page page, int generation) {
+    if (state.generation != generation) return state.copyWith(isSyncing: false);
+    if (_atTop) return _replaced(page);
+    final result = applyFreshPosts(
+      posts: state.posts,
+      pending: state.pendingPosts,
+      fresh: page.posts,
+      asked: const [],
+    );
+    return state.copyWith(
+      posts: result.posts,
+      pendingPosts: result.pending,
+      replacedIds: result.replacedIds,
+      fromPhone: false,
+      isSyncing: false,
+    );
+  }
+
+  /// Gives the links to the posts that are still on screen with none, in one request. A failure is
+  /// ignored: they keep their covers until the next refresh.
+  Future<void> _signLeftovers() {
+    final generation = state.generation;
+    final entities = [
+      for (final post in [...state.posts, ...state.pendingPosts])
+        if (_hasNoLink(post)) post.entity,
+    ];
+    return run(
+      () => _signer.sign(entities),
+      prevent: entities.isEmpty,
+      onSuccess: (signed) => state.generation != generation
+          ? null
+          : _withLinks({for (final post in signed) post.id: post}),
+      onFailure: (_) => null,
+    );
+  }
+
+  bool _hasNoLink(FeedPost post) =>
+      post.media.any((media) => media.url == null) ||
+      post.originalMedia.any((media) => media.url == null);
+
+  /// The posts on screen that still have no links, with the media of [signed]; the rest of the post stays
+  /// as it is.
+  FeedState _withLinks(Map<String, FeedPost> signed) {
+    FeedPost linked(FeedPost post) {
+      final fresh = signed[post.id];
+      if (fresh == null || !_hasNoLink(post)) return post;
+      return FeedPost(
+        entity: post.entity,
+        media: fresh.media,
+        originalMedia: fresh.originalMedia,
+      );
+    }
+
+    return state.copyWith(
+      posts: state.posts.map(linked).toList(),
+      pendingPosts: state.pendingPosts.map(linked).toList(),
+    );
   }
 
   /// The server says posts changed: run the same check as when Home opens, so counts move too.
@@ -183,7 +281,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   /// saved and would replace it with the old version. False if the Cubit closed meanwhile.
   Future<bool> _settled() async {
     bool isReplacing(FeedState s) =>
-        s.status == FeedStatus.loading || s.isRefreshing;
+        s.status == FeedStatus.loading || s.isRefreshing || s.isSyncing;
     if (isReplacing(state)) {
       try {
         await stream.firstWhere((s) => !isReplacing(s));
@@ -197,6 +295,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   bool _isBusy(FeedState state) =>
       state.status == FeedStatus.loading ||
       state.isRefreshing ||
+      state.isSyncing ||
       state.loadMore == LoadMoreStatus.loading;
 
   /// First load, and Try again after it failed.
@@ -295,6 +394,8 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     posts: page.posts,
     nextCursor: page.nextCursor,
     isRefreshing: false,
+    fromPhone: false,
+    isSyncing: false,
     loadMore: LoadMoreStatus.idle,
     generation: state.generation + 1,
     pendingDeleteIds: const {},

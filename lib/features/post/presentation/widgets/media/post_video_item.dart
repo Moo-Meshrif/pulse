@@ -68,6 +68,12 @@ class _PostVideoItemState extends State<PostVideoItem> {
     _report();
   }
 
+  /// A saved post has no link yet: the poster comes from the device cache if it is there.
+  bool get _isSavedPoster =>
+      widget.media.url == null &&
+      widget.media.posterUrl == null &&
+      widget.media.posterCacheKey != null;
+
   @override
   Widget build(BuildContext context) {
     final videos = _videos;
@@ -77,7 +83,7 @@ class _PostVideoItemState extends State<PostVideoItem> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (widget.media.posterUrl != null)
+          if (widget.media.posterUrl != null || _isSavedPoster)
             PostImageItem(
               media: widget.media,
               url: widget.media.posterUrl,

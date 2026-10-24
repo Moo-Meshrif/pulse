@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
-import '../error/guard.dart';
+import '../../error/guard.dart';
 
 /// Leaves a folder out of the phone's backup. Android does it with the rules in
 /// `android/app/src/main/res/xml/` (a folder there must be listed by name); iOS needs this call.

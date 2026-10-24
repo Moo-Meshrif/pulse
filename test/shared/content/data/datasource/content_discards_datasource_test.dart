@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
 import 'package:pulse/shared/content/data/datasource/content_discards_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/model/content_discard_model.dart';

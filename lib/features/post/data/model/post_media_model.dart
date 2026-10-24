@@ -52,6 +52,9 @@ class PostMediaModel extends Equatable {
     'blurhash': blurhash,
   };
 
+  /// Every field, for the copy kept on the device (the item of `home_feed().media` again).
+  Map<String, dynamic> toStoredJson() => {'position': position, ...toJson()};
+
   @override
   List<Object?> get props => [
     position,

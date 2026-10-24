@@ -10,6 +10,7 @@ import '../../cubit/story_rail/story_rail_cubit.dart';
 import '../../cubit/story_rail/story_rail_state.dart';
 import '../../dimens/home_dimens.dart';
 import 'rail_label.dart';
+import 'rail_skeleton.dart';
 import 'story_item.dart';
 import 'your_story_item.dart';
 
@@ -55,8 +56,15 @@ class StoryRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<StoryRailCubit, StoryRailState>(
-        buildWhen: (before, state) => before.items != state.items,
+        buildWhen: (before, state) =>
+            before.items != state.items || before.isLoaded != state.isLoaded,
         builder: (context, state) {
+          if (!state.isLoaded) {
+            return SizedBox(
+              height: _height(context, [context.l10n.storyYourStory]),
+              child: const RailSkeletonZone(),
+            );
+          }
           final others = state.items.where((item) => !item.isMe).toList();
           final labels = [
             context.l10n.storyYourStory,

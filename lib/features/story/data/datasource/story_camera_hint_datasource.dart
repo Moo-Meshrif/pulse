@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/error_reporter.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 
 /// Local flag: was a story captured before? The camera then stops showing "Tap for photo, hold for video".
 @lazySingleton

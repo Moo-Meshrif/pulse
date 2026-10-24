@@ -50,6 +50,7 @@ S10 (leave dialog) shows on any exit from steps 3-8, back arrow or system back [
   - A repository only where sources are coordinated: `ProfileRepository` (abstract + Impl, one file) writes through to `ProfileLocalDatasource` ("update profile saves it locally"; never phone or birthday), reads network-first with the saved copy only on a lost connection, and maps `ProfileModel` -> `ProfileEntity`. `auth` has no repository.
   - An entity only where the concept differs from the model (`ProfileEntity`); interests and suggested profiles are used as models.
   - Features trade only through use cases (`domain/use_case/`): `IsSignedInUseCase` (auth), `GetSignupStepUseCase` (profile), plus the use cases the sign-up flow needs from `profile` (S5-S8). One way: `auth` and `splash` call `profile`, `profile` never imports them; nobody imports another feature's datasource, repository, model or entity.
+  - Start-up: signed in with sign-up saved as finished on the phone -> Home with no server request; otherwise the server is asked for the step (5 s), and a slower answer signs out to Sign in (expired) [user, 2026-10-23].
   - `splash` shows the shared loading view (`AppLoadingView`, `02-components.md` C16) while it decides the first route; the Cubit method called from `BlocProvider.create` yields before its first emit.
 - S1, S2 are standalone screens, each with its own Cubit.
 - S3..S8 are the views of one `SignUpFlow` screen: one `SignUpCubit`, steps swapped without swipe, shared `StepTopBar` (progress animates; fills right to left in RTL) [user].

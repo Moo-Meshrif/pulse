@@ -4,7 +4,7 @@ import '../constants/app_assets.dart';
 import '../extensions/context_extensions.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/dimens/app_dimens.dart';
-import '../widgets/widgets.dart';
+import 'widgets.dart';
 
 /// The white search pill (Add location, Tag people): a ring in `primary` while it has focus and a clear button once it has text.
 /// It keeps its own controller and focus node; [onChanged] reports every change, clearing included.

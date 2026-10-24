@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/error_reporter.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 import '../model/profile_model.dart';
 
 /// The profile saved on this device, one entry per user. Preferences are not encrypted, so phone and

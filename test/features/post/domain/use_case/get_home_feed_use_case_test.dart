@@ -1,35 +1,36 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/feed_page_model.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/model/post_model.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
+import 'package:pulse/features/post/data/repository/feed_repository.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
-class _MockPosts extends Mock implements PostsDatasource {}
+class _MockFeed extends Mock implements FeedRepository {}
 
 void main() {
-  late _MockPosts posts;
+  late _MockFeed posts;
   late GetHomeFeedUseCase useCase;
   final createdAt = DateTime.utc(2026, 10, 13, 10);
 
   setUp(() {
-    posts = _MockPosts();
+    posts = _MockFeed();
     useCase = GetHomeFeedUseCase(posts);
   });
 
   void answer(FeedPageModel page) => when(
-    () => posts.getHomeFeed(
+    () => posts.page(
       limit: any(named: 'limit'),
       beforeCreated: any(named: 'beforeCreated'),
       beforeId: any(named: 'beforeId'),
+      saved: any(named: 'saved'),
     ),
   ).thenAnswer((_) async => page);
 
@@ -62,11 +63,7 @@ void main() {
     );
 
     verify(
-      () => posts.getHomeFeed(
-        limit: 20,
-        beforeCreated: createdAt,
-        beforeId: 'p0',
-      ),
+      () => posts.page(limit: 20, beforeCreated: createdAt, beforeId: 'p0'),
     );
     final post = page.posts.single;
     expect(post.likeCount, 0);

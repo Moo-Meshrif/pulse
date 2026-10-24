@@ -7,6 +7,7 @@ import '../../../../core/constants/app_config.dart';
 import '../../../../core/enums/recovery_signal.dart';
 import '../../../../core/enums/signed_out_reason.dart';
 import '../../../../core/error/guard.dart';
+import '../../../../core/services/storage/snapshot_storage.dart';
 import 'password_recovery_tracker.dart';
 
 /// Authentication, as an interface because the backend can change (Supabase now, Firebase or REST later).
@@ -76,7 +77,7 @@ abstract interface class AuthDatasource {
 /// Function (throttled, same answer for unknown user and wrong password).
 @LazySingleton(as: AuthDatasource)
 final class SupabaseAuthDatasource implements AuthDatasource {
-  SupabaseAuthDatasource(this._client, this._recovery) {
+  SupabaseAuthDatasource(this._client, this._recovery, this._snapshots) {
     // Lives as long as the app so recovery state is right before any screen listens. gotrue replays
     // earlier events, so a link handled before this object existed is still seen.
     _events = _auth.onAuthStateChange.listen(
@@ -87,6 +88,7 @@ final class SupabaseAuthDatasource implements AuthDatasource {
 
   final SupabaseClient _client;
   final PasswordRecoveryTracker _recovery;
+  final SnapshotStorage _snapshots;
   late final StreamSubscription<AuthState> _events;
 
   GoTrueClient get _auth => _client.auth;
@@ -97,6 +99,8 @@ final class SupabaseAuthDatasource implements AuthDatasource {
         unawaited(_recovery.linkOpened());
       case AuthChangeEvent.signedOut:
         unawaited(_recovery.end());
+        // Whatever the reason, the next person on the phone never sees the saved Home.
+        unawaited(_snapshots.clear());
       default:
         break;
     }

@@ -170,10 +170,17 @@ void main() {
         (s) => s.progress,
       );
       expect(progress.first, 0);
-      // 400 bytes in all: media 150, 300, then poster 300 + 50, 300 + 100.
+      // 400 bytes in all: media 150, 300, then poster 300 + 50, 300 + 100; the bytes fill 95 %.
       expect(
         progress,
-        containsAllInOrder([0, 150 / 400, 300 / 400, 350 / 400, 1.0]),
+        containsAllInOrder([
+          0,
+          closeTo(0.95 * 150 / 400, 1e-9),
+          closeTo(0.95 * 300 / 400, 1e-9),
+          closeTo(0.95 * 350 / 400, 1e-9),
+          0.95,
+          1.0,
+        ]),
       );
       expect(seen.sublist(seen.length - 2), [
         const ContentPublishDone(ContentKind.story),

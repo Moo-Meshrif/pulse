@@ -14,6 +14,7 @@ import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/sign_out_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/is_signup_done_on_device_use_case.dart';
 import 'package:pulse/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:pulse/features/splash/presentation/cubit/splash_state.dart';
 import 'package:pulse/features/splash/presentation/utils/enums/splash_problem.dart';
@@ -21,6 +22,9 @@ import 'package:pulse/features/splash/presentation/utils/enums/splash_problem.da
 class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
+
+class MockIsSignupDoneOnDevice extends Mock
+    implements IsSignupDoneOnDeviceUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
@@ -33,6 +37,7 @@ void main() {
 
   late MockIsSignedIn isSignedIn;
   late MockIsRecoveryPending isRecoveryPending;
+  late MockIsSignupDoneOnDevice isSignupDoneOnDevice;
   late MockGetSignupStep getSignupStep;
   late MockSignOut signOut;
   late MockConnectivity connectivity;
@@ -41,6 +46,8 @@ void main() {
     isSignedIn = MockIsSignedIn();
     isRecoveryPending = MockIsRecoveryPending();
     when(() => isRecoveryPending()).thenReturn(false);
+    isSignupDoneOnDevice = MockIsSignupDoneOnDevice();
+    when(() => isSignupDoneOnDevice()).thenReturn(false);
     getSignupStep = MockGetSignupStep();
     signOut = MockSignOut();
     when(() => signOut()).thenAnswer((_) async {});
@@ -52,6 +59,7 @@ void main() {
   SplashCubit cubit() => SplashCubit(
     isSignedIn,
     isRecoveryPending,
+    isSignupDoneOnDevice,
     getSignupStep,
     signOut,
     connectivity,
@@ -96,6 +104,18 @@ void main() {
     expect: () => [const SplashState.go(AppRoutes.home)],
   );
 
+  blocTest<SplashCubit, SplashState>(
+    'a sign-up finished on this phone goes Home with no request',
+    setUp: () {
+      when(() => isSignedIn()).thenReturn(true);
+      when(() => isSignupDoneOnDevice()).thenReturn(true);
+    },
+    build: cubit,
+    act: (c) => c.decide(),
+    expect: () => [const SplashState.go(AppRoutes.home)],
+    verify: (_) => verifyNever(() => getSignupStep()),
+  );
+
   for (final step in [
     SignupStep.aboutYou,
     SignupStep.profile,
@@ -119,18 +139,24 @@ void main() {
     when(() => getSignupStep()).thenThrow(failure);
   }
 
-  for (final failure in <Failure>[
-    const NetworkFailure(),
-    const TimeoutFailure(),
-  ]) {
-    blocTest<SplashCubit, SplashState>(
-      '${failure.runtimeType} shows the offline screen',
-      setUp: () => stepFails(failure),
-      build: cubit,
-      act: (c) => c.decide(),
-      expect: () => [const SplashState.failed(SplashProblem.offline)],
-    );
-  }
+  blocTest<SplashCubit, SplashState>(
+    'NetworkFailure shows the offline screen',
+    setUp: () => stepFails(const NetworkFailure()),
+    build: cubit,
+    act: (c) => c.decide(),
+    expect: () => [const SplashState.failed(SplashProblem.offline)],
+  );
+
+  blocTest<SplashCubit, SplashState>(
+    'TimeoutFailure signs out and Sign in says it expired',
+    setUp: () => stepFails(const TimeoutFailure()),
+    build: cubit,
+    act: (c) => c.decide(),
+    expect: () => [
+      SplashState.go(AppRoutes.signInWith(SignedOutReason.expired)),
+    ],
+    verify: (_) => verify(() => signOut()).called(1),
+  );
 
   group('showing the diagnosed connection problem', () {
     const cases = {
@@ -140,10 +166,7 @@ void main() {
       ConnectionProblem.cantReach: SplashProblem.cantReach,
     };
     for (final MapEntry(key: diagnosis, value: problem) in cases.entries) {
-      for (final failure in <Failure>[
-        const NetworkFailure(),
-        const TimeoutFailure(),
-      ]) {
+      for (final failure in <Failure>[const NetworkFailure()]) {
         blocTest<SplashCubit, SplashState>(
           '${failure.runtimeType} diagnosed as ${diagnosis.name} shows ${problem.name}',
           setUp: () {
@@ -169,7 +192,7 @@ void main() {
   });
 
   testWidgets(
-    'a start-up request that never answers times out after 10 s, as offline',
+    'a start-up request that never answers times out after 5 s and ends the session',
     (tester) async {
       final never = Completer<SignupStep>();
       when(() => isSignedIn()).thenReturn(true);
@@ -177,10 +200,14 @@ void main() {
       final c = cubit();
       unawaited(c.decide());
 
-      await tester.pump(const Duration(seconds: 9));
+      await tester.pump(const Duration(seconds: 4));
       expect(c.state, const SplashState.deciding());
       await tester.pump(const Duration(seconds: 2));
-      expect(c.state, const SplashState.failed(SplashProblem.offline));
+      expect(
+        c.state,
+        SplashState.go(AppRoutes.signInWith(SignedOutReason.expired)),
+      );
+      verify(() => signOut()).called(1);
       // Not awaited: this test runs on a fake clock, so only a pump would finish the cancel.
       unawaited(c.close());
     },

@@ -301,6 +301,25 @@ void main() {
     verifyNever(() => local.write(any()));
   });
 
+  group('savedSignupStep', () {
+    test('is the step in the signed-in user\'s copy, with no request', () {
+      when(() => local.read('u1')).thenReturn(saved);
+      expect(repository.savedSignupStep(), SignupStep.aboutYou);
+      verifyNever(() => remote.getProfile());
+    });
+
+    test('is null when no copy is saved', () {
+      when(() => local.read('u1')).thenReturn(null);
+      expect(repository.savedSignupStep(), isNull);
+    });
+
+    test('is null without a session', () {
+      when(() => remote.currentUserId).thenReturn(null);
+      expect(repository.savedSignupStep(), isNull);
+      verifyNever(() => local.read(any()));
+    });
+  });
+
   group('clearLocalProfile', () {
     test('forgets the signed-in user\'s copy', () async {
       await repository.clearLocalProfile();

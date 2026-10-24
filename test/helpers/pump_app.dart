@@ -9,6 +9,7 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/extensions/l10n.dart';
 import 'package:pulse/core/notice/notices.dart';
 import 'package:pulse/core/services/photo_picker_service.dart';
+import 'package:pulse/core/services/storage/snapshot_storage.dart';
 import 'package:pulse/core/theme/app_scale.dart';
 import 'package:pulse/core/theme/app_scroll_behavior.dart';
 import 'package:pulse/core/theme/app_theme.dart';
@@ -60,6 +61,8 @@ import 'package:pulse/shared/content/data/model/content_discard_model.dart';
 import 'package:pulse/shared/content/data/model/post_count_model.dart';
 import 'package:pulse/shared/content/data/repository/media_upload_queue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'memory_snapshot_storage.dart';
 
 class MockActivityDatasource extends Mock implements ActivityDatasource {}
 
@@ -357,13 +360,27 @@ Future<void> setUpRealWiring({
   SharedPreferences.setMockInitialValues(prefs);
   // AppFolders is read at start-up; path_provider has no platform side in tests.
   TestWidgetsFlutterBinding.ensureInitialized();
+  // Hive opens in a folder of its own, deleted after the test.
+  final hiveRoot = Directory.systemTemp.createTempSync('pulse_hive');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
         const MethodChannel('plugins.flutter.io/path_provider'),
-        (_) async => Directory.systemTemp.path,
+        (call) async => call.method == 'getApplicationCachePath'
+            ? hiveRoot.path
+            : Directory.systemTemp.path,
       );
   await getIt.reset();
-  await configureDependencies();
+  // Hive's file work waits for real time, which a widget test's fake clock never gives: start-up opens
+  // the box in real time, then the saved Home lives in memory.
+  await TestWidgetsFlutterBinding.instance.runAsync(() async {
+    await configureDependencies();
+    await getIt.unregister<SnapshotStorage>();
+  });
+  getIt.registerSingleton<SnapshotStorage>(MemorySnapshotStorage());
+  addTearDown(() async {
+    await getIt.reset();
+    hiveRoot.deleteSync(recursive: true);
+  });
   // The Supabase adapters need a Supabase session: tests get signed-out mocks unless they pass their own.
   final signedOut = MockAuthDatasource();
   when(() => signedOut.hasSession).thenReturn(false);
@@ -407,6 +424,7 @@ Future<void> setUpRealWiring({
   getIt.registerSingleton<LegalDatasource>(legal ?? MockLegalDatasource());
   // Home's story rail loads on open: an empty rail.
   final emptyRail = MockStoriesDatasource();
+  when(() => emptyRail.currentUserId).thenReturn('me');
   when(() => emptyRail.getStoryRail(limit: any(named: 'limit')))
       .thenAnswer((_) async => []);
   getIt.registerSingleton<StoriesDatasource>(stories ?? emptyRail);
@@ -426,6 +444,7 @@ Future<void> setUpRealWiring({
 /// Makes [posts] answer a feed of one plain post: Home loads its feed on open, and its empty page floats
 /// forever, so a test that settles needs a post to show.
 void stubOnePostFeed(PostsDatasource posts) {
+  when(() => posts.currentUserId).thenReturn('me');
   when(
     () => posts.getHomeFeed(
       limit: any(named: 'limit'),

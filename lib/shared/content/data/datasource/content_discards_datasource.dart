@@ -2,8 +2,8 @@ import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/guard.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 import '../model/content_discard_model.dart';
 
 /// The signed-in user's discards that the server has not confirmed yet, kept on this device so a discard

@@ -51,6 +51,7 @@ dependencies:
   geolocator: ^14.0.1
   get_it: ^9.3.0
   # flutter_html 3.0.0 calls html's internal `matches`, which html 0.15.6+ no longer exports; keep below 0.15.6.
+  hive_ce: ^2.22.0
   html: '>=0.15.4 <0.15.6'
   http: ^1.6.0
   image_picker: ^1.2.4

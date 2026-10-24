@@ -13,6 +13,7 @@ import 'package:pulse/features/auth/domain/use_case/is_signed_in_use_case.dart';
 import 'package:pulse/features/auth/domain/use_case/sign_out_use_case.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
 import 'package:pulse/features/profile/domain/use_case/get_signup_step_use_case.dart';
+import 'package:pulse/features/profile/domain/use_case/is_signup_done_on_device_use_case.dart';
 import 'package:pulse/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:pulse/features/splash/presentation/screen/splash_screen.dart';
 import 'package:pulse/features/splash/presentation/widgets/splash_loading.dart';
@@ -23,6 +24,9 @@ import '../../../../helpers/pump_app.dart' show l10nEn;
 class MockIsSignedIn extends Mock implements IsSignedInUseCase {}
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
+
+class MockIsSignupDoneOnDevice extends Mock
+    implements IsSignupDoneOnDeviceUseCase {}
 
 class MockGetSignupStep extends Mock implements GetSignupStepUseCase {}
 
@@ -43,6 +47,8 @@ void main() {
     isSignedIn = MockIsSignedIn();
     final isRecoveryPending = MockIsRecoveryPending();
     when(() => isRecoveryPending()).thenReturn(false);
+    final isSignupDoneOnDevice = MockIsSignupDoneOnDevice();
+    when(() => isSignupDoneOnDevice()).thenReturn(false);
     getSignupStep = MockGetSignupStep();
     connectivity = MockConnectivity();
     when(() => connectivity.diagnose(any()))
@@ -52,6 +58,7 @@ void main() {
       () => SplashCubit(
         isSignedIn,
         isRecoveryPending,
+        isSignupDoneOnDevice,
         getSignupStep,
         MockSignOut(),
         connectivity,

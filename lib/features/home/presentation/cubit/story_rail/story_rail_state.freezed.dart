@@ -16,7 +16,8 @@ T _$identity<T>(T value) => value;
 mixin _$StoryRailState {
 
 /// The people with an active story: you first when you have one, then unseen, then latest.
- List<StoryRailItemEntity> get items;/// How posting your own story is going.
+ List<StoryRailItemEntity> get items;/// The rail has had its first answer. Until then Home shows the rail as a skeleton.
+ bool get isLoaded;/// How posting your own story is going.
  ContentPublishStatus get upload;
 /// Create a copy of StoryRailState
 /// with the given fields replaced by the non-null parameter values.
@@ -29,20 +30,20 @@ $StoryRailStateCopyWith<StoryRailState> get copyWith => _$StoryRailStateCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as StoryRailState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryRailState&&const DeepCollectionEquality().equals(other.items, _this.items)&&(identical(other.upload, _this.upload) || other.upload == _this.upload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryRailState&&const DeepCollectionEquality().equals(other.items, _this.items)&&(identical(other.isLoaded, _this.isLoaded) || other.isLoaded == _this.isLoaded)&&(identical(other.upload, _this.upload) || other.upload == _this.upload));
 }
 
 
 @override
 int get hashCode {
   final _this = this as StoryRailState;
-  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items),_this.upload);
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items),_this.isLoaded,_this.upload);
 }
 
 @override
 String toString() {
   final _this = this as StoryRailState;
-  return 'StoryRailState(items: ${_this.items}, upload: ${_this.upload})';
+  return 'StoryRailState(items: ${_this.items}, isLoaded: ${_this.isLoaded}, upload: ${_this.upload})';
 }
 
 
@@ -53,7 +54,7 @@ abstract mixin class $StoryRailStateCopyWith<$Res>  {
   factory $StoryRailStateCopyWith(StoryRailState value, $Res Function(StoryRailState) _then) = _$StoryRailStateCopyWithImpl;
 @useResult
 $Res call({
- List<StoryRailItemEntity> items, ContentPublishStatus upload
+ List<StoryRailItemEntity> items, bool isLoaded, ContentPublishStatus upload
 });
 
 
@@ -70,10 +71,11 @@ class _$StoryRailStateCopyWithImpl<$Res>
 
 /// Create a copy of StoryRailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? upload = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? isLoaded = null,Object? upload = null,}) {
   return _then(StoryRailState(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<StoryRailItemEntity>,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
+as List<StoryRailItemEntity>,isLoaded: null == isLoaded ? _self.isLoaded : isLoaded // ignore: cast_nullable_to_non_nullable
+as bool,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
 as ContentPublishStatus,
   ));
 }
@@ -159,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  ContentPublishStatus upload)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  bool isLoaded,  ContentPublishStatus upload)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryRailState() when $default != null:
-return $default(_that.items,_that.upload);case _:
+return $default(_that.items,_that.isLoaded,_that.upload);case _:
   return orElse();
 
 }
@@ -180,10 +182,10 @@ return $default(_that.items,_that.upload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  ContentPublishStatus upload)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<StoryRailItemEntity> items,  bool isLoaded,  ContentPublishStatus upload)  $default,) {final _that = this;
 switch (_that) {
 case _StoryRailState():
-return $default(_that.items,_that.upload);case _:
+return $default(_that.items,_that.isLoaded,_that.upload);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +202,10 @@ return $default(_that.items,_that.upload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<StoryRailItemEntity> items,  ContentPublishStatus upload)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<StoryRailItemEntity> items,  bool isLoaded,  ContentPublishStatus upload)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryRailState() when $default != null:
-return $default(_that.items,_that.upload);case _:
+return $default(_that.items,_that.isLoaded,_that.upload);case _:
   return null;
 
 }
@@ -215,7 +217,7 @@ return $default(_that.items,_that.upload);case _:
 
 
 class _StoryRailState extends StoryRailState {
-  const _StoryRailState({ List<StoryRailItemEntity> items = const <StoryRailItemEntity>[], this.upload = const ContentPublishIdle(ContentKind.story)}): _items = items,super._();
+  const _StoryRailState({ List<StoryRailItemEntity> items = const <StoryRailItemEntity>[], this.isLoaded = false, this.upload = const ContentPublishIdle(ContentKind.story)}): _items = items,super._();
   
 
 /// The people with an active story: you first when you have one, then unseen, then latest.
@@ -227,6 +229,8 @@ class _StoryRailState extends StoryRailState {
   return EqualUnmodifiableListView(_items);
 }
 
+/// The rail has had its first answer. Until then Home shows the rail as a skeleton.
+@override@JsonKey() final  bool isLoaded;
 /// How posting your own story is going.
 @override@JsonKey() final  ContentPublishStatus upload;
 
@@ -240,18 +244,18 @@ _$StoryRailStateCopyWith<_StoryRailState> get copyWith => __$StoryRailStateCopyW
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryRailState&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.upload, upload) || other.upload == upload));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryRailState&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.isLoaded, isLoaded) || other.isLoaded == isLoaded)&&(identical(other.upload, upload) || other.upload == upload));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),upload);
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),isLoaded,upload);
 }
 
 @override
 String toString() {
-    return 'StoryRailState(items: $items, upload: $upload)';
+    return 'StoryRailState(items: $items, isLoaded: $isLoaded, upload: $upload)';
 }
 
 
@@ -262,7 +266,7 @@ abstract mixin class _$StoryRailStateCopyWith<$Res> implements $StoryRailStateCo
   factory _$StoryRailStateCopyWith(_StoryRailState value, $Res Function(_StoryRailState) _then) = __$StoryRailStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<StoryRailItemEntity> items, ContentPublishStatus upload
+ List<StoryRailItemEntity> items, bool isLoaded, ContentPublishStatus upload
 });
 
 
@@ -279,10 +283,11 @@ class __$StoryRailStateCopyWithImpl<$Res>
 
 /// Create a copy of StoryRailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? upload = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? isLoaded = null,Object? upload = null,}) {
   return _then(_StoryRailState(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<StoryRailItemEntity>,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
+as List<StoryRailItemEntity>,isLoaded: null == isLoaded ? _self.isLoaded : isLoaded // ignore: cast_nullable_to_non_nullable
+as bool,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
 as ContentPublishStatus,
   ));
 }

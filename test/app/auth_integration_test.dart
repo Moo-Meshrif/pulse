@@ -105,7 +105,7 @@ void main() {
 
   group('a session that ended', () {
     const saved = {
-      'profile_u1': '{"id":"u1","username":"nour.adel","full_name":"Nour Adel","signup_step":0}',
+      'profile_u1': '{"id":"u1","username":"nour.adel","full_name":"Nour Adel","signup_step":3}',
       'last_account_id': 'u1',
     };
 

@@ -252,7 +252,8 @@ void main() {
         await tester.pump(const Duration(milliseconds: 150));
       }
     }
-    expect(find.byType(ControlScreen), findsOneWidget);
+    // Home may be covered by the New post screen a draft reopens, so look under it too.
+    expect(find.byType(ControlScreen, skipOffstage: false), findsOneWidget);
   }
 
   Future<void> settle(WidgetTester tester) async {
@@ -781,7 +782,8 @@ void main() {
         expect(device.draft?.caption, 'Before the restart');
 
         await killAndReopen(tester);
-        await openNewPost(tester);
+        // Home reopens the draft the app was closed on.
+        expect(find.byType(AddEditPostScreen), findsOneWidget);
         expect(find.text('Before the restart'), findsOneWidget);
         await realIo(tester);
         // The same file goes again under the same name.

@@ -6,10 +6,13 @@ Purpose / route: `/` after onboarding was seen. Decides the first route (Sign in
 | State | Shown when |
 |---|---|
 | Loading | Deciding the route (the session is read, the profile step is requested) |
-| Offline | Reading the profile failed with a lost connection or a timeout (`NetworkFailure`, `TimeoutFailure`) and the device has no Wi-Fi and no mobile data |
+| Offline | Reading the profile failed with a lost connection (`NetworkFailure`) and the device has no Wi-Fi and no mobile data |
 | No internet | Same failure, a Wi-Fi or mobile network is on, but the backend cannot be reached (no uplink, captive portal) [user, 2026-10-11] |
-| Weak connection | Same failure, the backend answers but slowly, or the start-up request took more than 10 s and timed out [user, 2026-10-11] |
+| Weak connection | Same failure, the backend answers but slowly, [user, 2026-10-11] |
 | Can't reach Pulse | Reading the profile failed for another reason (`ServerFailure`, `NotFoundFailure`, `ParseFailure`, `UnexpectedFailure`) |
+
+A start-up request slower than 5 s (`TimeoutFailure`) is not an error screen either: the session is ended and Sign in opens with the expired banner [user, 2026-10-23].
+When the profile saved on the phone says sign-up is finished, the server is not asked: splash goes Home at once [user, 2026-10-23]. A dead session or deleted account is then found by Home's first request.
 
 A revoked or expired session (`AuthFailure(sessionExpired)`) is not an error screen: it goes to Sign in. "Try again" runs the decision again and shows Loading. [estimated mapping, see Q25]
 
@@ -52,7 +55,7 @@ Scaffold (bg background) > SafeArea
 
 ## Behavior and navigation
 - Loading -> `resetTo` the route when decided (as today). Offline / Can't reach: stay on the screen; "Try again" returns to Loading and decides again. System back leaves the app (no stack below).
-- A lost connection or timeout is told apart by checking the connection (`ConnectivityService.check`): no Wi-Fi/mobile data -> Offline; a network but the backend unreachable -> No internet; a slow answer (over 1.5 s to open a TLS connection to the backend), or a timeout with a good connection -> Weak connection; a network error with a good connection -> Can't reach Pulse. The start-up request times out after 10 s.
+- A lost connection or timeout is told apart by checking the connection (`ConnectivityService.check`): no Wi-Fi/mobile data -> Offline; a network but the backend unreachable -> No internet; a slow answer (over 1.5 s to open a TLS connection to the backend), or a network error with a slow connection -> Weak connection; a network error with a good connection -> Can't reach Pulse. The start-up request (asked only when the saved sign-up is not finished) times out after 5 s and signs out to Sign in (expired).
 - The offline and can't-reach screens never show a raw error text or a status code.
 
 ## Responsive / a11y

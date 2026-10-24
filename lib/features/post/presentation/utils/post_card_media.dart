@@ -4,8 +4,10 @@ import '../../../../core/utils/equatable.dart';
 class PostCardMedia extends Equatable {
   final bool isVideo;
 
-  /// The picture, or the video file.
-  final String url;
+  /// The picture, or the video file. Null for a post shown from the saved copy on the phone, which has no
+  /// signed link yet: a picture is read from the device cache by [cacheKey] (else its blurhash shows) and
+  /// a video shows its cover and does not play.
+  final String? url;
 
   /// A video's poster image.
   final String? posterUrl;
@@ -22,7 +24,7 @@ class PostCardMedia extends Equatable {
 
   const PostCardMedia({
     required this.isVideo,
-    required this.url,
+    this.url,
     this.posterUrl,
     this.posterCacheKey,
     this.cacheKey,

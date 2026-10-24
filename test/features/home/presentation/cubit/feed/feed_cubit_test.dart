@@ -57,6 +57,8 @@ void main() {
     stopLive = changes.stopLive;
     when(currentUser.call).thenReturn('me');
     when(() => sign(any())).thenAnswer((_) async => {});
+    when(() => getFeed(saved: true))
+        .thenAnswer((_) async => const FeedPageEntity(posts: []));
   });
 
   FeedCubit build() => FeedCubit(
@@ -170,6 +172,171 @@ void main() {
       await Future.wait([cubit.load(), cubit.load()]);
       await cubit.load();
       verify(() => getFeed(cursor: null)).called(1);
+    });
+  });
+
+  group('saved on the phone', () {
+    final saved = FeedPageEntity(
+      posts: [
+        testPost('p1', media: [testMedia('a/1.jpg')]),
+        testPost('p2', media: [testMedia('a/2.mp4', thumbPath: 'a/2.jpg')]),
+      ],
+      nextCursor: cursor,
+    );
+
+    PostEntity newPost() => PostEntity(
+      id: 'p9',
+      authorId: 'other',
+      username: 'user_other',
+      likeCount: 0,
+      commentCount: 0,
+      commentsEnabled: true,
+      visibility: ContentAudience.public,
+      createdAt: DateTime(2026, 10, 20),
+      likedByMe: false,
+      savedByMe: false,
+      media: const [],
+    );
+
+    void linksForEverything() => when(() => sign(any())).thenAnswer(
+      (call) async => {
+        for (final path in call.positionalArguments.first as List<String>)
+          path: 'https://cdn/$path',
+      },
+    );
+
+    Future<FeedCubit> startedWithSaved(Completer<FeedPageEntity> fresh) async {
+      when(() => getFeed(saved: true)).thenAnswer((_) async => saved);
+      when(() => getFeed(cursor: null)).thenAnswer((_) => fresh.future);
+      final cubit = build();
+      unawaited(cubit.start());
+      await Future<void>.delayed(Duration.zero);
+      return cubit;
+    }
+
+    test(
+      'shows the saved posts at once, with no links and no signing',
+      () async {
+        final cubit = await startedWithSaved(Completer());
+
+        expect(cubit.state.status, FeedStatus.ready);
+        expect(cubit.state.fromPhone, isTrue);
+        expect(cubit.state.posts.map((p) => p.id), ['p1', 'p2']);
+        expect(cubit.state.posts.expand((p) => p.media).map((m) => m.url), [
+          null,
+          null,
+        ]);
+        expect(cubit.state.hasMore, isTrue);
+        verifyNever(() => sign(any()));
+        await cubit.close();
+      },
+    );
+
+    test('the fresh page at the top replaces them in place', () async {
+      linksForEverything();
+      final fresh = Completer<FeedPageEntity>();
+      final cubit = await startedWithSaved(fresh);
+
+      fresh.complete(FeedPageEntity(posts: [newPost(), testPost('p1')]));
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.fromPhone, isFalse);
+      expect(cubit.state.isSyncing, isFalse);
+      expect(cubit.state.posts.map((p) => p.id), ['p9', 'p1']);
+      await cubit.close();
+    });
+
+    test('further down: posts stay in order, new ones wait, the rest get links in one request', () async {
+      linksForEverything();
+      final fresh = Completer<FeedPageEntity>();
+      final cubit = await startedWithSaved(fresh);
+      cubit.setAtTop(false);
+
+      fresh.complete(
+        FeedPageEntity(
+          posts: [
+            newPost(),
+            testPost('p1', media: [testMedia('a/1.jpg')]),
+          ],
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.posts.map((p) => p.id), ['p1', 'p2']);
+      expect(cubit.state.pendingPosts.map((p) => p.id), ['p9']);
+      expect(cubit.state.fromPhone, isFalse);
+      expect(cubit.state.posts.expand((p) => p.media).map((m) => m.url), [
+        'https://cdn/a/1.jpg',
+        'https://cdn/a/2.mp4',
+      ]);
+      verify(() => sign(['a/2.mp4', 'a/2.jpg'])).called(1);
+      await cubit.close();
+    });
+
+    test(
+      'a failed leftover request keeps the covers and shows no failure',
+      () async {
+        var calls = 0;
+        when(() => sign(any())).thenAnswer((call) async {
+          if (++calls > 1) throw const NetworkFailure();
+          return {'a/1.jpg': 'https://cdn/a/1.jpg'};
+        });
+        final fresh = Completer<FeedPageEntity>();
+        final cubit = await startedWithSaved(fresh);
+        cubit.setAtTop(false);
+
+        fresh.complete(
+          FeedPageEntity(
+            posts: [
+              testPost('p1', media: [testMedia('a/1.jpg')]),
+            ],
+          ),
+        );
+        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.posts.last.media.single.url, isNull);
+        expect(cubit.state.posts.last.media.single.cacheKey, 'a/2.mp4');
+        expect(cubit.state.failure, isNull);
+        expect(cubit.state.refreshFailure, isNull);
+        await cubit.close();
+      },
+    );
+
+    test(
+      'a failed fresh load keeps the saved posts and shows no failure',
+      () async {
+        final fresh = Completer<FeedPageEntity>();
+        final cubit = await startedWithSaved(fresh);
+
+        fresh.completeError(const NetworkFailure());
+        await Future<void>.delayed(Duration.zero);
+
+        expect(cubit.state.status, FeedStatus.ready);
+        expect(cubit.state.fromPhone, isTrue);
+        expect(cubit.state.isSyncing, isFalse);
+        expect(cubit.state.posts.map((p) => p.id), ['p1', 'p2']);
+        expect(cubit.state.failure, isNull);
+        expect(cubit.state.refreshFailure, isNull);
+        await cubit.close();
+      },
+    );
+
+    test('a refresh that ends first wins over the fresh page', () async {
+      linksForEverything();
+      final fresh = Completer<FeedPageEntity>();
+      final cubit = await startedWithSaved(fresh);
+
+      when(() => getFeed(cursor: null))
+          .thenAnswer((_) async => FeedPageEntity(posts: [testPost('p7')]));
+      await cubit.refresh();
+      fresh.complete(FeedPageEntity(posts: [testPost('p1')]));
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.posts.map((p) => p.id), ['p7']);
+      expect(cubit.state.isSyncing, isFalse);
+      await cubit.close();
     });
   });
 

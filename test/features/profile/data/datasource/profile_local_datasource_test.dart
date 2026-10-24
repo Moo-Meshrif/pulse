@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
-import 'package:pulse/core/services/storage_keys.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
+import 'package:pulse/core/services/storage/storage_keys.dart';
 import 'package:pulse/features/profile/data/datasource/profile_local_datasource.dart';
 import 'package:pulse/features/profile/data/enums/gender.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';

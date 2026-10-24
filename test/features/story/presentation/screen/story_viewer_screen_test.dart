@@ -26,6 +26,9 @@ import '../../../../helpers/pump_app.dart';
 
 class _Rail implements GetStoryRailUseCase {
   @override
+  Future<List<StoryRailItemEntity>?> saved() async => null;
+
+  @override
   Future<List<StoryRailItemEntity>> call() async => const [
     StoryRailItemEntity(
       authorId: 'a',

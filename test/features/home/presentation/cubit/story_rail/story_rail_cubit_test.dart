@@ -46,6 +46,7 @@ void main() {
     retry = _Retry();
     check = quietChangeDoubles().check;
     when(getRail.call).thenAnswer((_) async => [person('a')]);
+    when(() => getRail.saved()).thenAnswer((_) async => null);
   });
 
   StoryRailCubit build() => StoryRailCubit(
@@ -70,6 +71,44 @@ void main() {
     await cubit.start();
     expect(cubit.state.items.map((p) => p.authorId), ['a']);
     expect(cubit.state.upload, const ContentPublishIdle(ContentKind.story));
+    expect(cubit.state.isLoaded, isTrue);
+    await cubit.close();
+  });
+
+  test('shows the saved rail first, then the fresh one', () async {
+    when(() => getRail.saved()).thenAnswer((_) async => [person('old')]);
+    final fresh = Completer<List<StoryRailItemEntity>>();
+    when(getRail.call).thenAnswer((_) => fresh.future);
+    final cubit = build();
+    unawaited(cubit.start());
+    await flush();
+
+    expect(cubit.state.items.map((p) => p.authorId), ['old']);
+    expect(cubit.state.isLoaded, isTrue);
+
+    fresh.complete([person('a')]);
+    await flush();
+    expect(cubit.state.items.map((p) => p.authorId), ['a']);
+    await cubit.close();
+  });
+
+  test('a saved rail with no one on it ends the skeleton at once', () async {
+    when(() => getRail.saved()).thenAnswer((_) async => const []);
+    when(getRail.call)
+        .thenAnswer((_) => Completer<List<StoryRailItemEntity>>().future);
+    final cubit = build();
+    unawaited(cubit.start());
+    await flush();
+
+    expect(cubit.state.isLoaded, isTrue);
+    await cubit.close();
+  });
+
+  test('a first load that fails leaves the rail not loaded', () async {
+    when(getRail.call).thenThrow(const NetworkFailure());
+    final cubit = build();
+    await cubit.start();
+    expect(cubit.state.isLoaded, isFalse);
     await cubit.close();
   });
 

@@ -25,6 +25,7 @@ import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cub
 import 'package:pulse/features/home/presentation/screen/home_screen.dart';
 import 'package:pulse/features/home/presentation/widgets/feed/feed_skeleton.dart';
 import 'package:pulse/features/home/presentation/widgets/home_header.dart';
+import 'package:pulse/features/home/presentation/widgets/story_rail/rail_skeleton.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
@@ -45,6 +46,7 @@ import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
+import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
@@ -116,6 +118,7 @@ Finder _icon(String asset) =>
 void main() {
   late _GetFeed getFeed;
   late _RequestCount requestCount;
+  late _GetRail getRail;
   late _Like like;
   late _Hide hide;
   late _RetryUpload retryUpload;
@@ -156,7 +159,7 @@ void main() {
     requestCount = _RequestCount();
     like = _Like();
     hide = _Hide();
-    final getRail = _GetRail();
+    getRail = _GetRail();
     when(getRail.call).thenAnswer((_) async => []);
     retryUpload = _RetryUpload();
     bus = EventBus();
@@ -659,7 +662,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byType(FeedSkeleton), findsOneWidget);
       expect(find.byType(PostCard), findsNothing);
-      expect(find.byType(StoryRail), findsNothing);
+      expect(find.byType(StoryRail), findsOneWidget);
+      expect(find.byType(RailSkeletonZone), findsNothing);
       expect(find.text('pulse'), findsOneWidget);
 
       page.complete(FeedPageEntity(posts: [post('p1')]));
@@ -669,6 +673,25 @@ void main() {
       expect(find.byType(FeedSkeleton), findsNothing);
       expect(find.byType(PostCard), findsOneWidget);
       expect(find.byType(StoryRail), findsOneWidget);
+    });
+
+    testView('the rail shows its own skeleton until it has answered', (
+      tester,
+    ) async {
+      final rail = Completer<List<StoryRailItemEntity>>();
+      when(getRail.call).thenAnswer((_) => rail.future);
+      final page = Completer<FeedPageEntity>();
+      when(() => getFeed(cursor: null)).thenAnswer((_) => page.future);
+      await show(tester, settle: false);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(RailSkeletonZone), findsOneWidget);
+      expect(find.byType(FeedSkeleton), findsOneWidget);
+
+      rail.complete([]);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(RailSkeletonZone), findsNothing);
+      expect(find.byType(FeedSkeleton), findsOneWidget);
     });
 
     testView('stands still when the system reduces motion', (tester) async {

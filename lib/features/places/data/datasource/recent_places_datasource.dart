@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 import '../model/place_model.dart';
 
 /// The places picked as a location (a post's, a story's), kept on the device, newest first. Widgets never touch it.

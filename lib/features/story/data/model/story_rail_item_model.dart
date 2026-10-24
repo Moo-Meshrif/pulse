@@ -35,6 +35,18 @@ class StoryRailItemModel extends Equatable {
         allSeen: JsonMapper.boolean(json['all_seen']),
       );
 
+  /// The row of `story_rail()` again, for the copy kept on the device.
+  Map<String, dynamic> toJson() => {
+    'author_id': authorId,
+    'username': username,
+    'full_name': fullName,
+    'avatar_url': avatarUrl,
+    'is_me': isMe,
+    'story_count': storyCount,
+    'latest_at': latestAt?.toIso8601String(),
+    'all_seen': allSeen,
+  };
+
   @override
   List<Object?> get props => [
     authorId,

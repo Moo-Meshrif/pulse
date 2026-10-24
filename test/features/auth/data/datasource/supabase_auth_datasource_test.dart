@@ -10,23 +10,26 @@ import 'package:pulse/core/enums/auth_failure_reason.dart';
 import 'package:pulse/core/enums/recovery_signal.dart';
 import 'package:pulse/core/enums/signed_out_reason.dart';
 import 'package:pulse/core/error/failures.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
-import 'package:pulse/core/services/storage_keys.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
+import 'package:pulse/core/services/storage/storage_keys.dart';
 import 'package:pulse/features/auth/data/datasource/auth_datasource.dart';
 import 'package:pulse/features/auth/data/datasource/password_recovery_tracker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../helpers/backend_double.dart';
+import '../../../../helpers/memory_snapshot_storage.dart';
 
 void main() {
   late SharedPrefsStorageService storage;
   late PasswordRecoveryTracker tracker;
+  late MemorySnapshotStorage snapshots;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     storage = SharedPrefsStorageService(await SharedPreferences.getInstance());
     tracker = PasswordRecoveryTracker(storage);
+    snapshots = MemorySnapshotStorage();
   });
 
   tearDown(() => tracker.dispose());
@@ -62,7 +65,11 @@ void main() {
 
     test('calls the sign-in function, then stores the session from its refresh token', () async {
       final backend = signInBackend();
-      final datasource = SupabaseAuthDatasource(backend.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+        snapshots,
+      );
 
       await datasource.signIn(identifier: ' dip.roy ', password: 'secret');
 
@@ -83,6 +90,7 @@ void main() {
         await SupabaseAuthDatasource(
           backend.client,
           tracker,
+          snapshots,
         ).signIn(identifier: 'dip.roy', password: 'secret');
 
         expect(backend.to('get_email_for_username'), isEmpty);
@@ -105,7 +113,11 @@ void main() {
             'code': 'invalid_credentials',
           }, status: 401),
         );
-        final datasource = SupabaseAuthDatasource(backend.client, tracker);
+        final datasource = SupabaseAuthDatasource(
+          backend.client,
+          tracker,
+          snapshots,
+        );
 
         final result = datasource.signIn(identifier: 'nobody', password: 'x');
 
@@ -130,6 +142,7 @@ void main() {
         final result = SupabaseAuthDatasource(
           backend.client,
           tracker,
+          snapshots,
         ).signIn(identifier: 'dip.roy', password: 'x');
 
         final failure = (await failureOf(result))! as AuthFailure;
@@ -149,6 +162,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signIn(identifier: 'dip.roy', password: 'x');
 
       final failure = (await failureOf(result))! as AuthFailure;
@@ -164,6 +178,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signIn(identifier: 'a@b.co', password: 'x');
       expect(await failureOf(result), const ServerFailure(statusCode: 500));
     });
@@ -173,6 +188,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signIn(identifier: 'a@b.co', password: 'x');
       expect(await failureOf(result), const ParseFailure());
     });
@@ -182,6 +198,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signIn(identifier: 'a@b.co', password: 'x');
       expect(await failureOf(result), const NetworkFailure());
     });
@@ -208,6 +225,7 @@ void main() {
       final alreadyRegistered = await SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signUp(email: 'new@example.com', password: 'Passw0rd!');
       expect(alreadyRegistered, isFalse);
       expect(body(backend.to('/signup').single)['email'], 'new@example.com');
@@ -220,6 +238,7 @@ void main() {
       final alreadyRegistered = await SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signUp(email: 'taken@example.com', password: 'Passw0rd!');
       expect(alreadyRegistered, isTrue);
     });
@@ -231,6 +250,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).signUp(email: 'a@b.co', password: '1');
       expect(
         await failureOf(result),
@@ -247,6 +267,7 @@ void main() {
       await SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).verifySignUpCode(email: 'dip@example.com', code: '123456');
       expect(
         body(backend.to('/verify').single),
@@ -265,6 +286,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).verifySignUpCode(email: 'dip@example.com', code: '000000');
       expect(
         await failureOf(result),
@@ -277,6 +299,7 @@ void main() {
       await SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).resendSignUpCode('dip@example.com');
       expect(
         body(backend.to('/resend').single),
@@ -291,6 +314,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).resendSignUpCode('a@b.co');
       expect(
         await failureOf(result),
@@ -305,6 +329,7 @@ void main() {
       await SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).sendPasswordReset(' dip@example.com ');
       final request = backend.to('/recover').single;
       expect(
@@ -321,6 +346,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).sendPasswordReset('a@b.co');
       expect(
         await failureOf(result),
@@ -339,6 +365,7 @@ void main() {
       await SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).updatePassword('N3wPassw0rd');
       final request = backend.to('/user').single;
       expect(request.method, 'PUT');
@@ -356,6 +383,7 @@ void main() {
       final result = SupabaseAuthDatasource(
         backend.client,
         tracker,
+        snapshots,
       ).updatePassword('same');
       expect(
         await failureOf(result),
@@ -365,13 +393,37 @@ void main() {
   });
 
   group('signOut', () {
+    test('clears the saved Home, whatever the reason', () async {
+      final backend = BackendDouble((request) async {
+        if (request.url.path.endsWith('/logout')) return http.Response('', 204);
+        return BackendDouble.sessionResponse();
+      });
+      await backend.signIn();
+      snapshots.values['feed_u1'] = '{}';
+      final datasource = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+        snapshots,
+      );
+
+      await datasource.signOut();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(snapshots.values, isEmpty);
+      await datasource.dispose();
+    });
+
     test('this device only, by default', () async {
       final backend = BackendDouble((request) async {
         if (request.url.path.endsWith('/logout')) return http.Response('', 204);
         return BackendDouble.sessionResponse();
       });
       await backend.signIn();
-      final datasource = SupabaseAuthDatasource(backend.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        backend.client,
+        tracker,
+        snapshots,
+      );
 
       await datasource.signOut();
       expect(
@@ -391,7 +443,11 @@ void main() {
           return BackendDouble.sessionResponse();
         });
         await backend.signIn();
-        final datasource = SupabaseAuthDatasource(backend.client, tracker);
+        final datasource = SupabaseAuthDatasource(
+          backend.client,
+          tracker,
+          snapshots,
+        );
 
         await datasource.signOut(others: true);
         expect(
@@ -407,6 +463,7 @@ void main() {
     final datasource = SupabaseAuthDatasource(
       BackendDouble((_) async => BackendDouble.json({})).client,
       tracker,
+      snapshots,
     );
     expect(datasource.hasSession, isFalse);
     expect(datasource.currentEmail, isNull);
@@ -424,7 +481,11 @@ void main() {
     test('needs a session, not just the pending flag', () async {
       await storage.setValue<bool>(StorageKeys.recoveryPending, true);
       expect(
-        SupabaseAuthDatasource(backend().client, tracker).recoveryActive,
+        SupabaseAuthDatasource(
+          backend().client,
+          tracker,
+          snapshots,
+        ).recoveryActive,
         isFalse,
       );
     });
@@ -433,7 +494,11 @@ void main() {
       final double = backend();
       await double.signIn();
       expect(
-        SupabaseAuthDatasource(double.client, tracker).recoveryActive,
+        SupabaseAuthDatasource(
+          double.client,
+          tracker,
+          snapshots,
+        ).recoveryActive,
         isFalse,
       );
     });
@@ -442,7 +507,11 @@ void main() {
       final double = backend();
       await double.signIn();
       await storage.setValue<bool>(StorageKeys.recoveryPending, true);
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       expect(datasource.recoveryActive, isTrue);
 
       await datasource.signOut();
@@ -454,7 +523,11 @@ void main() {
       final double = backend();
       await double.signIn();
       await storage.setValue<bool>(StorageKeys.recoveryPending, true);
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
 
       await datasource.updatePassword('Password1');
       expect(datasource.recoveryActive, isFalse);
@@ -480,7 +553,11 @@ void main() {
     test('a link opened before anyone listens reaches the listeners that join first, once each', () async {
       final double = backend();
       await double.signIn();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       openLink(double);
       await settle();
 
@@ -507,7 +584,11 @@ void main() {
         openLink(
           double,
         ); // gotrue replays this to the datasource's subscription
-        final datasource = SupabaseAuthDatasource(double.client, tracker);
+        final datasource = SupabaseAuthDatasource(
+          double.client,
+          tracker,
+          snapshots,
+        );
         await settle();
 
         final signals = <RecoverySignal>[];
@@ -523,7 +604,11 @@ void main() {
     test('two live listeners each get the event once', () async {
       final double = backend();
       await double.signIn();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       final first = <RecoverySignal>[];
       final second = <RecoverySignal>[];
       final a = datasource.recoverySignals.listen(first.add);
@@ -542,7 +627,11 @@ void main() {
     test('an old link is not replayed to a listener that comes after it was delivered', () async {
       final double = backend();
       await double.signIn();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       final early = datasource.recoverySignals.listen((_) {});
       openLink(double);
       await settle();
@@ -560,7 +649,11 @@ void main() {
     test('signing out drops a recovery that was never delivered', () async {
       final double = backend();
       await double.signIn();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       openLink(double);
       await settle();
       await datasource.signOut();
@@ -577,7 +670,11 @@ void main() {
 
     test('an expired or refused link is linkFailed', () async {
       final double = backend();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       final signals = <RecoverySignal>[];
       final sub = datasource.recoverySignals.listen(signals.add);
 
@@ -597,7 +694,11 @@ void main() {
 
     test('other stream errors are not about the link', () async {
       final double = backend();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       final signals = <RecoverySignal>[];
       final sub = datasource.recoverySignals.listen(signals.add);
 
@@ -614,7 +715,11 @@ void main() {
 
     test('a refused link that arrives before any listener is kept for the first one', () async {
       final double = backend();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       double.client.auth.notifyException(
         AuthException('expired', statusCode: 'otp_expired'),
       );
@@ -637,7 +742,11 @@ void main() {
         return BackendDouble.sessionResponse();
       });
       await storage.setValue<bool>(StorageKeys.recoveryPending, true);
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
 
       await datasource.signIn(identifier: 'dip.roy', password: 'secret');
 
@@ -651,7 +760,11 @@ void main() {
       () async {
         final double = backend();
         await double.signIn();
-        final datasource = SupabaseAuthDatasource(double.client, tracker);
+        final datasource = SupabaseAuthDatasource(
+          double.client,
+          tracker,
+          snapshots,
+        );
         final ended = <SignedOutReason>[];
         final sub = datasource.sessionEnded.listen(ended.add);
 
@@ -674,7 +787,11 @@ void main() {
       () async {
         final double = backend();
         await double.signIn();
-        final datasource = SupabaseAuthDatasource(double.client, tracker);
+        final datasource = SupabaseAuthDatasource(
+          double.client,
+          tracker,
+          snapshots,
+        );
         double.client.auth.notifyAllSubscribers(
           AuthChangeEvent.signedOut,
           broadcast: false,
@@ -693,7 +810,11 @@ void main() {
     );
 
     test('dispose can be called twice', () async {
-      final datasource = SupabaseAuthDatasource(backend().client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        backend().client,
+        tracker,
+        snapshots,
+      );
       await datasource.dispose();
       await datasource.dispose();
     });
@@ -701,7 +822,11 @@ void main() {
     test('dispose stops the datasource from reacting to auth events', () async {
       final double = backend();
       await double.signIn();
-      final datasource = SupabaseAuthDatasource(double.client, tracker);
+      final datasource = SupabaseAuthDatasource(
+        double.client,
+        tracker,
+        snapshots,
+      );
       await datasource.dispose();
 
       openLink(double);

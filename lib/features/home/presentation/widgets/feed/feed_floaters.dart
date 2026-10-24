@@ -32,6 +32,7 @@ class _FeedFloatersState extends State<FeedFloaters> {
   bool _isExpired = false;
   int _waitingCount = 0;
   int _pillCount = 0;
+  bool _wasAtTop = true;
   final _floater = ValueNotifier(_Floater.none);
 
   @override
@@ -72,6 +73,7 @@ class _FeedFloatersState extends State<FeedFloaters> {
     if (position == null) return;
     final offset = position.pixels;
     final viewport = position.viewportDimension;
+    _reportAtTop(FeedFloatersRules.isAtTop(offset));
     // Back at the top: what waited goes in, nothing the person reads moves.
     if (_waitingCount > 0 && FeedFloatersRules.isAtTop(offset)) {
       context.read<FeedCubit>().showPending();
@@ -93,6 +95,14 @@ class _FeedFloatersState extends State<FeedFloaters> {
     } else {
       _floater.value = _Floater.none;
     }
+  }
+
+  /// Tells the feed when the person leaves or reaches the top: only at the top may a fresh page replace
+  /// the posts on screen.
+  void _reportAtTop(bool isAtTop) {
+    if (isAtTop == _wasAtTop) return;
+    _wasAtTop = isAtTop;
+    context.read<FeedCubit>().setAtTop(isAtTop);
   }
 
   bool _isAtTop() {

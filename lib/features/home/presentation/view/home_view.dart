@@ -73,7 +73,7 @@ class _BodyState extends State<_Body> {
       );
 }
 
-/// The skeleton under the real header. It does not scroll.
+/// The header, the Stories rail (real, or its own skeleton until it has answered) and the post skeletons. It does not scroll.
 class _Loading extends StatelessWidget {
   const _Loading({super.key});
 
@@ -83,6 +83,7 @@ class _Loading extends StatelessWidget {
     physics: NeverScrollableScrollPhysics(),
     slivers: [
       FeedHeader(),
+      SliverToBoxAdapter(child: StoryRail()),
       SliverToBoxAdapter(child: FeedSkeleton()),
     ],
   );

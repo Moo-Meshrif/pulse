@@ -8,6 +8,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/enums/permission_access.dart';
 import 'package:pulse/core/router/app_routes.dart';
+import 'package:pulse/core/services/blurhash_service.dart';
 import 'package:pulse/core/services/camera_device.dart';
 import 'package:pulse/core/services/camera_permission_service.dart';
 import 'package:pulse/features/control/presentation/screen/control_screen.dart';
@@ -49,6 +50,12 @@ class _Stories extends MockStoriesDatasource {
 class _Permissions extends Mock implements CameraPermissionService {}
 
 class _Device extends Mock implements CameraDevice {}
+
+/// No picture to read in a test: Share goes on without a placeholder.
+class _NoBlurhash implements BlurhashService {
+  @override
+  Future<String?> blurhash(String path) async => null;
+}
 
 /// The upload as the app sees it: records what was posted.
 class _Uploads implements StoryUploadRepository {
@@ -141,6 +148,8 @@ void main() {
         getIt.registerSingleton<CameraPermissionService>(permissions);
         await getIt.unregister<CameraDevice>();
         getIt.registerFactory<CameraDevice>(() => device);
+        await getIt.unregister<BlurhashService>();
+        getIt.registerSingleton<BlurhashService>(_NoBlurhash());
         await getIt.unregister<StoryUploadRepository>();
         getIt.registerSingleton<StoryUploadRepository>(uploads);
       },

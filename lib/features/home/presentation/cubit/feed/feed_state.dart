@@ -29,6 +29,12 @@ abstract class FeedState with _$FeedState {
     /// empty page shows.
     @Default(<String>{}) Set<String> pendingDeleteIds,
 
+    /// The posts on screen are the copy saved on the phone: they have no media links yet.
+    @Default(false) bool fromPhone,
+
+    /// The fresh first page is being loaded behind the saved posts.
+    @Default(false) bool isSyncing,
+
     /// Counts the times the posts were replaced (first load, refresh): what was done to the old ones
     /// no longer applies.
     @Default(0) int generation,

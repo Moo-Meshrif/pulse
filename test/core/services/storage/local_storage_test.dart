@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum _Mode { light, dark }

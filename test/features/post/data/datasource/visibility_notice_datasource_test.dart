@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
 import 'package:pulse/features/post/data/datasource/visibility_notice_datasource.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,5 +1,5 @@
 import '../../../../shared/content/data/enums/content_audience.dart';
-import '../../../post/domain/entity/post_entity.dart';
+import '../../domain/entity/post_entity.dart';
 
 /// The fields of a post that Home changes in place after an action.
 extension PostEntityEdit on PostEntity {

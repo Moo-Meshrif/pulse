@@ -37,6 +37,13 @@ class PostTagModel extends Equatable {
     'y': y,
   };
 
+  /// Every field, for the copy kept on the device (the item of `home_feed().tags` again).
+  Map<String, dynamic> toStoredJson() => {
+    ...toJson(),
+    'username': username,
+    'full_name': fullName,
+  };
+
   @override
   List<Object?> get props => [userId, username, fullName, mediaPosition, x, y];
 }

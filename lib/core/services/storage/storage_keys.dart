@@ -38,4 +38,10 @@ abstract final class StorageKeys {
 
   // places: "Not now" was chosen on the location permission primer
   static const locationPrimerDismissed = 'location_primer_dismissed';
+
+  // post: the first page of one user's Home feed in SnapshotStorage (no signed media links)
+  static String feed(String userId) => 'feed_$userId';
+
+  // story: the Stories rail of one user in SnapshotStorage
+  static String storyRail(String userId) => 'story_rail_$userId';
 }

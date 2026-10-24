@@ -46,7 +46,7 @@
 - Q33 (resolved, 2026-10-11): on the optional steps S6/S7/S8 Continue is disabled until the step has data; the top-bar Skip stays the way past an empty step (replaces "Continue always enabled").
 - Q34 (resolved, 2026-10-11): Skip on S6/S7 with entries asks first ("Skip this step?", Keep editing / Skip) and clears the step on confirm, on the server too (S6: photo file and bio, city, phone, avatar; S7: saved topics); a loading overlay (no dialog) shows while any Skip runs. S8 Skip never asks: follows are saved at once. New strings skipStepTitle, skipStepBody, keepEditing (Arabic drafts, `x-review`).
 - Q35 (resolved, 2026-10-11): offline at start-up, the saved profile copy decides the route only when sign-up is finished (Home opens); with an unfinished sign-up the splash shows S13 "No connection" and retries when the connection returns, because every remaining sign-up step needs the network.
-- Q36 (decided 2026-10-11, built, auth-plan B10): S13 tells connection problems apart: Offline (no Wi-Fi/mobile data), No internet (network on, backend unreachable), Weak connection (slow answer or 10 s timeout); copy is simple and direct, the cloud-alert icon serves both new screens; Arabic strings are drafts tagged `x-review`.
+- Q36 (decided 2026-10-11; changed by the user on 2026-10-23: a finished sign-up saved on the phone skips the start-up request, and the request that is made times out after 5 s and signs out to Sign in (expired) instead of showing Weak connection; built, auth-plan B10): S13 tells connection problems apart: Offline (no Wi-Fi/mobile data), No internet (network on, backend unreachable), Weak connection (slow answer or 10 s timeout); copy is simple and direct, the cloud-alert icon serves both new screens; Arabic strings are drafts tagged `x-review`.
 
 ## Resolutions 2026-10-12 [user]
 - Q24 (resolved): `connectivity_plus` added; automatic retry built (`ConnectivityService`).
@@ -72,7 +72,7 @@
 - Q40 (RESOLVED [user], 2026-10-12): `ic_unlock.svg` added; `AppAssets.unlock` uses it.
 
 ## Decisions 2026-10-12 (review of open items) [user]
-- Q25 (RESOLVED [user], 2026-10-12: rules implemented in `SplashCubit`, device checks below done): expired or revoked session -> Sign in with the S14 banner (never a silent plain Sign in); network failure or 10 s timeout -> connectivity check (Offline / No internet / Weak connection, Q36); any other failure -> "Can't reach Pulse", with no server internals shown.
+- Q25 (RESOLVED [user], 2026-10-12: rules implemented in `SplashCubit`, device checks below done): expired or revoked session -> Sign in with the S14 banner (never a silent plain Sign in); network failure -> connectivity check (Offline / No internet / Weak connection, Q36); any other failure -> "Can't reach Pulse", with no server internals shown.
 - Q32/Q9/Q42: all Arabic strings stay `x-review` until the user or a native speaker reviews `lib/l10n/app_ar.arb`; not approved.
 - Pending real-device checks (mocked tests are not proof of real Supabase behavior). Record each result here when done:
   1. [x] Real expired / already-used reset link -> snackbar, user stays on the current screen

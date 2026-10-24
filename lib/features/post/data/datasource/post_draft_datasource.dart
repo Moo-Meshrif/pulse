@@ -5,10 +5,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/error/guard.dart';
-import '../../../../core/services/app_folders.dart';
-import '../../../../core/services/backup_exclusion_service.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/app_folders.dart';
+import '../../../../core/services/storage/backup_exclusion.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 import '../../../../core/utils/uuid_v4.dart';
 import '../model/post_draft_media_model.dart';
 import '../model/post_draft_model.dart';

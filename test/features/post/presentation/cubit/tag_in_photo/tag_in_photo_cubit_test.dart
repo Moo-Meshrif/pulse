@@ -112,8 +112,8 @@ void main() {
       ..tapPhoto(0.2, 0.2)
       ..place('u2');
 
-    expect(cubit.state.countOn(cubit.state.photos[0]), 2);
-    expect(cubit.state.countOn(cubit.state.photos[1]), 0);
+    expect(cubit.state.countsByPosition[0], 2);
+    expect(cubit.state.countsByPosition[1], isNull);
     expect(cubit.hasChanges, isTrue);
   });
 }

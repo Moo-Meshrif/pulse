@@ -55,9 +55,10 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
   bool _isLoading = false;
   bool _reloadAgain = false;
 
-  /// Loads the rail and keeps it current: a mute or delete reloads it, and so does a story that finished
+  /// Shows the rail saved on the phone at once (when there is one), then loads the fresh one. Keeps it
+  /// current: a mute or delete reloads it, and so does a story that finished
   /// posting, a refresh of Home, or a story that was added or deleted elsewhere (the change check).
-  Future<void> start() {
+  Future<void> start() async {
     listenTo<StoryRailChanged>((_) => load());
     listenTo<StoryAuthorSeen>(_onAuthorSeen);
     listenTo<ContentDeleteEvent>(_onDelete);
@@ -67,10 +68,23 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
     listenTo<ContentPing>((event) {
       if (event.kind == ContentKind.story) unawaited(checkChanges());
     });
+    await _showSaved();
     final loading = load();
     unawaited(checkChanges());
     return loading;
   }
+
+  /// The saved rail, until the server's arrives. A saved rail with no one on it counts: the skeleton goes
+  /// at once. Nothing happens when none is saved.
+  Future<void> _showSaved() => run(
+    _rail.saved,
+    onSuccess: (items) {
+      if (items == null) return null;
+      _loaded = items;
+      return state.copyWith(items: _visible(), isLoaded: true);
+    },
+    onFailure: (_) => null,
+  );
 
   /// Asks what changed in stories since the last check; the answer arrives as a [ContentChanged] event.
   /// Quiet when offline. Called when Home opens and when the app comes back.
@@ -101,7 +115,7 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
         _rail.call,
         onSuccess: (items) {
           _loaded = items;
-          return state.copyWith(items: _visible());
+          return state.copyWith(items: _visible(), isLoaded: true);
         },
         onFailure: (_) => null,
       );

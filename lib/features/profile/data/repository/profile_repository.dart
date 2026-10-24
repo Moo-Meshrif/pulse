@@ -34,6 +34,9 @@ abstract interface class ProfileRepository {
   /// Deletes the picture on the server and in the saved copy.
   Future<void> removeAvatar();
 
+  /// The sign-up step in the saved copy of the signed-in user, or null with no copy or no session. No request.
+  SignupStep? savedSignupStep();
+
   /// Forgets the saved copy of the signed-in user's profile (call before signing out).
   Future<void> clearLocalProfile();
 
@@ -95,6 +98,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
     final userId = _remote.currentUserId;
     final saved = userId == null ? null : _local.read(userId);
     if (saved != null) await _local.write(saved.copyWith(clearAvatar: true));
+  }
+
+  @override
+  SignupStep? savedSignupStep() {
+    final userId = _remote.currentUserId;
+    return userId == null ? null : _local.read(userId)?.signupStep;
   }
 
   @override

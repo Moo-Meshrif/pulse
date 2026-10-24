@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/enums/recovery_signal.dart';
-import '../../../../core/services/local_storage_service.dart';
-import '../../../../core/services/storage_keys.dart';
+import '../../../../core/services/storage/local_storage.dart';
+import '../../../../core/services/storage/storage_keys.dart';
 
 /// Remembers an unfinished password reset and relays when the emailed link was opened. Backend-agnostic:
 /// an `AuthDatasource` adapter calls [linkOpened], [linkRefused] and [end] from its own SDK events.

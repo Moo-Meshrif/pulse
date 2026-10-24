@@ -46,8 +46,8 @@ class _FeedPostItemState extends State<FeedPostItem> {
   Map<String, String>? get _signedUrls {
     final Map<String, String> map = {};
     for (var e in widget.post.media) {
-      if (e.cacheKey != null) {
-        map[e.cacheKey!] = e.url;
+      if (e.cacheKey != null && e.url != null) {
+        map[e.cacheKey!] = e.url!;
       }
       if (e.posterCacheKey != null && e.posterUrl != null) {
         map[e.posterCacheKey!] = e.posterUrl!;

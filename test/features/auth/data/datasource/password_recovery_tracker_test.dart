@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/enums/recovery_signal.dart';
-import 'package:pulse/core/services/local_storage_service.dart';
-import 'package:pulse/core/services/storage_keys.dart';
+import 'package:pulse/core/services/storage/local_storage.dart';
+import 'package:pulse/core/services/storage/storage_keys.dart';
 import 'package:pulse/features/auth/data/datasource/password_recovery_tracker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
