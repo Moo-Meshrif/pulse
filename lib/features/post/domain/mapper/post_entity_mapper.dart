@@ -50,6 +50,56 @@ abstract final class PostEntityMapper {
     );
   }
 
+  /// The row again, for the copy kept on the device ([fromModel] of it gives the same post).
+  static PostModel toModel(PostEntity post) => PostModel(
+    id: post.id,
+    authorId: post.authorId,
+    username: post.username,
+    fullName: post.fullName,
+    avatarUrl: post.avatarUrl,
+    caption: post.caption,
+    location: post.location,
+    likeCount: post.likeCount,
+    commentCount: post.commentCount,
+    commentsEnabled: post.commentsEnabled,
+    visibility: post.visibility,
+    createdAt: post.createdAt,
+    likedByMe: post.likedByMe,
+    savedByMe: post.savedByMe,
+    media: [
+      for (final (position, item) in post.media.indexed)
+        PostMediaModel(
+          position: position,
+          type: item.isVideo ? MediaType.video : MediaType.image,
+          path: item.path,
+          thumbPath: item.thumbPath,
+          width: item.width,
+          height: item.height,
+          durationMs: item.durationMs,
+          blurhash: item.blurhash,
+        ),
+    ],
+    moodKind: post.mood?.kind,
+    moodKey: post.mood?.key,
+    moodText: post.mood?.text,
+    tagCount: post.tagCount,
+    tags: [
+      for (final tag in post.tags)
+        PostTagModel(
+          userId: tag.userId,
+          username: tag.username,
+          fullName: tag.fullName,
+          mediaPosition: tag.mediaPosition,
+          x: tag.x,
+          y: tag.y,
+        ),
+    ],
+    iAmTagged: post.iAmTagged,
+    isShare: post.isShare,
+    sharedPostId: post.original?.id,
+    sharedPost: post.original == null ? null : toModel(post.original!),
+  );
+
   static PostEntity? _original(PostModel? original) =>
       original == null ? null : fromModel(original);
 

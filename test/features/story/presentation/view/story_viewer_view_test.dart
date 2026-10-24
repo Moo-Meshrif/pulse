@@ -27,6 +27,9 @@ import '../../../../helpers/pump_app.dart';
 // tests of this file.
 class _Rail implements GetStoryRailUseCase {
   @override
+  void save(List<StoryRailItemEntity> items) {}
+
+  @override
   Future<List<StoryRailItemEntity>?> saved() async => null;
 
   @override

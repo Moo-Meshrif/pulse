@@ -39,10 +39,13 @@ void main() {
   late MockGetPostCounts counts;
   late MockStartContentLive startLive;
   late MockStopContentLive stopLive;
+  late MockSaveHomeFeed saveFeed;
 
   final cursor = FeedCursorEntity(createdAt: DateTime(2026, 10, 13), id: 'p2');
 
   setUpAll(() => registerFallbackValue(cursor));
+
+  setUpAll(() => registerFallbackValue(<PostEntity>[]));
 
   setUp(() {
     getFeed = _GetFeed();
@@ -55,6 +58,7 @@ void main() {
     counts = changes.counts;
     startLive = changes.startLive;
     stopLive = changes.stopLive;
+    saveFeed = MockSaveHomeFeed();
     when(currentUser.call).thenReturn('me');
     when(() => sign(any())).thenAnswer((_) async => {});
     when(() => getFeed(saved: true))
@@ -71,6 +75,7 @@ void main() {
     counts,
     startLive,
     stopLive,
+    saveFeed,
   );
 
   void pages(FeedPageEntity first, [FeedPageEntity? second]) {
@@ -474,6 +479,43 @@ void main() {
         await cubit.close();
       },
     );
+
+    test('a shared post is saved on the device on top of the feed', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      final cubit = build();
+      await cubit.start();
+
+      bus.fire(PostSaved(testPost('p9')));
+      await Future<void>.delayed(Duration.zero);
+
+      final saved = verify(() => saveFeed(captureAny())).captured.last;
+      expect((saved as List<PostEntity>).map((p) => p.id), ['p9', 'p1']);
+      await cubit.close();
+    });
+
+    test('a deleted post leaves the saved feed', () async {
+      pages(FeedPageEntity(posts: [testPost('p1'), testPost('p2')]));
+      final cubit = build();
+      await cubit.start();
+
+      cubit.removePosts({'p1'});
+
+      final saved = verify(() => saveFeed(captureAny())).captured.last;
+      expect((saved as List<PostEntity>).map((p) => p.id), ['p2']);
+      await cubit.close();
+    });
+
+    test('nothing is saved when no post left', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      final cubit = build();
+      await cubit.start();
+
+      cubit.removePosts({});
+      cubit.removePosts({'zzz'});
+
+      verifyNever(() => saveFeed(any()));
+      await cubit.close();
+    });
 
     test('an edited post is replaced where it is', () async {
       pages(FeedPageEntity(posts: [testPost('p1'), testPost('p2')]));

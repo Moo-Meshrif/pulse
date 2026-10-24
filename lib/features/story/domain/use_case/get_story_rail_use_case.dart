@@ -15,6 +15,10 @@ class GetStoryRailUseCase {
   Future<List<StoryRailItemEntity>> call() async =>
       StoryRailItemMapper.fromModels((await _rail.rail())!);
 
+  /// Saves [items] as the rail on the device, no request.
+  void save(List<StoryRailItemEntity> items) =>
+      _rail.saveRail(StoryRailItemMapper.toModels(items));
+
   /// Null when nothing is saved; an empty list is a saved rail with no one on it.
   Future<List<StoryRailItemEntity>?> saved() async {
     final items = await _rail.rail(saved: true);

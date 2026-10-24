@@ -191,6 +191,7 @@ void main() {
           changes.counts,
           changes.startLive,
           changes.stopLive,
+          MockSaveHomeFeed(),
         );
       })
       ..registerFactory(

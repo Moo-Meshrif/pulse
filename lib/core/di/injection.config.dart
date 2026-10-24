@@ -112,6 +112,8 @@ import '../../features/post/domain/use_case/remove_my_tag_use_case.dart'
     as _i491;
 import '../../features/post/domain/use_case/resume_shared_posts_use_case.dart'
     as _i401;
+import '../../features/post/domain/use_case/save_home_feed_use_case.dart'
+    as _i341;
 import '../../features/post/domain/use_case/search_tag_people_use_case.dart'
     as _i983;
 import '../../features/post/domain/use_case/set_comments_enabled_use_case.dart'
@@ -509,6 +511,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i281.GetHomeFeedUseCase>(
       () => _i281.GetHomeFeedUseCase(gh<_i280.FeedRepository>()),
     );
+    gh.factory<_i341.SaveHomeFeedUseCase>(
+      () => _i341.SaveHomeFeedUseCase(gh<_i280.FeedRepository>()),
+    );
     gh.factory<_i856.HidePostUseCase>(
       () => _i856.HidePostUseCase(gh<_i512.PostActionsDatasource>()),
     );
@@ -748,6 +753,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i491.RemoveMyTagUseCase>(),
       ),
     );
+    gh.factory<_i592.FeedCubit>(
+      () => _i592.FeedCubit(
+        gh<_i281.GetHomeFeedUseCase>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        gh<_i673.CheckContentChangesUseCase>(),
+        gh<_i1014.GetPostsByIdsUseCase>(),
+        gh<_i20.GetPostCountsUseCase>(),
+        gh<_i78.StartContentLiveUseCase>(),
+        gh<_i429.StopContentLiveUseCase>(),
+        gh<_i341.SaveHomeFeedUseCase>(),
+      ),
+    );
     gh.factory<_i465.StoryViewerCubit>(
       () => _i465.StoryViewerCubit(
         gh<_i849.GetStoryRailUseCase>(),
@@ -774,19 +793,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i837.PostShareRepository>(),
         gh<_i999.ContentPublishRepository>(),
         gh<_i557.EventBus>(),
-      ),
-    );
-    gh.factory<_i592.FeedCubit>(
-      () => _i592.FeedCubit(
-        gh<_i281.GetHomeFeedUseCase>(),
-        gh<_i599.SignPostMediaUrlsUseCase>(),
-        gh<_i557.EventBus>(),
-        gh<_i91.GetCurrentUserIdUseCase>(),
-        gh<_i673.CheckContentChangesUseCase>(),
-        gh<_i1014.GetPostsByIdsUseCase>(),
-        gh<_i20.GetPostCountsUseCase>(),
-        gh<_i78.StartContentLiveUseCase>(),
-        gh<_i429.StopContentLiveUseCase>(),
       ),
     );
     gh.factory<_i781.SignUpCubit>(

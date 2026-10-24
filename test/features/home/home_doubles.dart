@@ -14,6 +14,7 @@ import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart'
 import 'package:pulse/features/post/domain/use_case/get_posts_by_ids_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/save_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
@@ -128,6 +129,7 @@ void registerHomeDoubles() {
         changes.counts,
         changes.startLive,
         changes.stopLive,
+        MockSaveHomeFeed(),
       );
     })
     ..registerFactory(
@@ -170,3 +172,5 @@ void registerHomeDoubles() {
       ),
     );
 }
+
+class MockSaveHomeFeed extends Mock implements SaveHomeFeedUseCase {}

@@ -11,6 +11,9 @@ abstract interface class StoryRailRepository {
   /// The rail from the server, also saved for the signed-in user. With [saved] no request is made: it
   /// returns the saved rail, null when nothing is saved or there is no session.
   Future<List<StoryRailItemModel>?> rail({bool saved = false});
+
+  /// Replaces the saved rail with [items] (a ring turned grey). No request.
+  void saveRail(List<StoryRailItemModel> items);
 }
 
 @LazySingleton(as: StoryRailRepository)
@@ -27,6 +30,9 @@ class StoryRailRepositoryImpl implements StoryRailRepository {
     _save(items);
     return items;
   }
+
+  @override
+  void saveRail(List<StoryRailItemModel> items) => _save(items);
 
   /// The rail is already on its way to the screen: it does not wait for the disk, and a copy that cannot be
   /// made (no session) never fails the load.

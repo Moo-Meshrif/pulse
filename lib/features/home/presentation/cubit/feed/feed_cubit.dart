@@ -20,6 +20,7 @@ import '../../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../../post/domain/event/post_saved.dart';
 import '../../../../post/domain/use_case/get_home_feed_use_case.dart';
 import '../../../../post/domain/use_case/get_posts_by_ids_use_case.dart';
+import '../../../../post/domain/use_case/save_home_feed_use_case.dart';
 import '../../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
 import '../../../../profile/domain/use_case/get_current_user_id_use_case.dart';
 import '../../utils/enums/feed_status.dart';
@@ -42,6 +43,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     this._counts,
     this._startLive,
     this._stopLive,
+    this._saveFeed,
   ) : _signer = FeedPostSigner(signMedia),
       super(FeedState(userId: currentUserId()));
 
@@ -53,6 +55,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   final GetPostCountsUseCase _counts;
   final StartContentLiveUseCase _startLive;
   final StopContentLiveUseCase _stopLive;
+  final SaveHomeFeedUseCase _saveFeed;
 
   /// Most posts read in one check; one request carries at most 50.
   static const _maxRead = 50;
@@ -125,14 +128,22 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
       fresh: page.posts,
       asked: const [],
     );
-    return state.copyWith(
+    final next = state.copyWith(
       posts: result.posts,
       pendingPosts: result.pending,
       replacedIds: result.replacedIds,
       fromPhone: false,
       isSyncing: false,
     );
+    _saveSnapshot(next);
+    return next;
   }
+
+  /// Keeps the feed as the next launch should open it: the waiting posts on top, then the posts on screen.
+  /// A load of the first page already saved its own; this is for a change made in place.
+  void _saveSnapshot(FeedState state) => _saveFeed([
+    for (final post in [...state.pendingPosts, ...state.posts]) post.entity,
+  ]);
 
   /// Gives the links to the posts that are still on screen with none, in one request. A failure is
   /// ignored: they keep their covers until the next refresh.
@@ -229,11 +240,13 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
         fresh: fresh,
         asked: ids,
       );
-      return state.copyWith(
+      final next = state.copyWith(
         posts: result.posts,
         pendingPosts: result.pending,
         replacedIds: result.replacedIds,
       );
+      _saveSnapshot(next);
+      return next;
     },
     onFailure: (_) => null,
   );
@@ -358,9 +371,9 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     if (state.status != FeedStatus.ready) return _reload();
     final isEdit = state.posts.any((item) => item.id == post.id);
     if (isEdit) {
-      emit(state.copyWith(posts: _replacedPost(post)));
+      _emitSaved(state.copyWith(posts: _replacedPost(post)));
     } else if (!state.pendingPosts.any((item) => item.id == post.id)) {
-      emit(state.copyWith(pendingPosts: [post, ...state.pendingPosts]));
+      _emitSaved(state.copyWith(pendingPosts: [post, ...state.pendingPosts]));
     }
   }
 
@@ -376,14 +389,23 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
       state.posts.map((item) => item.id == post.id ? post : item).toList();
 
   /// A post was deleted or reported: it leaves the feed, so an empty feed shows its empty page.
-  void removePosts(Set<String> ids) => emit(
-    state.copyWith(
-      posts: state.posts.where((post) => !ids.contains(post.id)).toList(),
-      pendingPosts: state.pendingPosts
-          .where((post) => !ids.contains(post.id))
-          .toList(),
-    ),
-  );
+  void removePosts(Set<String> ids) {
+    if (ids.isEmpty) return;
+    final posts = state.posts.where((post) => !ids.contains(post.id)).toList();
+    final pending = state.pendingPosts
+        .where((post) => !ids.contains(post.id))
+        .toList();
+    if (posts.length == state.posts.length &&
+        pending.length == state.pendingPosts.length) {
+      return;
+    }
+    _emitSaved(state.copyWith(posts: posts, pendingPosts: pending));
+  }
+
+  void _emitSaved(FeedState next) {
+    emit(next);
+    _saveSnapshot(next);
+  }
 
   /// Posts deleted but not yet committed: the delete's notice can still Undo them.
   void setPendingDeletes(Set<String> ids) =>

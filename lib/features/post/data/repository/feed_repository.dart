@@ -18,6 +18,9 @@ abstract interface class FeedRepository {
     String? beforeId,
     bool saved = false,
   });
+
+  /// Replaces the saved first page with [page] (a post was shared, edited or deleted). No request.
+  void saveFirstPage(FeedPageModel page);
 }
 
 @LazySingleton(as: FeedRepository)
@@ -45,6 +48,9 @@ class FeedRepositoryImpl implements FeedRepository {
     }
     return page;
   }
+
+  @override
+  void saveFirstPage(FeedPageModel page) => _save(page);
 
   /// The page is already on its way to the screen: it does not wait for the disk, and a copy that cannot be
   /// made (no session) never fails the load.

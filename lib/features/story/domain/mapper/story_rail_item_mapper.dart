@@ -18,4 +18,19 @@ abstract final class StoryRailItemMapper {
               allSeen: item.allSeen ?? false,
             ),
       ];
+
+  /// The rows again, for the copy kept on the device.
+  static List<StoryRailItemModel> toModels(List<StoryRailItemEntity> items) => [
+    for (final item in items)
+      StoryRailItemModel(
+        authorId: item.authorId,
+        username: item.username,
+        fullName: item.fullName,
+        avatarUrl: item.avatarUrl,
+        isMe: item.isMe,
+        storyCount: item.storyCount,
+        latestAt: item.latestAt,
+        allSeen: item.allSeen,
+      ),
+  ];
 }

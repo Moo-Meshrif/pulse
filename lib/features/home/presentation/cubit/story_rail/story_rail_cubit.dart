@@ -130,6 +130,7 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
         item.authorId == event.authorId ? item.copyWith(allSeen: true) : item,
     ];
     emit(state.copyWith(items: _visible()));
+    _rail.save(_loaded);
   }
 
   void _onDelete(ContentDeleteEvent event) {

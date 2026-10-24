@@ -49,6 +49,9 @@ const _me = StoryRailItemEntity(
 
 class _Rail implements GetStoryRailUseCase {
   @override
+  void save(List<StoryRailItemEntity> items) {}
+
+  @override
   Future<List<StoryRailItemEntity>?> saved() async => null;
 
   @override

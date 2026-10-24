@@ -7,6 +7,7 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cubit.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
+import 'package:pulse/features/story/domain/event/story_author_seen.dart';
 import 'package:pulse/features/story/domain/event/story_rail_changed.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
@@ -38,6 +39,8 @@ void main() {
   late EventBus bus;
   late _Retry retry;
   late MockCheckContentChanges check;
+
+  setUpAll(() => registerFallbackValue(<StoryRailItemEntity>[]));
 
   setUp(() {
     getRail = _GetRail();
@@ -101,6 +104,18 @@ void main() {
     await flush();
 
     expect(cubit.state.isLoaded, isTrue);
+    await cubit.close();
+  });
+
+  test('a person whose stories were all seen is saved as seen', () async {
+    final cubit = build();
+    await cubit.start();
+
+    bus.fire(const StoryAuthorSeen('a'));
+    await flush();
+
+    final saved = verify(() => getRail.save(captureAny())).captured.last;
+    expect((saved as List<StoryRailItemEntity>).single.allSeen, isTrue);
     await cubit.close();
   });
 
