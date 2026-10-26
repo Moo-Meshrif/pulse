@@ -1,14 +1,17 @@
-/// The up-to-two-letter initials of [name]: the first letters of its first two words, uppercased.
+/// The up-to-two-letter initials of [name] (the full name, or the username when there is none): the first
+/// letters of its first two words, uppercased, ignoring a leading `@`. `?` when nothing is left.
 String initialsOf(String? name) {
   final words = (name ?? '')
       .trim()
+      .replaceFirst(RegExp(r'^@+'), '')
       .split(RegExp(r'\s+'))
       .where((word) => word.isNotEmpty);
-  return words
+  final initials = words
       .take(2)
       .map((word) => String.fromCharCode(word.runes.first))
       .join()
       .toUpperCase();
+  return initials.isEmpty ? '?' : initials;
 }
 
 /// A palette index that is the same for the same [seed] on every run (`String.hashCode` is not).

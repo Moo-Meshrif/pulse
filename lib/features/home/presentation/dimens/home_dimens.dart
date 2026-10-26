@@ -83,7 +83,6 @@ abstract final class HomeDimens {
   static double get skeletonNameWidth => AppScale.scale(120);
   static double get skeletonMetaWidth => AppScale.scale(80);
   static double get skeletonLabelWidth => AppScale.scale(48);
-  static const skeletonSweep = Duration(milliseconds: 1400);
   static const skeletonFade = Duration(milliseconds: 200);
 }
 

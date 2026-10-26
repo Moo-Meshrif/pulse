@@ -3601,6 +3601,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It was deleted, or you can\'t see it.'**
   String get storyPostUnavailableBody;
+
+  /// Comments sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get commentsTitle;
+
+  /// Comments sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Most relevant'**
+  String get commentsSortRelevant;
+
+  /// Comments sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get commentsSortNewest;
+
+  /// Semantics: sort chip of the comments sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Sort comments'**
+  String get commentsSortLabel;
+
+  /// Badge on a comment by the post's author
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get commentsAuthorBadge;
+
+  /// Reply link under a comment
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get commentReply;
+
+  /// Likes under a comment
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 like} other{{count} likes}}'**
+  String commentLikes(int count);
+
+  /// Line that loads the rest of a thread
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{View 1 more reply} other{View {count} more replies}}'**
+  String commentsViewMoreReplies(int count);
+
+  /// After the time of an edited comment
+  ///
+  /// In en, this message translates to:
+  /// **'Edited'**
+  String get commentsEdited;
+
+  /// Semantics: a comment row
+  ///
+  /// In en, this message translates to:
+  /// **'Comment by {name}'**
+  String commentBy(String name);
+
+  /// Comments sheet with no comments
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet'**
+  String get commentsEmptyTitle;
+
+  /// Under No comments yet
+  ///
+  /// In en, this message translates to:
+  /// **'Start the conversation.'**
+  String get commentsEmptyBody;
+
+  /// Comments sheet footer when a page or replies failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get commentsLoadMoreFailed;
+
+  /// Comment field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment…'**
+  String get commentsAddHint;
+
+  /// Strip above the comment field; name is the @username
+  ///
+  /// In en, this message translates to:
+  /// **'Replying to {name}'**
+  String commentsReplyingTo(String name);
+
+  /// Semantics: the X on the replying strip
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel reply'**
+  String get commentsReplyCancel;
+
+  /// Semantics: the list of people suggested while typing @ in a comment
+  ///
+  /// In en, this message translates to:
+  /// **'People to mention'**
+  String get commentsMentionSuggestions;
+
+  /// Semantics: the send button of the comment field
+  ///
+  /// In en, this message translates to:
+  /// **'Send comment'**
+  String get commentsSend;
+
+  /// Under your comment while it is being sent
+  ///
+  /// In en, this message translates to:
+  /// **'Posting…'**
+  String get commentsPosting;
+
+  /// Start of the failed line under your comment
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t post'**
+  String get commentsCouldntPost;
+
+  /// Failed comment: send it again
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get commentsRetry;
+
+  /// Failed comment: drop it
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commentsDelete;
+
+  /// Character counter of the comment field
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / 1000'**
+  String commentsCounter(int count);
+
+  /// Bar that replaces the comment field
+  ///
+  /// In en, this message translates to:
+  /// **'Comments are turned off for this post'**
+  String get commentsOff;
+
+  /// Strip above the comment field while editing
+  ///
+  /// In en, this message translates to:
+  /// **'Editing comment'**
+  String get commentsEditing;
+
+  /// Semantics: close the editing strip
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel editing'**
+  String get commentsEditCancel;
+
+  /// Comment menu
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get commentsCopyText;
+
+  /// Comment menu, your comment
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commentsEdit;
+
+  /// Comment menu, post owner
+  ///
+  /// In en, this message translates to:
+  /// **'Hide comment'**
+  String get commentsHide;
+
+  /// Comment menu, and report sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Report comment'**
+  String get commentsReport;
+
+  /// Delete comment dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment?'**
+  String get commentsDeleteTitle;
+
+  /// Delete comment dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'This also deletes its replies.'**
+  String get commentsDeleteBody;
+
+  /// Notice after hiding a comment
+  ///
+  /// In en, this message translates to:
+  /// **'Comment hidden'**
+  String get commentsHidden;
+
+  /// Notice after copying a comment
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get commentsCopied;
+
+  /// Report sheet reasons step, comment
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you reporting this comment? Your report is anonymous.'**
+  String get commentsReportBody;
+
+  /// Report sheet thanks step, comment
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll review this comment.'**
+  String get commentsReportSent;
+
+  /// Report sheet note field hint, comment
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what\'s wrong with this comment…'**
+  String get commentsReportNotePlaceholder;
 }
 
 class _AppLocalizationsDelegate

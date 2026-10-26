@@ -2,7 +2,10 @@
 enum ContentKind {
   post('post'),
   story('story'),
-  short('short');
+  short('short'),
+
+  /// Only reportable: a comment has no feed, audience, mute or media of its own.
+  comment('comment');
 
   const ContentKind(this.wire);
 

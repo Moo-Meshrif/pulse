@@ -20,11 +20,13 @@ Video: `video_flux` [user]. Backend: Supabase now, REST later; schema `../home/s
 | S11 | Remove your tag | screens/s11-remove-tag.md | screenshots/s11-remove-tag-board.png | dialog |
 | S12 | Share sheet (send icon, S2 Share) | screens/s12-share-sheet.md | screenshots/s12-share-board.png | sheet |
 | S13 | Add post to story: sticker card | screens/s13-add-to-story.md | screenshots/s13-add-to-story-board.png | story editor / viewer |
+| S14 | Comments sheet (comment icon, post page) | screens/s14-comments-sheet.md | screenshots/s14-comments-board.png | sheet; `/post/:postId/comments` |
+| S15 | Post page (+ S16 Likes list) | screens/s15-post-page.md | screenshots/s15-post-page-board.png | `/p/:postId?comment=:id`, likes `/p/:postId/likes` |
 | S2 | Post options sheet + report flow (opened from a post's "···") | screens/s2-post-options.md | screenshots/s2-post-options.png | sheet |
 
 Public post widgets (post card, options flow, visibility sheet): specced in `02-components.md`, built in `features/post/presentation/` and exported for other features [user, 2026-10-14].
 
-Not specced yet: media picker, settings > privacy (incl. "Allow tags" toggle), post detail, comments, saved posts, profile Tagged tab. Card details (headline, meta, tag badge and labels, comments-off) are in `02-components.md` (board `screenshots/s10-card-details-board.png`).
+Not specced yet: media picker, settings > privacy (incl. "Allow tags" toggle), saved posts, profile Tagged tab. Card details (headline, meta, tag badge and labels, comments-off) are in `02-components.md` (board `screenshots/s10-card-details-board.png`).
 
 ## Navigation map
 ```
@@ -35,6 +37,7 @@ Control page Create sheet --Post--> /create/post (S1)
 S1 Location row --> S3 (returns a place name or none)
 S1 Tag people row --> S6 --> ("Tag in photo" button, photos only) S7 --> back to S6 --> Done --> S1; S1 Feeling row --> S8 --> S9 (activity) --> back to S1
 Card "N others" / badge long-press --> S10; own label / S2 row / S10 row --> S11 confirm
+Comment icon on a card / S15 --> S14 sheet; story sticker View post, share-card original, notifications, links --> S15 (`/p/:postId`); S15 "Liked by" --> S16
 S1 X (or system back) --> discard confirm if there is content, else close
 S1 Share post ok --> close, notice "Post shared" (Home feed refreshes)
 S2 Edit post (own post) --> /edit/post (S5); Save ok --> close, notice "Post updated" (Home feed reloads)

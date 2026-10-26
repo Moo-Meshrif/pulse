@@ -2539,5 +2539,153 @@
   "storyPostUnavailableBody": "تم حذفه، أو لا يمكنك رؤيته.",
   "@storyPostUnavailableBody": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsTitle": "التعليقات",
+  "@commentsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsSortRelevant": "الأكثر صلة",
+  "@commentsSortRelevant": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsSortNewest": "الأحدث",
+  "@commentsSortNewest": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsSortLabel": "ترتيب التعليقات",
+  "@commentsSortLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsAuthorBadge": "الكاتب",
+  "@commentsAuthorBadge": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentReply": "رد",
+  "@commentReply": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentLikes": "{count, plural, one{إعجاب} other{{count} إعجابات}}",
+  "@commentLikes": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsViewMoreReplies": "{count, plural, one{عرض رد آخر} other{عرض {count} ردود أخرى}}",
+  "@commentsViewMoreReplies": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsEdited": "تم التعديل",
+  "@commentsEdited": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentBy": "تعليق من {name}",
+  "@commentBy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsEmptyTitle": "لا توجد تعليقات بعد",
+  "@commentsEmptyTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsEmptyBody": "ابدأ المحادثة.",
+  "@commentsEmptyBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsLoadMoreFailed": "تعذّر تحميل المزيد · إعادة المحاولة",
+  "@commentsLoadMoreFailed": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsAddHint": "أضف تعليقًا…",
+  "@commentsAddHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsReplyingTo": "الرد على {name}",
+  "@commentsReplyingTo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsReplyCancel": "إلغاء الرد",
+  "@commentsReplyCancel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsMentionSuggestions": "أشخاص للإشارة إليهم",
+  "@commentsMentionSuggestions": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsSend": "إرسال التعليق",
+  "@commentsSend": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsPosting": "جارٍ النشر…",
+  "@commentsPosting": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsCouldntPost": "تعذّر النشر",
+  "@commentsCouldntPost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsRetry": "إعادة المحاولة",
+  "@commentsRetry": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsDelete": "حذف",
+  "@commentsDelete": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsCounter": "{count} / 1000",
+  "@commentsCounter": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsOff": "التعليقات متوقفة لهذا المنشور",
+  "@commentsOff": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsEditing": "تعديل التعليق",
+  "@commentsEditing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsEditCancel": "إلغاء التعديل",
+  "@commentsEditCancel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsCopyText": "نسخ النص",
+  "@commentsCopyText": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsEdit": "تعديل",
+  "@commentsEdit": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsHide": "إخفاء التعليق",
+  "@commentsHide": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsReport": "الإبلاغ عن التعليق",
+  "@commentsReport": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsDeleteTitle": "حذف التعليق؟",
+  "@commentsDeleteTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsDeleteBody": "سيتم حذف الردود أيضًا.",
+  "@commentsDeleteBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsHidden": "تم إخفاء التعليق",
+  "@commentsHidden": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsCopied": "تم النسخ",
+  "@commentsCopied": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsReportBody": "لماذا تبلغ عن هذا التعليق؟ بلاغك مجهول.",
+  "@commentsReportBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsReportSent": "سنراجع هذا التعليق.",
+  "@commentsReportSent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "commentsReportNotePlaceholder": "أخبرنا بما يزعجك في هذا التعليق…",
+  "@commentsReportNotePlaceholder": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

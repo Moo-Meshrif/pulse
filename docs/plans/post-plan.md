@@ -1,6 +1,6 @@
 # Plan: post
 Source specs: docs/specs/post/ (schemas: `schema-post-visibility.sql`, `schema-shared-content-actions.sql`, `schema-post-tags-mood.sql`, `schema-post-share.sql`), docs/specs/_theme/ (post card tokens also in docs/specs/home/01-design-tokens.md and home/source-tokens.md section 2.3)
-Status: approved (Phases 13-18 approved 2026-10-15; Phases 19-25 added and approved 2026-10-21)
+Status: approved (Phases 13-18 approved 2026-10-15; Phases 19-25 added and approved 2026-10-21); Phases 26-34 (comments, post page, likes) added and approved 2026-10-25
 Mode: one-by-one
 Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers in `test/helpers/pump_app.dart`, datasource tests with `test/helpers/backend_double.dart`; widget tests EN + AR/RTL + 1.5x text)
 
@@ -24,13 +24,22 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 | 16 S6 Tag people + S7 Tag in photo | **done** on doubles (device check against board panels 1-3 tested by the user 2026-10-15) |
 | 17 S8 Feelings + New/Edit post rows | **done** on doubles (device check against board panels 4 and 7 tested by the user 2026-10-15) |
 | 18 Integration + polish (tags, mood) | **done**; the live run on a device and the board comparisons of 14-17 tested by the user 2026-10-15 |
-| 19 Share backend + data | not started |
-| 20 Shared post card (P10, P11) | not started |
-| 21 Share sheet (S12) | not started |
-| 22 Edit a share | not started |
-| 23 Add to story: editor (S13) | not started |
-| 24 Story viewer: post sticker | not started |
-| 25 Integration + polish (share, sticker) | not started |
+| 19 Share backend + data | **done** 2026-10-21; migration `post_share` applied |
+| 20 Shared post card (P10, P11) | **done** 2026-10-21 (device check is yours) |
+| 21 Share sheet (S12) | **done** 2026-10-21 (device check is yours) |
+| 22 Edit a share | **done** 2026-10-21 (device check is yours) |
+| 23 Add to story: editor (S13) | **done** 2026-10-21 (device check is yours) |
+| 24 Story viewer: post sticker | **done** 2026-10-21 (device check is yours) |
+| 25 Integration + polish (share, sticker) | code done; live run, size checks and the story-sticker boot test open |
+| 26 Comments backend + data | **done** 2026-10-25; migration `post_comments` **applied** (B15) |
+| 27 Comments sheet: read (S14 panels 1, 5) | code done 2026-10-25 |
+| 28 Write, reply, draft (S14 panel 2, 4) | code done 2026-10-26 (not opened on a device; the sheet is wired in Phase 33) |
+| 29 Comment actions (S14 panel 3) | not started |
+| 30 Mentions (S14 panel 6) | code done 2026-10-26 (not opened on a device; the sheet is wired in Phase 33) |
+| 31 Post page (S15) | not started |
+| 32 Likes list (S16) | not started |
+| 33 Entry points + notification jump | not started |
+| 34 Integration + polish (comments, post page, likes) | not started |
 
 Open before / during Phase 5: the dark confirm dialog and the option / audience row widgets are built in the post feature first and move to `core/widgets` only when story or short actually reuses them (then as a variant or tone of the one widget, default look unchanged; search `core/widgets` and `confirmation_strategy` before adding). Still open: whether the close-friends list moves into `lib/shared/content`.
 
@@ -40,7 +49,7 @@ Open before / during Phase 5: the dark confirm dialog and the option / audience 
 - **Data:** post feature (feed page, signed media URLs, create post with visibility), post actions (like, save, hide, comments toggle, delete) in the post feature, and report / change audience / mute / audience counts / account privacy as shared use cases in `lib/shared/content` (Q13, superseded 2026-10-14) [user], post visibility backend (migration from the S4 board), places (Edge Function `places` over OSM, recent places on device, one-time device position).
 - **Goal:** a person can write a post with up to 10 photos/videos, a place, an audience and comments on/off, and share it; the card, options sheet and visibility picker are ready for Home.
 - **Added 2026-10-15 (Phases 13-18):** S6 Tag people, S7 Tag in photo, S8 Feelings (Feelings tab only), S10 Tagged people sheet, S11 Remove your tag, card headline / meta / tag badge and labels / comments-off (`02-components.md` P2a-P2c, P5), S1/S2/S5 deltas, backend `schema-post-tags-mood.sql`. Boards: `screenshots/s6-tag-feeling-board.png`, `s10-card-details-board.png`, `s11-remove-tag-board.png`.
-- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), activities (S8 Activities tab = "Coming soon", S9 deferred, source API or database undecided [user]), the profile Tagged tab (profile spec; `tagged_posts` RPC only), Settings > Privacy "Allow tags" toggle, Activity screen UI for tag notifications, the post page / comments page comments-off bar (comments page is a placeholder, home-plan H3), blocked accounts in tag search (no blocks table), sharing a post by link (Copy link, WhatsApp and More in the Share sheet stay coming soon until the user provides the deep link, T7), Send in chat (T20), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, post detail, comments, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
+- **Out of scope** (specs): the Home feed screen and its Cubit (home plan), activities (S8 Activities tab = "Coming soon", S9 deferred, source API or database undecided [user]), the profile Tagged tab (profile spec; `tagged_posts` RPC only), Settings > Privacy "Allow tags" toggle, Activity screen UI for tag notifications, blocked accounts in tag search (no blocks table), sharing a post by link (Copy link, WhatsApp and More in the Share sheet stay coming soon until the user provides the deep link, T7), Send in chat (T20), Settings > Privacy screen (Q-V1), camera capture in New post, media reorder, saved list, Shorts' "Who can watch", location page and coordinates columns (Q-L6).
 - **Build order** (progress.md): control-page (done), story (done), **post**, home.
 
 ## Share and Add to story: what you will see (Phases 19-25, added 2026-10-21)
@@ -83,6 +92,53 @@ Source: `screens/s12-share-sheet.md`, `screens/s13-add-to-story.md`, `02-compone
 
 **What it can't do yet:** Send in chat (needs the chat feature), Copy link, WhatsApp and More (wait for your deep link and the share text), opening the post on its own page, the "shared in their story" notification, and showing the share notification in an Activity screen.
 
+## Comments, the post page and Likes: what you will see (Phases 26-34, added 2026-10-25)
+Source: `screens/s14-comments-sheet.md`, `screens/s15-post-page.md` (includes the Likes list), boards `screenshots/s14-comments-board.png` and `s15-post-page-board.png`.
+
+**Today's problem:** the comment icon on a post, a share's framed original and "View post" on a story only open an empty placeholder page. You can't read, write or like comments, and there is no page for a single post.
+
+**1. You tap the comment icon on a post in the feed**
+→ A sheet slides up over the post with "Comments" and a "Most relevant" chip. Each comment shows who wrote it, when, "Reply" and the likes. The post author's replies carry an "Author" badge.
+→ Replies sit under their comment, indented. Three show first, then "View 2 more replies".
+→ No comments yet: "No comments yet. Start the conversation." and the keyboard opens.
+→ If loading fails, you see "Try again". There is no pull to refresh.
+
+**2. You change the order**
+→ You tap the chip. A small menu shows "Most relevant" and "Newest". The list starts again from the top in your choice.
+
+**3. You write a comment**
+→ A row of quick emoji sits above the field. Tapping one puts it in your text. Send lights up when there is text. The limit is 1000 characters; a counter shows after 900.
+→ Your comment appears at once, faded, with "Posting…". If it fails, you see "Couldn't post · Retry · Delete". Retry never posts it twice.
+→ If you close the sheet with unsent text and open it again on the same post, your text is still there until you close the app.
+→ If comments are off on the post, the old comments stay readable and a bar says "Comments are turned off for this post" instead of the field.
+
+**4. You reply**
+→ You tap Reply. The comment is highlighted and the field starts with their @name and a "Replying to @name" strip. Replying to a reply attaches to the first comment.
+
+**5. You press and hold a comment**
+→ On someone else's: quick emoji, Reply, Copy text, Hide comment (only the post owner) and Report comment. Tapping an emoji puts it in your reply.
+→ On your own: Edit, Copy text, Delete. Edit puts the text in the field with an "Editing comment" strip; after saving, the row says "Edited". Delete asks first and also deletes the replies.
+→ Hide comment: it disappears for everyone but its writer, and a notice "Comment hidden" has Undo.
+→ Report comment uses the same report sheet as posts.
+→ Double-tap a comment to like it. The heart on the right does the same and can undo.
+
+**6. You mention someone**
+→ You type @ and letters. Three suggestions (your followers and people in the thread) appear above the field. Picking one writes their @username. They get a mention notification. Tapping a @name opens their profile (profiles are still a placeholder).
+
+**7. You open the post page**
+→ From the framed original on a share, "View post" on a story, a link or a notification. The page has the full post, "Liked by …", the date and the comments below, with the field pinned at the bottom.
+→ Scrolling up past the author swaps the title for a small author name. If you don't follow the author, a Follow chip shows and then reads "Following". The "..." opens the post options. The comment icon on this page puts the cursor in the field.
+→ From a notification about a comment, reply or mention, that comment is first in the list, highlighted for 2 seconds, with a small "From your notification" chip. For a reply, its parent comment is shown first.
+→ If the post is deleted, private, or the audience changed: a lock, "This post isn't available" and Back to Home.
+
+**8. You tap "Liked by …"**
+→ A Likes list opens with a search box and people with Follow, Following or Follow back. The post's author sees everyone; others see only people they are allowed to see. Searching waits for you to stop typing. Unfollowing is immediate.
+
+**Safety**
+- Only you can edit or delete your comment. Only the post owner can hide others' comments. Nobody can reply to a reply (it goes to the first comment).
+- A hidden comment stays visible to its writer so they don't know.
+- You can't comment or read comments on a post you can't see.
+
 ## Reuse
 - Theme: `context.appColors` (`background`, `surface`, `primary`, `primarySoft`, `textPrimary`, `textSecondary`, `border`, `divider`, `dashed` #9AA6A2, `danger`, `like`, `storyRing`, `warningSoft`, `warningText`; check `switchOff` #C9D3D0 and `mediaChip` #161A19 @ 55% exist before adding), `context.text` (`title`, `titleSm`, `name`, `caption`, `section`, `button`, `body`), `AppSpacing` / `AppRadius` / `AppScale` (fixed values need `// unscaled: <reason>`, `no_unscaled_literals_test`).
 - Widgets: `AppBottomSheet` (sheet shell), `ReportSheet` + `ReportCopy` (reasons, note step, sent step; `TODO(story-plan T6)` for the post's Mute / Unfollow rows), `ConfirmationDialog` (destructive), `AppSafeArea`, `AppPage`, `AppTopBar`, `AppBackButton`, `AppSvgIcon`, `AppText`, `AppTextField`, `PrimaryButton` (`loading` flag), `PillButton`, `AvatarInitials`, `AppImage` / `CachedPicture`, `AppEmpty`, `ContentWidth`, `PulseLineLoader`, `TintedChip`.
@@ -115,6 +171,10 @@ Source: `screens/s12-share-sheet.md`, `screens/s13-add-to-story.md`, `02-compone
 | B12 | ~~Palette tool icon~~ `ic_palette.svg` added by the user 2026-10-21 (register it) | 23 | user | **done** |
 | B14 | ~~Title icon `ic_share_forward`~~ added by the user 2026-10-21 (register it) | 21 | user | **done** |
 | B13 | Arabic copy for S12, S13 and P10-P11 (`x-review`) | none | user review | open, no code marker |
+| B15 | ~~Migration `post_comments` (comments columns and tables, `post_comments`, `comment_replies`, `add_comment`, `edit_comment`, `delete_comment`, `hide_comment`, `set_comment_like`, `comment_mention_candidates`, report kind `comment`) validated in a rolled-back batch, then applied after the user approves | 26 apply; live checks of 27-34 | user approval | **done 2026-10-25** (applied; B18 = hidden comments stop counting, confirmed) |
+| B16 | Migration `post_likes_list` (`post_likers`, `liked_by_preview`) validated, then applied after the user approves | 32 apply; live check of 32-34 | user approval | open |
+| B17 | Arabic copy for S14-S16 (`x-review`) | none | user review | open, no code marker |
+| B18 | Does a hidden comment still count in the post's comment number? | 26 | user | **answered 2026-10-25**: no (hiding lowers it, Undo raises it again) |
 | B10 | Arabic copy for S6-S11, headline connectors and the ten drafted feeling nouns (`x-review`; user gave سعادة، حماس، امتنان، تعب and the noun rule) | none | user review | open, no code marker |
 
 ## Code TODOs
@@ -136,11 +196,13 @@ Source: `screens/s12-share-sheet.md`, `screens/s13-add-to-story.md`, `02-compone
 | T14 | Blocked accounts are not filtered from tag search / `can_tag` (no blocks table yet) | `tag_search` / `can_tag` in the migration (SQL comment `TODO`) | 13 (SQL comment, no Dart marker) |
 | T15 | "Allow tags" (everyone / people you follow / no one) has no settings toggle; column default `everyone` | - | no code marker (Settings not specced) |
 | T16 | Profile Tagged tab and its long-press sheet (`s11-remove-tag.md` entry 3); `tagged_posts` RPC exists, no Dart call | - | no code marker (profile spec) |
-| T17 | Comments-off bar on the post / comments page (`02-components.md` "Post page when comments are off") | - | no code marker (comments page is home-plan H3's placeholder) |
+| T17 | ~~Comments-off bar on the post / comments page~~ done in Phases 28 and 31; was: comments-off bar on the post / comments page (`02-components.md` "Post page when comments are off") | - | no code marker (comments page is home-plan H3's placeholder) |
 | T18 | Tag notifications (type `tag`) are written but no screen shows them | - | no code marker (Activity not specced) |
 | T20 | Send in chat (panels 5-7 of the board) is hidden until the Chat tables and screens exist; `share_targets` / `share_post` are specced but not written | the Share sheet (`TODO(post-plan T20)` where the chat row would sit) | 21 |
-| T21 | The post page doesn't exist: tapping the framed original on a share and "View post" on a story sticker open the post's comments route | the shared card's original tap and the story viewer pill (`TODO(post-plan T21)`) | 20, 24 |
+| T21 | ~~The post page doesn't exist~~ done in Phase 33 (markers removed); was: the post page doesn't exist: tapping the framed original on a share and "View post" on a story sticker open the post's comments route | the shared card's original tap and the story viewer pill (`TODO(post-plan T21)`) | 20, 24 |
 | T22 | Notification type `share` is written but no screen shows it; the "shared your post in their story" notification (`story_mention` style) is not written | - | no code marker (Activity not specced) |
+| T23 | Tapping a @name in a comment opens the profile placeholder until profile screens exist | the comment row's mention text (`TODO(post-plan T23)`) | 30 |
+| T24 | Notification screens (Activity) are not built: a comment / reply / mention notification only opens the post page through its link `/p/:postId?comment=:id` once Activity exists | - | no code marker (Activity not specced) |
 
 ## Phases
 
@@ -557,6 +619,228 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
   - [x] `grep -rn "TODO(post-plan"`: markers match open Code TODOs rows (T7, T19 removed, T20, T21 new).
 **Notes:** boot tests added to `test/app/post_integration_test.dart`. The T20 marker was missing and is now in `share_sheet.dart`; open markers: T4, T7, T11, T13, T20, T21. RTL / 1.5x / 2.0x / 320 dp checks were done per phase (20-24 widget tests); not rerun here. Full suite has 5 failures not from this phase: 2 progress-weight tests in `content_media_repository_test`, 1 in `story_upload_repository_test`, `story_integration_test` camera > Share, and the post restart test (`boot` finds no `ControlScreen` after the kill).
 - **Done when:** all new acceptance lists ticked; analyze clean; full suite green.
+- **Verify:** full test suite, analyze, device run (user).
+
+### Phase 26: Comments backend + data (added 2026-10-25)
+**Status:** [x] done 2026-10-25; migration validated in rolled-back runs, then **applied** (history name `post_comments`, version 20261025180433)
+- **Goal:** the server and the post feature's data can list, add, edit, delete, hide and like comments and replies, and report a comment.
+- **Depends on:** 25 code done; B15 to apply; B18 answered.
+- **Spec refs:** `post/screens/s14-comments-sheet.md` Behavior + Data, `post/00-data-layer.md`, `supabase/migrations/20261013155541_home_feed.sql` (`comments`, `comments_check_parent`, counters), `20261014213146_notifications.sql` (`notify_on_comment`, mentions).
+- **Tasks:**
+  - [x] Write the migration `supabase/migrations/<timestamp>_post_comments.sql` and copy the SQL to `post/schema-post-comments.sql` (keep both in sync). Add to `comments`: `like_count`, `reply_count`, `edited_at`, `hidden_at`, `client_id` (unique per author, for safe Retry); table `comment_likes(comment_id, user_id)`; triggers keep `like_count`, `reply_count` and `posts.comment_count` (hidden comments do not count, B18).
+  - [x] Functions: `post_comments(p_post, p_sort, p_limit, p_before, p_focus)` (20 top-level per page, first 3 replies each, `liked_by_me`, `is_post_author`, hidden rows only for their writer, `p_focus` puts that comment, or its parent thread, first and leaves it out of the normal rows), `comment_replies(p_comment, p_limit, p_before)`, `add_comment(p_post, p_body, p_parent, p_client_id)` (idempotent on the client id, parent resolved to the top-level comment, mentions through the existing notify code), `edit_comment`, `delete_comment`, `hide_comment(p_comment, p_hidden)` (post owner only, not own comments), `set_comment_like(p_comment, p_liked)`, `comment_mention_candidates(p_post, p_query)` (followers + people in the thread, at most 3).
+  - [x] Extend `report_content` to accept `p_kind = 'comment'`; every function checks that the caller can see the post and that comments are on (reading stays allowed when they are off; writing is refused).
+  - [x] Validate in one rolled-back batch with several test users: public post, comment and reply, reply to a reply lands on the top-level comment, 1000-char limit, Retry with the same client id writes once, like twice = one like, edit only by the writer, delete takes replies, hide only by the post owner (writer still sees it, others don't), counts after hide / undo, comments off refuses writing, no access to a post you can't see, notifications for comment / reply / mention, `p_focus` for a reply and for a deleted comment, nothing left behind. Report to the user, then apply after approval (B15).
+  - [x] Dart data: `features/post/data/model/comment_model.dart` (new: author, body, counts, `likedByMe`, `isPostAuthor`, `editedAt`, `replies` (first 3), `replyCount`) and `comment_page_model.dart` (new: rows + next cursor); `features/post/data/datasource/comments_datasource.dart` (new: interface + Supabase adapter in one file, calls above, `Guard.run`, `JsonMapper`).
+  - [x] Domain: `domain/entity/comment_entity.dart` (new; `copyWith`, time and `isEdited`), `domain/mapper/comment_entity_mapper.dart` (new), use cases in `domain/use_case/` (new): `GetPostCommentsUseCase`, `GetCommentRepliesUseCase`, `AddCommentUseCase`, `EditCommentUseCase`, `DeleteCommentUseCase`, `HideCommentUseCase`, `SetCommentLikeUseCase`, `GetMentionCandidatesUseCase`.
+  - [x] Add `ContentKind.comment` (`wire` = `comment`) in `shared/content/data/enums/content_kind.dart`; fix every `switch` on `ContentKind` the analyzer flags (comments are only reportable, they have no feed, audience or mute); `ReportContentUseCase` stays as it is.
+  - [x] `fvm dart run build_runner build --delete-conflicting-outputs` for the new `@injectable` classes.
+- **Tests:** datasource tests on `test/helpers/backend_double.dart` (each call, params, a `Failure` on error, a null parent); mapper tests (replies, `isPostAuthor`, hidden); use case tests; the rolled-back SQL report.
+- **Out of scope:** UI; pin (left out, Q-C3); a reply notification screen (T24).
+- **Done when:** the migration is validated (and applied once approved); models, datasource and use cases tested; `ContentKind.comment` compiles everywhere; analyze clean.
+- **Verify:** analyze, tests, the SQL report. **I ask you first:** applying the migration to the live project (B15).
+**Notes (builder):** 
+- Migration `supabase/migrations/20261025120000_post_comments.sql` (spec copy `post/schema-post-comments.sql`) and its checks `supabase/tests/post_comments_test.sql`. Validated on the project in rolled-back runs (nothing kept; checked afterwards): reply to a reply lands on the top-level comment, empty / 1001-char refused (22023), a retry with the same client id writes once, like twice = 1, edit only by the writer (42501), "relevant" puts the thread the author answered first and "newest" the newest, paging by rank + time + id gives the next row then an empty page, 3 replies shown with `reply_count` 4 and the rest through `comment_replies`, hide lowers the post's count and Undo restores it (a hidden thread hides its replies and Undo brings the same ones back), the stranger doesn't see a hidden comment but the writer does, non-owner and own-comment hide refused (42501), delete takes the replies and fixes the count, comments off refuses writing (22023) but reading works, a followers-only post is P0002 for a stranger, `p_focus` on a reply puts the thread first with the reply in it and never lists it twice, mentions, notifications (comment, reply, mention), reports (own and hidden comments refused, a duplicate keeps one row), direct table access denied.
+- Differences from the plan text: `reply_count` is counted per viewer in `comment_json` (a stored column could not hide the replies only their writer sees), so only `like_count`, `edited_at`, `hidden_at`, `client_id` were added; `post_comments` takes the cursor as `p_before_rank` + `p_before_time` + `p_before_id` and every top-level row carries its `rank`; all functions return `jsonb` (rows are built by the helper `comment_json`); comments are not readable or writable on the table any more (RPC only); a hidden comment doesn't count in `posts.comment_count` (B18 assumption, Undo counts it again). Refusals: `P0002` (post or comment gone / not visible) maps to `NotFoundFailure`, `22023` (comments off, bad words) to `RejectedFailure`.
+- Dart: `CommentsDatasource` (`features/post/data/datasource/comments_datasource.dart`), `CommentModel`, `CommentPageModel`, `MentionPersonModel`, `CommentSort` (in `data/enums`, the datasource needs its wire value, so it is not a presentation enum as Phase 27 listed it), entities `CommentEntity`, `CommentPageEntity`, `CommentCursorEntity`, `MentionPersonEntity`, `CommentEntityMapper`, and use cases `GetPostCommentsUseCase`, `GetCommentRepliesUseCase`, `AddCommentUseCase`, `EditCommentUseCase`, `GetMentionCandidatesUseCase` (they map rows to entities). Delete, hide and like have **no use case**: they would only forward a call, so the Cubit (Phases 28-29) calls `CommentsDatasource.deleteComment`, `hideComment`, `setLike` directly. The page cursor is the last non-focus row of a full page. Report uses `ContentActionsDatasource.report` with the new `ContentKind.comment`; `MediaPolicy.videoLimits` throws `UnsupportedError` for it (a comment has no video) and `media_policy_test` skips it.
+- Tests: `test/features/post/data/datasource/comments_datasource_test.dart`, `domain/mapper/comment_entity_mapper_test.dart`, `domain/use_case/comment_use_cases_test.dart`. Full suite: all green except `test/core/theme/no_unscaled_literals_test.dart` (`avatar_initials.dart:33`), which fails the same way without this phase's changes.
+
+### Phase 27: Comments sheet: read (S14 panels 1 and 5)
+**Status:** [x] code done 2026-10-25; not yet opened on a device (the sheet is wired from the card in Phase 33)
+- **Goal:** the comment icon opens a sheet that lists comments and replies, sorts them, likes them, and shows the empty and error states.
+- **Depends on:** 26 (data on doubles; live after B15).
+- **Spec refs:** `post/screens/s14-comments-sheet.md` (layout, panels 1 and 5, Behavior: sort, paging, like, Author badge, offline); board `s14-comments-board.png` panels 1 and 5; `post/01-design-tokens.md`.
+- **Tasks:**
+  - [x] Register `ic_reply`, `ic_copy`, `ic_send` in `lib/core/constants/app_assets.dart`; strings EN + AR (`x-review`) for this phase (title, sort, Author, Reply, likes plural, View N more replies, empty, Try again).
+  - [x] Dimens `comments_dimens.dart`; comment row, reply row, Author badge, "View N more replies", sort chip and its small popup, heart, empty tile, sheet shell (reuse `AppBottomSheet` and `AppSafeArea`; top gap 88, draggable to full height).
+  - [x] `CommentsCubit` (freezed state: top-level rows, per-thread expanded replies, sort, `LoadMoreStatus`, first-load status): load, change sort (reload from the top), load more, load more replies, like / unlike with rollback.
+  - [x] Errors: first load, more comments and more replies each show Try again (shared retry row / error tile); no pull to refresh.
+  - [x] Semantics ("Comment by …", like button), RTL (indent and heart mirror), 1.5x text.
+- **Implementation steps:**
+  1. `lib/core/constants/app_assets.dart` (edit): `reply`, `copy`, `send`.
+  2. `lib/features/post/presentation/dimens/comments_dimens.dart` (new): values from S14 Tokens through `AppScale`, nothing invented; mark the ones estimated in the spec.
+  3. `.../cubit/comments/comments_cubit.dart` + `comments_state.dart` (new, freezed): extends `BaseCubit`; `@injectable`; takes `postId` through `init(postId, {focusCommentId})`; uses `GetPostCommentsUseCase`, `GetCommentRepliesUseCase`, `SetCommentLikeUseCase`; likes are optimistic and roll back on a `Failure`; paging with `LoadMoreStatus` from `core/state/`.
+  4. `.../utils/enums/comment_sort.dart` (new): `relevant`, `newest` with the wire value; `.../utils/enums/comments_status.dart` (new).
+  5. `.../widgets/comments/` (new): `comment_row.dart`, `comment_reply_row.dart`, `comment_author_badge.dart`, `comment_view_replies.dart`, `comment_sort_chip.dart`, `comments_empty.dart`, `comments_list.dart` (uses `LoadMoreListener`, not `PagedScrollView`, because there is no pull to refresh).
+  6. `.../widgets/comments/comments_sheet.dart` (new): `CommentsSheet.show(context, postId:)` like `ShareSheet.show`; provides the cubit (`BlocProvider(create: (_) => getIt<CommentsCubit>()..init(...))`); the screen-level `BlocListener` shows notices.
+  7. `lib/l10n/app_en.arb`, `app_ar.arb` (edit); run `fvm flutter gen-l10n` if not automatic.
+  8. Export `CommentsSheet` from the post feature's public exports (the way `ShareSheet` is exported).
+  9. Edge cases: a post with 0 comments; a deleted author; very long names; a reply count of 1 ("View 1 more reply" uses the plural string); 1.5x text.
+- **Tests:** `comments_cubit_test.dart` (load, sort change, paging, like + rollback, error then retry, empty); `comment_row_test.dart` widget test (Author badge, liked heart, EN + AR + 1.5x).
+- **Out of scope:** writing (28), long-press (29), mentions (30), the card's comment icon (33).
+- **Done when:** the sheet matches panels 1 and 5; sort changes the order; like works and rolls back on failure; a failed load shows Try again.
+- **Verify:** analyze, tests, compare with `s14-comments-board.png` panels 1 and 5 (via a temporary entry or the phase-33 wiring). **I ask you first:** estimated values left in S14 Tokens.
+
+**Notes (builder):**
+- `CommentsSheet.show(context, postId:, focusCommentId:)` in `widgets/comments/comments_sheet.dart`; `CommentsCubit` (`@factoryParam` postId + focusCommentId) calls `CommentsDatasource.setLike` directly (no like use case, Phase 26). `CommentSort` stays in `data/enums`. One `CommentRow` serves comments and replies (no separate reply row); a `CommentThread` wraps a comment, its replies and "View N more replies".
+- Stale answers (sort changed while loading) are dropped by a load counter. A failed page waits for its Retry row; a failed thread's "View more" line becomes "Couldn't load more · Retry".
+- Deviations: Author badge uses the `badge` token (11) where S14 says 10; the sheet is a fixed height under the 88 gap (the shared sheet closes on drag, so "drag to full height" is not done); the Reply label is plain text until Phase 28.
+- Tests: `cubit/comments/comments_cubit_test.dart`, `widgets/comments/comment_row_test.dart`.
+
+### Phase 28: Write, reply and draft (S14 panels 2 and 4)
+**Status:** [x] code done 2026-10-26; analyze clean, `test/features/post` green; not opened on a device
+- **Goal:** you can write a comment or a reply; it shows at once, can fail and retry, and your unsent text is kept per post until the app closes. Comments-off shows the bar.
+- **Depends on:** 27.
+- **Spec refs:** `post/screens/s14-comments-sheet.md` panels 2 and 4, Behavior (max 1000, counter after 900, Replying strip, failed post, draft, comments off); board panels 2, 4 and the "Comments off" note; `post/02-components.md` "Post page when comments are off".
+- **Tasks:**
+  - [x] Composer: emoji row (heart, hands, fire, clap, cry, heart-eyes, surprised, laughing; tap inserts at the cursor), field (h 44, r22, focus ring), send button (`ic_send`, primary with text, off otherwise), counter after 900, keyboard send key.
+  - [x] Replying strip ("Replying to @name" + X) and highlight of the parent; the field starts with `@name `; a reply always goes to the top-level comment.
+  - [x] Optimistic posting: the new row at 55% with "Posting…"; success replaces it; failure shows "Couldn't post · Retry · Delete"; Retry reuses the client id.
+  - [x] Draft kept per post in memory until the app closes (a map in the cubit's provider scope, not on disk); sending clears it.
+  - [x] Comments-off: the bar replaces composer and emoji row; Reply hidden; old comments readable. `TODO(post-plan T17)` is removed.
+  - [x] Strings EN + AR (`x-review`), semantics, RTL, 1.5x.
+- **Implementation steps:**
+  1. `.../cubit/comments/comments_cubit.dart` (edit): `send(text)`, `retry(localId)`, `discardFailed(localId)`, `startReply(comment)`, `cancelReply()`; local rows carry a `client_id`; uses `AddCommentUseCase`; the comment count of the post goes up through `PostActionsCubit.applyCounts` (the sheet reads the opener's cubit through a callback) and fires the existing count refresh so the feed card follows.
+  2. `.../services` or `.../utils/comment_drafts.dart` (new): app-lifetime `@lazySingleton` holding `Map<postId, String>`; cleared on sign-out (check how other per-user state is cleared, e.g. the post draft repository, and follow it).
+  3. `.../widgets/comments/comment_composer.dart`, `comment_emoji_row.dart`, `comment_replying_strip.dart`, `comment_posting_row.dart` (new); `comments_off_bar.dart` (new, reuses the card's `post_comments_off_line.dart` look).
+  4. `comments_sheet.dart` (edit): composer pinned above the keyboard (rides `MediaQuery.viewInsets`), `AppSafeArea` with `bottomSpace`; keyboard opens when the sheet came from the comment icon and the list is empty.
+  5. `lib/l10n/*.arb` (edit).
+  6. Edge cases: empty or spaces only; 1000 limit; send while offline (failed row); double tap on send (one request); close the sheet mid-request (the request finishes, the row is gone with the sheet); the post turning comments off while open (next write fails with a notice).
+- **Tests:** cubit tests (send ok, send fails then retry once, Retry same client id, reply to a reply attaches to the parent, draft saved and restored, limit); widget test composer states EN + AR + 1.5x.
+- **Out of scope:** edit (29), mentions (30).
+- **Done when:** panels 2 and 4 match; a failed comment never posts twice; the draft returns on reopen; comments-off shows the bar.
+- **Verify:** analyze, tests, compare with panels 2 and 4.
+
+**Notes (builder, Phase 28):**
+- Files: `cubit/comments/comments_cubit.dart` (+ `send`, `retry`, `discardFailed`, `startReply`, `cancelReply`, `draft`, `saveDraft`; state gained `pending`, `replyTo`, `countDelta`), `utils/comment_text.dart` (limit 1000, counter from 900, quick emoji, `canSend`, `insert`, `withMention`), `utils/pending_comment.dart`, `utils/comment_drafts.dart` (`@lazySingleton`, in memory, keyed by account + post, so no sign-out clearing is needed), `widgets/comments/` `comment_composer.dart` (strip, emoji row, field, counter, Send), `comment_emoji_row.dart`, `comment_replying_strip.dart`, `comment_posting_row.dart`, `comments_off_bar.dart`.
+- `CommentsSheet.show(..., commentsEnabled, fromCommentIcon, onCountChanged)`: `commentsEnabled` is a sheet argument (the cubit already takes two factory params); `onCountChanged(delta)` gives how many comments this sheet added, for Phase 33 to feed `PostActionsCubit`. `CommentRow.onReply` null hides Reply (comments off).
+- A saved reply is added to its thread only when all that thread's replies are loaded (so the order holds); otherwise only the count grows and it shows with "View more". A rejected or gone post (comments turned off meanwhile) also shows a notice.
+- Deviations: the emoji row has 8 equal tap areas (48 high); `TextField` multi-line up to 4 lines with the send key; counter sits above the field; `TODO(post-plan T17)` had no marker left in code.
+- Tests: `comments_cubit_test.dart` (writing group), `comment_composer_test.dart`, `comment_row_test.dart` updated.
+
+### Phase 29: Comment actions (S14 panel 3)
+**Status:** [x]
+- **Goal:** press and hold gives Reply, Copy text, Report, Hide (post owner), Edit and Delete; double-tap likes.
+- **Depends on:** 28.
+- **Spec refs:** `post/screens/s14-comments-sheet.md` panel 3, 4 and Behavior (Edit, Delete, Hide with Undo, Report, Copy, Like); board panels 3 and 4; `core/widgets/report_sheet/`, `core/widgets/confirmation_dialog/`, `core/widgets/notice/`.
+- **Tasks:**
+  - [x] Long-press: highlight, dim, a sheet with six quick emoji (insert into the reply field), then Reply and Copy text, then Hide comment (post owner, not on own comments) and Report comment (red); for your own comment: Edit, Copy text, Delete.
+  - [x] Edit: text into the composer with an "Editing comment" strip; Send saves; "Edited" after the time.
+  - [x] Delete: confirm dialog (shared `ConfirmationDialog`, delete tone), "also deletes its replies"; the post's count drops.
+  - [x] Hide: row disappears, notice "Comment hidden" with Undo (calls `hide_comment` false); no way back after the notice ends.
+  - [x] Report: the shared report sheet with `ContentKind.comment`, then the sent row.
+  - [x] Copy text: clipboard + notice "Copied". Double-tap a comment likes it (never unlikes).
+  - [x] Strings EN + AR (`x-review`), semantics, RTL.
+- **Implementation steps:**
+  1. `.../cubit/comments/comments_cubit.dart` (edit): `startEdit`, `cancelEdit`, `saveEdit`, `delete`, `hide`, `undoHide`, `report` (through `ReportContentUseCase(ContentKind.comment, id, reason, note)`), double-tap like; each action throws or reports a `Failure` the sheet shows as a notice; rollback on failure.
+  2. `.../utils/enums/comment_option.dart` (new) and `.../utils/comment_option_layout.dart` (new): which rows for whom (own / someone else's / post owner), following `post_option_layout.dart`.
+  3. `.../widgets/comments/comment_options_sheet.dart` (new, built on `AppBottomSheet`), `comment_quick_emoji.dart` (new); reuse the report flow the way `post_options_flow.dart` and `story_menu_actions.dart` do; reuse `ReportSentRow`.
+  4. `comment_row.dart` (edit): long-press, double-tap, "Edited".
+  5. `lib/l10n/*.arb` (edit).
+  6. Edge cases: delete a comment that has replies; hiding your own comment is not offered; the post owner also writer; a hidden comment the writer still sees; a failed delete puts the row back; Undo after the sheet closes uses the cubit and ids taken at tap time, never the context (as the post options do).
+- **Tests:** cubit tests (edit, delete with replies, hide + undo, report, rollbacks); `comment_option_layout_test.dart`; widget tests for the options sheet (own / other / owner) EN + AR.
+- **Out of scope:** pin (left out), mentions (30).
+- **Done when:** panel 3 and the own-comment menu match; every action works on doubles; a failure rolls back.
+- **Verify:** analyze, tests, compare with panels 3 and 4.
+
+### Phase 30: Mentions (S14 panel 6)
+**Status:** [x] code done 2026-10-26
+- **Goal:** typing @ suggests people; a picked person is written into the text and gets a notification; @names in comments are tappable.
+- **Depends on:** 28.
+- **Spec refs:** `post/screens/s14-comments-sheet.md` panel 6 and "Tap on @name"; board panel 6; `post/screens/s6-tag-people.md` (person row look).
+- **Tasks:**
+  - [x] Suggestions card above the composer: 3 rows (avatar 36, name 14/700, @username 12), first highlighted; shows while the text before the cursor ends with `@letters`.
+  - [x] Pick inserts `@username ` (replacing the typed part); Mention data goes to the server only as text (the server parses it, as in Phase 26).
+  - [x] @names in a comment are drawn in `primary` and tappable: open the profile route; leave `// TODO(post-plan T23): ...` there.
+  - [x] Strings EN + AR (`x-review`), semantics, RTL (the @name keeps its left-to-right order inside Arabic text).
+- **Implementation steps:**
+  1. `.../utils/mention_query.dart` (new): finds the `@word` under the cursor; pure function.
+  2. `.../cubit/comment_mentions/` (new cubit + state): debounce 300 ms (same as the likes search), calls `GetMentionCandidatesUseCase`, keeps the last result; offline or failure shows nothing.
+  3. `.../widgets/comments/comment_mention_list.dart` (new); `comment_composer.dart` (edit): shows the list, handles the pick.
+  4. `.../widgets/comments/comment_text.dart` (new): builds the comment's `TextSpan`s with `@name` taps; `comment_row.dart` (edit).
+  5. `lib/l10n/*.arb` (edit); the T23 marker (and `TODO(post-plan T23)` row stays open).
+- **Tests:** `mention_query_test.dart`; cubit test (debounce, empty query, failure); widget test for the list and a `@name` span in EN + AR.
+- **Out of scope:** the mention notification screen (T24).
+- **Done when:** panel 6 matches; the pick inserts the @username; a @name tap goes to the profile route.
+- **Verify:** analyze, tests, compare with panel 6.
+- **Deviations:** the debounce constant is `CommentText.mentionDelay` (300 ms; the likes search does not exist yet). The cubit's state is the plain list of people. A suggestion needs at least one letter after the `@`. The @name tap passes the username to `AppRoutes.profileOf` (the profile placeholder takes an id; `TODO(post-plan T23)`). `CommentMentionsCubit` is provided next to `CommentsCubit` in `CommentsSheet.show`; the post page (Phase 31) must do the same.
+
+### Phase 31: Post page (S15 panels 1, 2, 3 and 5)
+**Status:** [ ]
+- **Goal:** one post opens on its own page with the full post, "Liked by …", the date, comments and the composer; it shows "not available" when the post can't be seen.
+- **Depends on:** 27-30 (the comments widgets and cubit); 25 (the card).
+- **Spec refs:** `post/screens/s15-post-page.md` (layout, panels 1-3 and 5, Behavior, Data); board `s15-post-page-board.png` panels 1-3 and 5; `post/02-components.md` P1-P5, P10-P11 and "Post page when comments are off".
+- **Tasks:**
+  - [ ] Route `/p/:postId` with `?comment=:id`; the screen takes the post already loaded (to show at once) or loads it.
+  - [ ] Top bar (back, "Post", "..." opening S2); scroll swaps the title for a mini author; the post card with the full caption (no "more"), media, dots and "1/3" chip, Follow chip (hidden on your posts; "Following" after, tap unfollows), actions, "Liked by …" row, date line.
+  - [ ] Comments section below the card: same list as S14 (the sheet's cubit, widgets and composer, inline); sort chip; the comment icon on the page scrolls to the section and focuses the field.
+  - [ ] `?comment=` opens with that comment first in the list (the cubit's `focusCommentId` → `p_focus`), highlighted for 2 s, with the "From your notification" chip for 2 s.
+  - [ ] Not available state (lock, text, Back to Home) for a post that is gone or not visible; the back arrow and "..." stay.
+  - [ ] Video plays with sound here (muted in the feed); likes, saves and comment counts update the feed card too.
+  - [ ] Strings EN + AR (`x-review`), semantics, RTL, 1.5x, wide window (`ContentWidth`).
+- **Implementation steps:**
+  1. `lib/core/router/app_routes.dart` (edit): `postPage(String id, {String? comment})`, `postPagePrefix = '/p/'`, the likes route `/p/:id/likes` (Phase 32); keep `commentsOf` for now (Phase 33 changes it).
+  2. `lib/core/router/app_router.dart` (edit): resolve `/p/:id` before the switch like the story and profile routes; the route argument `PostPageArgs` (post, signed links, optional) lives in `features/post/presentation/utils/post_page_args.dart` (new).
+  3. `features/post/domain/use_case/get_post_use_case.dart` (new): reads `posts_by_ids([id])` through `PostsDatasource.getPostsByIds` and returns the first or null (no new server call; the RPC already returns the home-feed row shape and nothing for a post you can't see); media links signed with `SignPostMediaUrlsUseCase`. **Deviation from the spec text (`get_post`): confirm in the phase.**
+  4. `.../cubit/post_page/post_page_cubit.dart` + `post_page_state.dart` (new, freezed): loading / ready / unavailable / error with the loaded post; refreshes after showing the passed one; applies the page's like / save through its own `PostActionsCubit` and reports counts back to the feed: fire a small `PostCountsChanged` event (new, `features/post/domain/event/`) that `FeedCubit` listens to the way it listens to `PostSaved` (a change in home: `features/home/presentation/cubit/feed/feed_cubit.dart`, calls the existing `applyCounts`).
+  5. `.../screen/post_page_screen.dart` + `.../view/post_page_view.dart` (new): screen provides the cubits and holds the `BlocListener` for notices; the view builds the page; small `BlocSelector` widgets for the top bar title and the Follow chip.
+  6. `.../widgets/post_page/` (new): `post_page_top_bar.dart`, `post_page_card.dart` (reuses `PostCard` with a "full caption" input; add the input to `PostCard` / `ExpandableCaption` without changing the feed look), `post_liked_by_row.dart`, `post_page_date.dart`, `post_page_comments_section.dart`, `post_notification_chip.dart`, `post_page_unavailable.dart`; dimens `post_page_dimens.dart`.
+  7. `lib/l10n/*.arb` (edit).
+  8. Edge cases: opening from a share's original (the share's embed has no counts: load); a deleted post while the page is open (next refresh shows unavailable); a `?comment=` id that no longer exists (normal list, no chip); rotating or a wide window.
+- **Tests:** cubit tests (passed post shown then refreshed, unavailable on null, error then retry, counts event); widget tests (card with full caption, Follow chip states, unavailable, comments-off bar, EN + AR + 1.5x); route test for `/p/:id?comment=`.
+- **Out of scope:** the Likes list (32), wiring entry points (33).
+- **Done when:** panels 1, 2, 3 and 5 match; the page is reachable by its route; counts stay in step with the feed card.
+- **Verify:** analyze, tests, compare with `s15-post-page-board.png` panels 1-3 and 5.
+
+### Phase 32: Likes list (S16)
+**Status:** [ ]
+- **Goal:** "Liked by …" opens a list of the people who liked the post, searchable, with Follow buttons.
+- **Depends on:** 31; B16 to apply.
+- **Spec refs:** `post/screens/s15-post-page.md` "S16 Likes list" and Data; board `s15-post-page-board.png` panel 4; `features/follow` (`ToggleFollowUseCase`, `FollowStatus`).
+- **Tasks:**
+  - [ ] Migration `<timestamp>_post_likes_list.sql` (+ copy in `post/schema-post-likes-list.sql`): `post_likers(p_post, p_query, p_limit, p_before)` (the author sees everyone, others only people they can see, private accounts hidden; follow state), `liked_by_preview(p_post)` (first follower who liked + 2 avatars + total). Validate in a rolled-back batch, then apply after approval (B16).
+  - [ ] The "Liked by …" row on the post page now uses `liked_by_preview` and opens the list; hidden when there are no likes.
+  - [ ] Likes screen: back, "Likes · 1,204", search field (waits 300 ms after typing), rows with Follow / Following / Follow back (tap toggles at once, no confirm), paged list, empty search tile, error with Try again.
+  - [ ] Strings EN + AR (`x-review`), semantics, RTL.
+- **Implementation steps:**
+  1. `supabase/migrations/...` and the spec copy (new), as above.
+  2. `features/post/data/model/post_liker_model.dart`, `liked_by_preview_model.dart` (new); `features/post/data/datasource/post_likes_datasource.dart` (new: interface + adapter); `domain/entity/post_liker_entity.dart` (new); use cases `GetPostLikersUseCase`, `GetLikedByPreviewUseCase` (new). Follow / unfollow goes through the follow feature's `ToggleFollowUseCase` via a post use case if the conventions require (features trade only through use cases: check `lib/features/follow/domain/use_case/` and follow what `PostActionsCubit` already does).
+  3. `.../cubit/post_likes/post_likes_cubit.dart` + state (new): search with `listenTo`/debounce like Phase 30, paging with `LoadMoreStatus`, follow toggles with rollback.
+  4. `.../screen/post_likes_screen.dart`, `.../view/post_likes_view.dart`, `.../widgets/post_likes/post_liker_row.dart` (new); `PagedScrollView` (this list is a page with pull to refresh: the shared widget fits); route `/p/:id/likes` in `app_routes.dart` / `app_router.dart` (edit); profile tap opens `AppRoutes.profileOf`.
+  5. `post_liked_by_row.dart` (edit) and `PostPageCubit` (edit) for the preview.
+  6. `lib/l10n/*.arb` (edit).
+  7. `build_runner`.
+- **Tests:** datasource tests; cubit tests (search debounce, paging, follow toggle + rollback, empty); widget test for rows and button states EN + AR; the rolled-back SQL report.
+- **Out of scope:** profile screens (placeholder), a blocked-accounts filter (no blocks table, T14).
+- **Done when:** panel 4 matches; the author sees everyone and others only people they may see (checked in SQL); search and Follow work.
+- **Verify:** analyze, tests, compare with panel 4. **I ask you first:** applying the migration (B16).
+
+### Phase 33: Entry points and notification jump
+**Status:** [ ]
+- **Goal:** every comment icon, framed original, story "View post", link and notification target opens the right place.
+- **Depends on:** 27-32.
+- **Spec refs:** `post/screens/s15-post-page.md` Behavior (Route); `post/00-overview.md` Navigation map; `post/02-components.md` P10-P11.
+- **Tasks:**
+  - [ ] The feed card's comment icon opens `CommentsSheet.show` (replaces `AppRoutes.commentsOf` in Home); tapping the caption or time opens the post page.
+  - [ ] The framed original on a share opens the original's post page; the story sticker's View post opens the post page. Remove both `TODO(post-plan T21)` markers.
+  - [ ] `AppRoutes.commentsOf` (`/post/:id/comments`) now opens the post page with the field focused (the same as the page's comment icon); delete the `TODO(home-plan H3)` placeholder branch in `AppRouter`.
+  - [ ] Deep link `pulse://...` path `/p/:postId` resolves through `AppRouter` (check `AndroidManifest.xml` and `Info.plist` already pass paths through; add nothing unless needed).
+  - [ ] A notification target is just the route `/p/:postId?comment=:id` (Activity itself is later, T24); nothing to build now beyond the route.
+  - [ ] Update the spec line in `s15-post-page.md` Behavior ("keeps opening the S14 sheet") to match.
+- **Implementation steps:**
+  1. `lib/features/home/presentation/widgets/feed/feed_post_item.dart` (edit): `_openComments` calls `CommentsSheet.show(context, postId: ..., onCountChange: ...)`; `_openOriginal` pushes `AppRoutes.postPage(original.id)`; caption / time tap pushes the page with the loaded post as `PostPageArgs`.
+  2. `lib/features/story/presentation/widgets/story_post/story_post_layer.dart` (edit): the pill pushes `AppRoutes.postPage(postId)`.
+  3. `lib/core/router/app_routes.dart`, `app_router.dart` (edit): as above; keep the Activity placeholder.
+  4. Other lists that show a `PostCard` (search, profile) do not exist yet.
+  5. Run `grep -rn "TODO(post-plan T21\|TODO(home-plan H3"`: none left.
+- **Tests:** update the existing Home / story tests that expect the comments route; add a router test for the three routes.
+- **Out of scope:** Activity screens (T24).
+- **Done when:** the comment icon opens the sheet, the original and the sticker open the post page, `/p/:id?comment=:id` opens the page with that comment first.
+- **Verify:** analyze, tests, device run (user).
+
+### Phase 34: Integration and polish (comments, post page, likes)
+**Status:** [ ]
+- **Goal:** the whole flow works end to end and passes RTL, accessibility and size checks.
+- **Depends on:** 26-33; B15 and B16 applied for the live run.
+- **Spec refs:** acceptance lists of S14 and S15 (incl. S16).
+- **Tasks:**
+  - [ ] App boot test in `test/app/post_integration_test.dart`: Home > comment icon > write > the comment shows > reply > long-press > Hide + Undo; Home > caption > post page > "Liked by" > Likes > Follow; a share's original > post page.
+  - [ ] DI wiring (`build_runner`); the new routes in `AppRouter`.
+  - [ ] Live run (after B15 and B16): comment and reply; reply to a reply; the same Retry writes once; edit, delete with replies; hide by the post owner (the writer still sees it, a second account doesn't); like and double-tap; mention notification row; the focus jump from a link; likes list for the author and for another account; a deleted post shows "not available"; comments off.
+  - [ ] RTL, 1.5x, 2.0x, 320 dp and wide window for the sheet, the post page and the likes list.
+  - [ ] Tick the S14 and S15 acceptance checklists; `grep -rn "TODO(post-plan"`: markers match the open Code TODOs rows (T23 new; T17 and T21 gone).
+  - [ ] Bring the Progress table at the top up to date.
+- **Done when:** all new acceptance lists ticked; analyze clean; full suite green (the known failures listed in Phase 25 are not from this work).
 - **Verify:** full test suite, analyze, device run (user).
 
 ## Verification

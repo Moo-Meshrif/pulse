@@ -43,3 +43,19 @@ Get the board file + full bottom notes, then Step 2 (observe) for panels 1-4 and
 Verify specs against the boards, confirm Q-S2/S6-S9, then add the phases to docs/plans/post-plan.md (implementation mode to ask).
 - 2026-10-21 later: share board updated (composer tools Tag people / Feeling / Location, `ic_share_forward` title icon, hint removed); tags/feeling/location also kept when editing a share; `ic_palette.svg` added; Followers rule: Public anyone, Followers only people who can see it (chat later). Specs and plan Phases 19-22 updated; open: `ic_share_forward` icon (Q-S10/B14), plan approval.
 - 2026-10-21: plan Phases 19-25 approved [user]; ic_share_forward added.
+
+## Round 2026-10-25: Comments + post page - step 1 (Intake)
+- New phases for docs/plans/post-plan.md: post page, comments list + write, replies (threads), comment actions (delete own, report, pin; author deletes others') [user]
+- Design source: screenshots / board, to be sent by the user [user]
+- Replaces the placeholder comments route (`TODO(home-plan H3)`); closes T17 (comments-off bar) and T21 (post page)
+## Next action (comments)
+Receive the board(s), save them to `screenshots/`, give screen ids (S14+), then Step 2 (observe).
+- 2026-10-25: boards saved (`screenshots/s14-comments-board.png`, `s15-post-page-board.png`). Specs written: `screens/s14-comments-sheet.md`, `screens/s15-post-page.md` (includes S16 Likes list), overview + open-questions Q-C1..C11. Decisions: quick emoji go into the reply field; pin left out; sort = popup; shared report with `comment` kind; owner hides (no delete of others'); edit via composer strip. Comments SQL is written in the backend phase of the plan (not in the spec).
+## Next action (comments)
+User checks the specs (open: Q-C8 icons, Q-C9 estimates), then add Phases 26+ to docs/plans/post-plan.md.
+- 2026-10-25: icons ic_reply, ic_copy, ic_send added [user]; Q-C8 closed. Open: Arabic review only.
+- 2026-10-25: plan Phases 26-34 added to docs/plans/post-plan.md (waiting for approval). Plan decisions to confirm: hidden comments don't count (B18); old comments route opens the post page; get_post = existing posts_by_ids.
+- 2026-10-25: Phase 26 built, migration post_comments applied (B15, B18 answered). Next: Phase 27.
+- 2026-10-26: Phase 28 built (composer, reply strip, posting/failed rows, in-memory drafts, comments-off bar). Next: Phase 29.
+- 2026-10-26: Phase 29 built (long-press menu, edit, delete, hide + undo, report, copy, double-tap like). Next: Phase 30.
+- 2026-10-26: Phase 30 built (@ suggestions above the composer, pick inserts @username, tappable @names; profile tap is a placeholder, TODO(post-plan T23)). Next: Phase 31.

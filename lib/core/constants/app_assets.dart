@@ -25,6 +25,7 @@ abstract final class AppAssets {
   static const close = '$_icons/ic_close.svg';
   static const comment = '$_icons/ic_comment.svg';
   static const commentOff = '$_icons/ic_comment_off.svg';
+  static const copy = '$_icons/ic_copy.svg';
   static const crosshair = '$_icons/ic_crosshair.svg';
   static const crosshairThin = '$_icons/ic_crosshair_thin.svg';
   static const createPost = '$_icons/ic_create_post.svg';
@@ -56,7 +57,9 @@ abstract final class AppAssets {
   static const plus = '$_icons/ic_plus.svg';
   static const profile = '$_icons/ic_profile.svg';
   static const profileFilled = '$_icons/ic_profile_filled.svg';
+  static const reply = '$_icons/ic_reply.svg';
   static const search = '$_icons/ic_search.svg';
+  static const send = '$_icons/ic_send.svg';
   static const settings = '$_icons/ic_settings.svg';
   static const share = '$_icons/ic_share.svg';
   static const shareForward = '$_icons/ic_share_forward.svg';

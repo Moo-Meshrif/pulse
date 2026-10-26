@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/extensions/context_extensions.dart';
-import '../dimens/home_dimens.dart';
+import '../extensions/context_extensions.dart';
 
-/// The shimmer of every Home skeleton: sweeps from start to end (mirrored in RTL) and stands still when
-/// the system asks to reduce motion.
-PaintingEffect homeSkeletonEffect(BuildContext context) {
+/// How long one shimmer sweep takes.
+const _skeletonSweep = Duration(milliseconds: 1400);
+
+/// The shimmer of every skeleton: one sweep across the whole zone from start to end (mirrored in RTL),
+/// standing still when the system asks to reduce motion.
+PaintingEffect skeletonEffect(BuildContext context) {
   final colors = context.appColors;
   return MediaQuery.disableAnimationsOf(context)
       ? SolidColorEffect(color: colors.skeletonBase)
@@ -15,6 +17,6 @@ PaintingEffect homeSkeletonEffect(BuildContext context) {
           highlightColor: colors.skeletonHighlight,
           begin: AlignmentDirectional.centerStart,
           end: AlignmentDirectional.centerEnd,
-          duration: HomeDimens.skeletonSweep,
+          duration: _skeletonSweep,
         );
 }

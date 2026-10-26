@@ -2051,4 +2051,138 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get storyPostUnavailableBody => 'تم حذفه، أو لا يمكنك رؤيته.';
+
+  @override
+  String get commentsTitle => 'التعليقات';
+
+  @override
+  String get commentsSortRelevant => 'الأكثر صلة';
+
+  @override
+  String get commentsSortNewest => 'الأحدث';
+
+  @override
+  String get commentsSortLabel => 'ترتيب التعليقات';
+
+  @override
+  String get commentsAuthorBadge => 'الكاتب';
+
+  @override
+  String get commentReply => 'رد';
+
+  @override
+  String commentLikes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count إعجابات',
+      one: 'إعجاب',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String commentsViewMoreReplies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'عرض $count ردود أخرى',
+      one: 'عرض رد آخر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get commentsEdited => 'تم التعديل';
+
+  @override
+  String commentBy(String name) {
+    return 'تعليق من $name';
+  }
+
+  @override
+  String get commentsEmptyTitle => 'لا توجد تعليقات بعد';
+
+  @override
+  String get commentsEmptyBody => 'ابدأ المحادثة.';
+
+  @override
+  String get commentsLoadMoreFailed => 'تعذّر تحميل المزيد · إعادة المحاولة';
+
+  @override
+  String get commentsAddHint => 'أضف تعليقًا…';
+
+  @override
+  String commentsReplyingTo(String name) {
+    return 'الرد على $name';
+  }
+
+  @override
+  String get commentsReplyCancel => 'إلغاء الرد';
+
+  @override
+  String get commentsMentionSuggestions => 'أشخاص للإشارة إليهم';
+
+  @override
+  String get commentsSend => 'إرسال التعليق';
+
+  @override
+  String get commentsPosting => 'جارٍ النشر…';
+
+  @override
+  String get commentsCouldntPost => 'تعذّر النشر';
+
+  @override
+  String get commentsRetry => 'إعادة المحاولة';
+
+  @override
+  String get commentsDelete => 'حذف';
+
+  @override
+  String commentsCounter(int count) {
+    return '$count / 1000';
+  }
+
+  @override
+  String get commentsOff => 'التعليقات متوقفة لهذا المنشور';
+
+  @override
+  String get commentsEditing => 'تعديل التعليق';
+
+  @override
+  String get commentsEditCancel => 'إلغاء التعديل';
+
+  @override
+  String get commentsCopyText => 'نسخ النص';
+
+  @override
+  String get commentsEdit => 'تعديل';
+
+  @override
+  String get commentsHide => 'إخفاء التعليق';
+
+  @override
+  String get commentsReport => 'الإبلاغ عن التعليق';
+
+  @override
+  String get commentsDeleteTitle => 'حذف التعليق؟';
+
+  @override
+  String get commentsDeleteBody => 'سيتم حذف الردود أيضًا.';
+
+  @override
+  String get commentsHidden => 'تم إخفاء التعليق';
+
+  @override
+  String get commentsCopied => 'تم النسخ';
+
+  @override
+  String get commentsReportBody => 'لماذا تبلغ عن هذا التعليق؟ بلاغك مجهول.';
+
+  @override
+  String get commentsReportSent => 'سنراجع هذا التعليق.';
+
+  @override
+  String get commentsReportNotePlaceholder =>
+      'أخبرنا بما يزعجك في هذا التعليق…';
 }

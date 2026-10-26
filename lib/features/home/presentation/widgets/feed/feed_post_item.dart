@@ -17,6 +17,7 @@ import '../../../../post/presentation/utils/post_entity_edit.dart';
 import '../../../../post/presentation/utils/post_options_actions.dart';
 import '../../../../post/presentation/utils/post_tag_removal.dart';
 import '../../../../post/presentation/utils/share_access_of.dart';
+import '../../../../post/presentation/widgets/comments/comments_sheet.dart';
 import '../../../../post/presentation/widgets/hidden_post_row.dart';
 import '../../../../post/presentation/widgets/post_card.dart';
 import '../../../../post/presentation/widgets/post_options/post_options_flow.dart';
@@ -189,8 +190,22 @@ class _FeedPostItemState extends State<FeedPostItem> {
     );
   }
 
-  void _openComments() =>
-      AppNavigator.push<void>(context, AppRoutes.commentsOf(_loaded.id));
+  /// Opens the comments sheet; the card's count follows what the sheet added or removed.
+  void _openComments() {
+    final actions = _actions;
+    final loaded = _loaded;
+    final now = actions.postOf(loaded);
+    final countAtOpen = now.commentCount;
+    CommentsSheet.show(
+      context,
+      postId: loaded.id,
+      commentsEnabled: now.commentsEnabled,
+      isPostOwner: loaded.authorId == context.read<FeedCubit>().state.userId,
+      fromCommentIcon: true,
+      onCountChanged: (delta) =>
+          actions.commentCountChanged(loaded, countAtOpen + delta),
+    );
+  }
 
   /// Opens the Share sheet of this post, or of the original when it is a share.
   void _share() {

@@ -236,6 +236,12 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     _emitPost(postOf(loaded).copyWith(commentsEnabled: enabled));
   }
 
+  /// The comments sheet of [loaded] added or removed comments: the card shows [count].
+  void commentCountChanged(PostEntity loaded, int count) {
+    final now = postOf(loaded);
+    if (now.commentCount != count) _emitPost(now.copyWith(commentCount: count));
+  }
+
   /// Delete, step 1: the card goes at once and the request waits for [commitDelete], so the notice's
   /// Undo can still bring it back.
   void delete(PostEntity loaded) => _emitRow(loaded.id, PostRow.deleting);

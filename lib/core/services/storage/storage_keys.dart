@@ -44,4 +44,11 @@ abstract final class StorageKeys {
 
   // story: the Stories rail of one user in SnapshotStorage
   static String storyRail(String userId) => 'story_rail_$userId';
+
+  // post: the first page of one post's comments in one sort, one per user (SnapshotStorage)
+  static String comments(String userId, String postId, String sort) =>
+      'comments_${userId}_${postId}_$sort';
+
+  // post: the keys above of one user with the time each was saved, so old ones can be dropped
+  static String commentsIndex(String userId) => 'comments_index_$userId';
 }

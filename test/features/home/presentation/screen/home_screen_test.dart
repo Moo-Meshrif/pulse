@@ -27,12 +27,20 @@ import 'package:pulse/features/home/presentation/widgets/feed/feed_skeleton.dart
 import 'package:pulse/features/home/presentation/widgets/home_header.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/rail_skeleton.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
+import 'package:pulse/features/post/data/datasource/comments_datasource.dart';
+import 'package:pulse/features/post/data/enums/comment_sort.dart';
+import 'package:pulse/features/post/domain/entity/comment_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
+import 'package:pulse/features/post/domain/use_case/add_comment_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/edit_comment_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/get_comment_replies_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/get_mention_candidates_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/get_post_comments_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
@@ -40,8 +48,11 @@ import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart'
 import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/share_to_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
+import 'package:pulse/features/post/presentation/cubit/comment_mentions/comment_mentions_cubit.dart';
+import 'package:pulse/features/post/presentation/cubit/comments/comments_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/share_sheet/share_sheet_cubit.dart';
+import 'package:pulse/features/post/presentation/utils/comment_drafts.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
@@ -58,6 +69,7 @@ import 'package:pulse/shared/content/domain/use_case/discard_publish_use_case.da
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_line_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
+import 'package:pulse/shared/content/domain/use_case/report_content_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../../../helpers/content_mocks.dart';
@@ -103,6 +115,20 @@ class _RetryPublish extends Mock implements RetryPublishUseCase {}
 class _DiscardPublish extends Mock implements DiscardPublishUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
+
+class _GetComments extends Mock implements GetPostCommentsUseCase {}
+
+class _GetReplies extends Mock implements GetCommentRepliesUseCase {}
+
+class _CommentsData extends Mock implements CommentsDatasource {}
+
+class _AddComment extends Mock implements AddCommentUseCase {}
+
+class _EditComment extends Mock implements EditCommentUseCase {}
+
+class _ReportContent extends Mock implements ReportContentUseCase {}
+
+class _Candidates extends Mock implements GetMentionCandidatesUseCase {}
 
 class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
 
@@ -150,6 +176,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(cursor);
+    registerFallbackValue(CommentSort.relevant);
     registerContentFallbacks();
   });
 
@@ -271,7 +298,33 @@ void main() {
           account,
           postId,
         );
-      });
+      })
+      ..registerFactoryParam<CommentsCubit, String, String?>((postId, focus) {
+        final getComments = _GetComments();
+        when(
+          () => getComments(
+            any(),
+            sort: any(named: 'sort'),
+            before: any(named: 'before'),
+            focusCommentId: any(named: 'focusCommentId'),
+          ),
+        ).thenAnswer((_) async => const CommentPageEntity(comments: []));
+        return CommentsCubit(
+          getComments,
+          _GetReplies(),
+          _CommentsData(),
+          _AddComment(),
+          CommentDrafts(),
+          _EditComment(),
+          _ReportContent(),
+          FakeLastAccount(),
+          postId,
+          focus,
+        );
+      })
+      ..registerFactoryParam<CommentMentionsCubit, String, void>(
+        (postId, _) => CommentMentionsCubit(_Candidates(), postId),
+      );
     addTearDown(getIt.reset);
   });
 
@@ -320,11 +373,12 @@ void main() {
       expect(find.text(AppRoutes.activity), findsOneWidget);
     });
 
-    testView('the comment button opens that post\'s comments', (tester) async {
+    testView('the comment button opens the comments sheet', (tester) async {
       await show(tester);
       await tester.tap(_icon(AppAssets.comment).first);
       await tester.pumpAndSettle();
-      expect(find.text(AppRoutes.commentsOf('p1')), findsOneWidget);
+      expect(find.text(l10nEn.commentsTitle), findsOneWidget);
+      expect(find.text(AppRoutes.commentsOf('p1')), findsNothing);
     });
 
     testView('Share opens the share sheet of the post', (tester) async {

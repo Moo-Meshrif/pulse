@@ -42,7 +42,7 @@ import '../../features/auth/presentation/cubit/reset_password/reset_password_cub
 import '../../features/auth/presentation/cubit/sign_in/sign_in_cubit.dart'
     as _i302;
 import '../../features/auth/presentation/cubit/sign_up/sign_up_cubit.dart'
-    as _i781;
+    as _i782;
 import '../../features/control/presentation/cubit/control_cubit.dart' as _i598;
 import '../../features/follow/data/datasource/follows_datasource.dart'
     as _i1001;
@@ -81,6 +81,9 @@ import '../../features/places/data/datasource/recent_places_datasource.dart'
 import '../../features/places/data/repository/places_repository.dart' as _i974;
 import '../../features/places/presentation/cubit/add_location_cubit.dart'
     as _i490;
+import '../../features/post/data/datasource/comments_datasource.dart' as _i781;
+import '../../features/post/data/datasource/comments_local_datasource.dart'
+    as _i603;
 import '../../features/post/data/datasource/feed_local_datasource.dart' as _i35;
 import '../../features/post/data/datasource/post_actions_datasource.dart'
     as _i512;
@@ -98,9 +101,18 @@ import '../../features/post/data/repository/post_share_repository.dart'
 import '../../features/post/data/repository/shared_posts_repository.dart'
     as _i749;
 import '../../features/post/domain/entity/post_entity.dart' as _i570;
+import '../../features/post/domain/use_case/add_comment_use_case.dart' as _i138;
 import '../../features/post/domain/use_case/delete_post_use_case.dart' as _i898;
+import '../../features/post/domain/use_case/edit_comment_use_case.dart'
+    as _i132;
+import '../../features/post/domain/use_case/get_comment_replies_use_case.dart'
+    as _i509;
 import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i281;
+import '../../features/post/domain/use_case/get_mention_candidates_use_case.dart'
+    as _i581;
+import '../../features/post/domain/use_case/get_post_comments_use_case.dart'
+    as _i810;
 import '../../features/post/domain/use_case/get_posts_by_ids_use_case.dart'
     as _i1014;
 import '../../features/post/domain/use_case/get_tagged_people_use_case.dart'
@@ -129,6 +141,10 @@ import '../../features/post/domain/use_case/sign_post_media_urls_use_case.dart'
 import '../../features/post/domain/use_case/update_post_use_case.dart' as _i908;
 import '../../features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart'
     as _i80;
+import '../../features/post/presentation/cubit/comment_mentions/comment_mentions_cubit.dart'
+    as _i356;
+import '../../features/post/presentation/cubit/comments/comments_cubit.dart'
+    as _i805;
 import '../../features/post/presentation/cubit/post_actions/post_actions_cubit.dart'
     as _i238;
 import '../../features/post/presentation/cubit/post_visibility/post_visibility_cubit.dart'
@@ -141,6 +157,7 @@ import '../../features/post/presentation/cubit/tag_people/tag_people_cubit.dart'
     as _i96;
 import '../../features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart'
     as _i118;
+import '../../features/post/presentation/utils/comment_drafts.dart' as _i277;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
@@ -320,6 +337,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i815.SessionEvents(),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i277.CommentDrafts>(() => _i277.CommentDrafts());
     gh.lazySingleton<_i920.BackupExclusionService>(
       () => _i920.PlatformBackupExclusionService(),
     );
@@ -409,6 +427,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i568.ActivityDatasource>(
       () => _i568.SupabaseActivityDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i603.CommentsLocalDatasource>(
+      () => _i603.CommentsLocalDatasource(gh<_i261.SnapshotStorage>()),
+    );
     gh.lazySingleton<_i35.FeedLocalDatasource>(
       () => _i35.FeedLocalDatasource(gh<_i261.SnapshotStorage>()),
     );
@@ -463,6 +484,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i130.ToggleFollowUseCase>(
       () => _i130.ToggleFollowUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.lazySingleton<_i781.CommentsDatasource>(
+      () => _i781.SupabaseCommentsDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i47.ConnectivityService>(
       () => _i47.PlusConnectivityService(gh<_i895.Connectivity>()),
@@ -640,6 +664,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i983.SearchTagPeopleUseCase>(
       () => _i983.SearchTagPeopleUseCase(gh<_i518.PostTagsDatasource>()),
     );
+    gh.factory<_i810.GetPostCommentsUseCase>(
+      () => _i810.GetPostCommentsUseCase(
+        gh<_i781.CommentsDatasource>(),
+        gh<_i603.CommentsLocalDatasource>(),
+      ),
+    );
     gh.lazySingleton<_i43.AuthDatasource>(
       () => _i43.SupabaseAuthDatasource(
         gh<_i454.SupabaseClient>(),
@@ -658,6 +688,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i91.GetCurrentUserIdUseCase>(
       () => _i91.GetCurrentUserIdUseCase(gh<_i320.ProfileDatasource>()),
+    );
+    gh.factory<_i138.AddCommentUseCase>(
+      () => _i138.AddCommentUseCase(gh<_i781.CommentsDatasource>()),
+    );
+    gh.factory<_i132.EditCommentUseCase>(
+      () => _i132.EditCommentUseCase(gh<_i781.CommentsDatasource>()),
+    );
+    gh.factory<_i509.GetCommentRepliesUseCase>(
+      () => _i509.GetCommentRepliesUseCase(gh<_i781.CommentsDatasource>()),
+    );
+    gh.factory<_i581.GetMentionCandidatesUseCase>(
+      () => _i581.GetMentionCandidatesUseCase(gh<_i781.CommentsDatasource>()),
     );
     gh.factory<_i837.PostShareRepository>(
       () => _i837.PostShareRepository(
@@ -740,6 +782,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i260.ResetPasswordCubit>(
       () => _i260.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
     );
+    gh.factoryParam<_i805.CommentsCubit, String, String?>(
+      (postId, focusCommentId) => _i805.CommentsCubit(
+        gh<_i810.GetPostCommentsUseCase>(),
+        gh<_i509.GetCommentRepliesUseCase>(),
+        gh<_i781.CommentsDatasource>(),
+        gh<_i138.AddCommentUseCase>(),
+        gh<_i277.CommentDrafts>(),
+        gh<_i132.EditCommentUseCase>(),
+        gh<_i1021.ReportContentUseCase>(),
+        gh<_i727.GetLastAccountUseCase>(),
+        postId,
+        focusCommentId,
+      ),
+    );
     gh.factory<_i238.PostActionsCubit>(
       () => _i238.PostActionsCubit(
         gh<_i804.SetPostLikeUseCase>(),
@@ -795,8 +851,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.EventBus>(),
       ),
     );
-    gh.factory<_i781.SignUpCubit>(
-      () => _i781.SignUpCubit(
+    gh.factory<_i782.SignUpCubit>(
+      () => _i782.SignUpCubit(
         gh<_i43.AuthDatasource>(),
         gh<_i357.SaveAboutYouUseCase>(),
         gh<_i255.SaveProfileDetailsUseCase>(),
@@ -910,6 +966,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i639.BellDotCubit(
         gh<_i575.GetUnreadActivityCountUseCase>(),
         gh<_i557.EventBus>(),
+      ),
+    );
+    gh.factoryParam<_i356.CommentMentionsCubit, String, dynamic>(
+      (postId, _) => _i356.CommentMentionsCubit(
+        gh<_i581.GetMentionCandidatesUseCase>(),
+        postId,
       ),
     );
     gh.factory<_i793.WatchSessionEndedUseCase>(

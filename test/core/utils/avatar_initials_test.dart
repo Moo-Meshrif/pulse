@@ -8,10 +8,15 @@ void main() {
       expect(initialsOf('  ada   king lovelace '), 'AK');
     });
 
-    test('a single word gives one letter, nothing gives none', () {
+    test('a single word gives one letter, nothing gives ?', () {
       expect(initialsOf('Cy'), 'C');
-      expect(initialsOf(''), '');
-      expect(initialsOf(null), '');
+      expect(initialsOf(''), '?');
+      expect(initialsOf(null), '?');
+    });
+
+    test('a username ignores the leading @', () {
+      expect(initialsOf('@sara'), 'S');
+      expect(initialsOf('@'), '?');
     });
   });
 

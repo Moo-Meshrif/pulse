@@ -2725,5 +2725,178 @@
   "storyPostUnavailableBody": "It was deleted, or you can't see it.",
   "@storyPostUnavailableBody": {
     "description": "Under the Post unavailable title"
+  },
+  "commentsTitle": "Comments",
+  "@commentsTitle": {
+    "description": "Comments sheet title"
+  },
+  "commentsSortRelevant": "Most relevant",
+  "@commentsSortRelevant": {
+    "description": "Comments sort option"
+  },
+  "commentsSortNewest": "Newest",
+  "@commentsSortNewest": {
+    "description": "Comments sort option"
+  },
+  "commentsSortLabel": "Sort comments",
+  "@commentsSortLabel": {
+    "description": "Semantics: sort chip of the comments sheet"
+  },
+  "commentsAuthorBadge": "Author",
+  "@commentsAuthorBadge": {
+    "description": "Badge on a comment by the post's author"
+  },
+  "commentReply": "Reply",
+  "@commentReply": {
+    "description": "Reply link under a comment"
+  },
+  "commentLikes": "{count, plural, one{1 like} other{{count} likes}}",
+  "@commentLikes": {
+    "description": "Likes under a comment",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commentsViewMoreReplies": "{count, plural, one{View 1 more reply} other{View {count} more replies}}",
+  "@commentsViewMoreReplies": {
+    "description": "Line that loads the rest of a thread",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commentsEdited": "Edited",
+  "@commentsEdited": {
+    "description": "After the time of an edited comment"
+  },
+  "commentBy": "Comment by {name}",
+  "@commentBy": {
+    "description": "Semantics: a comment row",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commentsEmptyTitle": "No comments yet",
+  "@commentsEmptyTitle": {
+    "description": "Comments sheet with no comments"
+  },
+  "commentsEmptyBody": "Start the conversation.",
+  "@commentsEmptyBody": {
+    "description": "Under No comments yet"
+  },
+  "commentsLoadMoreFailed": "Couldn't load more · Retry",
+  "@commentsLoadMoreFailed": {
+    "description": "Comments sheet footer when a page or replies failed"
+  },
+  "commentsAddHint": "Add a comment…",
+  "@commentsAddHint": {
+    "description": "Comment field hint"
+  },
+  "commentsReplyingTo": "Replying to {name}",
+  "@commentsReplyingTo": {
+    "description": "Strip above the comment field; name is the @username",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commentsReplyCancel": "Cancel reply",
+  "@commentsReplyCancel": {
+    "description": "Semantics: the X on the replying strip"
+  },
+  "commentsMentionSuggestions": "People to mention",
+  "@commentsMentionSuggestions": {
+    "description": "Semantics: the list of people suggested while typing @ in a comment"
+  },
+  "commentsSend": "Send comment",
+  "@commentsSend": {
+    "description": "Semantics: the send button of the comment field"
+  },
+  "commentsPosting": "Posting…",
+  "@commentsPosting": {
+    "description": "Under your comment while it is being sent"
+  },
+  "commentsCouldntPost": "Couldn't post",
+  "@commentsCouldntPost": {
+    "description": "Start of the failed line under your comment"
+  },
+  "commentsRetry": "Retry",
+  "@commentsRetry": {
+    "description": "Failed comment: send it again"
+  },
+  "commentsDelete": "Delete",
+  "@commentsDelete": {
+    "description": "Failed comment: drop it"
+  },
+  "commentsCounter": "{count} / 1000",
+  "@commentsCounter": {
+    "description": "Character counter of the comment field",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commentsOff": "Comments are turned off for this post",
+  "@commentsOff": {
+    "description": "Bar that replaces the comment field"
+  },
+  "commentsEditing": "Editing comment",
+  "@commentsEditing": {
+    "description": "Strip above the comment field while editing"
+  },
+  "commentsEditCancel": "Cancel editing",
+  "@commentsEditCancel": {
+    "description": "Semantics: close the editing strip"
+  },
+  "commentsCopyText": "Copy text",
+  "@commentsCopyText": {
+    "description": "Comment menu"
+  },
+  "commentsEdit": "Edit",
+  "@commentsEdit": {
+    "description": "Comment menu, your comment"
+  },
+  "commentsHide": "Hide comment",
+  "@commentsHide": {
+    "description": "Comment menu, post owner"
+  },
+  "commentsReport": "Report comment",
+  "@commentsReport": {
+    "description": "Comment menu, and report sheet title"
+  },
+  "commentsDeleteTitle": "Delete comment?",
+  "@commentsDeleteTitle": {
+    "description": "Delete comment dialog title"
+  },
+  "commentsDeleteBody": "This also deletes its replies.",
+  "@commentsDeleteBody": {
+    "description": "Delete comment dialog body"
+  },
+  "commentsHidden": "Comment hidden",
+  "@commentsHidden": {
+    "description": "Notice after hiding a comment"
+  },
+  "commentsCopied": "Copied",
+  "@commentsCopied": {
+    "description": "Notice after copying a comment"
+  },
+  "commentsReportBody": "Why are you reporting this comment? Your report is anonymous.",
+  "@commentsReportBody": {
+    "description": "Report sheet reasons step, comment"
+  },
+  "commentsReportSent": "We'll review this comment.",
+  "@commentsReportSent": {
+    "description": "Report sheet thanks step, comment"
+  },
+  "commentsReportNotePlaceholder": "Tell us what's wrong with this comment…",
+  "@commentsReportNotePlaceholder": {
+    "description": "Report sheet note field hint, comment"
   }
 }

@@ -2058,4 +2058,139 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get storyPostUnavailableBody =>
       'It was deleted, or you can\'t see it.';
+
+  @override
+  String get commentsTitle => 'Comments';
+
+  @override
+  String get commentsSortRelevant => 'Most relevant';
+
+  @override
+  String get commentsSortNewest => 'Newest';
+
+  @override
+  String get commentsSortLabel => 'Sort comments';
+
+  @override
+  String get commentsAuthorBadge => 'Author';
+
+  @override
+  String get commentReply => 'Reply';
+
+  @override
+  String commentLikes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count likes',
+      one: '1 like',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String commentsViewMoreReplies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'View $count more replies',
+      one: 'View 1 more reply',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get commentsEdited => 'Edited';
+
+  @override
+  String commentBy(String name) {
+    return 'Comment by $name';
+  }
+
+  @override
+  String get commentsEmptyTitle => 'No comments yet';
+
+  @override
+  String get commentsEmptyBody => 'Start the conversation.';
+
+  @override
+  String get commentsLoadMoreFailed => 'Couldn\'t load more · Retry';
+
+  @override
+  String get commentsAddHint => 'Add a comment…';
+
+  @override
+  String commentsReplyingTo(String name) {
+    return 'Replying to $name';
+  }
+
+  @override
+  String get commentsReplyCancel => 'Cancel reply';
+
+  @override
+  String get commentsMentionSuggestions => 'People to mention';
+
+  @override
+  String get commentsSend => 'Send comment';
+
+  @override
+  String get commentsPosting => 'Posting…';
+
+  @override
+  String get commentsCouldntPost => 'Couldn\'t post';
+
+  @override
+  String get commentsRetry => 'Retry';
+
+  @override
+  String get commentsDelete => 'Delete';
+
+  @override
+  String commentsCounter(int count) {
+    return '$count / 1000';
+  }
+
+  @override
+  String get commentsOff => 'Comments are turned off for this post';
+
+  @override
+  String get commentsEditing => 'Editing comment';
+
+  @override
+  String get commentsEditCancel => 'Cancel editing';
+
+  @override
+  String get commentsCopyText => 'Copy text';
+
+  @override
+  String get commentsEdit => 'Edit';
+
+  @override
+  String get commentsHide => 'Hide comment';
+
+  @override
+  String get commentsReport => 'Report comment';
+
+  @override
+  String get commentsDeleteTitle => 'Delete comment?';
+
+  @override
+  String get commentsDeleteBody => 'This also deletes its replies.';
+
+  @override
+  String get commentsHidden => 'Comment hidden';
+
+  @override
+  String get commentsCopied => 'Copied';
+
+  @override
+  String get commentsReportBody =>
+      'Why are you reporting this comment? Your report is anonymous.';
+
+  @override
+  String get commentsReportSent => 'We\'ll review this comment.';
+
+  @override
+  String get commentsReportNotePlaceholder =>
+      'Tell us what\'s wrong with this comment…';
 }

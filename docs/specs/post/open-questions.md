@@ -53,3 +53,14 @@
 | Q-S10 | Title icon `ic_share_forward` | - | **answered** [user]: added to `assets/icons` (register it) |
 | Q-S11 | Followers posts | - | **answered** [user]: Public = anyone can share; Followers = only people who can see it, via chat later (hidden icon until chat exists, except own post's Add to story) |
 
+| Q-C1 | Screens | - | **answered** [user, 2026-10-25]: S14 comments sheet (6 panels), S15 post page, S16 likes list taken from the post-page board panel 4 |
+| Q-C2 | Quick emoji in the long-press sheet | - | **answered** [user]: add the emoji to the reply field, no reaction table |
+| Q-C3 | Pin comment | - | **answered** [user]: left out for now |
+| Q-C4 | Sort chip | - | **answered** [user]: small popup under the chip, Most relevant / Newest |
+| Q-C5 | Report comment | - | **answered** [user]: shared report sheet, new `comment` kind |
+| Q-C6 | Hide comment | - | **answered** [user]: post owner hides any comment, only the writer still sees it; the owner has no Delete on others' comments (not on the board) |
+| Q-C7 | Edit comment | - | **answered** [user]: composer with an "Editing comment" strip, "Edited" label |
+| Q-C8 | Icons | - | **answered** [user, 2026-10-25]: `ic_reply.svg`, `ic_copy.svg`, `ic_send.svg` added to `assets/icons` (register them) |
+| Q-C9 | Estimated items | - | **answered** [user, 2026-10-25]: draft kept per post until the app closes; "Comment hidden" toast with Undo; no pull-to-refresh, Try again on errors; comment icon focuses the composer; Follow chip stays as "Following"; likes search after 300 ms; no unfollow confirm. `?comment=` shows the targeted comment first in the list (`p_focus`) [user] |
+| Q-C10 | Arabic copy for S14-S16 | review | pending (`x-review`) |
+| Q-C11 | Mentions: tap a `@name` in a comment | - | **answered** [user]: opens the profile placeholder, with `TODO(post-plan T23)` |

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../../core/extensions/l10n.dart';
+import '../../../../../core/widgets/skeleton_effect.dart';
 import '../../dimens/home_dimens.dart';
 import '../post_card_skeleton.dart';
-import '../skeleton_effect.dart';
 
 /// What the feed looks like before its first posts arrive: a few post cards as
 /// shimmering shapes. The shimmer sweeps from start to end (mirrored in RTL) and stands still when the
@@ -14,7 +14,7 @@ class FeedSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effect = homeSkeletonEffect(context);
+    final effect = skeletonEffect(context);
     return Semantics(
       liveRegion: true,
       label: context.l10n.loading,
@@ -49,7 +49,7 @@ class FeedMoreSkeleton extends StatelessWidget {
     label: context.l10n.loading,
     child: ExcludeSemantics(
       child: Skeletonizer.zone(
-        effect: homeSkeletonEffect(context),
+        effect: skeletonEffect(context),
         child: Padding(
           padding: HomeDimens.listPadding,
           child: const PostCardSkeleton(),

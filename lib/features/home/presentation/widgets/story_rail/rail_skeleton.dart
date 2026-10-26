@@ -3,8 +3,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/theme/app_text_styles.dart';
+import '../../../../../core/widgets/skeleton_effect.dart';
 import '../../dimens/home_dimens.dart';
-import '../skeleton_effect.dart';
 
 /// [RailSkeleton] with its shimmer and loading label: what Home shows until the rail's first answer.
 class RailSkeletonZone extends StatelessWidget {
@@ -16,7 +16,7 @@ class RailSkeletonZone extends StatelessWidget {
     label: context.l10n.loading,
     child: ExcludeSemantics(
       child: Skeletonizer.zone(
-        effect: homeSkeletonEffect(context),
+        effect: skeletonEffect(context),
         child: const RailSkeleton(),
       ),
     ),

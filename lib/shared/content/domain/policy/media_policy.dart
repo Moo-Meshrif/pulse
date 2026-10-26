@@ -81,6 +81,7 @@ abstract final class MediaPolicy {
       maxLongSide: 1280,
       maxBitrate: 4000000,
     ),
+    ContentKind.comment => throw UnsupportedError('A comment has no video.'),
   };
 
   static MediaDecision decide(

@@ -7,8 +7,8 @@ import '../mapper/post_entity_mapper.dart';
 import 'get_home_feed_use_case.dart';
 
 /// Saves the feed as it is now on the device, so the next launch opens with a post that was shared, edited
-/// or deleted. Keeps the first page worth of [posts] (newest first), no request; the next-page cursor only when there
-/// are that many.
+/// or deleted. Keeps [posts] (newest first, up to the most the device keeps), no request; the next-page
+/// cursor is the last post, unless the whole feed is shorter than a page.
 @injectable
 class SaveHomeFeedUseCase {
   SaveHomeFeedUseCase(this._feed);
@@ -16,7 +16,7 @@ class SaveHomeFeedUseCase {
   final FeedRepository _feed;
 
   void call(List<PostEntity> posts) {
-    final kept = posts.take(GetHomeFeedUseCase.pageSize).toList();
+    final kept = posts.take(FeedRepository.maxSaved).toList();
     final hasMore = posts.length >= GetHomeFeedUseCase.pageSize;
     _feed.saveFirstPage(
       FeedPageModel(

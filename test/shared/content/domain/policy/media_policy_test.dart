@@ -165,7 +165,11 @@ void main() {
         );
       }
 
-      for (final kind in ContentKind.values) {
+      // A comment has no video, so it has no longest length.
+      final withMedia = ContentKind.values.where(
+        (kind) => kind != ContentKind.comment,
+      );
+      for (final kind in withMedia) {
         expect(justOver(kind), isA<MediaRejected>(), reason: kind.name);
       }
       expect(
