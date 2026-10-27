@@ -1,5 +1,5 @@
 -- =====================================================================
--- Spec copy of supabase/migrations/20261027150000_liked_by_previews.sql
+-- Spec copy of supabase/migrations/20261027144658_liked_by_previews.sql
 -- Plan: docs/plans/feed-liked-by-plan.md (Phase 1)
 -- Changes: liked_by_previews(p_posts) answers the "Liked by" line of up to 50 posts in one call, with the
 --          rules of liked_by_preview. A post the caller cannot see, or with nobody to name, is left out.

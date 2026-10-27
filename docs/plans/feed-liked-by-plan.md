@@ -47,7 +47,7 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 **Status:** [x]
 - **Goal:** one request returns the "Liked by" lines of up to 50 posts.
 - **Depends on:** your yes to apply the change.
-- **Spec refs:** `docs/specs/post/schema-liked-by-you.sql`, `supabase/migrations/20261027140000_liked_by_you.sql`.
+- **Spec refs:** `docs/specs/post/schema-liked-by-you.sql`, `supabase/migrations/20261027105047_liked_by_you.sql`.
 - **Tasks:**
   - [x] Write the new database function and its copy in the specs folder.
   - [x] Check it in a rolled-back run, then apply after your yes.

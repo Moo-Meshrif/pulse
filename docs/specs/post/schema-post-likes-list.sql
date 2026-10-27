@@ -1,5 +1,5 @@
 -- =====================================================================
--- Migration: supabase/migrations/20261027120000_post_likes_list.sql
+-- Migration: supabase/migrations/20261027102442_post_likes_list.sql
 -- Plan: docs/plans/post-plan.md (Phase 32), spec docs/specs/post/screens/s15-post-page.md (S16)
 -- Adds: post_likers(...)      the people who liked a post, searchable, newest first, with follow state
 --       liked_by_preview(...) the "Liked by" row: one name, up to two avatars, how many others

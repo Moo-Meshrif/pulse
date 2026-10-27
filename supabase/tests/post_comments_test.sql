@@ -1,4 +1,4 @@
--- Checks for supabase/migrations/20261025120000_post_comments.sql (Phase 26 of docs/plans/post-plan.md).
+-- Checks for supabase/migrations/20261025180433_post_comments.sql (Phase 26 of docs/plans/post-plan.md).
 -- Run it on a database that has the migration (local, branch, or the project after approval; to check the
 -- migration BEFORE applying, paste the migration SQL above this block in the same run).
 -- It makes four test users and always ends by raising VALIDATION_RESULT, so nothing is kept: the error text

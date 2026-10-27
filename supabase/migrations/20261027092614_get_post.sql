@@ -1,5 +1,5 @@
 -- =====================================================================
--- Migration: supabase/migrations/20261026120000_get_post.sql
+-- Migration: supabase/migrations/20261027092614_get_post.sql
 -- Plan: docs/plans/post-plan.md (Phase 31), spec docs/specs/post/screens/s15-post-page.md
 -- Adds: get_post(p_post), one post for its own page. The same row as posts_by_ids / home_feed;
 --       no row when the post is gone or the caller may not see it (can_view_post). Hidden and muted

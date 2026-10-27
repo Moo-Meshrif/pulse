@@ -1,5 +1,5 @@
 -- =====================================================================
--- Migration: supabase/migrations/20261027140000_liked_by_you.sql
+-- Migration: supabase/migrations/20261027105047_liked_by_you.sql
 -- Plan: docs/plans/post-plan.md (Phase 32), spec docs/specs/post/screens/s15-post-page.md
 -- Changes: liked_by_preview(p_post) answers "Liked by you" when you are the only person who liked the post
 --          (new column only_me; first_* and the avatar are you). With other people it is as before and

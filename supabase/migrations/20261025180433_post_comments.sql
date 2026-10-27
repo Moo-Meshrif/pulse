@@ -550,7 +550,7 @@ begin
             union all
             select f.follower_id, 1 from public.follows f
              where f.following_id = v_uid and f.status = 'accepted'
-          ) u
+          ) u(id, source)
          group by u.id
       ) cand
       join public.profiles pr on pr.id = cand.id
