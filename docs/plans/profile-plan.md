@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [ ] 0 · [ ] 1 · [ ] 2 · [ ] 3 · [ ] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [ ] 0 · [ ] 1 · [x] 2 · [ ] 3 · [ ] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -115,16 +115,16 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** run the SQL tests. **I ask you first:** applying the migration to the live database.
 
 ### Phase 2: Server for settings, blocking and help
-**Status:** [ ]
+**Status:** [x] written and passing locally; live database not applied yet (waiting for approval)
 - **Goal:** the server can store privacy choices, blocks, help content and problem reports, and can delete an account.
 - **Depends on:** Phase 1.
 - **Spec refs:** screens/s5-privacy.md, s6-blocked-accounts.md, s9-help-center.md, s10-report-problem.md, s12-other-profile.md, s2-settings.md (Delete account).
 - **Tasks:**
-  - [ ] Privacy columns and enforcement in the comment functions.
-  - [ ] Blocks table and block / unblock / list functions; hide blocked people in the profile, posts, stories and search functions.
-  - [ ] Post-notifications table; close friends and mute stay as they are.
-  - [ ] Help tables and problem reports table with the screenshots bucket.
-  - [ ] Profile reporting; account delete.
+  - [x] Privacy columns and enforcement in the comment functions.
+  - [x] Blocks table and block / unblock / list functions; hide blocked people in the profile, posts, stories and search functions.
+  - [x] Post-notifications table; close friends and mute stay as they are.
+  - [x] Help tables and problem reports table with the screenshots bucket.
+  - [x] Profile reporting; account delete.
 - **Implementation steps:**
   1. `supabase/migrations/<timestamp>_profile_privacy.sql` (new): `alter table public.profiles add column who_can_message text not null default 'everyone' check (in 'everyone','following','none'), who_can_comment text not null default 'everyone' check (in 'everyone','followers','none'), show_activity boolean not null default true, appear_in_search boolean not null default true`; `grant update (...)` for these columns and `is_private` like `20261014135126_post_visibility.sql` does for its column.
   2. Same file: make the comment create function from `20261025180433_post_comments.sql` refuse when the author's `who_can_comment` forbids the caller (followers only: caller must be an accepted follower; none: nobody); keep the post-level comments switch.
