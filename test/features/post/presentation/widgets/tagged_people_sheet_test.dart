@@ -7,19 +7,17 @@ import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/post/data/enums/follow_state.dart';
 import 'package:pulse/features/post/domain/entity/tagged_person_entity.dart';
-import 'package:pulse/features/post/domain/use_case/get_tagged_people_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/tagged_people_result.dart';
 import 'package:pulse/features/post/presentation/widgets/tagged_people/tagged_people_sheet.dart';
 
 import '../../../../helpers/pump_app.dart';
-
-class _GetPeople extends Mock implements GetTaggedPeopleUseCase {}
+import '../../post_doubles.dart';
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
 void main() {
-  late _GetPeople getPeople;
+  late MockPostRepository posts;
   late _Follow follow;
   TaggedPeopleResult? result;
 
@@ -52,11 +50,11 @@ void main() {
   setUp(() async {
     await getIt.reset();
     result = null;
-    getPeople = _GetPeople();
+    posts = MockPostRepository();
     follow = _Follow();
-    when(() => getPeople('p1')).thenAnswer((_) async => people);
+    when(() => posts.taggedPeople('p1')).thenAnswer((_) async => people);
     getIt.registerFactoryParam<TaggedPeopleCubit, String, void>(
-      (postId, _) => TaggedPeopleCubit(getPeople, follow, postId),
+      (postId, _) => TaggedPeopleCubit(posts, follow, postId),
     );
     addTearDown(getIt.reset);
   });
@@ -136,11 +134,11 @@ void main() {
   });
 
   testWidgets('a list that fails to load can be retried', (tester) async {
-    when(() => getPeople('p1')).thenThrow(const NetworkFailure());
+    when(() => posts.taggedPeople('p1')).thenThrow(const NetworkFailure());
     await open(tester);
     expect(find.text(l10nEn.postTaggedLoadError), findsOneWidget);
 
-    when(() => getPeople('p1')).thenAnswer((_) async => people);
+    when(() => posts.taggedPeople('p1')).thenAnswer((_) async => people);
     await tester.tap(find.text(l10nEn.retry));
     await tester.pumpAndSettle();
 

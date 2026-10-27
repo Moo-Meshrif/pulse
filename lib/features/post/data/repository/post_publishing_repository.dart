@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failures.dart';
@@ -8,31 +10,54 @@ import '../../../../shared/content/data/datasource/pending_content_datasource.da
 import '../../../../shared/content/data/enums/content_audience.dart';
 import '../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../shared/content/data/enums/pending_content_state.dart';
+import '../../../../shared/content/data/repository/content_media_repository.dart';
 import '../../../../shared/content/data/repository/content_publish_repository.dart';
 import '../../domain/entity/new_post_entity.dart';
 import '../../domain/entity/new_post_media_entity.dart';
 import '../../domain/entity/post_entity.dart';
+import '../../domain/entity/post_media_entity.dart';
 import '../../domain/entity/post_mood_entity.dart';
 import '../../domain/entity/post_tag_entity.dart';
 import '../../domain/event/post_saved.dart';
 import '../datasource/post_draft_datasource.dart';
+import '../datasource/posts_datasource.dart';
 import '../enums/mood_kind.dart';
 import '../model/post_draft_media_model.dart';
 import '../model/post_draft_model.dart';
 import '../model/post_draft_tag_model.dart';
-import 'post_share_repository.dart';
+import '../model/post_share_media_model.dart';
+import '../model/post_share_request_model.dart';
 
-/// The posts shared from New post until they are out: each is saved on this device first (like a draft,
-/// in the draft's folder), sent in the background ([ContentPublishRepository]) through the server
-/// ([PostShareRepository]), and forgotten with its files once it is posted or discarded. After a restart
-/// [resume] asks the server where each one is and sends again only what is not out. A repository because
-/// it combines the device copy, the server and the background sender.
-@LazySingleton()
-class SharedPostsRepository {
-  SharedPostsRepository(
+/// Posts shared from New post: saved on the device, sent in the background until they are out, and
+/// sent again after a restart.
+abstract class PostPublishingRepository {
+  /// Hands [draft] to the background sender and returns at once; false (nothing done) while another
+  /// post goes out. [build] makes the post once its files are read, on every try. [beforeUpload]
+  /// completes when the draft's own uploads are done; [onStop] stops them.
+  bool send(
+    PostDraftModel draft, {
+    required Future<NewPostEntity> Function() build,
+    Future<void> Function()? beforeUpload,
+    void Function()? onStop,
+    String? previewPath,
+  });
+
+  /// At start: finished posts (and a finished draft) are forgotten with their files, the others are sent
+  /// again, and unused folders are deleted. Never throws.
+  Future<void> resume();
+}
+
+/// Sending saves the post (`share_content`), uploads the missing files, then asks the server to publish
+/// it (`publish_content`); the server's minute job publishes it too once the files are there. Every step
+/// is safe to repeat. When an answer is lost, the server's state for the post is checked first, so a post
+/// that went out is never sent again. A post the server will never publish throws a [RejectedFailure].
+@LazySingleton(as: PostPublishingRepository)
+class PostPublishingRepositoryImpl implements PostPublishingRepository {
+  PostPublishingRepositoryImpl(
     this._local,
     this._server,
-    this._sharing,
+    this._media,
+    this._posts,
     this._publish,
     this._events,
   );
@@ -47,16 +72,21 @@ class SharedPostsRepository {
     PendingContentState.abandoned,
   };
 
+  /// The server will never publish an item in these states.
+  static const _refused = {
+    PendingContentState.rejected,
+    PendingContentState.discarded,
+    PendingContentState.abandoned,
+  };
+
   final PostDraftDatasource _local;
   final PendingContentDatasource _server;
-  final PostShareRepository _sharing;
+  final ContentMediaRepository _media;
+  final PostsDatasource _posts;
   final ContentPublishRepository _publish;
   final EventBus _events;
 
-  /// Hands [draft] to the background sender and returns at once; false (nothing done) while another
-  /// post goes out. [build] makes the post once its files are read, on every try. [beforeUpload]
-  /// completes when the draft's own uploads are done; [onStop] stops them. The draft record is replaced
-  /// by the saved shared post on the first try.
+  @override
   bool send(
     PostDraftModel draft, {
     required Future<NewPostEntity> Function() build,
@@ -81,10 +111,7 @@ class SharedPostsRepository {
     );
   }
 
-  /// At start, for the signed-in user: each saved shared post the server says is out or discarded is
-  /// forgotten with its files, and the others are sent again (only what is missing goes). A draft the
-  /// server says is finished is forgotten too. Then the folders no record uses are deleted. When the
-  /// saved list cannot be read, nothing is deleted but what the server says is finished. Never throws.
+  @override
   Future<void> resume() async {
     final shared = _local.readShared();
     final draft = _local.read();
@@ -107,6 +134,43 @@ class SharedPostsRepository {
       kept.addAll(await _unfinishedOnServer(states));
     }
     await _local.deleteFoldersExcept(kept);
+  }
+
+  /// Returns the post as the feed shows it, or null when the author is unknown. [beforeUpload] completes
+  /// when files already on their way are uploaded, so nothing is sent twice. Throws a `Failure` when the
+  /// post did not go out.
+  @visibleForTesting
+  Future<PostEntity?> share(
+    NewPostEntity post, {
+    Future<void> Function()? beforeUpload,
+    void Function(double progress)? onProgress,
+  }) async {
+    final folder = _media.folderOf(post.id);
+    final targets = await _targets(post, folder);
+    final shared = await _answer(
+      post.id,
+      () => _server.share(
+        post.id,
+        ContentKind.post,
+        _request(post, targets).toJson(),
+      ),
+      done: const {PendingContentState.waiting, PendingContentState.published},
+    );
+    if (shared != PendingContentState.published) {
+      await beforeUpload?.call();
+      await _sendMissing(post, folder, onProgress);
+      final published = await _answer(
+        post.id,
+        () => _server.publish(post.id),
+        done: const {PendingContentState.published},
+      );
+      if (_refused.contains(published)) throw const RejectedFailure();
+      // Waiting: a file is missing on the server, or an older shared post goes first.
+      if (published != PendingContentState.published) {
+        throw const ServerFailure();
+      }
+    }
+    return _toFeed(post, targets);
   }
 
   /// False when [post] is finished and was forgotten.
@@ -151,19 +215,66 @@ class SharedPostsRepository {
     void Function()? onStop,
     void Function(double) report,
   ) async {
-    final created = await _sharing.share(
+    final created = await share(
       post,
       beforeUpload: beforeUpload,
       onProgress: report,
     );
     onStop?.call();
     await _done(post.id);
-    _announce(created);
+    // The feed shows the post at once; with no author to show it, it waits for the next load.
+    if (created != null) _events.fire(PostSaved(created));
   }
 
-  /// The feed shows the post at once; with no author to show it, it waits for the next load.
-  void _announce(PostEntity? created) {
-    if (created != null) _events.fire(PostSaved(created));
+  /// Where each file goes and what the server should find there.
+  Future<List<MediaTarget>> _targets(NewPostEntity post, String folder) =>
+      Future.wait([
+        for (final (i, item) in post.media.indexed)
+          _media.target(
+            ContentKind.post,
+            item.toSend(),
+            folder: folder,
+            stem: _stem(item, i),
+          ),
+      ]);
+
+  /// Sends the files that are not in [folder] yet; one listing for all of them.
+  Future<void> _sendMissing(
+    NewPostEntity post,
+    String folder,
+    void Function(double progress)? onProgress,
+  ) async {
+    final existing = await _media.existing(folder);
+    final count = post.media.length;
+    for (final (i, item) in post.media.indexed) {
+      await _media.send(
+        ContentKind.post,
+        item.toSend(),
+        folder: folder,
+        stem: _stem(item, i),
+        existing: existing,
+        onProgress: (part) => onProgress?.call((i + part) / count),
+      );
+    }
+  }
+
+  /// [call]'s state. When it fails, the state the server has for [id] decides: refused for good throws
+  /// a [RejectedFailure]; a lost answer whose call went through (one of [done]) returns that state;
+  /// otherwise the failure.
+  Future<PendingContentState?> _answer(
+    String id,
+    Future<PendingContentState?> Function() call, {
+    required Set<PendingContentState> done,
+  }) async {
+    try {
+      return await call();
+    } on Failure catch (failure) {
+      final known = (await _statesOrNull([id]))?[id];
+      if (_refused.contains(known)) throw const RejectedFailure();
+      final isLost = failure is NetworkFailure || failure is TimeoutFailure;
+      if (!isLost || !done.contains(known)) rethrow;
+      return known;
+    }
   }
 
   /// From now on the post survives the app closing as a shared post, not as the draft.
@@ -239,10 +350,77 @@ class SharedPostsRepository {
 
   static String _idOf(PostDraftModel post) => post.id!;
 
+  static String _stem(NewPostMediaEntity item, int index) =>
+      item.id ?? '$index';
+
   static String? _previewOf(PostDraftModel post) {
     final first = post.media?.firstOrNull;
     if (first == null) return null;
     return (first.isVideo ?? false) ? first.poster : first.path;
+  }
+
+  static PostShareRequestModel _request(
+    NewPostEntity post,
+    List<MediaTarget> targets,
+  ) => PostShareRequestModel(
+    caption: post.caption,
+    location: post.location,
+    commentsEnabled: post.commentsEnabled,
+    visibility: post.visibility,
+    moodKind: post.mood?.kind,
+    moodKey: post.mood?.key,
+    moodText: post.mood?.text,
+    tags: [for (final tag in post.tags) tag.toModel()],
+    media: [
+      for (final (i, item) in post.media.indexed)
+        PostShareMediaModel(
+          media: item.toModel(
+            SentMedia(path: targets[i].path, thumbPath: targets[i].thumbPath),
+          ),
+          mimeType: targets[i].mimeType,
+          sizeBytes: targets[i].sizeBytes,
+          thumbMimeType: targets[i].thumbPath == null
+              ? null
+              : MediaTarget.thumbMimeType,
+          thumbSizeBytes: targets[i].thumbSizeBytes,
+        ),
+    ],
+  );
+
+  PostEntity? _toFeed(NewPostEntity post, List<MediaTarget> targets) {
+    final username = post.authorUsername;
+    if (username == null) return null;
+    return PostEntity(
+      id: post.id,
+      authorId: _posts.currentUserId,
+      username: username,
+      fullName: post.authorFullName,
+      avatarUrl: post.authorAvatarUrl,
+      caption: post.caption,
+      location: post.location,
+      likeCount: 0,
+      commentCount: 0,
+      commentsEnabled: post.commentsEnabled,
+      visibility: post.visibility,
+      createdAt: clock.now(),
+      likedByMe: false,
+      savedByMe: false,
+      mood: post.mood,
+      tags: post.tags,
+      tagCount: post.tags.length,
+      media: [
+        for (final (i, item) in post.media.indexed)
+          PostMediaEntity(
+            isVideo: item.isVideo,
+            path: targets[i].path,
+            thumbPath: targets[i].thumbPath,
+            width: item.width,
+            height: item.height,
+            durationMs: item.durationMs,
+            blurhash: item.blurhash,
+          ),
+      ],
+    );
   }
 
   /// [post] as saved: the same fields, so the post built from it again is the same request.

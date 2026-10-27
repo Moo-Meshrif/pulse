@@ -22,8 +22,10 @@ import 'package:pulse/features/follow/domain/use_case/follow_all_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/get_suggested_profiles_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/legal/data/datasource/legal_datasource.dart';
+import 'package:pulse/features/post/data/datasource/comments_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_actions_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_draft_datasource.dart';
+import 'package:pulse/features/post/data/datasource/post_likes_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_tags_datasource.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
 import 'package:pulse/features/post/data/model/feed_page_model.dart';
@@ -234,6 +236,10 @@ class MockPostActionsDatasource extends Mock implements PostActionsDatasource {}
 
 class MockPostTagsDatasource extends Mock implements PostTagsDatasource {}
 
+class MockCommentsDatasource extends Mock implements CommentsDatasource {}
+
+class MockPostLikesDatasource extends Mock implements PostLikesDatasource {}
+
 class MockContentActionsDatasource extends Mock
     implements ContentActionsDatasource {}
 
@@ -397,6 +403,8 @@ Future<void> setUpRealWiring({
   await getIt.unregister<PostsDatasource>();
   await getIt.unregister<PostActionsDatasource>();
   await getIt.unregister<PostTagsDatasource>();
+  await getIt.unregister<CommentsDatasource>();
+  await getIt.unregister<PostLikesDatasource>();
   await getIt.unregister<ContentActionsDatasource>();
   await getIt.unregister<MediaFilesDatasource>();
   await getIt.unregister<AudienceDatasource>();
@@ -434,6 +442,8 @@ Future<void> setUpRealWiring({
   getIt.registerSingleton<PostsDatasource>(emptyFeed);
   getIt.registerSingleton<PostActionsDatasource>(MockPostActionsDatasource());
   getIt.registerSingleton<PostTagsDatasource>(MockPostTagsDatasource());
+  getIt.registerSingleton<CommentsDatasource>(MockCommentsDatasource());
+  getIt.registerSingleton<PostLikesDatasource>(MockPostLikesDatasource());
   getIt.registerSingleton<ContentActionsDatasource>(
     MockContentActionsDatasource(),
   );

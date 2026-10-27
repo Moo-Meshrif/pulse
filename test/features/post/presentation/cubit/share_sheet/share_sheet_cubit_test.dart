@@ -5,7 +5,6 @@ import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
-import 'package:pulse/features/post/domain/use_case/share_to_feed_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/share_sheet/share_sheet_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/share_sheet/share_sheet_state.dart';
 import 'package:pulse/features/post/presentation/utils/enums/share_result.dart';
@@ -19,25 +18,25 @@ import 'package:pulse/shared/content/domain/entity/privacy_entity.dart';
 import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 
+import '../../../post_doubles.dart';
+
 class _Status extends Fake implements GetPublishStatusUseCase {
   @override
   ContentPublishStatus call(ContentKind kind) => ContentPublishIdle(kind);
 }
-
-class _Share extends Mock implements ShareToFeedUseCase {}
 
 class _Privacy extends Mock implements GetPrivacyUseCase {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
 
 void main() {
-  late _Share shareToFeed;
+  late MockPostRepository posts;
   late _Privacy privacy;
 
   setUpAll(() => registerFallbackValue(ContentAudience.public));
 
   setUp(() {
-    shareToFeed = _Share();
+    posts = MockPostRepository();
     privacy = _Privacy();
     when(privacy.call).thenAnswer(
       (_) async => const PrivacyEntity(
@@ -50,11 +49,11 @@ void main() {
   ShareSheetCubit build() {
     final account = _Account();
     when(account.call).thenReturn(null);
-    return ShareSheetCubit(shareToFeed, privacy, _Status(), account, 'o1');
+    return ShareSheetCubit(posts, privacy, _Status(), account, 'o1');
   }
 
   void answer({required bool started}) => when(
-    () => shareToFeed(
+    () => posts.shareToFeed(
       any(),
       caption: any(named: 'caption'),
       audience: any(named: 'audience'),
@@ -146,7 +145,7 @@ void main() {
         ..share();
 
       verify(
-        () => shareToFeed(
+        () => posts.shareToFeed(
           'o1',
           caption: 'Look at this',
           audience: ContentAudience.followers,
@@ -165,7 +164,7 @@ void main() {
         ..share();
 
       verify(
-        () => shareToFeed(
+        () => posts.shareToFeed(
           'o1',
           caption: null,
           audience: ContentAudience.public,

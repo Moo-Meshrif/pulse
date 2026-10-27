@@ -35,19 +35,7 @@ import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/liked_by_preview_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
-import 'package:pulse/features/post/domain/use_case/add_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/edit_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_comment_replies_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_mention_candidates_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_comments_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/share_to_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/comment_mentions/comment_mentions_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/comments/comments_cubit.dart';
@@ -76,6 +64,7 @@ import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart
 
 import '../../../../helpers/content_mocks.dart';
 import '../../../../helpers/pump_app.dart';
+import '../../../post/post_doubles.dart';
 import '../../../post/post_fixtures.dart';
 import '../../home_doubles.dart';
 
@@ -85,8 +74,6 @@ class _Status extends Fake implements GetPublishStatusUseCase {
 }
 
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
-
-class _ShareToFeed extends Mock implements ShareToFeedUseCase {}
 
 class _Privacy extends Mock implements GetPrivacyUseCase {}
 
@@ -98,16 +85,6 @@ class _CurrentUser extends Mock implements GetCurrentUserIdUseCase {}
 
 class _RequestCount extends Mock implements GetUnreadActivityCountUseCase {}
 
-class _Like extends Mock implements SetPostLikeUseCase {}
-
-class _Save extends Mock implements SetPostSaveUseCase {}
-
-class _Hide extends Mock implements HidePostUseCase {}
-
-class _Comments extends Mock implements SetCommentsEnabledUseCase {}
-
-class _Delete extends Mock implements DeletePostUseCase {}
-
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
 class _RetryUpload extends Mock implements RetryPublishUseCase {}
@@ -118,21 +95,9 @@ class _DiscardPublish extends Mock implements DiscardPublishUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
-class _GetComments extends Mock implements GetPostCommentsUseCase {}
-
-class _GetReplies extends Mock implements GetCommentRepliesUseCase {}
-
 class _CommentsData extends Mock implements CommentsDatasource {}
 
-class _AddComment extends Mock implements AddCommentUseCase {}
-
-class _EditComment extends Mock implements EditCommentUseCase {}
-
 class _ReportContent extends Mock implements ReportContentUseCase {}
-
-class _Candidates extends Mock implements GetMentionCandidatesUseCase {}
-
-class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
 
 /// The empty and failed pages float forever; with reduced motion they hold still, so the test can settle.
 void reduceMotion(WidgetTester tester) {
@@ -148,8 +113,7 @@ void main() {
   late MockGetLikedByPreviews likedBy;
   late _RequestCount requestCount;
   late _GetRail getRail;
-  late _Like like;
-  late _Hide hide;
+  late MockPostRepository posts;
   late _RetryUpload retryUpload;
   late EventBus bus;
   late _RetryPublish retryPublish;
@@ -188,8 +152,7 @@ void main() {
     getFeed = _GetFeed();
     likedBy = quietLikedBy();
     requestCount = _RequestCount();
-    like = _Like();
-    hide = _Hide();
+    posts = MockPostRepository();
     getRail = _GetRail();
     when(getRail.call).thenAnswer((_) async => []);
     retryUpload = _RetryUpload();
@@ -204,9 +167,9 @@ void main() {
     when(
       () => getFeed(cursor: null),
     ).thenAnswer((_) async => FeedPageEntity(posts: [post('p1'), post('p2')]));
-    when(() => like(any(), liked: any(named: 'liked')))
+    when(() => posts.setLike(any(), liked: any(named: 'liked')))
         .thenAnswer((_) async => 11);
-    when(() => hide(any(), hidden: any(named: 'hidden')))
+    when(() => posts.hidePost(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
     getIt
       ..registerSingleton<ConnectivityService>(FakeConnectivity())
@@ -228,15 +191,10 @@ void main() {
       })
       ..registerFactory(
         () => PostActionsCubit(
-          like,
-          _Save(),
-          hide,
-          _Comments(),
-          _Delete(),
+          posts,
           MockReportContent(),
           MockSetMute(),
           _Follow(),
-          _RemoveTag(),
         ),
       )
       ..registerFactory(
@@ -296,18 +254,11 @@ void main() {
         );
         final account = _Account();
         when(account.call).thenReturn(null);
-        return ShareSheetCubit(
-          _ShareToFeed(),
-          privacy,
-          _Status(),
-          account,
-          postId,
-        );
+        return ShareSheetCubit(posts, privacy, _Status(), account, postId);
       })
       ..registerFactoryParam<CommentsCubit, String, String?>((postId, focus) {
-        final getComments = _GetComments();
         when(
-          () => getComments(
+          () => posts.comments(
             any(),
             sort: any(named: 'sort'),
             before: any(named: 'before'),
@@ -315,12 +266,9 @@ void main() {
           ),
         ).thenAnswer((_) async => const CommentPageEntity(comments: []));
         return CommentsCubit(
-          getComments,
-          _GetReplies(),
+          posts,
           _CommentsData(),
-          _AddComment(),
           CommentDrafts(),
-          _EditComment(),
           _ReportContent(),
           FakeLastAccount(),
           postId,
@@ -328,7 +276,7 @@ void main() {
         );
       })
       ..registerFactoryParam<CommentMentionsCubit, String, void>(
-        (postId, _) => CommentMentionsCubit(_Candidates(), postId),
+        (postId, _) => CommentMentionsCubit(posts, postId),
       );
     addTearDown(getIt.reset);
   });
@@ -614,11 +562,11 @@ void main() {
       await tester.tap(_icon(AppAssets.heart).first);
       await tester.pumpAndSettle();
       expect(_icon(AppAssets.heartFilled), findsOneWidget);
-      verify(() => like('p1', liked: true)).called(1);
+      verify(() => posts.setLike('p1', liked: true)).called(1);
     });
 
     testView('a like that fails is taken back with a notice', (tester) async {
-      when(() => like(any(), liked: any(named: 'liked')))
+      when(() => posts.setLike(any(), liked: any(named: 'liked')))
           .thenAnswer((_) async => throw const NetworkFailure());
       await show(tester);
       await tester.tap(_icon(AppAssets.heart).first);
@@ -643,7 +591,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(HiddenPostRow), findsNothing);
         expect(find.byType(PostCard), findsNWidgets(2));
-        verify(() => hide('p1', hidden: false)).called(1);
+        verify(() => posts.hidePost('p1', hidden: false)).called(1);
       },
     );
   });

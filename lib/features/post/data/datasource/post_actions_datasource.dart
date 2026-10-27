@@ -19,7 +19,7 @@ abstract interface class PostActionsDatasource {
   /// Turns comments on or off for your post.
   Future<void> setCommentsEnabled(String postId, {required bool enabled});
 
-  /// Deletes your post's row. Its files go through `DeletePostUseCase`.
+  /// Deletes your post's row. Its files go through `PostRepository.deletePost`.
   Future<void> deletePost(String postId);
 }
 

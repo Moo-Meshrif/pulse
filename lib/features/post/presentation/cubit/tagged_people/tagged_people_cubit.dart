@@ -4,8 +4,8 @@ import '../../../../../core/state/base_cubit.dart';
 import '../../../../follow/data/enums/follow_status.dart';
 import '../../../../follow/domain/use_case/toggle_follow_use_case.dart';
 import '../../../data/enums/follow_state.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/tagged_person_entity.dart';
-import '../../../domain/use_case/get_tagged_people_use_case.dart';
 import '../../utils/enums/tagged_people_status.dart';
 import 'tagged_people_state.dart';
 
@@ -13,13 +13,10 @@ import 'tagged_people_state.dart';
 /// once and put back when the request fails.
 @injectable
 class TaggedPeopleCubit extends BaseCubit<TaggedPeopleState> {
-  TaggedPeopleCubit(
-    this._getPeople,
-    this._toggleFollow,
-    @factoryParam this.postId,
-  ) : super(const TaggedPeopleState());
+  TaggedPeopleCubit(this._posts, this._toggleFollow, @factoryParam this.postId)
+    : super(const TaggedPeopleState());
 
-  final GetTaggedPeopleUseCase _getPeople;
+  final PostRepository _posts;
   final ToggleFollowUseCase _toggleFollow;
   final String postId;
 
@@ -28,7 +25,7 @@ class TaggedPeopleCubit extends BaseCubit<TaggedPeopleState> {
 
   /// Loads the list (also the retry).
   Future<void> load() => run(
-    () => _getPeople(postId),
+    () => _posts.taggedPeople(postId),
     loading: state.copyWith(status: TaggedPeopleStatus.loading),
     onSuccess: (people) =>
         state.copyWith(status: TaggedPeopleStatus.ready, people: people),

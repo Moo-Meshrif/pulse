@@ -16,11 +16,12 @@ import '../../../../../shared/content/domain/use_case/publish_content_use_case.d
 import '../../../../profile/domain/entity/last_account_entity.dart';
 import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../data/repository/post_draft_repository.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/post_entity.dart';
 import '../../../domain/entity/post_mood_entity.dart';
+import '../../../domain/event/feed_refresh_requested.dart';
 import '../../../domain/event/post_saved.dart';
 import '../../../domain/use_case/sign_post_media_urls_use_case.dart';
-import '../../../domain/use_case/update_post_use_case.dart';
 import '../../utils/enums/new_post_notice.dart';
 import '../../utils/media_intake.dart';
 import '../../utils/new_post_limits.dart';
@@ -33,17 +34,15 @@ import '../../utils/tag_choice.dart';
 import '../../utils/tag_people_args.dart';
 import 'add_edit_post_state.dart';
 
-/// The Add post and Edit post screen (docs/specs/post/screens/s1-new-post.md, s5-edit-post.md): caption,
-/// photos and videos, place, audience, comments switch and Share or Save. It edits [post] when given one.
-/// Editing keeps the post's own media in [AddEditPostState.kept] and sends only what changed.
-/// Adding works on the draft ([PostDraftRepository]): it opens with it, saves it on every change, uploads
-/// each picked file once it is read, under an id of its own, and forgets it when the post is shared or
-/// discarded.
+/// The Add post and Edit post screen (docs/specs/post/screens/s1-new-post.md, s5-edit-post.md). It edits
+/// [post] when given one: the post's own media stays in [AddEditPostState.kept] and only changes are sent.
+/// Adding works on the draft ([PostDraftRepository]): saved on every change, each picked file uploaded
+/// once it is read, forgotten when the post is shared or discarded.
 @injectable
 class AddEditPostCubit extends BaseCubit<AddEditPostState>
     with EventCubitMixin<AddEditPostState> {
   AddEditPostCubit(
-    this._updatePost,
+    this._posts,
     this._publish,
     this._events,
     this._signUrls,
@@ -66,7 +65,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     _resumeRestored();
   }
 
-  final UpdatePostUseCase _updatePost;
+  final PostRepository _posts;
   final PublishContentUseCase _publish;
   final EventBus _events;
 
@@ -97,8 +96,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     onFailure: (_) => null,
   );
 
-  /// Editing: signs the post's own photos and posters for the strip. Without links the strip draws plain
-  /// tiles.
+  /// Editing: signs the post's own media for the strip; without links it draws plain tiles.
   Future<void> loadUrls() {
     if (state.urls.isNotEmpty) return Future.value();
     return run(
@@ -130,7 +128,6 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
   /// The Feeling page closed with [mood]; null clears it.
   void moodChanged(PostMoodEntity? mood) => emit(state.copyWith(mood: mood));
 
-  /// The Tag people page closed with [tags] (their spots included).
   void tagsChanged(List<TagChoice> tags) => emit(state.copyWith(tags: tags));
 
   /// What the tag pages open with: who is tagged and the post's media in the order it will have.
@@ -164,14 +161,13 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     );
   }
 
-  /// A tap on a photo whose upload failed.
   void retryUpload(String path) {
     if (!state.failedUploads.contains(path)) return;
     _draft.retry(path);
   }
 
-  /// The picked files are on the strip at once; each is read in the background and replaced by its full
-  /// version (a video that is too long or big is taken off again with a notice).
+  /// Picked files show on the strip at once and are read in the background; a video that is too long or
+  /// big is taken off again with a notice.
   Future<void> pickMedia() async {
     final room = NewPostLimits.maxMedia - state.mediaCount;
     if (room <= 0) {
@@ -234,8 +230,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     }
   }
 
-  /// Moves a video's frame into the draft's folder once it is on the strip (the tile keeps the temporary
-  /// frame if it cannot be moved), then uploads the video with it.
+  /// Moves a video's frame into the draft's folder (the tile keeps the temporary frame if that fails),
+  /// then uploads the video.
   Future<void> _keepPosterThenUpload(PickedMedia media, String poster) async {
     final kept = await _draft.keepPoster(state.postId, poster);
     final isOnStrip = state.media.any((item) => item.path == media.path);
@@ -249,7 +245,6 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     _upload(media, poster: kept ?? poster);
   }
 
-  /// Starts uploading a picked file that was read; [poster] is a video's frame.
   void _upload(PickedMedia media, {String? poster}) {
     final id = state.mediaIds[media.path];
     if (id != null) _draft.upload(state.postId, id, media, poster: poster);
@@ -270,9 +265,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
 
   void clearNotice() => emit(state.copyWith(notice: null));
 
-  /// Hands the post to the background sender and closes the screen; Home shows how it goes and offers Retry.
-  /// Only one post is sent at a time. Files still being read are waited for by the sender, not the screen.
-  /// A second tap while the screen closes does nothing.
+  /// Hands the post to the background sender and closes the screen; Home shows progress and Retry. Files
+  /// still being read are waited for by the sender. A second tap while the screen closes does nothing.
   void save() {
     if (!state.canSave || state.isSaved) return;
     final original = state.original;
@@ -284,9 +278,8 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     );
   }
 
-  /// False when another post is still being sent. Once handed over it is saved as a shared post instead
-  /// of a draft, so it goes out even if the app closes; the server posts it, and its files go when it is
-  /// out.
+  /// False when another post is still being sent. Once handed over it is a shared post, not a draft, so
+  /// it goes out even if the app closes.
   bool _publishNew() {
     final post = state;
     return _draft.share(
@@ -316,7 +309,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
       previewCacheKey: preview.cacheKey,
       send: (report) async {
         final added = await _intake.readAll(post.media);
-        final updated = await _updatePost(
+        final updated = await _posts.updatePost(
           PostSubmission.edit(post, added: added),
           before: original,
           onProgress: report,
@@ -331,14 +324,12 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
       ? Future.value()
       : _draft.saveNow(PostDraftMapping.toSaved(state), isOpen: false);
 
-  /// The app went to the background: saved now, still open, so if the phone kills the app the next start
-  /// opens New post with it.
+  /// The app went to the background: saved now and still open, so a kill reopens New post with it.
   Future<void> saveDraftOpen() => state.isEditing
       ? Future.value()
       : _draft.saveNow(PostDraftMapping.toSaved(state));
 
-  /// Discard post: the draft and its files are gone, and the server can never post it. Completes once the
-  /// discard is saved; the server is told in the background.
+  /// Discard post. Completes once the discard is saved; the server is told in the background.
   Future<void> discardDraft() => run(
     () => _draft.discard(state.postId),
     onSuccess: (_) => null,
@@ -361,8 +352,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     return super.close();
   }
 
-  /// A restored draft's files go on uploading (only what is not on the server yet); the ones that were
-  /// not read before it was saved are read first.
+  /// A restored draft uploads only what is not on the server yet; unread files are read first.
   void _resumeRestored() {
     if (state.isEditing || state.media.isEmpty) return;
     final unread = state.media.where((item) => item.width == null).toList();
@@ -372,5 +362,7 @@ class AddEditPostCubit extends BaseCubit<AddEditPostState>
     }
   }
 
-  void _updated(PostEntity post) => fire(PostSaved(post));
+  /// Null when the post was saved but could not be read back: the feed and post page load it again.
+  void _updated(PostEntity? post) =>
+      fire(post == null ? const FeedRefreshRequested() : PostSaved(post));
 }

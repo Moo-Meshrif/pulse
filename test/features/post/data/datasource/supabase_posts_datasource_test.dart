@@ -247,6 +247,36 @@ void main() {
     ]);
   });
 
+  test(
+    'updatePost sends the comments switch and the audience with the edit',
+    () async {
+      final backend = await signedIn((_) async => BackendDouble.json(null));
+      final posts = SupabasePostsDatasource(backend.client);
+
+      await posts.updatePost(
+        id: 'p1',
+        media: const [],
+        commentsEnabled: false,
+        audience: ContentAudience.followers,
+      );
+
+      final updated = body(backend.to('/rpc/update_post').single);
+      expect(updated['p_comments_enabled'], false);
+      expect(updated['p_visibility'], 'followers');
+    },
+  );
+
+  test('updatePost leaves the settings out when they did not change', () async {
+    final backend = await signedIn((_) async => BackendDouble.json(null));
+    final posts = SupabasePostsDatasource(backend.client);
+
+    await posts.updatePost(id: 'p1', media: const []);
+
+    final updated = body(backend.to('/rpc/update_post').single);
+    expect(updated.containsKey('p_comments_enabled'), isFalse);
+    expect(updated.containsKey('p_visibility'), isFalse);
+  });
+
   group('shared posts', () {
     test(
       'a feed row carries the flag, the id and the embedded original',

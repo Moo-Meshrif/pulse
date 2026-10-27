@@ -30,7 +30,7 @@ class AvatarInitials extends StatelessWidget {
       child: Container(
         width: size ?? AvatarDimens.list,
         height: size ?? AvatarDimens.list,
-        padding: EdgeInsets.all(2),
+        padding: EdgeInsets.all(AvatarDimens.initialsPadding),
         decoration: BoxDecoration(
           color: palette[stablePaletteIndex(seed, palette.length)],
           shape: BoxShape.circle,

@@ -9,16 +9,10 @@ import 'package:pulse/features/home/presentation/cubit/post_publish/post_line_cu
 import 'package:pulse/features/home/presentation/cubit/post_publish/post_publish_cubit.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cubit.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
-import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_liked_by_previews_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_posts_by_ids_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/save_home_feed_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
@@ -36,6 +30,7 @@ import 'package:pulse/shared/content/domain/use_case/stop_content_live_use_case.
 
 import '../../helpers/content_mocks.dart';
 import '../../helpers/pump_app.dart';
+import '../post/post_doubles.dart';
 import '../post/post_fixtures.dart';
 
 class _GetFeed extends Mock implements GetHomeFeedUseCase {}
@@ -84,19 +79,7 @@ class _Unread extends Mock implements GetUnreadActivityCountUseCase {}
 
 class _GetRail extends Mock implements GetStoryRailUseCase {}
 
-class _Like extends Mock implements SetPostLikeUseCase {}
-
-class _Save extends Mock implements SetPostSaveUseCase {}
-
-class _Hide extends Mock implements HidePostUseCase {}
-
-class _Comments extends Mock implements SetCommentsEnabledUseCase {}
-
-class _Delete extends Mock implements DeletePostUseCase {}
-
 class _Follow extends Mock implements ToggleFollowUseCase {}
-
-class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
 
 /// Home's cubits in get_it over use cases that answer a one-post feed (the empty page floats forever and
 /// would never settle), an empty rail and nothing unread, for
@@ -136,15 +119,10 @@ void registerHomeDoubles() {
     })
     ..registerFactory(
       () => PostActionsCubit(
-        _Like(),
-        _Save(),
-        _Hide(),
-        _Comments(),
-        _Delete(),
+        MockPostRepository(),
         MockReportContent(),
         MockSetMute(),
         _Follow(),
-        _RemoveTag(),
       ),
     )
     ..registerFactory(

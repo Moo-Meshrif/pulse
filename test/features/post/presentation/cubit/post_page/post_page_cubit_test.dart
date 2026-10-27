@@ -5,21 +5,17 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/get_follow_status_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
+import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/event/post_counts_changed.dart';
 import 'package:pulse/features/post/domain/event/post_saved.dart';
-import 'package:pulse/features/post/domain/use_case/get_liked_by_preview_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_page/post_page_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/post_page_status.dart';
 import 'package:pulse/features/post/presentation/utils/feed_post.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 
+import '../../../post_doubles.dart';
 import '../../../post_fixtures.dart';
-
-class _LikedBy extends Mock implements GetLikedByPreviewUseCase {}
-
-class _GetPost extends Mock implements GetPostUseCase {}
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -30,22 +26,20 @@ class _Toggle extends Mock implements ToggleFollowUseCase {}
 class _CurrentUser extends Mock implements GetCurrentUserIdUseCase {}
 
 void main() {
-  late _GetPost getPost;
+  late MockPostRepository posts;
   late _Sign sign;
   late _GetFollow getFollow;
   late _Toggle toggle;
   late _CurrentUser currentUser;
-  late _LikedBy likedBy;
   late EventBus bus;
 
   setUp(() {
-    getPost = _GetPost();
+    posts = MockPostRepository();
     sign = _Sign();
     getFollow = _GetFollow();
     toggle = _Toggle();
     currentUser = _CurrentUser();
-    likedBy = _LikedBy();
-    when(() => likedBy(any())).thenAnswer((_) async => null);
+    when(() => posts.likedByPreview(any())).thenAnswer((_) async => null);
     bus = EventBus();
     when(currentUser.call).thenReturn('me');
     when(() => sign(any())).thenAnswer((_) async => {});
@@ -53,11 +47,10 @@ void main() {
   });
 
   PostPageCubit build({FeedPost? passed}) => PostPageCubit(
-    getPost,
+    posts,
     sign,
     getFollow,
     toggle,
-    likedBy,
     bus,
     currentUser,
     'p1',
@@ -76,7 +69,8 @@ void main() {
   });
 
   test('shows the passed post at once, then the fresh one', () async {
-    when(() => getPost('p1')).thenAnswer((_) async => testPost('p1', likes: 7));
+    when(() => posts.post('p1'))
+        .thenAnswer((_) async => testPost('p1', likes: 7));
     final cubit = build(passed: passedPost());
     expect(cubit.state.status, PostPageStatus.ready);
     expect(cubit.state.post!.entity.likeCount, 1);
@@ -91,7 +85,7 @@ void main() {
   test(
     'a post nobody can see is unavailable, also over a passed one',
     () async {
-      when(() => getPost('p1')).thenAnswer((_) async => null);
+      when(() => posts.post('p1')).thenAnswer((_) async => null);
       final cubit = build(passed: passedPost());
 
       await cubit.load();
@@ -103,19 +97,19 @@ void main() {
   );
 
   test('a failed load with nothing to show fails, and retry works', () async {
-    when(() => getPost('p1')).thenThrow(const NetworkFailure());
+    when(() => posts.post('p1')).thenThrow(const NetworkFailure());
     final cubit = build();
     await cubit.load();
     expect(cubit.state.status, PostPageStatus.failed);
 
-    when(() => getPost('p1')).thenAnswer((_) async => testPost('p1'));
+    when(() => posts.post('p1')).thenAnswer((_) async => testPost('p1'));
     await cubit.load();
     expect(cubit.state.status, PostPageStatus.ready);
     await cubit.close();
   });
 
   test('a failed refresh keeps the passed post and reports it', () async {
-    when(() => getPost('p1')).thenThrow(const NetworkFailure());
+    when(() => posts.post('p1')).thenThrow(const NetworkFailure());
     final cubit = build(passed: passedPost());
 
     await cubit.load();
@@ -127,7 +121,7 @@ void main() {
   });
 
   test('reads where your follow of the author stands', () async {
-    when(() => getPost('p1')).thenAnswer((_) async => testPost('p1'));
+    when(() => posts.post('p1')).thenAnswer((_) async => testPost('p1'));
     when(() => getFollow('author'))
         .thenAnswer((_) async => FollowStatus.accepted);
     final cubit = build();
@@ -140,7 +134,7 @@ void main() {
   });
 
   test('your own post asks nothing about following', () async {
-    when(() => getPost('p1'))
+    when(() => posts.post('p1'))
         .thenAnswer((_) async => testPost('p1', authorId: 'me'));
     final cubit = build();
 
@@ -153,7 +147,7 @@ void main() {
 
   group('follow', () {
     Future<PostPageCubit> loaded() async {
-      when(() => getPost('p1')).thenAnswer((_) async => testPost('p1'));
+      when(() => posts.post('p1')).thenAnswer((_) async => testPost('p1'));
       final cubit = build();
       await cubit.load();
       await Future<void>.delayed(Duration.zero);
@@ -216,17 +210,34 @@ void main() {
   });
 
   test('reads the post again when it was edited', () async {
-    when(() => getPost('p1')).thenAnswer((_) async => testPost('p1', likes: 2));
+    when(() => posts.post('p1'))
+        .thenAnswer((_) async => testPost('p1', likes: 2));
     final cubit = build(passed: passedPost());
 
     bus.fire(PostSaved(testPost('p2')));
     await Future<void>.delayed(Duration.zero);
-    verifyNever(() => getPost(any()));
+    verifyNever(() => posts.post(any()));
 
     bus.fire(PostSaved(testPost('p1')));
     await Future<void>.delayed(Duration.zero);
-    verify(() => getPost('p1')).called(1);
+    verify(() => posts.post('p1')).called(1);
     expect(cubit.state.post!.entity.likeCount, 2);
     await cubit.close();
   });
+
+  test(
+    'reads the post again when an edit was saved but not read back',
+    () async {
+      when(() => posts.post('p1'))
+          .thenAnswer((_) async => testPost('p1', likes: 3));
+      final cubit = build(passed: passedPost());
+
+      bus.fire(const FeedRefreshRequested());
+      await Future<void>.delayed(Duration.zero);
+
+      verify(() => posts.post('p1')).called(1);
+      expect(cubit.state.post!.entity.likeCount, 3);
+      await cubit.close();
+    },
+  );
 }

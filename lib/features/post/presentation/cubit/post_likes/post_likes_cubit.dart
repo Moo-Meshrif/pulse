@@ -7,8 +7,8 @@ import '../../../../../core/state/load_more_status.dart';
 import '../../../../follow/data/enums/follow_status.dart';
 import '../../../../follow/domain/use_case/toggle_follow_use_case.dart';
 import '../../../../profile/domain/use_case/get_current_user_id_use_case.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/post_liker_entity.dart';
-import '../../../domain/use_case/get_post_likers_use_case.dart';
 import '../../utils/enums/post_likes_status.dart';
 import '../../utils/new_post_limits.dart';
 import 'post_likes_state.dart';
@@ -19,13 +19,13 @@ import 'post_likes_state.dart';
 @injectable
 class PostLikesCubit extends BaseCubit<PostLikesState> {
   PostLikesCubit(
-    this._getLikers,
+    this._posts,
     this._toggleFollow,
     GetCurrentUserIdUseCase currentUserId,
     @factoryParam this.postId,
   ) : super(PostLikesState(userId: currentUserId()));
 
-  final GetPostLikersUseCase _getLikers;
+  final PostRepository _posts;
   final ToggleFollowUseCase _toggleFollow;
   final String postId;
 
@@ -41,7 +41,7 @@ class PostLikesCubit extends BaseCubit<PostLikesState> {
   Future<void> load() {
     final generation = ++_generation;
     return run(
-      () => _getLikers(postId, query: _query),
+      () => _posts.likers(postId, query: _query),
       loading: state.copyWith(
         status: PostLikesStatus.loading,
         likers: const [],
@@ -67,7 +67,7 @@ class PostLikesCubit extends BaseCubit<PostLikesState> {
   Future<void> refresh() {
     final generation = ++_generation;
     return run(
-      () => _getLikers(postId, query: _query),
+      () => _posts.likers(postId, query: _query),
       prevent: state.isRefreshing,
       loading: state.copyWith(isRefreshing: true),
       onSuccess: (page) => generation != _generation
@@ -100,7 +100,7 @@ class PostLikesCubit extends BaseCubit<PostLikesState> {
     final cursor = state.nextCursor;
     final generation = _generation;
     return run(
-      () => _getLikers(postId, query: _query, before: cursor),
+      () => _posts.likers(postId, query: _query, before: cursor),
       prevent:
           cursor == null ||
           state.status != PostLikesStatus.ready ||

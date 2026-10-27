@@ -11,13 +11,10 @@ import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/data/model/post_draft_media_model.dart';
 import 'package:pulse/features/post/data/model/post_draft_model.dart';
 import 'package:pulse/features/post/data/repository/post_draft_repository.dart';
-import 'package:pulse/features/post/data/repository/post_share_repository.dart';
-import 'package:pulse/features/post/data/repository/shared_posts_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart';
 import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
@@ -33,11 +30,9 @@ import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/publish_content_use_case.dart';
 
 import '../../../../helpers/content_mocks.dart';
+import '../../../../helpers/post_publishing_doubles.dart';
 import '../../../../helpers/pump_app.dart';
-
-class _Share extends Mock implements PostShareRepository {}
-
-class _UpdatePost extends Mock implements UpdatePostUseCase {}
+import '../../post_doubles.dart';
 
 class _SignUrls extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -50,7 +45,7 @@ class _Thumbnails extends Mock implements VideoThumbnailService {}
 class _Account extends Mock implements GetLastAccountUseCase {}
 
 void main() {
-  late _Share share;
+  late MockSharer share;
   late _Picker picker;
   late _Account account;
   late MockPostDraftDatasource drafts;
@@ -71,7 +66,7 @@ void main() {
 
   setUp(() async {
     await getIt.reset();
-    share = _Share();
+    share = MockSharer();
     final bus = EventBus();
     picker = _Picker();
     final privacy = _Privacy();
@@ -100,7 +95,7 @@ void main() {
     );
     getIt.registerFactoryParam<AddEditPostCubit, PostEntity?, dynamic>(
       (post, _) => AddEditPostCubit(
-        _UpdatePost(),
+        MockPostRepository(),
         PublishContentUseCase(publish),
         bus,
         _SignUrls(),
@@ -108,11 +103,11 @@ void main() {
         privacy,
         _Thumbnails(),
         account,
-        PostDraftRepository(
+        PostDraftRepositoryImpl(
           drafts,
           uploads,
           server,
-          SharedPostsRepository(drafts, server, share, publish, bus),
+          PublishingWithSharer(drafts, server, publish, bus, share),
           FakeContentDiscards(),
         ),
         post,

@@ -7,16 +7,15 @@ import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/post/data/enums/follow_state.dart';
 import 'package:pulse/features/post/domain/entity/tagged_person_entity.dart';
-import 'package:pulse/features/post/domain/use_case/get_tagged_people_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/tagged_people_status.dart';
 
-class _GetPeople extends Mock implements GetTaggedPeopleUseCase {}
+import '../../../post_doubles.dart';
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
 void main() {
-  late _GetPeople getPeople;
+  late MockPostRepository posts;
   late _Follow follow;
   late TaggedPeopleCubit cubit;
 
@@ -40,27 +39,28 @@ void main() {
       cubit.state.people.firstWhere((p) => p.id == id).followState;
 
   setUp(() {
-    getPeople = _GetPeople();
+    posts = MockPostRepository();
     follow = _Follow();
-    cubit = TaggedPeopleCubit(getPeople, follow, 'p1');
+    cubit = TaggedPeopleCubit(posts, follow, 'p1');
   });
 
   tearDown(() => cubit.close());
 
   test('loads the list, and says when it cannot', () async {
-    when(() => getPeople('p1')).thenAnswer((_) async => [me, sara]);
+    when(() => posts.taggedPeople('p1')).thenAnswer((_) async => [me, sara]);
     await cubit.load();
     expect(cubit.state.status, TaggedPeopleStatus.ready);
     expect(cubit.state.people, [me, sara]);
 
-    when(() => getPeople('p1')).thenThrow(const NetworkFailure());
+    when(() => posts.taggedPeople('p1')).thenThrow(const NetworkFailure());
     await cubit.load();
     expect(cubit.state.status, TaggedPeopleStatus.failed);
   });
 
   group('follow', () {
     setUp(() async {
-      when(() => getPeople('p1')).thenAnswer((_) async => [me, sara, omar]);
+      when(() => posts.taggedPeople('p1'))
+          .thenAnswer((_) async => [me, sara, omar]);
       await cubit.load();
     });
 

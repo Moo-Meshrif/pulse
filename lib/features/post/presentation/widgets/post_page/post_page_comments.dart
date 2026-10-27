@@ -123,9 +123,7 @@ class _Content extends StatelessWidget {
             child: CommentsSkeleton(),
           ),
           CommentsStatus.failed => SliverToBoxAdapter(
-            child: AppEmpty.failed(
-              onRetry: context.read<CommentsCubit>().load,
-            ),
+            child: AppEmpty.failed(onRetry: context.read<CommentsCubit>().load),
           ),
           CommentsStatus.ready =>
             _isEmpty(state)

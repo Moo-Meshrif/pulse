@@ -51,8 +51,9 @@ abstract interface class PostsDatasource {
     List<PostTagModel> tags = const [],
   });
 
-  /// Replaces the caption, place, media list, mood and tags of the signed-in user's post [id]; the
-  /// [media] files are already uploaded.
+  /// Replaces the caption, place, media list, mood and tags of the signed-in user's post [id], in one
+  /// transaction with [commentsEnabled] and [audience] when they are given (null leaves them as they
+  /// are); the [media] files are already uploaded.
   Future<void> updatePost({
     required String id,
     String? caption,
@@ -62,6 +63,8 @@ abstract interface class PostsDatasource {
     String? moodKey,
     String? moodText,
     List<PostTagModel> tags = const [],
+    bool? commentsEnabled,
+    ContentAudience? audience,
   });
 }
 
@@ -191,6 +194,8 @@ final class SupabasePostsDatasource implements PostsDatasource {
     String? moodKey,
     String? moodText,
     List<PostTagModel> tags = const [],
+    bool? commentsEnabled,
+    ContentAudience? audience,
   }) => Guard.run(
     () => _client.rpc<dynamic>(
       'update_post',
@@ -203,6 +208,10 @@ final class SupabasePostsDatasource implements PostsDatasource {
         'p_mood_key': moodKey,
         'p_mood_text': moodText,
         'p_tags': tags.map((tag) => tag.toJson()).toList(),
+        // Left out when unchanged, so an edit that touches no setting also works on a database that
+        // does not have these two parameters yet.
+        'p_comments_enabled': ?commentsEnabled,
+        'p_visibility': ?audience?.wire,
       },
     ),
   );

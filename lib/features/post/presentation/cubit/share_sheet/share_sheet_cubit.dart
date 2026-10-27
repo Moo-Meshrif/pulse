@@ -7,8 +7,8 @@ import '../../../../../shared/content/domain/use_case/get_privacy_use_case.dart'
 import '../../../../../shared/content/domain/use_case/get_publish_status_use_case.dart';
 import '../../../../profile/domain/entity/last_account_entity.dart';
 import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/post_mood_entity.dart';
-import '../../../domain/use_case/share_to_feed_use_case.dart';
 import '../../utils/enums/share_result.dart';
 import '../../utils/post_visibility_result.dart';
 import '../../utils/tag_choice.dart';
@@ -20,7 +20,7 @@ import 'share_sheet_state.dart';
 @injectable
 class ShareSheetCubit extends BaseCubit<ShareSheetState> {
   ShareSheetCubit(
-    this._shareToFeed,
+    this._posts,
     this._privacy,
     this._publishStatus,
     GetLastAccountUseCase account,
@@ -28,7 +28,7 @@ class ShareSheetCubit extends BaseCubit<ShareSheetState> {
   ) : me = account(),
       super(const ShareSheetState());
 
-  final ShareToFeedUseCase _shareToFeed;
+  final PostRepository _posts;
   final GetPrivacyUseCase _privacy;
   final GetPublishStatusUseCase _publishStatus;
 
@@ -81,7 +81,7 @@ class ShareSheetCubit extends BaseCubit<ShareSheetState> {
   /// Hands the share to the background sender; the sheet closes and Home's banner shows how it goes. The
   /// words are optional.
   void share() {
-    final started = _shareToFeed(
+    final started = _posts.shareToFeed(
       postId,
       caption: state.caption.trim().isEmpty ? null : state.caption.trim(),
       audience: state.audience,

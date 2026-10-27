@@ -5,7 +5,6 @@ import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/core/notice/notices.dart';
 import 'package:pulse/features/post/domain/entity/tag_person_entity.dart';
-import 'package:pulse/features/post/domain/use_case/search_tag_people_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/tag_people/tag_people_cubit.dart';
 import 'package:pulse/features/post/presentation/screen/tag_people_screen.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
@@ -14,8 +13,7 @@ import 'package:pulse/features/post/presentation/utils/tag_people_args.dart';
 import 'package:pulse/features/post/presentation/utils/tag_photo.dart';
 
 import '../../../../helpers/pump_app.dart';
-
-class _Search extends Mock implements SearchTagPeopleUseCase {}
+import '../../post_doubles.dart';
 
 /// A widget test with the semantics tree on, so labels can be found.
 void semanticTest(
@@ -31,7 +29,7 @@ void semanticTest(
 });
 
 void main() {
-  late _Search search;
+  late MockPostRepository posts;
   Object? result;
 
   const omar = TagPersonEntity(
@@ -57,10 +55,11 @@ void main() {
   setUp(() async {
     await getIt.reset();
     result = null;
-    search = _Search();
-    when(() => search(any())).thenAnswer((_) async => [omar, laila, sam]);
+    posts = MockPostRepository();
+    when(() => posts.searchTagPeople(any()))
+        .thenAnswer((_) async => [omar, laila, sam]);
     getIt.registerFactoryParam<TagPeopleCubit, TagPeopleArgs, void>(
-      (args, _) => TagPeopleCubit(search, args),
+      (args, _) => TagPeopleCubit(posts, args),
     );
     addTearDown(() {
       getIt.reset();
@@ -193,7 +192,7 @@ void main() {
 
   semanticTest('no matches shows the empty state', (tester) async {
     await open(tester);
-    when(() => search('zzz')).thenAnswer((_) async => []);
+    when(() => posts.searchTagPeople('zzz')).thenAnswer((_) async => []);
 
     await tester.enterText(find.byType(TextField), 'zzz');
     await tester.pump(TagLimits.searchDelay + const Duration(milliseconds: 50));
@@ -204,7 +203,7 @@ void main() {
   });
 
   semanticTest('a failed load says so with Retry', (tester) async {
-    when(() => search(any()))
+    when(() => posts.searchTagPeople(any()))
         .thenAnswer((_) async => throw const NetworkFailure());
     await open(tester);
 

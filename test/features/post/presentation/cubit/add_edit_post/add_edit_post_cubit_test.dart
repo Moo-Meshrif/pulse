@@ -12,8 +12,6 @@ import 'package:pulse/features/post/data/model/post_draft_media_model.dart';
 import 'package:pulse/features/post/data/model/post_draft_model.dart';
 import 'package:pulse/features/post/data/model/post_draft_tag_model.dart';
 import 'package:pulse/features/post/data/repository/post_draft_repository.dart';
-import 'package:pulse/features/post/data/repository/post_share_repository.dart';
-import 'package:pulse/features/post/data/repository/shared_posts_repository.dart';
 import 'package:pulse/features/post/domain/entity/edit_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
@@ -23,7 +21,6 @@ import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/event/post_saved.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/update_post_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/add_edit_post/add_edit_post_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/new_post_notice.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
@@ -41,11 +38,9 @@ import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/publish_content_use_case.dart';
 
 import '../../../../../helpers/content_mocks.dart';
+import '../../../../../helpers/post_publishing_doubles.dart';
 import '../../../../../helpers/pump_app.dart';
-
-class _Share extends Mock implements PostShareRepository {}
-
-class _UpdatePost extends Mock implements UpdatePostUseCase {}
+import '../../../post_doubles.dart';
 
 class _SignUrls extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -73,8 +68,8 @@ PickedMedia video({int durationMs = 30000, int sizeBytes = 1000}) =>
     );
 
 void main() {
-  late _Share share;
-  late _UpdatePost updatePost;
+  late MockSharer share;
+  late MockPostRepository posts;
   late _SignUrls signUrls;
   late _Picker picker;
   late _Privacy privacy;
@@ -100,8 +95,8 @@ void main() {
   });
 
   setUp(() {
-    share = _Share();
-    updatePost = _UpdatePost();
+    share = MockSharer();
+    posts = MockPostRepository();
     signUrls = _SignUrls();
     picker = _Picker();
     privacy = _Privacy();
@@ -136,7 +131,7 @@ void main() {
   //urls --> which passign from post card
   AddEditPostCubit build([PostEntity? post, Map<String, String>? urls]) =>
       AddEditPostCubit(
-        updatePost,
+        posts,
         PublishContentUseCase(publish),
         bus,
         signUrls,
@@ -144,11 +139,11 @@ void main() {
         privacy,
         thumbnails,
         account,
-        PostDraftRepository(
+        PostDraftRepositoryImpl(
           drafts,
           uploads,
           server,
-          SharedPostsRepository(drafts, server, share, publish, bus),
+          PublishingWithSharer(drafts, server, publish, bus, share),
           discards,
         ),
         post,
@@ -612,7 +607,7 @@ void main() {
       );
       registerFallbackValue(post);
       when(
-        () => updatePost(
+        () => posts.updatePost(
           any(),
           before: any(named: 'before'),
           onProgress: any(named: 'onProgress'),
@@ -678,13 +673,38 @@ void main() {
       expect(events, [PostSaved(post)]);
     });
 
+    test(
+      'an edit saved but not read back asks the feed to load again instead',
+      () async {
+        when(
+          () => posts.updatePost(
+            any(),
+            before: any(named: 'before'),
+            onProgress: any(named: 'onProgress'),
+          ),
+        ).thenAnswer((_) async => null);
+        final saved = <PostSaved>[];
+        final refreshes = <FeedRefreshRequested>[];
+        bus.on<PostSaved>().listen(saved.add);
+        bus.on<FeedRefreshRequested>().listen(refreshes.add);
+
+        build(post)
+          ..captionChanged('Changed')
+          ..save();
+        await pumpEventQueue();
+
+        expect(saved, isEmpty);
+        expect(refreshes, [const FeedRefreshRequested()]);
+      },
+    );
+
     test('save updates the post, not creates it', () async {
       final cubit = build(post)..captionChanged('  Changed  ');
       cubit.save();
       await pumpEventQueue();
       final edited =
           verify(
-                () => updatePost(
+                () => posts.updatePost(
                   captureAny(),
                   before: post,
                   onProgress: any(named: 'onProgress'),
@@ -898,7 +918,7 @@ void main() {
         ),
       );
       when(
-        () => updatePost(
+        () => posts.updatePost(
           any(),
           before: any(named: 'before'),
           onProgress: any(named: 'onProgress'),
@@ -920,7 +940,7 @@ void main() {
       await pumpEventQueue();
       final sent =
           verify(
-                () => updatePost(
+                () => posts.updatePost(
                   captureAny(),
                   before: any(named: 'before'),
                   onProgress: any(named: 'onProgress'),

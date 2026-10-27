@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../data/repository/shared_posts_repository.dart';
+import '../../data/repository/post_publishing_repository.dart';
 
 /// At start: the posts the signed-in user shared that are not out yet go on (only what is missing is
 /// sent), finished ones and their files on the device are forgotten, and so is a draft the server says is
@@ -9,7 +9,7 @@ import '../../data/repository/shared_posts_repository.dart';
 class ResumeSharedPostsUseCase {
   ResumeSharedPostsUseCase(this._shared);
 
-  final SharedPostsRepository _shared;
+  final PostPublishingRepository _shared;
 
   Future<void> call() => _shared.resume();
 }

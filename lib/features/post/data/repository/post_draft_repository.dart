@@ -13,19 +13,76 @@ import '../../../../shared/content/data/repository/media_upload_queue.dart';
 import '../../domain/entity/new_post_entity.dart';
 import '../datasource/post_draft_datasource.dart';
 import '../model/post_draft_model.dart';
-import 'shared_posts_repository.dart';
+import 'post_publishing_repository.dart';
 
-/// The New post draft while it is written: its record and files on the device ([PostDraftDatasource]),
-/// the upload of each file as soon as it is read ([MediaUploadQueue]), and the draft on the server. Share
-/// hands it to [SharedPostsRepository]; Discard post discards it for good ([ContentDiscardRepository]).
-/// One per New post screen; a repository because it combines those sources. Uploads are known by the
-/// file's path on the device.
-@injectable
-class PostDraftRepository {
-  /// A change is saved after this pause, so typing does not write on every key.
+/// The New post draft while it is written: saved on the device, with each file uploaded as soon as it is
+/// read. One per New post screen. Uploads are known by the file's path on the device.
+abstract class PostDraftRepository {
+  Stream<(String, MediaUploadStatus)> get uploadChanges;
+
+  PostDraftModel? read();
+
+  /// A draft left open when the app was killed: it is opened again at start.
+  bool get hasOpenDraft;
+
+  /// Saves [draft] after a short pause; null (nothing in it) forgets it.
+  void saveSoon(PostDraftModel? draft);
+
+  /// Saves [draft] at once; null (nothing in it) forgets it. [isOpen] false: the screen is being closed
+  /// by the person, so the draft is not opened again at start. Never throws: the draft stays as last
+  /// saved.
+  Future<void> saveNow(PostDraftModel? draft, {bool isOpen = true});
+
+  /// [picked] moved into the folder of [draftId]. A file that cannot be moved stays where it is, so it can
+  /// still be shared (it is only missing from the draft after a restart).
+  Future<List<PickedMedia>> keepPicked(
+    String draftId,
+    List<PickedMedia> picked,
+  );
+
+  /// A video's frame moved into the folder of [draftId]; null when it could not be moved.
+  Future<String?> keepPoster(String draftId, String poster);
+
+  /// Starts uploading [media], already read, as [mediaId] of [draftId]; [poster] is a video's frame. The
+  /// first upload opens the draft on the server.
+  void upload(
+    String draftId,
+    String mediaId,
+    PickedMedia media, {
+    String? poster,
+  });
+
+  void retry(String path);
+
+  /// Takes a file off the draft: its upload stops, and the file and its [poster] are deleted.
+  void remove(String path, {String? poster});
+
+  /// A frame kept for a file that was taken off meanwhile.
+  void deleteFile(String path);
+
+  /// Stops the uploads and forgets the draft. When it may have reached the server, the discard is kept
+  /// and sent later if offline; local files are deleted without waiting.
+  Future<void> discard(String draftId);
+
+  /// Hands [draft] to the background sender, which builds the post with [build] and waits for uploads
+  /// still going. The uploads go on after the screen closes. False (nothing done) while another post goes
+  /// out.
+  bool share(
+    PostDraftModel draft, {
+    required Future<NewPostEntity> Function() build,
+    String? previewPath,
+  });
+
+  /// Saves a pending change. Without Share the uploads stop; missing files go when the draft reopens.
+  void close();
+}
+
+@Injectable(as: PostDraftRepository)
+class PostDraftRepositoryImpl implements PostDraftRepository {
+  /// Typing does not write on every key.
   static const _saveDelay = Duration(milliseconds: 400);
 
-  PostDraftRepository(
+  PostDraftRepositoryImpl(
     this._local,
     this._uploads,
     this._server,
@@ -38,15 +95,14 @@ class PostDraftRepository {
   final PostDraftDatasource _local;
   final MediaUploadQueue _uploads;
   final PendingContentDatasource _server;
-  final SharedPostsRepository _shared;
+  final PostPublishingRepository _shared;
   final ContentDiscardRepository _discards;
 
   /// Opening the draft on the server; null again after a failure, so the next upload asks again.
   Future<void>? _serverDraft;
   bool _isOpeningServerDraft = false;
 
-  /// Something of the draft reached the server (it was opened there, or a file went up); kept in the
-  /// saved draft, so a discard after a restart still tells the server.
+  /// Kept in the saved draft, so a discard after a restart still tells the server.
   bool _isOnServer = false;
 
   /// The screen is open: if the app is killed now, the draft opens again at the next start.
@@ -62,18 +118,20 @@ class PostDraftRepository {
   Timer? _saveTimer;
   PostDraftModel? _lastDraft;
 
+  @override
   Stream<(String, MediaUploadStatus)> get uploadChanges => _uploads.changes;
 
+  @override
   PostDraftModel? read() {
     final draft = _local.read();
     _isOnServer = draft?.isOnServer ?? false;
     return draft;
   }
 
-  /// A draft left open when the app was killed: it is opened again at start.
+  @override
   bool get hasOpenDraft => _local.read()?.isOpen ?? false;
 
-  /// Saves [draft] after a short pause; null (nothing in it) forgets it.
+  @override
   void saveSoon(PostDraftModel? draft) {
     if (_isDone) return;
     _saveTimer?.cancel();
@@ -81,9 +139,7 @@ class PostDraftRepository {
     _saveTimer = Timer(_saveDelay, () => unawaited(saveNow(draft)));
   }
 
-  /// Saves [draft] at once; null (nothing in it) forgets it. [isOpen] false: the screen is being closed
-  /// by the person, so the draft is not opened again at start. Never throws: the draft stays as last
-  /// saved.
+  @override
   Future<void> saveNow(PostDraftModel? draft, {bool isOpen = true}) async {
     _saveTimer?.cancel();
     if (_isDone) return;
@@ -96,19 +152,17 @@ class PostDraftRepository {
     }
   }
 
-  /// [picked] moved into the folder of [draftId]. A file that cannot be moved stays where it is, so it can
-  /// still be shared (it is only missing from the draft after a restart).
+  @override
   Future<List<PickedMedia>> keepPicked(
     String draftId,
     List<PickedMedia> picked,
   ) => Future.wait(picked.map((item) => _keepPicked(draftId, item)));
 
-  /// A video's frame moved into the folder of [draftId]; null when it could not be moved.
+  @override
   Future<String?> keepPoster(String draftId, String poster) =>
       _keepOrNull(draftId, poster);
 
-  /// Starts uploading [media], already read, as [mediaId] of [draftId]; [poster] is a video's frame. The
-  /// first upload opens the draft on the server.
+  @override
   void upload(
     String draftId,
     String mediaId,
@@ -133,23 +187,20 @@ class PostDraftRepository {
     );
   }
 
+  @override
   void retry(String path) => _uploads.retry(path);
 
-  /// Takes a file off the draft: its upload stops, and the file and its [poster] go from the device and
-  /// the server.
+  @override
   void remove(String path, {String? poster}) {
     unawaited(_uploads.remove(path));
     unawaited(_local.deleteFile(path));
     if (poster != null) unawaited(_local.deleteFile(poster));
   }
 
-  /// A frame kept for a file that was taken off meanwhile.
+  @override
   void deleteFile(String path) => unawaited(_local.deleteFile(path));
 
-  /// Discard post: the uploads stop and the record is forgotten. When something of the draft may have
-  /// reached the server, the discard is saved, and the server discards the draft and deletes its files
-  /// (later, when offline); a draft that never left the phone only loses its files here. The files on the
-  /// device go without waiting.
+  @override
   Future<void> discard(String draftId) async {
     final mayBeOnServer =
         _isOnServer || _isOpeningServerDraft || _uploads.isUploading;
@@ -161,9 +212,7 @@ class PostDraftRepository {
     if (mayBeOnServer) unawaited(_discards.send(draftId, ContentKind.post));
   }
 
-  /// Share: [draft] goes to the background sender, which builds the post with [build] and waits for the
-  /// uploads still going, so nothing is sent twice. Nothing is saved as a draft any more; the uploads go on
-  /// for the sender. False (nothing done) while another post goes out.
+  @override
   bool share(
     PostDraftModel draft, {
     required Future<NewPostEntity> Function() build,
@@ -183,8 +232,7 @@ class PostDraftRepository {
     return isStarted;
   }
 
-  /// The screen closed: a change waiting to be saved is saved. Without Share the uploads stop; what is
-  /// missing goes when the draft is opened again.
+  @override
   void close() {
     if (_saveTimer?.isActive ?? false) {
       unawaited(saveNow(_lastDraft, isOpen: _isOpen));
@@ -200,7 +248,6 @@ class PostDraftRepository {
     if (change.$2 == MediaUploadStatus.uploaded) _markOnServer();
   }
 
-  /// Saves the draft again with the news, so it is known after a restart.
   void _markOnServer() {
     if (_isOnServer) return;
     _isOnServer = true;

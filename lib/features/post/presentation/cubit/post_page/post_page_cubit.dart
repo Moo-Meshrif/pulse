@@ -7,29 +7,27 @@ import '../../../../follow/data/enums/follow_status.dart';
 import '../../../../follow/domain/use_case/get_follow_status_use_case.dart';
 import '../../../../follow/domain/use_case/toggle_follow_use_case.dart';
 import '../../../../profile/domain/use_case/get_current_user_id_use_case.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/post_entity.dart';
+import '../../../domain/event/feed_refresh_requested.dart';
 import '../../../domain/event/post_counts_changed.dart';
 import '../../../domain/event/post_saved.dart';
-import '../../../domain/use_case/get_liked_by_preview_use_case.dart';
-import '../../../domain/use_case/get_post_use_case.dart';
 import '../../../domain/use_case/sign_post_media_urls_use_case.dart';
 import '../../utils/enums/post_page_status.dart';
 import '../../utils/feed_post.dart';
 import '../../utils/feed_post_signer.dart';
 import 'post_page_state.dart';
 
-/// One post on its own page: the post passed in shows at once and is read again, a post nobody can see
-/// shows "not available", and the Follow chip follows the author. What people do to the post is
-/// `PostActionsCubit`'s; this tells the feed about the counts it changed.
+/// One post on its own page: the post passed in shows at once and is read again. What people do to the
+/// post is `PostActionsCubit`'s; this tells the feed about the counts it changed.
 @injectable
 class PostPageCubit extends BaseCubit<PostPageState>
     with EventCubitMixin<PostPageState> {
   PostPageCubit(
-    this._getPost,
+    this._posts,
     SignPostMediaUrlsUseCase signMedia,
     this._getFollow,
     this._toggleFollow,
-    this._getLikedBy,
     this._events,
     GetCurrentUserIdUseCase currentUserId,
     @factoryParam this.postId,
@@ -48,13 +46,14 @@ class PostPageCubit extends BaseCubit<PostPageState>
     listenTo<PostSaved>((event) {
       if (event.post.id == postId) load();
     });
+    // An edit was saved but could not be read back: read this post again.
+    listenTo<FeedRefreshRequested>((_) => load());
   }
 
-  final GetPostUseCase _getPost;
+  final PostRepository _posts;
   final FeedPostSigner _signer;
   final GetFollowStatusUseCase _getFollow;
   final ToggleFollowUseCase _toggleFollow;
-  final GetLikedByPreviewUseCase _getLikedBy;
   final EventBus _events;
   final String postId;
 
@@ -85,7 +84,7 @@ class PostPageCubit extends BaseCubit<PostPageState>
   }
 
   Future<FeedPost?> _read() async {
-    final entity = await _getPost(postId);
+    final entity = await _posts.post(postId);
     return entity == null ? null : (await _signer.sign([entity])).single;
   }
 
@@ -103,7 +102,7 @@ class PostPageCubit extends BaseCubit<PostPageState>
   /// the row on screen.
   Future<void> loadLikedBy() async {
     try {
-      final likedBy = await _getLikedBy(postId);
+      final likedBy = await _posts.likedByPreview(postId);
       emit(state.copyWith(likedBy: likedBy));
     } on Object {
       // The row stays as it was; it is only a preview of the likes list.
@@ -133,7 +132,6 @@ class PostPageCubit extends BaseCubit<PostPageState>
     );
   }
 
-  /// The page changed the post (like, save, comments): the feed card follows.
   void countsChanged(PostEntity post, {Future<void>? likeSettled}) => fire(
     PostCountsChanged(
       postId: post.id,

@@ -41,4 +41,7 @@ abstract final class AvatarDimens {
   static double get badgePlus => AppScale.scale(14);
   static const double badgeRing = 2; // unscaled: stroke
   static double get list => AppScale.scale(48);
+
+  /// Space between the list circle's edge and its initials.
+  static double get initialsPadding => AppScale.scale(2);
 }

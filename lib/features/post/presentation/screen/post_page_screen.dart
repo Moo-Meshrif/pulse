@@ -67,9 +67,9 @@ class PostPageScreen extends StatelessWidget {
             if (post == null) return;
             context.read<PostPageCubit>().countsChanged(
               post,
-              likeSettled: context
-                  .read<PostActionsCubit>()
-                  .likeSettled(args.postId),
+              likeSettled: context.read<PostActionsCubit>().likeSettled(
+                args.postId,
+              ),
             );
           },
         ),

@@ -12,19 +12,6 @@ import 'package:pulse/features/post/data/datasource/comments_datasource.dart';
 import 'package:pulse/features/post/data/enums/comment_sort.dart';
 import 'package:pulse/features/post/domain/entity/comment_entity.dart';
 import 'package:pulse/features/post/domain/entity/comment_page_entity.dart';
-import 'package:pulse/features/post/domain/use_case/add_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/edit_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_comment_replies_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_liked_by_preview_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_mention_candidates_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_comments_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/comment_mentions/comment_mentions_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/comments/comments_cubit.dart';
@@ -41,11 +28,8 @@ import 'package:pulse/shared/content/domain/use_case/report_content_use_case.dar
 import 'package:pulse/shared/content/domain/use_case/set_mute_use_case.dart';
 
 import '../../../../helpers/pump_app.dart';
+import '../../post_doubles.dart';
 import '../../post_fixtures.dart';
-
-class _LikedBy extends Mock implements GetLikedByPreviewUseCase {}
-
-class _GetPost extends Mock implements GetPostUseCase {}
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -57,37 +41,14 @@ class _CurrentUser extends Mock implements GetCurrentUserIdUseCase {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
 
-class _GetComments extends Mock implements GetPostCommentsUseCase {}
-
-class _GetReplies extends Mock implements GetCommentRepliesUseCase {}
-
 class _CommentsDatasource extends Mock implements CommentsDatasource {}
 
-class _Add extends Mock implements AddCommentUseCase {}
-
-class _Edit extends Mock implements EditCommentUseCase {}
-
 class _Report extends Mock implements ReportContentUseCase {}
-
-class _Candidates extends Mock implements GetMentionCandidatesUseCase {}
-
-class _Like extends Mock implements SetPostLikeUseCase {}
-
-class _Save extends Mock implements SetPostSaveUseCase {}
-
-class _Hide extends Mock implements HidePostUseCase {}
-
-class _CommentsOff extends Mock implements SetCommentsEnabledUseCase {}
-
-class _Delete extends Mock implements DeletePostUseCase {}
-
-class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
 
 class _Mute extends Mock implements SetMuteUseCase {}
 
 void main() {
-  late _GetPost getPost;
-  late _GetComments getComments;
+  late MockPostRepository posts;
   late List<BlocBase<Object?>> disposables;
 
   setUpAll(() {
@@ -95,12 +56,11 @@ void main() {
   });
 
   setUp(() {
-    getPost = _GetPost();
-    getComments = _GetComments();
+    posts = MockPostRepository();
     disposables = [];
-    when(() => getPost(any())).thenAnswer((_) async => testPost('p1'));
+    when(() => posts.post(any())).thenAnswer((_) async => testPost('p1'));
     when(
-      () => getComments(
+      () => posts.comments(
         any(),
         sort: any(named: 'sort'),
         before: any(named: 'before'),
@@ -140,10 +100,9 @@ void main() {
     FeedPost? passed,
     bool postFound = true,
   }) async {
-    if (!postFound) when(() => getPost(any())).thenAnswer((_) async => null);
+    if (!postFound) when(() => posts.post(any())).thenAnswer((_) async => null);
     final user = _CurrentUser();
-    final likedBy = _LikedBy();
-    when(() => likedBy(any())).thenAnswer((_) async => null);
+    when(() => posts.likedByPreview(any())).thenAnswer((_) async => null);
     when(user.call).thenReturn('me');
     final sign = _Sign();
     when(() => sign(any())).thenAnswer((_) async => {});
@@ -153,40 +112,26 @@ void main() {
     when(account.call)
         .thenReturn(const LastAccountEntity(id: 'me', username: 'me.me'));
     final page = PostPageCubit(
-      getPost,
+      posts,
       sign,
       follow,
       _Toggle(),
-      likedBy,
       EventBus(),
       user,
       'p1',
       passed,
     );
-    final actions = PostActionsCubit(
-      _Like(),
-      _Save(),
-      _Hide(),
-      _CommentsOff(),
-      _Delete(),
-      _Report(),
-      _Mute(),
-      _Toggle(),
-      _RemoveTag(),
-    );
+    final actions = PostActionsCubit(posts, _Report(), _Mute(), _Toggle());
     final comments = CommentsCubit(
-      getComments,
-      _GetReplies(),
+      posts,
       _CommentsDatasource(),
-      _Add(),
       CommentDrafts(),
-      _Edit(),
       _Report(),
       account,
       'p1',
       null,
     );
-    final mentions = CommentMentionsCubit(_Candidates(), 'p1');
+    final mentions = CommentMentionsCubit(posts, 'p1');
     disposables.addAll([page, actions, comments, mentions]);
     unawaited(page.load());
     unawaited(comments.load());

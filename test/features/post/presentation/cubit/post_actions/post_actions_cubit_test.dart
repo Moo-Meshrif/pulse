@@ -8,12 +8,6 @@ import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
-import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_comments_enabled_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_like_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/set_post_save_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/post_row.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
@@ -23,32 +17,16 @@ import 'package:pulse/shared/content/data/model/post_count_model.dart';
 
 import '../../../../../helpers/content_mocks.dart';
 import '../../../../../helpers/failure_of.dart';
+import '../../../post_doubles.dart';
 import '../../../post_fixtures.dart';
-
-class _Like extends Mock implements SetPostLikeUseCase {}
-
-class _Save extends Mock implements SetPostSaveUseCase {}
-
-class _Hide extends Mock implements HidePostUseCase {}
-
-class _Comments extends Mock implements SetCommentsEnabledUseCase {}
-
-class _Delete extends Mock implements DeletePostUseCase {}
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
-class _RemoveTag extends Mock implements RemoveMyTagUseCase {}
-
 void main() {
-  late _Like like;
-  late _Save save;
-  late _Hide hide;
-  late _Comments comments;
-  late _Delete delete;
   late MockReportContent report;
   late MockSetMute mute;
   late _Follow follow;
-  late _RemoveTag removeTag;
+  late MockPostRepository posts;
   late PostActionsCubit cubit;
 
   final post = testPost('p1', authorId: 'a1');
@@ -56,20 +34,15 @@ void main() {
   setUpAll(registerContentFallbacks);
 
   setUp(() {
-    like = _Like();
-    save = _Save();
-    hide = _Hide();
-    comments = _Comments();
-    delete = _Delete();
+    posts = MockPostRepository();
     report = MockReportContent();
     mute = MockSetMute();
     follow = _Follow();
-    removeTag = _RemoveTag();
-    when(() => hide(any(), hidden: any(named: 'hidden')))
+    when(() => posts.hidePost(any(), hidden: any(named: 'hidden')))
         .thenAnswer((_) async {});
-    when(() => comments(any(), enabled: any(named: 'enabled')))
+    when(() => posts.setCommentsEnabled(any(), enabled: any(named: 'enabled')))
         .thenAnswer((_) async {});
-    when(() => delete(any())).thenAnswer((_) async {});
+    when(() => posts.deletePost(any())).thenAnswer((_) async {});
     when(() => report(any(), any(), any(), note: any(named: 'note')))
         .thenAnswer((_) async {});
     when(
@@ -79,23 +52,14 @@ void main() {
         scope: any(named: 'scope'),
       ),
     ).thenAnswer((_) async {});
-    cubit = PostActionsCubit(
-      like,
-      save,
-      hide,
-      comments,
-      delete,
-      report,
-      mute,
-      follow,
-      removeTag,
-    );
+    cubit = PostActionsCubit(posts, report, mute, follow);
   });
 
   group('like', () {
     test('shows at once and takes the count the server answers', () async {
       final answer = Completer<int>();
-      when(() => like('p1', liked: true)).thenAnswer((_) => answer.future);
+      when(() => posts.setLike('p1', liked: true))
+          .thenAnswer((_) => answer.future);
       final done = cubit.toggleLike(post);
       expect(cubit.postOf(post).likedByMe, isTrue);
       expect(cubit.postOf(post).likeCount, 11);
@@ -106,7 +70,8 @@ void main() {
     });
 
     test('rolls back and tells once when it fails', () async {
-      when(() => like('p1', liked: true)).thenThrow(const NetworkFailure());
+      when(() => posts.setLike('p1', liked: true))
+          .thenThrow(const NetworkFailure());
       await cubit.toggleLike(post);
       expect(cubit.postOf(post).likedByMe, isFalse);
       expect(cubit.postOf(post).likeCount, 10);
@@ -115,41 +80,43 @@ void main() {
 
     test('unlikes a liked post, never below zero', () async {
       final liked = testPost('p1', liked: true, likes: 0);
-      when(() => like('p1', liked: false)).thenAnswer((_) async => 0);
+      when(() => posts.setLike('p1', liked: false)).thenAnswer((_) async => 0);
       await cubit.toggleLike(liked);
       expect(cubit.postOf(liked).likedByMe, isFalse);
       expect(cubit.postOf(liked).likeCount, 0);
     });
 
     test('the double tap likes and never unlikes', () async {
-      when(() => like('p1', liked: true)).thenAnswer((_) async => 11);
+      when(() => posts.setLike('p1', liked: true)).thenAnswer((_) async => 11);
       await cubit.likeByDoubleTap(post);
       await cubit.likeByDoubleTap(post);
-      verify(() => like('p1', liked: true)).called(1);
-      verifyNever(() => like('p1', liked: false));
+      verify(() => posts.setLike('p1', liked: true)).called(1);
+      verifyNever(() => posts.setLike('p1', liked: false));
     });
 
     test('a second tap waits for the first', () async {
       final answer = Completer<int>();
-      when(() => like(any(), liked: any(named: 'liked')))
+      when(() => posts.setLike(any(), liked: any(named: 'liked')))
           .thenAnswer((_) => answer.future);
       final first = cubit.toggleLike(post);
       await cubit.toggleLike(post);
       answer.complete(11);
       await first;
-      verify(() => like('p1', liked: true)).called(1);
+      verify(() => posts.setLike('p1', liked: true)).called(1);
     });
   });
 
   group('save', () {
     test('shows at once and follows the answer', () async {
-      when(() => save('p1', saved: true)).thenAnswer((_) async => true);
+      when(() => posts.setSave('p1', saved: true))
+          .thenAnswer((_) async => true);
       await cubit.toggleSave(post);
       expect(cubit.postOf(post).savedByMe, isTrue);
     });
 
     test('rolls back when it fails', () async {
-      when(() => save('p1', saved: true)).thenThrow(const NetworkFailure());
+      when(() => posts.setSave('p1', saved: true))
+          .thenThrow(const NetworkFailure());
       await cubit.toggleSave(post);
       expect(cubit.postOf(post).savedByMe, isFalse);
       expect(cubit.state.failure, const NetworkFailure());
@@ -162,16 +129,17 @@ void main() {
       () async {
         await cubit.notInterested(post);
         expect(cubit.rowOf('p1'), PostRow.hidden);
-        verify(() => hide('p1', hidden: true)).called(1);
+        verify(() => posts.hidePost('p1', hidden: true)).called(1);
 
         await cubit.undoNotInterested(post);
         expect(cubit.rowOf('p1'), PostRow.card);
-        verify(() => hide('p1', hidden: false)).called(1);
+        verify(() => posts.hidePost('p1', hidden: false)).called(1);
       },
     );
 
     test('a failed hide throws and leaves the card', () async {
-      when(() => hide('p1', hidden: true)).thenThrow(const NetworkFailure());
+      when(() => posts.hidePost('p1', hidden: true))
+          .thenThrow(const NetworkFailure());
       expect(
         await failureOf(cubit.notInterested(post)),
         const NetworkFailure(),
@@ -222,7 +190,7 @@ void main() {
     test('Delete hides the post and sends nothing yet', () {
       cubit.delete(post);
       expect(cubit.rowOf('p1'), PostRow.deleting);
-      verifyNever(() => delete(any()));
+      verifyNever(() => posts.deletePost(any()));
     });
 
     test('Undo brings the deleted post back', () {
@@ -234,12 +202,12 @@ void main() {
     test('the commit sends the delete and removes the post', () async {
       cubit.delete(post);
       await cubit.commitDelete(post);
-      verify(() => delete('p1')).called(1);
+      verify(() => posts.deletePost('p1')).called(1);
       expect(cubit.rowOf('p1'), PostRow.removed);
     });
 
     test('a failed commit brings the post back with the failure', () async {
-      when(() => delete(any())).thenThrow(const NetworkFailure());
+      when(() => posts.deletePost(any())).thenThrow(const NetworkFailure());
       cubit.delete(post);
       await cubit.commitDelete(post);
       expect(cubit.rowOf('p1'), PostRow.card);
@@ -249,7 +217,7 @@ void main() {
     test('turns comments off and on again', () async {
       await cubit.toggleComments(post);
       expect(cubit.postOf(post).commentsEnabled, isFalse);
-      verify(() => comments('p1', enabled: false)).called(1);
+      verify(() => posts.setCommentsEnabled('p1', enabled: false)).called(1);
       await cubit.toggleComments(post);
       expect(cubit.postOf(post).commentsEnabled, isTrue);
     });
@@ -291,7 +259,7 @@ void main() {
 
     test('shows the tag gone at once and keeps it gone', () async {
       final answer = Completer<bool>();
-      when(() => removeTag('p1')).thenAnswer((_) => answer.future);
+      when(() => posts.removeMyTag('p1')).thenAnswer((_) => answer.future);
 
       final done = cubit.removeMyTag(tagged, userId: 'me');
 
@@ -305,7 +273,7 @@ void main() {
     });
 
     test('a tag that was already gone counts as removed', () async {
-      when(() => removeTag('p1')).thenAnswer((_) async => false);
+      when(() => posts.removeMyTag('p1')).thenAnswer((_) async => false);
 
       await cubit.removeMyTag(tagged, userId: 'me');
 
@@ -313,7 +281,7 @@ void main() {
     });
 
     test('puts the tag back and throws when it fails', () async {
-      when(() => removeTag('p1')).thenThrow(const NetworkFailure());
+      when(() => posts.removeMyTag('p1')).thenThrow(const NetworkFailure());
 
       await expectLater(
         cubit.removeMyTag(tagged, userId: 'me'),
@@ -327,7 +295,7 @@ void main() {
     });
 
     test('a like keeps the tags, the feeling and the count', () async {
-      when(() => like('p1', liked: true)).thenAnswer((_) async => 2);
+      when(() => posts.setLike('p1', liked: true)).thenAnswer((_) async => 2);
 
       await cubit.toggleLike(tagged);
 
@@ -383,7 +351,8 @@ void main() {
 
     test('a post with a like request in flight keeps its own count', () async {
       final answer = Completer<int>();
-      when(() => like('p1', liked: true)).thenAnswer((_) => answer.future);
+      when(() => posts.setLike('p1', liked: true))
+          .thenAnswer((_) => answer.future);
       final done = cubit.toggleLike(post);
 
       cubit.applyCounts(
@@ -397,8 +366,10 @@ void main() {
     });
 
     test('forget drops what was done to the replaced posts only', () async {
-      when(() => save('p1', saved: true)).thenAnswer((_) async => true);
-      when(() => save('p2', saved: true)).thenAnswer((_) async => true);
+      when(() => posts.setSave('p1', saved: true))
+          .thenAnswer((_) async => true);
+      when(() => posts.setSave('p2', saved: true))
+          .thenAnswer((_) async => true);
       final other = testPost('p2');
       await cubit.toggleSave(post);
       await cubit.toggleSave(other);

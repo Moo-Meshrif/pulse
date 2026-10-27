@@ -13,46 +13,27 @@ import '../../../../../shared/content/data/model/post_count_model.dart';
 import '../../../../../shared/content/domain/use_case/report_content_use_case.dart';
 import '../../../../../shared/content/domain/use_case/set_mute_use_case.dart';
 import '../../../../follow/domain/use_case/toggle_follow_use_case.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/post_entity.dart';
-import '../../../domain/use_case/delete_post_use_case.dart';
-import '../../../domain/use_case/hide_post_use_case.dart';
-import '../../../domain/use_case/remove_my_tag_use_case.dart';
-import '../../../domain/use_case/set_comments_enabled_use_case.dart';
-import '../../../domain/use_case/set_post_like_use_case.dart';
-import '../../../domain/use_case/set_post_save_use_case.dart';
 import '../../utils/enums/post_row.dart';
 import '../../utils/post_entity_edit.dart';
 import 'post_actions_state.dart';
 
-/// What a person does to the posts a screen lists: like and save (shown at once, rolled back when they
-/// fail) and the options of the "···" sheet. Every method takes the post as the screen loaded it; the
-/// changes made since are applied on top. Home provides one for its feed; the post page can do the same. The option methods throw the `Failure` of a request that failed:
-/// the options flow shows it.
+/// What a person does to the posts a screen lists: like and save (shown at once, rolled back on failure)
+/// and the options of the "···" sheet. Every method takes the post as the screen loaded it; changes made
+/// since are applied on top. The option methods throw the `Failure` of a failed request for the options
+/// flow to show.
 @injectable
 class PostActionsCubit extends BaseCubit<PostActionsState> {
-  PostActionsCubit(
-    this._setLike,
-    this._setSave,
-    this._hidePost,
-    this._setCommentsEnabled,
-    this._deletePost,
-    this._report,
-    this._setMute,
-    this._toggleFollow,
-    this._removeMyTag,
-  ) : super(const PostActionsState());
+  PostActionsCubit(this._posts, this._report, this._setMute, this._toggleFollow)
+    : super(const PostActionsState());
 
-  final SetPostLikeUseCase _setLike;
-  final SetPostSaveUseCase _setSave;
-  final HidePostUseCase _hidePost;
-  final SetCommentsEnabledUseCase _setCommentsEnabled;
-  final DeletePostUseCase _deletePost;
+  final PostRepository _posts;
   final ReportContentUseCase _report;
   final SetMuteUseCase _setMute;
   final ToggleFollowUseCase _toggleFollow;
-  final RemoveMyTagUseCase _removeMyTag;
 
-  /// Posts with a like or save request in flight: a second tap on the same post waits for the first.
+  /// A second tap on a post waits for the first request.
   final _likePending = <String>{};
   final _savePending = <String>{};
   final _likeRuns = <String, Future<void>>{};
@@ -139,7 +120,8 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
       setLiked(loaded, liked: true);
 
   /// Ends when the like request of [postId] in flight ends (at once when there is none).
-  Future<void> likeSettled(String postId) => _likeRuns[postId] ?? Future.value();
+  Future<void> likeSettled(String postId) =>
+      _likeRuns[postId] ?? Future.value();
 
   Future<void> setLiked(PostEntity loaded, {required bool liked}) {
     if (_likePending.contains(loaded.id)) return Future.value();
@@ -158,7 +140,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
       ),
     );
     await run(
-      () => _setLike(loaded.id, liked: liked),
+      () => _posts.setLike(loaded.id, liked: liked),
       onSuccess: (count) {
         _likePending.remove(loaded.id);
         return _withPost(postOf(loaded).copyWith(likeCount: count));
@@ -175,7 +157,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     if (!_savePending.add(loaded.id)) return;
     _emitPost(before.copyWith(savedByMe: !before.savedByMe));
     await run(
-      () => _setSave(loaded.id, saved: !before.savedByMe),
+      () => _posts.setSave(loaded.id, saved: !before.savedByMe),
       onSuccess: (saved) {
         _savePending.remove(loaded.id);
         return _withPost(postOf(loaded).copyWith(savedByMe: saved));
@@ -189,7 +171,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
 
   /// "Not interested": the card becomes the hidden row.
   Future<void> notInterested(PostEntity loaded) async {
-    await _hidePost(loaded.id, hidden: true);
+    await _posts.hidePost(loaded.id, hidden: true);
     _emitRow(loaded.id, PostRow.hidden);
     _hiddenTimers[loaded.id]?.cancel();
     _hiddenTimers[loaded.id] = Timer(hiddenUndoWindow, () {
@@ -202,7 +184,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
 
   Future<void> undoNotInterested(PostEntity loaded) async {
     _hiddenTimers.remove(loaded.id)?.cancel();
-    await _hidePost(loaded.id, hidden: false);
+    await _posts.hidePost(loaded.id, hidden: false);
     _emitRow(loaded.id, PostRow.card);
   }
 
@@ -246,7 +228,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
 
   Future<void> toggleComments(PostEntity loaded) async {
     final enabled = !postOf(loaded).commentsEnabled;
-    await _setCommentsEnabled(loaded.id, enabled: enabled);
+    await _posts.setCommentsEnabled(loaded.id, enabled: enabled);
     _emitPost(postOf(loaded).copyWith(commentsEnabled: enabled));
   }
 
@@ -256,16 +238,14 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     if (now.commentCount != count) _emitPost(now.copyWith(commentCount: count));
   }
 
-  /// Delete, step 1: the card goes at once and the request waits for [commitDelete], so the notice's
-  /// Undo can still bring it back.
+  /// The card goes at once; the request waits for [commitDelete] so Undo can bring it back.
   void delete(PostEntity loaded) => _emitRow(loaded.id, PostRow.deleting);
 
   void undoDelete(PostEntity loaded) => _emitRow(loaded.id, PostRow.card);
 
-  /// Delete, step 2: the notice ended without Undo. A failure brings the card back and is shown by the
-  /// screen through [PostActionsState.failure].
+  /// The notice ended without Undo. A failure brings the card back and shows in [PostActionsState.failure].
   Future<void> commitDelete(PostEntity loaded) => run(
-    () => _deletePost(loaded.id),
+    () => _posts.deletePost(loaded.id),
     onSuccess: (_) => state.copyWith(
       rows: {...state.rows, loaded.id: PostRow.removed},
       failure: null,
@@ -276,13 +256,13 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     ),
   );
 
-  /// Takes [userId]'s own tag off the post: the headline and labels change at once and come back when the
-  /// request fails (the `Failure` is thrown for the flow to show). A tag that was already gone counts as removed.
+  /// Takes [userId]'s tag off the post at once; it comes back if the request fails. A tag already gone
+  /// counts as removed.
   Future<void> removeMyTag(PostEntity loaded, {required String userId}) async {
     final before = postOf(loaded);
     _emitPost(before.withoutTag(userId));
     try {
-      await _removeMyTag(loaded.id);
+      await _posts.removeMyTag(loaded.id);
     } catch (_) {
       _emitPost(before);
       rethrow;

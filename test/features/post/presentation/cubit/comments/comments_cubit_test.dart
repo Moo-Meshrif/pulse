@@ -9,10 +9,6 @@ import 'package:pulse/features/post/data/enums/comment_sort.dart';
 import 'package:pulse/features/post/domain/entity/comment_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/comment_entity.dart';
 import 'package:pulse/features/post/domain/entity/comment_page_entity.dart';
-import 'package:pulse/features/post/domain/use_case/add_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/edit_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_comment_replies_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_comments_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/comments/comments_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/comment_drafts.dart';
 import 'package:pulse/features/post/presentation/utils/enums/comments_status.dart';
@@ -21,15 +17,9 @@ import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/domain/use_case/report_content_use_case.dart';
 
-class _MockGetComments extends Mock implements GetPostCommentsUseCase {}
-
-class _MockGetReplies extends Mock implements GetCommentRepliesUseCase {}
+import '../../../post_doubles.dart';
 
 class _MockComments extends Mock implements CommentsDatasource {}
-
-class _MockAddComment extends Mock implements AddCommentUseCase {}
-
-class _MockEdit extends Mock implements EditCommentUseCase {}
 
 class _MockReport extends Mock implements ReportContentUseCase {}
 
@@ -59,12 +49,9 @@ CommentEntity comment(
 );
 
 void main() {
-  late _MockGetComments getComments;
-  late _MockGetReplies getReplies;
+  late MockPostRepository posts;
   late _MockComments comments;
-  late _MockAddComment addComment;
   late CommentDrafts drafts;
-  late _MockEdit edit;
   late _MockReport report;
 
   final cursor = CommentCursorEntity(
@@ -75,18 +62,8 @@ void main() {
 
   final account = _MockAccount();
 
-  CommentsCubit build() => CommentsCubit(
-    getComments,
-    getReplies,
-    comments,
-    addComment,
-    drafts,
-    edit,
-    report,
-    account,
-    'p1',
-    null,
-  );
+  CommentsCubit build() =>
+      CommentsCubit(posts, comments, drafts, report, account, 'p1', null);
 
   void stubPage(
     List<CommentEntity> page, {
@@ -95,7 +72,7 @@ void main() {
     CommentSort sort = CommentSort.relevant,
   }) =>
       when(
-        () => getComments(
+        () => posts.comments(
           'p1',
           sort: sort,
           before: before,
@@ -114,12 +91,9 @@ void main() {
   });
 
   setUp(() {
-    getComments = _MockGetComments();
-    getReplies = _MockGetReplies();
+    posts = MockPostRepository();
     comments = _MockComments();
-    addComment = _MockAddComment();
     drafts = CommentDrafts();
-    edit = _MockEdit();
     report = _MockReport();
     when(() => account())
         .thenReturn(const LastAccountEntity(id: 'me', username: 'sara.k'));
@@ -151,7 +125,7 @@ void main() {
 
     test('a failure shows failed, and load again recovers', () async {
       when(
-        () => getComments(
+        () => posts.comments(
           'p1',
           sort: any(named: 'sort'),
           before: any(named: 'before'),
@@ -199,7 +173,7 @@ void main() {
       final cubit = build();
       await cubit.load();
       when(
-        () => getComments(
+        () => posts.comments(
           'p1',
           sort: any(named: 'sort'),
           before: cursor,
@@ -212,7 +186,7 @@ void main() {
 
       await cubit.loadMore();
       verify(
-        () => getComments(
+        () => posts.comments(
           'p1',
           sort: any(named: 'sort'),
           before: cursor,
@@ -233,7 +207,7 @@ void main() {
       await cubit.load();
       await cubit.loadMore();
       verify(
-        () => getComments(
+        () => posts.comments(
           'p1',
           sort: any(named: 'sort'),
           before: any(named: 'before'),
@@ -252,7 +226,7 @@ void main() {
       stubPage([
         comment('c1', replyCount: 3, replies: [reply1]),
       ]);
-      when(() => getReplies('c1', after: reply1)).thenAnswer(
+      when(() => posts.replies('c1', after: reply1)).thenAnswer(
         (_) async => [
           comment('r2', parentId: 'c1'),
           comment('r3', parentId: 'c1'),
@@ -274,14 +248,14 @@ void main() {
       stubPage([
         comment('c1', replyCount: 2, replies: [reply1]),
       ]);
-      when(() => getReplies('c1', after: reply1))
+      when(() => posts.replies('c1', after: reply1))
           .thenThrow(const NetworkFailure());
       final cubit = build();
       await cubit.load();
       await cubit.loadMoreReplies(cubit.state.comments.first);
       expect(cubit.state.replies['c1'], LoadMoreStatus.failed);
 
-      when(() => getReplies('c1', after: reply1))
+      when(() => posts.replies('c1', after: reply1))
           .thenAnswer((_) async => [comment('r2', parentId: 'c1')]);
       await cubit.loadMoreReplies(cubit.state.comments.first);
       expect(cubit.state.comments.first.replies, hasLength(2));
@@ -293,7 +267,8 @@ void main() {
       stubPage([
         comment('c1', replyCount: 5, replies: [reply1]),
       ]);
-      when(() => getReplies('c1', after: reply1)).thenAnswer((_) async => []);
+      when(() => posts.replies('c1', after: reply1))
+          .thenAnswer((_) async => []);
       final cubit = build();
       await cubit.load();
       await cubit.loadMoreReplies(cubit.state.comments.first);
@@ -348,7 +323,7 @@ void main() {
   });
   group('writing', () {
     void stubAdd(CommentEntity saved, {String? parentId}) => when(
-      () => addComment(
+      () => posts.addComment(
         'p1',
         any(),
         parentId: parentId,
@@ -382,7 +357,7 @@ void main() {
       await cubit.send('a' * 1001);
       expect(cubit.state.pending, isEmpty);
       verifyNever(
-        () => addComment(
+        () => posts.addComment(
           any(),
           any(),
           parentId: any(named: 'parentId'),
@@ -429,7 +404,7 @@ void main() {
         final ids = <String>[];
         var calls = 0;
         when(
-          () => addComment(
+          () => posts.addComment(
             'p1',
             'hi',
             parentId: null,
@@ -456,7 +431,7 @@ void main() {
     test('Delete drops a failed comment', () async {
       stubPage([]);
       when(
-        () => addComment(
+        () => posts.addComment(
           any(),
           any(),
           parentId: any(named: 'parentId'),
@@ -476,7 +451,7 @@ void main() {
       () async {
         stubPage([]);
         when(
-          () => addComment(
+          () => posts.addComment(
             any(),
             any(),
             parentId: any(named: 'parentId'),
@@ -517,7 +492,7 @@ void main() {
     test('edit saves the new words and marks the comment edited', () async {
       final edited = DateTime.utc(2026, 10, 26);
       final saved = comment('c1').copyWith(body: 'new', editedAt: edited);
-      when(() => edit('c1', 'new')).thenAnswer((_) async => saved);
+      when(() => posts.editComment('c1', 'new')).thenAnswer((_) async => saved);
       final cubit = await loaded([comment('c1')]);
       cubit.startEdit(cubit.state.comments.single);
       expect(await cubit.saveEdit(' new '), isTrue);
@@ -532,12 +507,13 @@ void main() {
       cubit.startEdit(cubit.state.comments.single);
       expect(await cubit.saveEdit('hello'), isTrue);
       expect(cubit.state.editing, isNull);
-      verifyNever(() => edit(any(), any()));
+      verifyNever(() => posts.editComment(any(), any()));
       await cubit.close();
     });
 
     test('a failed edit keeps the strip and reports', () async {
-      when(() => edit('c1', 'new')).thenThrow(const RejectedFailure());
+      when(() => posts.editComment('c1', 'new'))
+          .thenThrow(const RejectedFailure());
       final cubit = await loaded([comment('c1')]);
       cubit.startEdit(cubit.state.comments.single);
       expect(await cubit.saveEdit('new'), isFalse);

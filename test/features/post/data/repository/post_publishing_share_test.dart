@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
+import 'package:pulse/features/post/data/datasource/post_draft_datasource.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
-import 'package:pulse/features/post/data/repository/post_share_repository.dart';
+import 'package:pulse/features/post/data/repository/post_publishing_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/entity/new_post_media_entity.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
@@ -10,12 +12,17 @@ import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/enums/pending_content_state.dart';
 import 'package:pulse/shared/content/data/model/pending_content_status_model.dart';
 import 'package:pulse/shared/content/data/repository/content_media_repository.dart';
+import 'package:pulse/shared/content/data/repository/content_publish_repository.dart';
 
 import '../../../../helpers/pump_app.dart';
 
 class _Media extends Mock implements ContentMediaRepository {}
 
 class _Posts extends Mock implements PostsDatasource {}
+
+class _Device extends Mock implements PostDraftDatasource {}
+
+class _Publish extends Mock implements ContentPublishRepository {}
 
 const _photo = NewPostMediaEntity(
   id: 'm1',
@@ -38,7 +45,7 @@ void main() {
   late MockPendingContentDatasource server;
   late _Media media;
   late _Posts posts;
-  late PostShareRepository repository;
+  late PostPublishingRepositoryImpl repository;
 
   setUpAll(() {
     registerFallbackValue(ContentKind.post);
@@ -80,7 +87,14 @@ void main() {
         onProgress: any(named: 'onProgress'),
       ),
     ).thenAnswer((_) async => const SentMedia(path: 'u1/p1/m1.jpg'));
-    repository = PostShareRepository(server, media, posts);
+    repository = PostPublishingRepositoryImpl(
+      _Device(),
+      server,
+      media,
+      posts,
+      _Publish(),
+      EventBus(),
+    );
   });
 
   void verifyNothingSent() => verifyNever(

@@ -4,28 +4,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
 import 'package:pulse/features/post/domain/entity/tag_person_entity.dart';
-import 'package:pulse/features/post/domain/use_case/search_tag_people_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/tag_people/tag_people_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/tag_people_status.dart';
 import 'package:pulse/features/post/presentation/utils/new_post_limits.dart';
 import 'package:pulse/features/post/presentation/utils/tag_choice.dart';
 import 'package:pulse/features/post/presentation/utils/tag_people_args.dart';
 
-class _Search extends Mock implements SearchTagPeopleUseCase {}
+import '../../../post_doubles.dart';
 
 TagPersonEntity person(String id, {bool canTag = true}) =>
     TagPersonEntity(id: id, username: 'user$id', canTag: canTag);
 
 void main() {
-  late _Search search;
+  late MockPostRepository posts;
   late TagPeopleCubit cubit;
 
   TagPeopleCubit build([List<TagChoice> chosen = const []]) =>
-      TagPeopleCubit(search, TagPeopleArgs(chosen: chosen, photos: const []));
+      TagPeopleCubit(posts, TagPeopleArgs(chosen: chosen, photos: const []));
 
   setUp(() {
-    search = _Search();
-    when(() => search(any()))
+    posts = MockPostRepository();
+    when(() => posts.searchTagPeople(any()))
         .thenAnswer((_) async => [person('1'), person('2')]);
     cubit = build();
   });
@@ -37,15 +36,16 @@ void main() {
 
     expect(cubit.state.status, TagPeopleStatus.ready);
     expect(cubit.state.people.length, 2);
-    verify(() => search(null)).called(1);
+    verify(() => posts.searchTagPeople(null)).called(1);
   });
 
   test('a failed load can be tried again', () async {
-    when(() => search(any())).thenThrow(const NetworkFailure());
+    when(() => posts.searchTagPeople(any())).thenThrow(const NetworkFailure());
     await cubit.load();
     expect(cubit.state.status, TagPeopleStatus.failed);
 
-    when(() => search(any())).thenAnswer((_) async => [person('1')]);
+    when(() => posts.searchTagPeople(any()))
+        .thenAnswer((_) async => [person('1')]);
     await cubit.load();
     expect(cubit.state.status, TagPeopleStatus.ready);
   });
@@ -120,8 +120,8 @@ void main() {
         TagLimits.searchDelay + const Duration(milliseconds: 100),
       );
 
-      verify(() => search('sar')).called(1);
-      verifyNever(() => search('s'));
+      verify(() => posts.searchTagPeople('sar')).called(1);
+      verifyNever(() => posts.searchTagPeople('s'));
     });
 
     test('blank again goes back to the suggested people', () async {
@@ -134,13 +134,14 @@ void main() {
         TagLimits.searchDelay + const Duration(milliseconds: 100),
       );
 
-      verify(() => search(null)).called(1);
+      verify(() => posts.searchTagPeople(null)).called(1);
     });
 
     test('an older answer never replaces a newer one', () async {
       final slow = Completer<List<TagPersonEntity>>();
-      when(() => search('a')).thenAnswer((_) => slow.future);
-      when(() => search('ab')).thenAnswer((_) async => [person('9')]);
+      when(() => posts.searchTagPeople('a')).thenAnswer((_) => slow.future);
+      when(() => posts.searchTagPeople('ab'))
+          .thenAnswer((_) async => [person('9')]);
 
       cubit.queryChanged('a');
       await Future<void>.delayed(
@@ -163,7 +164,7 @@ void main() {
         TagLimits.searchDelay + const Duration(milliseconds: 100),
       );
 
-      verifyNever(() => search('sa'));
+      verifyNever(() => posts.searchTagPeople('sa'));
     });
   });
 }

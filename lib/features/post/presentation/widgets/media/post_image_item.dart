@@ -28,7 +28,6 @@ class PostImageItem extends StatefulWidget {
   /// The cache key of [url]; the media's own when null.
   final String? cacheKey;
 
-  /// The image fit
   final BoxFit fit;
 
   @override
@@ -80,10 +79,8 @@ class _PostImageItemState extends State<PostImageItem> {
     final url = _url;
     final cacheKey = _cacheKey;
     if (url == null && cacheKey == null) return blurhash;
-    // The posts saved on the phone have no link yet. The saved picture shows no blurhash while it is read
-    // (a picture on the phone is not "loading"; the blurhash only stands in when it is not there). Both
-    // pictures share one key and play gapless, so when the link arrives the saved one stays on screen until
-    // the linked one is ready.
+    // Saved posts have no link yet. Both pictures share one key and play gapless, so the saved one stays
+    // until the linked one is ready.
     final key = ValueKey(_attempt);
     if (url == null) {
       return AppImage.saved(

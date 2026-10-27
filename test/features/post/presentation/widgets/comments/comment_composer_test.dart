@@ -4,11 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/features/post/data/datasource/comments_datasource.dart';
 import 'package:pulse/features/post/domain/entity/comment_entity.dart';
-import 'package:pulse/features/post/domain/use_case/add_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/edit_comment_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_comment_replies_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_mention_candidates_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_comments_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/comment_mentions/comment_mentions_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/comments/comments_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/comment_drafts.dart';
@@ -19,41 +14,29 @@ import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case
 import 'package:pulse/shared/content/domain/use_case/report_content_use_case.dart';
 
 import '../../../../../helpers/pump_app.dart';
-
-class _GetComments extends Mock implements GetPostCommentsUseCase {}
-
-class _GetReplies extends Mock implements GetCommentRepliesUseCase {}
+import '../../../post_doubles.dart';
 
 class _Comments extends Mock implements CommentsDatasource {}
 
-class _Add extends Mock implements AddCommentUseCase {}
-
-class _Edit extends Mock implements EditCommentUseCase {}
-
 class _Report extends Mock implements ReportContentUseCase {}
-
-class _Candidates extends Mock implements GetMentionCandidatesUseCase {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
 
 void main() {
   late CommentsCubit cubit;
-  late _Add add;
+  late MockPostRepository posts;
   late CommentMentionsCubit mentions;
 
   setUp(() {
-    add = _Add();
-    mentions = CommentMentionsCubit(_Candidates(), 'p1');
+    posts = MockPostRepository();
+    mentions = CommentMentionsCubit(posts, 'p1');
     final account = _Account();
     when(account.call)
         .thenReturn(const LastAccountEntity(id: 'me', username: 'sara.k'));
     cubit = CommentsCubit(
-      _GetComments(),
-      _GetReplies(),
+      posts,
       _Comments(),
-      add,
       CommentDrafts(),
-      _Edit(),
       _Report(),
       account,
       'p1',
@@ -93,15 +76,19 @@ void main() {
     tester,
   ) async {
     when(
-      () =>
-          add('p1', 'hello', parentId: null, clientId: any(named: 'clientId')),
+      () => posts.addComment(
+        'p1',
+        'hello',
+        parentId: null,
+        clientId: any(named: 'clientId'),
+      ),
     ).thenAnswer((_) async => _saved());
     await pump(tester);
     final sendButton = find.bySemanticsLabel(l10nEn.commentsSend);
     await tester.tap(sendButton);
     await tester.pump();
     verifyNever(
-      () => add(
+      () => posts.addComment(
         any(),
         any(),
         parentId: any(named: 'parentId'),
@@ -117,8 +104,12 @@ void main() {
       isEmpty,
     );
     verify(
-      () =>
-          add('p1', 'hello', parentId: null, clientId: any(named: 'clientId')),
+      () => posts.addComment(
+        'p1',
+        'hello',
+        parentId: null,
+        clientId: any(named: 'clientId'),
+      ),
     ).called(1);
   });
 

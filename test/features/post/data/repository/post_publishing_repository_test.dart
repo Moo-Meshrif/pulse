@@ -7,8 +7,7 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/post/data/datasource/post_draft_datasource.dart';
 import 'package:pulse/features/post/data/model/post_draft_media_model.dart';
 import 'package:pulse/features/post/data/model/post_draft_model.dart';
-import 'package:pulse/features/post/data/repository/post_share_repository.dart';
-import 'package:pulse/features/post/data/repository/shared_posts_repository.dart';
+import 'package:pulse/features/post/data/repository/post_publishing_repository.dart';
 import 'package:pulse/features/post/domain/entity/new_post_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
@@ -19,9 +18,8 @@ import 'package:pulse/shared/content/data/repository/content_publish_repository.
 import 'package:pulse/shared/content/domain/entity/content_publish_status.dart';
 
 import '../../../../helpers/content_mocks.dart';
+import '../../../../helpers/post_publishing_doubles.dart';
 import '../../../../helpers/pump_app.dart';
-
-class _Share extends Mock implements PostShareRepository {}
 
 /// The device: the draft, the shared list and the folders deleted.
 class _Device implements PostDraftDatasource {
@@ -82,10 +80,10 @@ PostDraftModel _post(String id, {String caption = 'hello'}) => PostDraftModel(
 void main() {
   late _Device device;
   late MockPendingContentDatasource server;
-  late _Share share;
+  late MockSharer share;
   late EventBus bus;
   late ContentPublishRepositoryImpl publish;
-  late SharedPostsRepository shared;
+  late PostPublishingRepository shared;
   late List<Object> events;
 
   setUpAll(() {
@@ -102,7 +100,7 @@ void main() {
   setUp(() async {
     device = _Device();
     server = serverDraftOk();
-    share = _Share();
+    share = MockSharer();
     when(
       () => share.share(
         any(),
@@ -116,7 +114,7 @@ void main() {
       FakeContentDiscards(),
       FakeConnectivity(),
     );
-    shared = SharedPostsRepository(device, server, share, publish, bus);
+    shared = PublishingWithSharer(device, server, publish, bus, share);
     events = [];
     bus.on<Object>().listen(events.add);
     await pumpEventQueue();

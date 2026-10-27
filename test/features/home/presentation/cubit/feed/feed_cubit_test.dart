@@ -592,9 +592,7 @@ void main() {
     );
 
     test('fills after a page, only for posts that have likes', () async {
-      pages(
-        FeedPageEntity(posts: [testPost('p1'), testPost('p2', likes: 0)]),
-      );
+      pages(FeedPageEntity(posts: [testPost('p1'), testPost('p2', likes: 0)]));
       when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': line});
       final cubit = build();
       await cubit.start();
@@ -638,11 +636,7 @@ void main() {
       final cubit = build();
       await cubit.start();
 
-      cubit.likeChanged(
-        'p1',
-        liked: false,
-        settled: Completer<void>().future,
-      );
+      cubit.likeChanged('p1', liked: false, settled: Completer<void>().future);
 
       expect(cubit.state.likedBy, isEmpty);
       await cubit.close();

@@ -12,10 +12,9 @@ abstract interface class FeedRepository {
   /// Most posts kept on the device; a longer feed keeps its newest.
   static const maxSaved = 100;
 
-  /// A page of the feed. The first page (no cursor) replaces the saved feed for the signed-in user; a later
-  /// page is added to it. With [saved] no request is made: it returns the saved feed, or an empty page when nothing is saved or there
-  /// is no session. A failed request throws; it never falls back to the saved page (the caller shows that
-  /// first, itself).
+  /// A page of the feed. The first page (no cursor) replaces the saved feed; a later page is added to it.
+  /// With [saved] no request is made: it returns the saved feed, or an empty page. A failed request
+  /// throws; it never falls back to the saved page.
   Future<FeedPageModel> page({
     required int limit,
     DateTime? beforeCreated,
@@ -81,8 +80,7 @@ class FeedRepositoryImpl implements FeedRepository {
     }
   }
 
-  /// The page is already on its way to the screen: it does not wait for the disk, and a copy that cannot be
-  /// made (no session) never fails the load.
+  /// Does not wait for the disk, and a failed copy never fails the load.
   void _save(FeedPageModel page) {
     try {
       unawaited(_local.write(_remote.currentUserId, _capped(page)));

@@ -9,8 +9,6 @@ import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
 import 'package:pulse/features/post/domain/entity/tag_person_entity.dart';
 import 'package:pulse/features/post/domain/entity/tagged_person_entity.dart';
-import 'package:pulse/features/post/domain/use_case/get_tagged_people_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/search_tag_people_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/tag_in_photo/tag_in_photo_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/tag_people/tag_people_cubit.dart';
 import 'package:pulse/features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart';
@@ -30,10 +28,7 @@ import 'package:pulse/features/post/presentation/widgets/post_video_scope.dart';
 import 'package:pulse/features/post/presentation/widgets/tagged_people/tagged_people_sheet.dart';
 
 import '../../../helpers/pump_app.dart';
-
-class _Search extends Mock implements SearchTagPeopleUseCase {}
-
-class _GetPeople extends Mock implements GetTaggedPeopleUseCase {}
+import '../post_doubles.dart';
 
 class _Follow extends Mock implements ToggleFollowUseCase {}
 
@@ -82,10 +77,9 @@ void main() {
 
   setUp(() async {
     await getIt.reset();
-    final search = _Search();
-    final getPeople = _GetPeople();
-    when(() => search(any())).thenAnswer((_) async => people);
-    when(() => getPeople(any())).thenAnswer(
+    final posts = MockPostRepository();
+    when(() => posts.searchTagPeople(any())).thenAnswer((_) async => people);
+    when(() => posts.taggedPeople(any())).thenAnswer(
       (_) async => const [
         TaggedPersonEntity(
           id: 'me',
@@ -103,13 +97,13 @@ void main() {
     );
     getIt
       ..registerFactoryParam<TagPeopleCubit, TagPeopleArgs, void>(
-        (a, _) => TagPeopleCubit(search, a),
+        (a, _) => TagPeopleCubit(posts, a),
       )
       ..registerFactoryParam<TagInPhotoCubit, TagPeopleArgs, void>(
         (a, _) => TagInPhotoCubit(a),
       )
       ..registerFactoryParam<TaggedPeopleCubit, String, void>(
-        (id, _) => TaggedPeopleCubit(getPeople, _Follow(), id),
+        (id, _) => TaggedPeopleCubit(posts, _Follow(), id),
       );
     addTearDown(getIt.reset);
   });

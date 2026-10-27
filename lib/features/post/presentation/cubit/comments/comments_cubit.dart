@@ -11,12 +11,9 @@ import '../../../../profile/domain/entity/last_account_entity.dart';
 import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../data/datasource/comments_datasource.dart';
 import '../../../data/enums/comment_sort.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/comment_entity.dart';
 import '../../../domain/entity/comment_page_entity.dart';
-import '../../../domain/use_case/add_comment_use_case.dart';
-import '../../../domain/use_case/edit_comment_use_case.dart';
-import '../../../domain/use_case/get_comment_replies_use_case.dart';
-import '../../../domain/use_case/get_post_comments_use_case.dart';
 import '../../utils/comment_drafts.dart';
 import '../../utils/comment_edit.dart';
 import '../../utils/comment_text.dart';
@@ -24,18 +21,14 @@ import '../../utils/enums/comments_status.dart';
 import '../../utils/pending_comment.dart';
 import 'comments_state.dart';
 
-/// The comments sheet of one post: pages of comments in the chosen order, the rest of a thread's replies,
-/// likes shown at once and put back when the request fails, and your own comments: shown while they are
-/// sent, kept when they fail so Retry writes them once.
+/// The comments sheet of one post. Likes and your own comments show at once; a failed like is put back,
+/// and a failed comment is kept so Retry writes it once.
 @injectable
 class CommentsCubit extends BaseCubit<CommentsState> {
   CommentsCubit(
-    this._getComments,
-    this._getReplies,
+    this._posts,
     this._comments,
-    this._addComment,
     this._drafts,
-    this._editComment,
     this._report,
     GetLastAccountUseCase account,
     @factoryParam this.postId,
@@ -43,12 +36,9 @@ class CommentsCubit extends BaseCubit<CommentsState> {
   ) : me = account(),
       super(const CommentsState());
 
-  final GetPostCommentsUseCase _getComments;
-  final GetCommentRepliesUseCase _getReplies;
+  final PostRepository _posts;
   final CommentsDatasource _comments;
-  final AddCommentUseCase _addComment;
   final CommentDrafts _drafts;
-  final EditCommentUseCase _editComment;
   final ReportContentUseCase _report;
   final String postId;
 
@@ -68,13 +58,13 @@ class CommentsCubit extends BaseCubit<CommentsState> {
   final _hidden = <String, RemovedComment>{};
   bool _saving = false;
 
-  /// Loads the first page in the current sort (also the retry). The page saved on the phone for this sort
-  /// shows at once and the fresh one replaces it; with nothing saved the skeleton shows.
+  /// Loads the first page (also the retry). The saved page for this sort shows first and the fresh one
+  /// replaces it.
   Future<void> load() {
     final generation = ++_generation;
     final saved = _saved();
     return run(
-      () => _getComments(
+      () => _posts.comments(
         postId,
         sort: state.sort,
         userId: me?.id,
@@ -114,16 +104,14 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     );
   }
 
-  /// The saved first page of the current sort; null when none, it has no comments, or a link asks for a
-  /// comment in focus (that page is never saved).
+  /// Null when nothing is saved, it has no comments, or a comment is in focus (that page is never saved).
   CommentPageEntity? _saved() {
     final userId = me?.id;
     if (userId == null || focusCommentId != null) return null;
-    final page = _getComments.saved(userId, postId, state.sort);
+    final page = _posts.savedComments(userId, postId, state.sort);
     return page == null || page.comments.isEmpty ? null : page;
   }
 
-  /// Shows the comments in [sort], from the top.
   Future<void> changeSort(CommentSort sort) {
     if (sort == state.sort) return Future.value();
     emit(state.copyWith(sort: sort));
@@ -135,7 +123,7 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     final cursor = state.nextCursor;
     final generation = _generation;
     return run(
-      () => _getComments(
+      () => _posts.comments(
         postId,
         sort: state.sort,
         before: cursor,
@@ -165,7 +153,7 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     final id = comment.id;
     final generation = _generation;
     return run(
-      () => _getReplies(id, after: comment.replies.lastOrNull),
+      () => _posts.replies(id, after: comment.replies.lastOrNull),
       prevent: state.replies[id] == LoadMoreStatus.loading,
       loading: _withReplyStatus(id, LoadMoreStatus.loading),
       onSuccess: (replies) {
@@ -188,7 +176,6 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     );
   }
 
-  /// Likes [comment], or unlikes it when you already liked it.
   Future<void> toggleLike(CommentEntity comment) async {
     final id = comment.id;
     if (!_likePending.add(id)) return;
@@ -259,7 +246,6 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     return _post(pending.first);
   }
 
-  /// Drops a failed comment.
   void discardFailed(String clientId) => emit(
     state.copyWith(
       pending: state.pending.where((p) => p.clientId != clientId).toList(),
@@ -278,7 +264,6 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     emit(state.copyWith(emoji: null));
   }
 
-  /// Puts the words of your [comment] in the field to change them.
   void startEdit(CommentEntity comment) =>
       emit(state.copyWith(editing: comment, replyTo: null));
 
@@ -296,7 +281,7 @@ class CommentsCubit extends BaseCubit<CommentsState> {
     _saving = true;
     var saved = false;
     await run(
-      () => _editComment(target.id, body),
+      () => _posts.editComment(target.id, body),
       onSuccess: (comment) {
         saved = true;
         return state.copyWith(
@@ -395,7 +380,7 @@ class CommentsCubit extends BaseCubit<CommentsState> {
   ) => _report(ContentKind.comment, comment.id, reason, note: note);
 
   Future<void> _post(PendingComment pending) => run(
-    () => _addComment(
+    () => _posts.addComment(
       postId,
       pending.body,
       parentId: pending.parentId,

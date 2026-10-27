@@ -4,7 +4,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/di/injection.dart';
 import 'package:pulse/core/router/app_routes.dart';
 import 'package:pulse/core/utils/story_post_args.dart';
-import 'package:pulse/features/post/domain/use_case/share_to_feed_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/share_sheet/share_sheet_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/enums/share_access.dart';
 import 'package:pulse/features/post/presentation/widgets/share_sheet/share_sheet.dart';
@@ -17,25 +16,24 @@ import 'package:pulse/shared/content/domain/use_case/get_privacy_use_case.dart';
 import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case.dart';
 
 import '../../../../../helpers/pump_app.dart';
+import '../../../post_doubles.dart';
 
 class _Status extends Fake implements GetPublishStatusUseCase {
   @override
   ContentPublishStatus call(ContentKind kind) => ContentPublishIdle(kind);
 }
 
-class _Share extends Mock implements ShareToFeedUseCase {}
-
 class _Privacy extends Mock implements GetPrivacyUseCase {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
 
 void main() {
-  late _Share shareToFeed;
+  late MockPostRepository posts;
   late _Privacy privacy;
 
   setUp(() async {
     await getIt.reset();
-    shareToFeed = _Share();
+    posts = MockPostRepository();
     privacy = _Privacy();
     final account = _Account();
     when(account.call).thenReturn(null);
@@ -46,7 +44,7 @@ void main() {
       ),
     );
     when(
-      () => shareToFeed(
+      () => posts.shareToFeed(
         any(),
         caption: any(named: 'caption'),
         audience: any(named: 'audience'),
@@ -57,14 +55,14 @@ void main() {
     ).thenReturn(true);
     getIt.registerFactoryParam<ShareSheetCubit, String, void>(
       (postId, _) =>
-          ShareSheetCubit(shareToFeed, privacy, _Status(), account, postId),
+          ShareSheetCubit(posts, privacy, _Status(), account, postId),
     );
   });
 
   tearDown(getIt.reset);
 
   void busy() => when(
-    () => shareToFeed(
+    () => posts.shareToFeed(
       any(),
       caption: any(named: 'caption'),
       audience: any(named: 'audience'),
@@ -206,7 +204,7 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(
-        () => shareToFeed(
+        () => posts.shareToFeed(
           'o1',
           caption: null,
           audience: ContentAudience.public,

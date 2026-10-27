@@ -6,8 +6,6 @@ import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/get_follow_status_use_case.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_liked_by_preview_use_case.dart';
-import 'package:pulse/features/post/domain/use_case/get_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
 import 'package:pulse/features/post/presentation/cubit/post_page/post_page_cubit.dart';
 import 'package:pulse/features/post/presentation/utils/feed_post.dart';
@@ -19,11 +17,8 @@ import 'package:pulse/features/post/presentation/widgets/post_page/post_page_una
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 
 import '../../../../../helpers/pump_app.dart';
+import '../../../post_doubles.dart';
 import '../../../post_fixtures.dart';
-
-class _LikedBy extends Mock implements GetLikedByPreviewUseCase {}
-
-class _GetPost extends Mock implements GetPostUseCase {}
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -42,17 +37,16 @@ void main() {
 
     PostPageCubit cubit({String authorId = 'author'}) {
       final user = _CurrentUser();
-      final likedBy = _LikedBy();
-      when(() => likedBy(any())).thenAnswer((_) async => null);
+      final posts = MockPostRepository();
+      when(() => posts.likedByPreview(any())).thenAnswer((_) async => null);
       when(user.call).thenReturn('me');
       final sign = _Sign();
       when(() => sign(any())).thenAnswer((_) async => {});
       return PostPageCubit(
-        _GetPost(),
+        posts,
         sign,
         getFollow,
         toggle,
-        likedBy,
         EventBus(),
         user,
         'p1',

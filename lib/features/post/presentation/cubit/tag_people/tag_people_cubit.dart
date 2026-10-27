@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart' show listEquals;
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/state/base_cubit.dart';
+import '../../../data/repository/post_repository.dart';
 import '../../../domain/entity/tag_person_entity.dart';
-import '../../../domain/use_case/search_tag_people_use_case.dart';
 import '../../utils/enums/tag_people_status.dart';
 import '../../utils/new_post_limits.dart';
 import '../../utils/tag_choice.dart';
@@ -16,11 +16,11 @@ import 'tag_people_state.dart';
 /// up to [TagLimits.maxPeople] chosen. It only chooses people; their spots on photos are set on Tag in photo.
 @injectable
 class TagPeopleCubit extends BaseCubit<TagPeopleState> {
-  TagPeopleCubit(this._search, @factoryParam TagPeopleArgs args)
+  TagPeopleCubit(this._posts, @factoryParam TagPeopleArgs args)
     : _initial = args.chosen,
       super(TagPeopleState(chosen: args.chosen));
 
-  final SearchTagPeopleUseCase _search;
+  final PostRepository _posts;
   final List<TagChoice> _initial;
 
   Timer? _debounce;
@@ -73,7 +73,7 @@ class TagPeopleCubit extends BaseCubit<TagPeopleState> {
     final request = ++_request;
     final text = state.query.trim();
     return run(
-      () => _search(text.isEmpty ? null : text),
+      () => _posts.searchTagPeople(text.isEmpty ? null : text),
       loading: state.copyWith(status: TagPeopleStatus.loading),
       onSuccess: (people) => request == _request
           ? state.copyWith(status: TagPeopleStatus.ready, people: people)

@@ -26,6 +26,9 @@ class _Headers extends Mock implements HttpHeaders {}
 class PngHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
+    // `any()` below needs it; without it `when` throws halfway and mocktail keeps a stub half-made, so
+    // every later `when` in the test file fails with "Cannot call `when` within a stub response".
+    registerFallbackValue(Uri());
     final client = _Client();
     final request = _Request();
     final response = _Response();
