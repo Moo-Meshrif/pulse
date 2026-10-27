@@ -5,10 +5,13 @@ import '../../../../core/theme/app_scale.dart';
 abstract final class ProfileDimens {
   // Header.
   static double get coverHeight => AppScale.scale(170);
-  static double get avatar => AppScale.scale(96);
+  static double get avatar => AppScale.scale(80);
+
+  /// Initials size in the avatar.
+  static double get avatarInitials => AppScale.scale(28);
 
   /// The avatar sits this far over the cover.
-  static double get avatarOverlap => AppScale.scale(48);
+  static double get avatarOverlap => AppScale.scale(40);
   static const double avatarWhiteRing = 4; // unscaled: stroke [estimated]
   static const double avatarRing = 2; // unscaled: stroke [estimated]
   static const double coverButton = 44; // tap target: fixed
@@ -30,6 +33,7 @@ abstract final class ProfileDimens {
   static double get followGap => AppScale.scale(8);
 
   // Stats card.
+  static double get statsRadius => AppScale.scale(20);
   static double get statsHeight => AppScale.scale(68); // [estimated]
   static double get statsDividerHeight => AppScale.scale(34); // [estimated]
   static const double statsDividerWidth = 1; // unscaled: hairline
@@ -49,4 +53,10 @@ abstract final class ProfileDimens {
   static double get lockedIcon => AppScale.scale(56);
   static double get lockedPadding => AppScale.scale(28);
   static double get lockedGap => AppScale.scale(12);
+
+  // Empty or failed grid, shown under the tabs.
+  static double get emptyHeight => AppScale.scale(380);
+
+  /// An empty tab fills the space above the nav; on a short screen it keeps at least this and scrolls.
+  static double get emptyMinHeight => AppScale.scale(260);
 }

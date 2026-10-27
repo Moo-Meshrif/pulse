@@ -166,6 +166,19 @@ abstract final class AppRouter {
         settings,
         FeelingScreen(current: settings.arguments as PostMoodEntity?),
       ),
+      // Settings and its pages stay placeholders until their phases of docs/plans/profile-plan.md.
+      AppRoutes.settings ||
+      AppRoutes.settingsPersonalInfo ||
+      AppRoutes.settingsSecurity ||
+      AppRoutes.settingsPrivacy ||
+      AppRoutes.settingsBlocked ||
+      AppRoutes.settingsNotifications ||
+      AppRoutes.settingsLanguage ||
+      AppRoutes.settingsHelp ||
+      AppRoutes.settingsHelpTopic ||
+      AppRoutes.settingsReport ||
+      AppRoutes.settingsTerms ||
+      AppRoutes.people => _page(settings, PlaceholderScreen(route: path)),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
       AppRoutes.search ||
       AppRoutes.activity => _page(settings, PlaceholderScreen(route: path)),

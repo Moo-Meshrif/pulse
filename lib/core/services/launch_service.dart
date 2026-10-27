@@ -2,6 +2,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Everything the app hands to another app. One method per use, so callers say what they want, not how
@@ -13,6 +14,9 @@ abstract interface class LaunchService {
 
   /// Opens [uri] in the device's browser (or the app registered for its scheme, e.g. `mailto:`).
   Future<bool> openUrl(Uri uri);
+
+  /// Opens the system share sheet with [text]. False when it could not open.
+  Future<bool> shareText(String text);
 }
 
 /// [LaunchService] over `url_launcher`.
@@ -52,6 +56,16 @@ final class UrlLauncherLaunchService implements LaunchService {
   @override
   Future<bool> openUrl(Uri uri) =>
       _launch(uri, mode: LaunchMode.externalApplication);
+
+  @override
+  Future<bool> shareText(String text) async {
+    try {
+      await SharePlus.instance.share(ShareParams(text: text));
+      return true;
+    } on Object {
+      return false;
+    }
+  }
 
   Future<bool> _launch(
     Uri uri, {

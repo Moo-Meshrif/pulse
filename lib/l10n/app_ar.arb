@@ -2884,5 +2884,85 @@
   "valueOff": "متوقف",
   "@valueOff": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTabPosts": "المنشورات",
+  "@profileTabPosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTabShorts": "الشورتس",
+  "@profileTabShorts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTabSaved": "المحفوظات",
+  "@profileTabSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profilePosts": "المنشورات",
+  "@profilePosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileFollowers": "المتابعون",
+  "@profileFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileFollowing": "يتابع",
+  "@profileFollowing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoPosts": "لا توجد منشورات بعد",
+  "@profileNoPosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoPostsBody": "المنشورات التي تشاركها ستظهر هنا.",
+  "@profileNoPostsBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileSharePost": "شارك أول منشور لك",
+  "@profileSharePost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoSaved": "لا يوجد شيء محفوظ بعد",
+  "@profileNoSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoSavedBody": "اضغط على علامة الحفظ في أي منشور ليظهر هنا. أنت وحدك من يراه.",
+  "@profileNoSavedBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileShortsSoon": "الشورتس قادمة قريبًا",
+  "@profileShortsSoon": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileShortsSoonBody": "ستظهر مقاطع الفيديو القصيرة هنا.",
+  "@profileShortsSoonBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileShareA11y": "مشاركة الملف الشخصي",
+  "@profileShareA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileSettingsA11y": "الإعدادات",
+  "@profileSettingsA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileViewPhotoA11y": "عرض صورة الملف الشخصي",
+  "@profileViewPhotoA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profilePostA11y": "فتح المنشور",
+  "@profilePostA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileLoadMoreError": "تعذّر تحميل المزيد · أعد المحاولة",
+  "@profileLoadMoreError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileCaughtUp": "هذا كل شيء",
+  "@profileCaughtUp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileOfflineNumbers": "اتصل بالإنترنت لعرض الأرقام.",
+  "@profileOfflineNumbers": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

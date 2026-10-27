@@ -3052,5 +3052,85 @@
   "valuePublic": "Public",
   "valuePrivate": "Private",
   "valueOn": "On",
-  "valueOff": "Off"
+  "valueOff": "Off",
+  "profileTabPosts": "Posts",
+  "@profileTabPosts": {
+    "description": "Profile tab: the person's posts"
+  },
+  "profileTabShorts": "Shorts",
+  "@profileTabShorts": {
+    "description": "Profile tab: the person's shorts"
+  },
+  "profileTabSaved": "Saved",
+  "@profileTabSaved": {
+    "description": "Profile tab: posts the signed-in person saved"
+  },
+  "profilePosts": "Posts",
+  "@profilePosts": {
+    "description": "Profile numbers: label under the post count"
+  },
+  "profileFollowers": "Followers",
+  "@profileFollowers": {
+    "description": "Profile numbers: label under the followers count"
+  },
+  "profileFollowing": "Following",
+  "@profileFollowing": {
+    "description": "Profile numbers: label under the following count"
+  },
+  "profileNoPosts": "No posts yet",
+  "@profileNoPosts": {
+    "description": "Profile Posts tab: empty title"
+  },
+  "profileNoPostsBody": "Posts you share will show up here.",
+  "@profileNoPostsBody": {
+    "description": "Profile Posts tab: empty message"
+  },
+  "profileSharePost": "Share your first post",
+  "@profileSharePost": {
+    "description": "Profile Posts tab: empty button that opens the post composer"
+  },
+  "profileNoSaved": "Nothing saved yet",
+  "@profileNoSaved": {
+    "description": "Profile Saved tab: empty title"
+  },
+  "profileNoSavedBody": "Tap the bookmark on a post to keep it here. Only you can see this.",
+  "@profileNoSavedBody": {
+    "description": "Profile Saved tab: empty message"
+  },
+  "profileShortsSoon": "Shorts are coming soon",
+  "@profileShortsSoon": {
+    "description": "Profile Shorts tab: title"
+  },
+  "profileShortsSoonBody": "Short videos will live here.",
+  "@profileShortsSoonBody": {
+    "description": "Profile Shorts tab: message"
+  },
+  "profileShareA11y": "Share profile",
+  "@profileShareA11y": {
+    "description": "Profile: label of the share button"
+  },
+  "profileSettingsA11y": "Settings",
+  "@profileSettingsA11y": {
+    "description": "Profile: label of the settings button"
+  },
+  "profileViewPhotoA11y": "View profile photo",
+  "@profileViewPhotoA11y": {
+    "description": "Profile: label of the avatar, which opens the photo"
+  },
+  "profilePostA11y": "Open post",
+  "@profilePostA11y": {
+    "description": "Profile grid: label of a post tile"
+  },
+  "profileLoadMoreError": "Couldn't load more · Retry",
+  "@profileLoadMoreError": {
+    "description": "Profile grid footer when loading the next page failed"
+  },
+  "profileCaughtUp": "That's everything",
+  "@profileCaughtUp": {
+    "description": "Profile grid footer at the end of the list"
+  },
+  "profileOfflineNumbers": "Connect to the internet to see the numbers.",
+  "@profileOfflineNumbers": {
+    "description": "Profile: note under the saved header shown offline"
+  }
 }

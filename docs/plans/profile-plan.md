@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [ ] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -163,16 +163,16 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze; run the app.
 
 ### Phase 4: Your profile
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit test passes; not yet run on a device (needs the Phase 1 migration applied to the live database)
 - **Goal:** the Profile tab shows your real profile: header, numbers, tabs and the Posts and Saved grids.
 - **Depends on:** Phases 1, 3.
 - **Spec refs:** screens/s1-profile.md, 02-components.md (ProfileHeader, StatsCard, ProfileTabs, PostGrid).
 - **Tasks:**
-  - [ ] Data for the profile page, the grid and saved posts.
-  - [ ] Header, stats card, tabs, grid, empty/loading/offline states.
-  - [ ] Share, photo viewer, sliders button.
-  - [ ] Replace the Profile tab placeholder.
-  - [ ] TODO markers T1, T3, T11.
+  - [x] Data for the profile page, the grid and saved posts.
+  - [x] Header, stats card, tabs, grid, empty/loading/offline states.
+  - [x] Share, photo viewer, sliders button.
+  - [x] Replace the Profile tab placeholder.
+  - [x] TODO markers T1, T3, T11.
 - **Implementation steps:**
   1. `lib/features/profile/data/model/profile_page_model.dart` (new): wire model of `profile_by_id` (profile fields, counts, `iFollow`, `followsMe`, `canMessage`, `isPrivate`, `blockedByMe`, `isVerified`, `coverUrl`); `profile_grid_item_model.dart` (new): post id, first media thumbnail, blurhash, kind (photo, video, multi). Use `JsonMapper` and the style of `profile_model.dart`.
   2. `lib/features/profile/data/datasource/profile_page_datasource.dart` (new, interface + Supabase adapter in one file, like `follows_datasource.dart`): `getProfilePage(userId)` (null when the row is missing), `getPosts(userId, {before})`, `getSavedPosts({before})`, `getTagged(userId, {before})`; all through `Guard.run`.
@@ -411,7 +411,7 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 | id | item | blocks | needed from | status |
 |---|---|---|---|---|
 | B1 | Live database changes approval | 1, 2 | you | open |
-| B2 | New packages if missing (share, package info, device info) | 4, 6, 10 | you | open |
+| B2 | New packages if missing (share, package info, device info) | 4, 6, 10 | you | share_plus added (Phase 4); package_info_plus still to ask (6); device_info_plus already present |
 
 ### Code TODOs (id | what is pending | the code it sits in | phase)
 | id | what is pending | code | phase |

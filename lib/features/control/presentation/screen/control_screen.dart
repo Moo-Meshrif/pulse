@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../home/presentation/screen/home_screen.dart';
+import '../../../profile/presentation/screen/profile_screen.dart';
 import '../cubit/control_cubit.dart';
 import '../cubit/control_state.dart';
 import '../utils/enums/main_tab.dart';
@@ -23,8 +24,7 @@ class ControlScreen extends StatelessWidget {
     MainTab.shorts => const TabPlaceholder(tab: MainTab.shorts),
     // TODO(control-page-plan T3): Chat tab placeholder until the chat feature exists.
     MainTab.chat => const TabPlaceholder(tab: MainTab.chat),
-    // TODO(control-page-plan T4): Profile tab placeholder until the profile screens are specced.
-    MainTab.profile => const TabPlaceholder(tab: MainTab.profile),
+    MainTab.profile => const ProfileScreen(),
   };
 
   @override

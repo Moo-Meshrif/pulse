@@ -2361,4 +2361,65 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get valueOff => 'متوقف';
+
+  @override
+  String get profileTabPosts => 'المنشورات';
+
+  @override
+  String get profileTabShorts => 'الشورتس';
+
+  @override
+  String get profileTabSaved => 'المحفوظات';
+
+  @override
+  String get profilePosts => 'المنشورات';
+
+  @override
+  String get profileFollowers => 'المتابعون';
+
+  @override
+  String get profileFollowing => 'يتابع';
+
+  @override
+  String get profileNoPosts => 'لا توجد منشورات بعد';
+
+  @override
+  String get profileNoPostsBody => 'المنشورات التي تشاركها ستظهر هنا.';
+
+  @override
+  String get profileSharePost => 'شارك أول منشور لك';
+
+  @override
+  String get profileNoSaved => 'لا يوجد شيء محفوظ بعد';
+
+  @override
+  String get profileNoSavedBody =>
+      'اضغط على علامة الحفظ في أي منشور ليظهر هنا. أنت وحدك من يراه.';
+
+  @override
+  String get profileShortsSoon => 'الشورتس قادمة قريبًا';
+
+  @override
+  String get profileShortsSoonBody => 'ستظهر مقاطع الفيديو القصيرة هنا.';
+
+  @override
+  String get profileShareA11y => 'مشاركة الملف الشخصي';
+
+  @override
+  String get profileSettingsA11y => 'الإعدادات';
+
+  @override
+  String get profileViewPhotoA11y => 'عرض صورة الملف الشخصي';
+
+  @override
+  String get profilePostA11y => 'فتح المنشور';
+
+  @override
+  String get profileLoadMoreError => 'تعذّر تحميل المزيد · أعد المحاولة';
+
+  @override
+  String get profileCaughtUp => 'هذا كل شيء';
+
+  @override
+  String get profileOfflineNumbers => 'اتصل بالإنترنت لعرض الأرقام.';
 }

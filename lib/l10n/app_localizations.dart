@@ -4111,6 +4111,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Off'**
   String get valueOff;
+
+  /// Profile tab: the person's posts
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get profileTabPosts;
+
+  /// Profile tab: the person's shorts
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts'**
+  String get profileTabShorts;
+
+  /// Profile tab: posts the signed-in person saved
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get profileTabSaved;
+
+  /// Profile numbers: label under the post count
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get profilePosts;
+
+  /// Profile numbers: label under the followers count
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get profileFollowers;
+
+  /// Profile numbers: label under the following count
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get profileFollowing;
+
+  /// Profile Posts tab: empty title
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get profileNoPosts;
+
+  /// Profile Posts tab: empty message
+  ///
+  /// In en, this message translates to:
+  /// **'Posts you share will show up here.'**
+  String get profileNoPostsBody;
+
+  /// Profile Posts tab: empty button that opens the post composer
+  ///
+  /// In en, this message translates to:
+  /// **'Share your first post'**
+  String get profileSharePost;
+
+  /// Profile Saved tab: empty title
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved yet'**
+  String get profileNoSaved;
+
+  /// Profile Saved tab: empty message
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the bookmark on a post to keep it here. Only you can see this.'**
+  String get profileNoSavedBody;
+
+  /// Profile Shorts tab: title
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts are coming soon'**
+  String get profileShortsSoon;
+
+  /// Profile Shorts tab: message
+  ///
+  /// In en, this message translates to:
+  /// **'Short videos will live here.'**
+  String get profileShortsSoonBody;
+
+  /// Profile: label of the share button
+  ///
+  /// In en, this message translates to:
+  /// **'Share profile'**
+  String get profileShareA11y;
+
+  /// Profile: label of the settings button
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get profileSettingsA11y;
+
+  /// Profile: label of the avatar, which opens the photo
+  ///
+  /// In en, this message translates to:
+  /// **'View profile photo'**
+  String get profileViewPhotoA11y;
+
+  /// Profile grid: label of a post tile
+  ///
+  /// In en, this message translates to:
+  /// **'Open post'**
+  String get profilePostA11y;
+
+  /// Profile grid footer when loading the next page failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get profileLoadMoreError;
+
+  /// Profile grid footer at the end of the list
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s everything'**
+  String get profileCaughtUp;
+
+  /// Profile: note under the saved header shown offline
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to see the numbers.'**
+  String get profileOfflineNumbers;
 }
 
 class _AppLocalizationsDelegate

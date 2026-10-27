@@ -2365,4 +2365,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get valueOff => 'Off';
+
+  @override
+  String get profileTabPosts => 'Posts';
+
+  @override
+  String get profileTabShorts => 'Shorts';
+
+  @override
+  String get profileTabSaved => 'Saved';
+
+  @override
+  String get profilePosts => 'Posts';
+
+  @override
+  String get profileFollowers => 'Followers';
+
+  @override
+  String get profileFollowing => 'Following';
+
+  @override
+  String get profileNoPosts => 'No posts yet';
+
+  @override
+  String get profileNoPostsBody => 'Posts you share will show up here.';
+
+  @override
+  String get profileSharePost => 'Share your first post';
+
+  @override
+  String get profileNoSaved => 'Nothing saved yet';
+
+  @override
+  String get profileNoSavedBody =>
+      'Tap the bookmark on a post to keep it here. Only you can see this.';
+
+  @override
+  String get profileShortsSoon => 'Shorts are coming soon';
+
+  @override
+  String get profileShortsSoonBody => 'Short videos will live here.';
+
+  @override
+  String get profileShareA11y => 'Share profile';
+
+  @override
+  String get profileSettingsA11y => 'Settings';
+
+  @override
+  String get profileViewPhotoA11y => 'View profile photo';
+
+  @override
+  String get profilePostA11y => 'Open post';
+
+  @override
+  String get profileLoadMoreError => 'Couldn\'t load more · Retry';
+
+  @override
+  String get profileCaughtUp => 'That\'s everything';
+
+  @override
+  String get profileOfflineNumbers =>
+      'Connect to the internet to see the numbers.';
 }

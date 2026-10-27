@@ -97,4 +97,20 @@ abstract final class AppRoutes {
 
   /// The story editor for a post sticker; the argument is a `StoryPostArgs`.
   static const createStoryPost = '/create/story/post';
+
+  /// Settings and its pages, pushed in the Profile tab; placeholders until their phase of the profile plan.
+  static const settings = '/settings';
+  static const settingsPersonalInfo = '/settings/personal-info';
+  static const settingsSecurity = '/settings/security';
+  static const settingsPrivacy = '/settings/privacy';
+  static const settingsBlocked = '/settings/blocked';
+  static const settingsNotifications = '/settings/notifications';
+  static const settingsLanguage = '/settings/language';
+  static const settingsHelp = '/settings/help';
+  static const settingsHelpTopic = '/settings/help/topic';
+  static const settingsReport = '/settings/report';
+  static const settingsTerms = '/settings/terms';
+
+  /// A list of people (followers, following, mutual); takes `kind` and `userId` query values.
+  static const people = '/people';
 }

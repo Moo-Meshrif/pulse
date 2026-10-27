@@ -61,6 +61,7 @@ dependencies:
   path_provider: ^2.1.6
   permission_handler: ^13.0.2
   pinput: ^6.0.2
+  share_plus: ^13.3.1
   shared_preferences: ^2.5.6
   skeletonizer: ^3.0.0
   supabase_flutter: ^2.18.0

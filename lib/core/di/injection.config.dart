@@ -149,6 +149,8 @@ import '../../features/profile/data/datasource/profile_datasource.dart'
     as _i320;
 import '../../features/profile/data/datasource/profile_local_datasource.dart'
     as _i126;
+import '../../features/profile/data/datasource/profile_page_datasource.dart'
+    as _i874;
 import '../../features/profile/data/repository/profile_repository.dart'
     as _i508;
 import '../../features/profile/domain/use_case/clear_local_profile_use_case.dart'
@@ -175,6 +177,8 @@ import '../../features/profile/domain/use_case/save_interests_use_case.dart'
     as _i597;
 import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
     as _i255;
+import '../../features/profile/presentation/cubit/profile/profile_cubit.dart'
+    as _i771;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i127;
 import '../../features/story/data/datasource/stories_datasource.dart' as _i474;
 import '../../features/story/data/datasource/story_camera_hint_datasource.dart'
@@ -379,6 +383,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i76.RemoveMediaFilesUseCase>(
       () => _i76.RemoveMediaFilesUseCase(gh<_i285.MediaFilesDatasource>()),
+    );
+    gh.lazySingleton<_i874.ProfilePageDatasource>(
+      () => _i874.SupabaseProfilePageDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i141.PostsDatasource>(
       () => _i141.SupabasePostsDatasource(gh<_i454.SupabaseClient>()),
@@ -975,6 +982,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i541.GetPublishStatusUseCase>(),
         gh<_i727.GetLastAccountUseCase>(),
         postId,
+      ),
+    );
+    gh.factory<_i771.ProfileCubit>(
+      () => _i771.ProfileCubit(
+        gh<_i874.ProfilePageDatasource>(),
+        gh<_i508.ProfileRepository>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i1016.LaunchService>(),
       ),
     );
     gh.factoryParam<_i97.TagPeopleCubit, _i425.TagPeopleArgs, dynamic>(
