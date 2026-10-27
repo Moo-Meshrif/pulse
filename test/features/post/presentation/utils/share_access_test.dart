@@ -37,16 +37,19 @@ void main() {
       }
     });
 
-    test('Followers: only your own, and only for the story', () {
-      expect(
-        ShareAccess.of(visibility: ContentAudience.followers, isMine: true),
-        ShareAccess.storyOnly,
-      );
-      expect(
-        ShareAccess.of(visibility: ContentAudience.followers, isMine: false),
-        ShareAccess.none,
-      );
-    });
+    test(
+      'Followers: your own goes to the feed and story, others get nothing',
+      () {
+        expect(
+          ShareAccess.of(visibility: ContentAudience.followers, isMine: true),
+          ShareAccess.ownFollowers,
+        );
+        expect(
+          ShareAccess.of(visibility: ContentAudience.followers, isMine: false),
+          ShareAccess.none,
+        );
+      },
+    );
 
     test('Close friends and Only me: nothing', () {
       for (final audience in [
@@ -67,7 +70,7 @@ void main() {
     test('a plain post follows its own audience and author', () {
       final post = _post(visibility: ContentAudience.followers);
 
-      expect(shareAccessOf(post, userId: 'a1'), ShareAccess.storyOnly);
+      expect(shareAccessOf(post, userId: 'a1'), ShareAccess.ownFollowers);
       expect(shareAccessOf(post, userId: 'u9'), ShareAccess.none);
       expect(shareTarget(post), post);
     });

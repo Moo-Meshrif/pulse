@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/report_reason.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/follow/domain/use_case/toggle_follow_use_case.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
@@ -14,6 +15,7 @@ import 'package:pulse/shared/content/data/enums/content_audience.dart';
 import 'package:pulse/shared/content/data/enums/content_kind.dart';
 import 'package:pulse/shared/content/data/enums/mute_scope.dart';
 import 'package:pulse/shared/content/data/model/post_count_model.dart';
+import 'package:pulse/shared/content/domain/event/content_delete_event.dart';
 
 import '../../../../../helpers/content_mocks.dart';
 import '../../../../../helpers/failure_of.dart';
@@ -52,7 +54,7 @@ void main() {
         scope: any(named: 'scope'),
       ),
     ).thenAnswer((_) async {});
-    cubit = PostActionsCubit(posts, report, mute, follow);
+    cubit = PostActionsCubit(posts, report, mute, follow, EventBus());
   });
 
   group('like', () {
@@ -213,6 +215,35 @@ void main() {
       expect(cubit.rowOf('p1'), PostRow.card);
       expect(cubit.state.failure, const NetworkFailure());
     });
+
+    test(
+      'a delete is announced at each step so other screens follow',
+      () async {
+        final bus = EventBus();
+        final stages = <ContentDeleteStage>[];
+        bus.on<ContentDeleteEvent>().listen((event) {
+          expect((event.kind, event.id), (ContentKind.post, 'p1'));
+          stages.add(event.stage);
+        });
+        final announcing = PostActionsCubit(posts, report, mute, follow, bus);
+
+        announcing.delete(post);
+        announcing.undoDelete(post);
+        announcing.delete(post);
+        await announcing.commitDelete(post);
+        when(() => posts.deletePost(any())).thenThrow(const NetworkFailure());
+        await announcing.commitDelete(post);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(stages, [
+          ContentDeleteStage.pending,
+          ContentDeleteStage.restored,
+          ContentDeleteStage.pending,
+          ContentDeleteStage.deleted,
+          ContentDeleteStage.restored,
+        ]);
+      },
+    );
 
     test('turns comments off and on again', () async {
       await cubit.toggleComments(post);

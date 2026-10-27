@@ -102,6 +102,7 @@ class _People extends StatelessWidget {
           onLoadMore: () => unawaited(cubit.loadMore(retry: true)),
           retryLabel: context.l10n.postLikesLoadMoreError,
           caughtUpLabel: context.l10n.postLikesCaughtUp,
+          loadMoreSkeleton: const PostLikesSkeleton.loadMore(),
           refreshIcon: AppAssets.heart,
           refreshIconFilled: AppAssets.heartFilled,
           slivers: [

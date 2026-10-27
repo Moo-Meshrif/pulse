@@ -131,18 +131,19 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets('your own Followers post: Add to story only, no composer', (
-      tester,
-    ) async {
-      await open(tester, access: ShareAccess.storyOnly);
+    testWidgets(
+      'your own Followers post: composer, the audience hint and all the tiles',
+      (tester) async {
+        await open(tester, access: ShareAccess.ownFollowers);
 
-      expect(find.text(l10nEn.shareAddToStory), findsOneWidget);
-      expect(find.text(l10nEn.shareCopyLink), findsNothing);
-      expect(find.text(l10nEn.shareWhatsApp), findsNothing);
-      expect(find.text(l10nEn.shareMore), findsNothing);
-      expect(find.text(l10nEn.shareNow), findsNothing);
-      expect(find.text(l10nEn.shareFieldHint), findsNothing);
-    });
+        expect(find.text(l10nEn.shareNow), findsOneWidget);
+        expect(find.text(l10nEn.shareAudienceLocked), findsOneWidget);
+        expect(find.text(l10nEn.shareAddToStory), findsOneWidget);
+        expect(find.text(l10nEn.shareCopyLink), findsOneWidget);
+        expect(find.text(l10nEn.shareWhatsApp), findsOneWidget);
+        expect(find.text(l10nEn.shareMore), findsOneWidget);
+      },
+    );
 
     testWidgets('the close button closes the sheet', (tester) async {
       final semantics = tester.ensureSemantics();

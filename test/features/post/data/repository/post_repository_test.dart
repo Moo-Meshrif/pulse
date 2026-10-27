@@ -243,9 +243,10 @@ void main() {
       when(() => files.listFolder('p1'))
           .thenAnswer((_) async => ['u/p1/0.jpg']);
       when(() => files.remove(any())).thenAnswer((_) async {});
+      when(() => changes.check(any())).thenAnswer((_) async {});
     });
 
-    test('lists the files, deletes the row, then removes the files', () async {
+    test('lists the files, deletes the row, removes the files, then checks changes', () async {
       when(() => actions.deletePost('p1')).thenAnswer((_) async {});
 
       await repo.deletePost('p1');
@@ -254,6 +255,7 @@ void main() {
         () => files.listFolder('p1'),
         () => actions.deletePost('p1'),
         () => files.remove(['u/p1/0.jpg']),
+        () => changes.check(ContentKind.post),
       ]);
     });
 

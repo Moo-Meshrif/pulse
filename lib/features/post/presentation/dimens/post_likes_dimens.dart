@@ -25,7 +25,6 @@ abstract final class PostLikesDimens {
       EdgeInsets.symmetric(horizontal: AppScale.scale(12)); // estimated
   static double get cardRadius => AppRadius.card;
 
-  static const int skeletonRows = 6; // unscaled: a count
   static double get skeletonNameWidth => AppScale.scale(120);
   static double get skeletonButtonWidth => AppScale.scale(84);
   static double get emptyIcon => AppScale.scale(56);

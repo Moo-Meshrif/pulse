@@ -1727,6 +1727,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shareTitle => 'مشاركة';
 
   @override
+  String get shareAudienceLocked =>
+      'هذا المنشور للمتابعين فقط، لذا تبقى مشاركته للمتابعين. لتغيير ذلك، غيّر جمهور المنشور الأصلي.';
+
+  @override
   String get shareFieldHint => 'قل شيئًا عن هذا...';
 
   @override

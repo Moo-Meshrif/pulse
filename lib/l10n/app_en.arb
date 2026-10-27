@@ -2221,6 +2221,10 @@
   "@shareTitle": {
     "description": "Title of the share sheet"
   },
+  "shareAudienceLocked": "This post is for followers only, so a share of it stays for followers. To change that, change the original post's audience.",
+  "@shareAudienceLocked": {
+    "description": "Notice when the audience chip is tapped on a share of your own Followers post"
+  },
   "shareFieldHint": "Say something about this...",
   "@shareFieldHint": {
     "description": "Hint of the words field in the share sheet"

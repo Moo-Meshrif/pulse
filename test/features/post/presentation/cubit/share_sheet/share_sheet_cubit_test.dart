@@ -77,6 +77,18 @@ void main() {
       verify: (cubit) => expect(cubit.state.isAudienceNarrowed, isFalse),
     );
 
+    test('a locked audience stays when the account default loads', () async {
+      final cubit = build();
+
+      cubit.lockAudience(ContentAudience.followers);
+      await cubit.loadDefaultAudience();
+
+      expect(cubit.state.audience, ContentAudience.followers);
+      expect(cubit.state.isAudienceLocked, isTrue);
+      expect(cubit.state.isAudienceNarrowed, isFalse);
+      verifyNever(privacy.call);
+    });
+
     blocTest<ShareSheetCubit, ShareSheetState>(
       'a default that cannot be read leaves the chip Public',
       build: () {

@@ -9,6 +9,7 @@ import '../../../../../core/state/load_more_status.dart';
 import '../../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../../shared/content/data/model/post_count_model.dart';
 import '../../../../../shared/content/domain/event/content_changed.dart';
+import '../../../../../shared/content/domain/event/content_delete_event.dart';
 import '../../../../../shared/content/domain/event/content_ping.dart';
 import '../../../../../shared/content/domain/use_case/check_content_changes_use_case.dart';
 import '../../../../../shared/content/domain/use_case/get_post_counts_use_case.dart';
@@ -94,6 +95,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     listenTo<PostSaved>((event) => _postSaved(event.post));
     listenTo<PostCountsChanged>(_countsChanged);
     listenTo<ContentChanged>(_contentChanged);
+    listenTo<ContentDeleteEvent>(_onDelete);
     listenTo<ContentPing>(_onPing);
     resumeLive();
     await _showSaved();
@@ -526,6 +528,20 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   void _emitSaved(FeedState next) {
     emit(next);
     _saveSnapshot(next);
+  }
+
+  /// A post of yours is being deleted somewhere (its page, or a card): it leaves the feed at once, comes
+  /// back on Undo or a failure, and is dropped for good, with its saved copy, once the delete went through.
+  void _onDelete(ContentDeleteEvent event) {
+    if (event.kind != ContentKind.post) return;
+    final pending = {...state.pendingDeleteIds};
+    if (event.stage == ContentDeleteStage.pending) {
+      pending.add(event.id);
+    } else {
+      pending.remove(event.id);
+    }
+    emit(state.copyWith(pendingDeleteIds: pending));
+    if (event.stage == ContentDeleteStage.deleted) removePosts({event.id});
   }
 
   /// Posts deleted but not yet committed: the delete's notice can still Undo them.

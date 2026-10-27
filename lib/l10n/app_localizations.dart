@@ -3038,6 +3038,12 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get shareTitle;
 
+  /// Notice when the audience chip is tapped on a share of your own Followers post
+  ///
+  /// In en, this message translates to:
+  /// **'This post is for followers only, so a share of it stays for followers. To change that, change the original post\'s audience.'**
+  String get shareAudienceLocked;
+
   /// Hint of the words field in the share sheet
   ///
   /// In en, this message translates to:

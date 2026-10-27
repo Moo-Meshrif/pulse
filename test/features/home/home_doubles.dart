@@ -123,6 +123,7 @@ void registerHomeDoubles() {
         MockReportContent(),
         MockSetMute(),
         _Follow(),
+        EventBus(),
       ),
     )
     ..registerFactory(

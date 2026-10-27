@@ -1727,6 +1727,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareTitle => 'Share';
 
   @override
+  String get shareAudienceLocked =>
+      'This post is for followers only, so a share of it stays for followers. To change that, change the original post\'s audience.';
+
+  @override
   String get shareFieldHint => 'Say something about this...';
 
   @override

@@ -895,6 +895,15 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: _i431.disposeSessionGuard,
     );
+    gh.factory<_i238.PostActionsCubit>(
+      () => _i238.PostActionsCubit(
+        gh<_i699.PostRepository>(),
+        gh<_i1021.ReportContentUseCase>(),
+        gh<_i71.SetMuteUseCase>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        gh<_i557.EventBus>(),
+      ),
+    );
     gh.factory<_i1013.ResumeContentUseCase>(
       () => _i1013.ResumeContentUseCase(
         gh<_i999.ContentPublishRepository>(),
@@ -926,14 +935,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i727.GetLastAccountUseCase>(),
         postId,
         focusCommentId,
-      ),
-    );
-    gh.factory<_i238.PostActionsCubit>(
-      () => _i238.PostActionsCubit(
-        gh<_i699.PostRepository>(),
-        gh<_i1021.ReportContentUseCase>(),
-        gh<_i71.SetMuteUseCase>(),
-        gh<_i130.ToggleFollowUseCase>(),
       ),
     );
     gh.factoryParam<_i305.StoryPostEditCubit, _i439.StoryPostArgs, dynamic>(

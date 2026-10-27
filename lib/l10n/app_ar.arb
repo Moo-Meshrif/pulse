@@ -2035,6 +2035,10 @@
   "@shareTitle": {
     "x-review": "Arabic draft: pending user approval"
   },
+  "shareAudienceLocked": "هذا المنشور للمتابعين فقط، لذا تبقى مشاركته للمتابعين. لتغيير ذلك، غيّر جمهور المنشور الأصلي.",
+  "@shareAudienceLocked": {
+    "x-review": "Arabic draft: pending user approval"
+  },
   "shareFieldHint": "قل شيئًا عن هذا...",
   "@shareFieldHint": {
     "x-review": "Arabic draft: pending user approval"

@@ -165,22 +165,23 @@ void main() {
       );
     });
 
-    testWidgets('Copy link and Share are hidden when the post is not public', (
-      tester,
-    ) async {
-      await open(
-        tester,
-        const PostOptionsData(
-          postId: 'p1',
-          isMine: false,
-          username: 'sara',
-          visibility: ContentAudience.followers,
-        ),
-      );
-      expect(find.text(l10nEn.postSave), findsOneWidget);
-      expect(find.text(l10nEn.postCopyLink), findsNothing);
-      expect(find.text(l10nEn.postShare), findsNothing);
-    });
+    testWidgets(
+      'Copy link and Share are hidden on someone else\'s non-public post',
+      (tester) async {
+        await open(
+          tester,
+          const PostOptionsData(
+            postId: 'p1',
+            isMine: false,
+            username: 'sara',
+            visibility: ContentAudience.followers,
+          ),
+        );
+        expect(find.text(l10nEn.postSave), findsOneWidget);
+        expect(find.text(l10nEn.postCopyLink), findsNothing);
+        expect(find.text(l10nEn.postShare), findsNothing);
+      },
+    );
 
     testWidgets('a saved post says Saved; comments off says turn on', (
       tester,

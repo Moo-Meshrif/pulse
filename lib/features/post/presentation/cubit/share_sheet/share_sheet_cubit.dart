@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/state/base_cubit.dart';
+import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../../shared/content/domain/entity/content_publish_status.dart';
 import '../../../../../shared/content/domain/use_case/get_privacy_use_case.dart';
@@ -42,11 +43,21 @@ class ShareSheetCubit extends BaseCubit<ShareSheetState> {
   /// and the server applies the account's own default.
   Future<void> loadDefaultAudience() => run(
     _privacy.call,
+    prevent: state.isAudienceLocked,
     onSuccess: (privacy) => state.copyWith(
       audience: privacy.defaultVisibility,
       defaultAudience: privacy.defaultVisibility,
     ),
     onFailure: (_) => null,
+  );
+
+  /// A share of your own Followers post keeps that audience; the chip only explains why it cannot change.
+  void lockAudience(ContentAudience audience) => emit(
+    state.copyWith(
+      audience: audience,
+      defaultAudience: audience,
+      isAudienceLocked: true,
+    ),
   );
 
   /// A story is going out now; only one goes at a time, so Add to story waits for it.

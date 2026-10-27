@@ -309,6 +309,7 @@ class PostRepositoryImpl implements PostRepository {
     final paths = await _files.listFolder(postId);
     await _actions.deletePost(postId);
     await _files.remove(paths);
+    await _changes.check(ContentKind.post);
   }
 
   @override

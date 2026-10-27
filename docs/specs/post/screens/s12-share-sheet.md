@@ -15,8 +15,8 @@ Purpose / route: bottom sheet over any list that shows a `PostCard`. Share the p
 | Post | Icon / Share row | Sheet content |
 |---|---|---|
 | Public (any author) | shown | composer + divider + external row |
-| Followers, **your own** | shown | Add to story only (no composer: Share to feed is for public posts, no Copy link / WhatsApp / More: "external actions off") |
-| Followers, someone else's | hidden for now (the sheet would be empty while chat is hidden; with chat later, people who can see the post can send it in chat: "followers only" [user]) | - |
+| Followers, **your own** | shown | composer + divider + the same external row as a public post (Add to story, Copy link, WhatsApp, More). The share keeps the post's audience: the audience chip stays Followers and a tap shows "This post is for followers only, so a share of it stays for followers. To change that, change the original post's audience." (`shareAudienceLocked`); a link to the post is checked against the opener's access when the deep link opens (not built yet) [user, 2026-10-27] |
+| Followers, someone else's | hidden | - (followers can't re-share it: [user, 2026-10-27]) |
 | Close friends, Only me | hidden | - |
 The feed card's send icon and S2's Share tile (Home too) follow this table. S2 "Copy link" keeps "Coming soon" (T7). The share count is not shown on the card.
 

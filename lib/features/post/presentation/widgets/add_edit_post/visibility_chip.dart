@@ -16,6 +16,7 @@ class VisibilityChip extends StatelessWidget {
     super.key,
     required this.audience,
     this.isNarrowed = false,
+    this.showChevron = true,
     this.height,
     this.color,
     this.onTap,
@@ -25,6 +26,9 @@ class VisibilityChip extends StatelessWidget {
 
   /// Narrower than the account's default: `primarySoft` fill with a `primary` border and ink.
   final bool isNarrowed;
+
+  /// False when the choice cannot be changed.
+  final bool showChevron;
 
   /// The chip's height; the composer's when null.
   final double? height;
@@ -73,12 +77,14 @@ class VisibilityChip extends StatelessWidget {
               ),
               SizedBox(width: PostComposerDimens.chipGap),
               AppText(label, style: context.text.chip, color: ink),
-              SizedBox(width: PostComposerDimens.chipGap),
-              AppSvgIcon(
-                AppAssets.chevronDown,
-                size: PostComposerDimens.chipChevron,
-                color: isNarrowed ? colors.primary : colors.textSecondary,
-              ),
+              if (showChevron) ...[
+                SizedBox(width: PostComposerDimens.chipGap),
+                AppSvgIcon(
+                  AppAssets.chevronDown,
+                  size: PostComposerDimens.chipChevron,
+                  color: isNarrowed ? colors.primary : colors.textSecondary,
+                ),
+              ],
             ],
           ),
         ),

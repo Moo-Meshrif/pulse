@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
@@ -40,6 +41,9 @@ class _ShareComposerState extends State<ShareComposer> {
   }
 
   Future<void> _chooseAudience() async {
+    if (_cubit.state.isAudienceLocked) {
+      return Notices.info(context.l10n.shareAudienceLocked);
+    }
     final result = await PostVisibilitySheet.choose(
       context,
       audience: _cubit.state.audience,
@@ -146,15 +150,17 @@ class _WhoRow extends StatelessWidget {
               BlocSelector<
                 ShareSheetCubit,
                 ShareSheetState,
-                ({ContentAudience audience, bool isNarrowed})
+                ({ContentAudience audience, bool isNarrowed, bool isLocked})
               >(
                 selector: (state) => (
                   audience: state.audience,
                   isNarrowed: state.isAudienceNarrowed,
+                  isLocked: state.isAudienceLocked,
                 ),
                 builder: (context, chip) => VisibilityChip(
                   audience: chip.audience,
                   isNarrowed: chip.isNarrowed,
+                  showChevron: !chip.isLocked,
                   height: ShareSheetDimens.chipHeight,
                   color: context.appColors.surface,
                   onTap: onAudience,

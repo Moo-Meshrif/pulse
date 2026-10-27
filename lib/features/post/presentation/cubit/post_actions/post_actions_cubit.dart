@@ -5,11 +5,14 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/enums/report_reason.dart';
 import '../../../../../core/error/failures.dart';
+import '../../../../../core/events/event_bus.dart';
+import '../../../../../core/events/event_cubit_mixin.dart';
 import '../../../../../core/state/base_cubit.dart';
 import '../../../../../shared/content/data/enums/content_audience.dart';
 import '../../../../../shared/content/data/enums/content_kind.dart';
 import '../../../../../shared/content/data/enums/mute_scope.dart';
 import '../../../../../shared/content/data/model/post_count_model.dart';
+import '../../../../../shared/content/domain/event/content_delete_event.dart';
 import '../../../../../shared/content/domain/use_case/report_content_use_case.dart';
 import '../../../../../shared/content/domain/use_case/set_mute_use_case.dart';
 import '../../../../follow/domain/use_case/toggle_follow_use_case.dart';
@@ -24,14 +27,26 @@ import 'post_actions_state.dart';
 /// since are applied on top. The option methods throw the `Failure` of a failed request for the options
 /// flow to show.
 @injectable
-class PostActionsCubit extends BaseCubit<PostActionsState> {
-  PostActionsCubit(this._posts, this._report, this._setMute, this._toggleFollow)
-    : super(const PostActionsState());
+class PostActionsCubit extends BaseCubit<PostActionsState>
+    with EventCubitMixin<PostActionsState> {
+  PostActionsCubit(
+    this._posts,
+    this._report,
+    this._setMute,
+    this._toggleFollow,
+    this._events,
+  ) : super(const PostActionsState()) {
+    listenTo<ContentDeleteEvent>(_onDelete);
+  }
 
   final PostRepository _posts;
   final ReportContentUseCase _report;
   final SetMuteUseCase _setMute;
   final ToggleFollowUseCase _toggleFollow;
+  final EventBus _events;
+
+  @override
+  EventBus get events => _events;
 
   /// A second tap on a post waits for the first request.
   final _likePending = <String>{};
@@ -238,23 +253,57 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
     if (now.commentCount != count) _emitPost(now.copyWith(commentCount: count));
   }
 
-  /// The card goes at once; the request waits for [commitDelete] so Undo can bring it back.
-  void delete(PostEntity loaded) => _emitRow(loaded.id, PostRow.deleting);
+  /// The card goes at once; the request waits for [commitDelete] so Undo can bring it back. Every list
+  /// hears it through a [ContentDeleteEvent], so a delete made on the post page acts on Home's feed too.
+  void delete(PostEntity loaded) {
+    _emitRow(loaded.id, PostRow.deleting);
+    _announceDelete(loaded.id, ContentDeleteStage.pending);
+  }
 
-  void undoDelete(PostEntity loaded) => _emitRow(loaded.id, PostRow.card);
+  void undoDelete(PostEntity loaded) {
+    _emitRow(loaded.id, PostRow.card);
+    _announceDelete(loaded.id, ContentDeleteStage.restored);
+  }
 
   /// The notice ended without Undo. A failure brings the card back and shows in [PostActionsState.failure].
   Future<void> commitDelete(PostEntity loaded) => run(
     () => _posts.deletePost(loaded.id),
-    onSuccess: (_) => state.copyWith(
-      rows: {...state.rows, loaded.id: PostRow.removed},
-      failure: null,
-    ),
-    onFailure: (failure) => state.copyWith(
-      rows: {...state.rows, loaded.id: PostRow.card},
-      failure: failure,
-    ),
+    onSuccess: (_) {
+      _announceDelete(loaded.id, ContentDeleteStage.deleted);
+      return state.copyWith(
+        rows: {...state.rows, loaded.id: PostRow.removed},
+        failure: null,
+      );
+    },
+    onFailure: (failure) {
+      _announceDelete(loaded.id, ContentDeleteStage.restored);
+      return state.copyWith(
+        rows: {...state.rows, loaded.id: PostRow.card},
+        failure: failure,
+      );
+    },
   );
+
+  /// A post was deleted from another screen (its page): this list's rows follow, so a share of it shows
+  /// the "unavailable" tile at once and gets it back on Undo.
+  void _onDelete(ContentDeleteEvent event) {
+    if (event.kind != ContentKind.post || _sent.remove(event)) return;
+    final row = switch (event.stage) {
+      ContentDeleteStage.pending => PostRow.deleting,
+      ContentDeleteStage.restored => PostRow.card,
+      ContentDeleteStage.deleted => PostRow.removed,
+    };
+    if (rowOf(event.id) != row) _emitRow(event.id, row);
+  }
+
+  /// Events this cubit sent itself, so it does not apply them twice.
+  final _sent = Set<ContentDeleteEvent>.identity();
+
+  void _announceDelete(String postId, ContentDeleteStage stage) {
+    final event = ContentDeleteEvent(ContentKind.post, postId, stage);
+    _sent.add(event);
+    fire(event);
+  }
 
   /// Takes [userId]'s tag off the post at once; it comes back if the request fails. A tag already gone
   /// counts as removed.

@@ -17,6 +17,9 @@ abstract class ShareSheetState with _$ShareSheetState {
 
     /// The audience the account starts new posts with; a narrower choice looks different on the chip.
     @Default(ContentAudience.public) ContentAudience defaultAudience,
+
+    /// The share keeps the original's audience (your own Followers post): the chip cannot change it.
+    @Default(false) bool isAudienceLocked,
     PostMoodEntity? mood,
     String? location,
     @Default(<TagChoice>[]) List<TagChoice> tags,

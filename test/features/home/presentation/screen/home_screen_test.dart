@@ -195,6 +195,7 @@ void main() {
           MockReportContent(),
           MockSetMute(),
           _Follow(),
+          EventBus(),
         ),
       )
       ..registerFactory(

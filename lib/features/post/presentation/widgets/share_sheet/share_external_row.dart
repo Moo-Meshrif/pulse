@@ -12,15 +12,11 @@ import '../../../../../core/utils/story_post_args.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../cubit/share_sheet/share_sheet_cubit.dart';
 import '../../dimens/share_sheet_dimens.dart';
-import '../../utils/enums/share_access.dart';
 
-/// The bottom row of the Share sheet: Add to story, Copy link, WhatsApp, More. A post you can only put on
-/// your story (your own Followers post) has just the first. The row scrolls sideways when the tiles do not
-/// fit (large text).
+/// The bottom row of the Share sheet: Add to story, Copy link, WhatsApp, More. The row scrolls sideways when the
+/// tiles do not fit (large text). A link to a Followers post is checked against the opener's access when it opens.
 class ShareExternalRow extends StatelessWidget {
-  const ShareExternalRow({super.key, required this.access, this.story});
-
-  final ShareAccess access;
+  const ShareExternalRow({super.key, this.story});
 
   /// What Add to story puts on the story; null hides nothing, the tile just says "Coming soon".
   final StoryPostArgs? story;
@@ -58,30 +54,28 @@ class ShareExternalRow extends StatelessWidget {
             onTap: () => _addToStory(context),
           ),
           // TODO(post-plan T7): Copy link, WhatsApp and More wait for post links and share_plus.
-          if (access == ShareAccess.full) ...[
-            _Tile(
-              icon: AppAssets.link,
-              label: l10n.shareCopyLink,
-              fill: colors.background,
-              ink: colors.textPrimary,
-              onTap: comingSoon,
-            ),
-            // The brand icon comes from the user (spec: the official WhatsApp icon); the chat icon stands in.
-            _Tile(
-              icon: AppAssets.chat,
-              label: l10n.shareWhatsApp,
-              fill: colors.background,
-              ink: colors.textPrimary,
-              onTap: comingSoon,
-            ),
-            _Tile(
-              icon: AppAssets.share,
-              label: l10n.shareMore,
-              fill: colors.background,
-              ink: colors.textPrimary,
-              onTap: comingSoon,
-            ),
-          ],
+          _Tile(
+            icon: AppAssets.link,
+            label: l10n.shareCopyLink,
+            fill: colors.background,
+            ink: colors.textPrimary,
+            onTap: comingSoon,
+          ),
+          // The brand icon comes from the user (spec: the official WhatsApp icon); the chat icon stands in.
+          _Tile(
+            icon: AppAssets.chat,
+            label: l10n.shareWhatsApp,
+            fill: colors.background,
+            ink: colors.textPrimary,
+            onTap: comingSoon,
+          ),
+          _Tile(
+            icon: AppAssets.share,
+            label: l10n.shareMore,
+            fill: colors.background,
+            ink: colors.textPrimary,
+            onTap: comingSoon,
+          ),
         ],
       ),
     );

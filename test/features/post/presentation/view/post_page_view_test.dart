@@ -121,7 +121,13 @@ void main() {
       'p1',
       passed,
     );
-    final actions = PostActionsCubit(posts, _Report(), _Mute(), _Toggle());
+    final actions = PostActionsCubit(
+      posts,
+      _Report(),
+      _Mute(),
+      _Toggle(),
+      EventBus(),
+    );
     final comments = CommentsCubit(
       posts,
       _CommentsDatasource(),

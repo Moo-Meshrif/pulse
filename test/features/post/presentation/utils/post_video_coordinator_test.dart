@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/features/post/presentation/utils/post_video_coordinator.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late PostVideoCoordinator coordinator;
   var notified = 0;
 

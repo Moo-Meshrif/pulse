@@ -8,9 +8,14 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../dimens/post_likes_dimens.dart';
 import '../../dimens/post_page_dimens.dart';
 
-/// What the likes list shows before the first page arrives: a card of person rows as shapes under the shimmer.
+/// One person row as shapes under the shimmer, in the likes card: what the list shows before the first
+/// page arrives, and (`.loadMore()`) under the last row while the next page loads.
 class PostLikesSkeleton extends StatelessWidget {
-  const PostLikesSkeleton({super.key});
+  const PostLikesSkeleton({super.key}) : _loadMore = false;
+
+  const PostLikesSkeleton.loadMore({super.key}) : _loadMore = true;
+
+  final bool _loadMore;
 
   @override
   Widget build(BuildContext context) => Semantics(
@@ -18,7 +23,11 @@ class PostLikesSkeleton extends StatelessWidget {
     label: context.l10n.loading,
     child: ExcludeSemantics(
       child: Padding(
-        padding: PostLikesDimens.listPadding,
+        padding: _loadMore
+            ? EdgeInsets.symmetric(
+                horizontal: PostLikesDimens.listPadding.left,
+              )
+            : PostLikesDimens.listPadding,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: context.appColors.surface,
@@ -27,10 +36,7 @@ class PostLikesSkeleton extends StatelessWidget {
           child: Skeletonizer.zone(
             effect: skeletonEffect(context),
             child: Column(
-              children: [
-                for (var i = 0; i < PostLikesDimens.skeletonRows; i++)
-                  const _Row(),
-              ],
+              children: const [_Row()],
             ),
           ),
         ),

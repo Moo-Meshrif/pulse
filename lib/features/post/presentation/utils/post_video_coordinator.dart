@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../dimens/post_card_dimens.dart';
 
@@ -45,6 +46,27 @@ class PostVideoCoordinator extends ChangeNotifier {
     }
     if (best == _activeId) return;
     _activeId = best;
-    notifyListeners();
+    _notifySafely();
+  }
+
+  /// A video leaving the list reports while the framework unmounts it (the tree is locked), so listeners
+  /// that rebuild are told after the frame.
+  void _notifySafely() {
+    if (SchedulerBinding.instance.schedulerPhase !=
+        SchedulerPhase.persistentCallbacks) {
+      notifyListeners();
+      return;
+    }
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!_isDisposed) notifyListeners();
+    });
+  }
+
+  bool _isDisposed = false;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 }
