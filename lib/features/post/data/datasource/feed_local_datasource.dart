@@ -41,10 +41,13 @@ class FeedLocalDatasource {
   /// A failed write is reported and never fails the caller: the feed on screen is already right.
   Future<void> write(String userId, FeedPageModel feed) async {
     try {
-      await _storage.write(StorageKeys.feed(userId), jsonEncode({
+      await _storage.write(
+        StorageKeys.feed(userId),
+        jsonEncode({
           ...feed.toJson(),
           _savedAt: clock.now().toUtc().toIso8601String(),
-        }));
+        }),
+      );
     } catch (error, stackTrace) {
       ErrorReporter.report(error, stackTrace);
     }

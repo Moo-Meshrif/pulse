@@ -24,10 +24,18 @@ import 'comment_replying_strip.dart';
 /// The pinned writing area: the replying strip, quick emoji, the field with its counter and Send. The text
 /// is kept for the post when the sheet closes.
 class CommentComposer extends StatefulWidget {
-  const CommentComposer({super.key, this.focusWhenEmpty = false});
+  const CommentComposer({
+    super.key,
+    this.focusWhenEmpty = false,
+    this.focusNode,
+  });
 
   /// Opens the keyboard once the sheet turns out to have no comments.
   final bool focusWhenEmpty;
+
+  /// The page's handle on the field (its comment icon puts the cursor here); the composer makes its own
+  /// when none is given.
+  final FocusNode? focusNode;
 
   @override
   State<CommentComposer> createState() => _CommentComposerState();
@@ -36,7 +44,7 @@ class CommentComposer extends StatefulWidget {
 class _CommentComposerState extends State<CommentComposer> {
   late final CommentsCubit _cubit = context.read<CommentsCubit>();
   late final _controller = TextEditingController(text: _cubit.draft);
-  final _focus = FocusNode();
+  late final _focus = widget.focusNode ?? FocusNode();
   MentionQuery? _mention;
 
   @override
@@ -64,7 +72,7 @@ class _CommentComposerState extends State<CommentComposer> {
   void dispose() {
     if (_cubit.state.editing == null) _cubit.saveDraft(_controller.text);
     _controller.dispose();
-    _focus.dispose();
+    if (widget.focusNode == null) _focus.dispose();
     super.dispose();
   }
 

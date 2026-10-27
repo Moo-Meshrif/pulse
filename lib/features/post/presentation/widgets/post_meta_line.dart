@@ -18,6 +18,7 @@ class PostMetaLine extends StatelessWidget {
     this.createdAt,
     this.audienceIcon,
     this.onLocation,
+    this.onTime,
   });
 
   final String? location;
@@ -26,6 +27,9 @@ class PostMetaLine extends StatelessWidget {
   final DateTime? createdAt;
   final String? audienceIcon;
   final VoidCallback? onLocation;
+
+  /// A tap on the time (the card opens the post's page).
+  final VoidCallback? onTime;
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +82,14 @@ class PostMetaLine extends StatelessWidget {
           if (time != null) ...[gap, dot, gap],
         ],
         if (time != null)
-          AppText(
-            time,
-            style: context.text.caption,
-            color: colors.textSecondary,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTime,
+            child: AppText(
+              time,
+              style: context.text.caption,
+              color: colors.textSecondary,
+            ),
           ),
         if (audienceIcon != null) ...[
           if (time != null) ...[gap, dot, gap],

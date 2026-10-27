@@ -34,12 +34,12 @@ Tests: cubit + widget tests in each phase (mirror `lib/` under `test/`, helpers 
 | 26 Comments backend + data | **done** 2026-10-25; migration `post_comments` **applied** (B15) |
 | 27 Comments sheet: read (S14 panels 1, 5) | code done 2026-10-25 |
 | 28 Write, reply, draft (S14 panel 2, 4) | code done 2026-10-26 (not opened on a device; the sheet is wired in Phase 33) |
-| 29 Comment actions (S14 panel 3) | not started |
+| 29 Comment actions (S14 panel 3) | code done (options sheet, edit, delete, hide + Undo, report, copy, double-tap like) |
 | 30 Mentions (S14 panel 6) | code done 2026-10-26 (not opened on a device; the sheet is wired in Phase 33) |
-| 31 Post page (S15) | not started |
-| 32 Likes list (S16) | not started |
-| 33 Entry points + notification jump | not started |
-| 34 Integration + polish (comments, post page, likes) | not started |
+| 31 Post page (S15) | code done 2026-10-27; migration `get_post` **applied**; not opened on a device (route `/p/:id` works, entry points are Phase 33) |
+| 32 Likes list (S16) | code done 2026-10-27; migration `post_likes_list` validated in a rolled-back batch, **applied 2026-10-27 (B16)**; not opened on a device |
+| 33 Entry points + notification jump | code done 2026-10-27 (not opened on a device); `pulse://` deep link for `/p/:id` not added (see notes) |
+| 34 Integration + polish (comments, post page, likes) | boot test, wiring and docs done 2026-10-27; live run, RTL/size checks on a device and the `pulse://` link (T25) are yours |
 
 Open before / during Phase 5: the dark confirm dialog and the option / audience row widgets are built in the post feature first and move to `core/widgets` only when story or short actually reuses them (then as a variant or tone of the one widget, default look unchanged; search `core/widgets` and `confirmation_strategy` before adding). Still open: whether the close-friends list moves into `lib/shared/content`.
 
@@ -203,6 +203,7 @@ Source: `screens/s14-comments-sheet.md`, `screens/s15-post-page.md` (includes th
 | T22 | Notification type `share` is written but no screen shows it; the "shared your post in their story" notification (`story_mention` style) is not written | - | no code marker (Activity not specced) |
 | T23 | Tapping a @name in a comment opens the profile placeholder until profile screens exist | the comment row's mention text (`TODO(post-plan T23)`) | 30 |
 | T24 | Notification screens (Activity) are not built: a comment / reply / mention notification only opens the post page through its link `/p/:postId?comment=:id` once Activity exists | - | no code marker (Activity not specced) |
+| T25 | `pulse://.../p/:postId` deep link does not reach the app: the manifests only declare `pulse://reset-password` and Flutter's own deep-link routing is off (`supabase_flutter` reads the link); turning it on touches the password-recovery link, so decide first | `AndroidManifest.xml` and `Info.plist` (`TODO(post-plan T25)`) | 33 |
 
 ## Phases
 
@@ -756,18 +757,18 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 - **Deviations:** the debounce constant is `CommentText.mentionDelay` (300 ms; the likes search does not exist yet). The cubit's state is the plain list of people. A suggestion needs at least one letter after the `@`. The @name tap passes the username to `AppRoutes.profileOf` (the profile placeholder takes an id; `TODO(post-plan T23)`). `CommentMentionsCubit` is provided next to `CommentsCubit` in `CommentsSheet.show`; the post page (Phase 31) must do the same.
 
 ### Phase 31: Post page (S15 panels 1, 2, 3 and 5)
-**Status:** [ ]
+**Status:** [x] code done 2026-10-27; analyze clean; tests green (the only failing test in the suite is the known `no_unscaled_literals_test` hit on `avatar_initials.dart:33`, not from this work); not opened on a device or compared with the board
 - **Goal:** one post opens on its own page with the full post, "Liked by …", the date, comments and the composer; it shows "not available" when the post can't be seen.
 - **Depends on:** 27-30 (the comments widgets and cubit); 25 (the card).
 - **Spec refs:** `post/screens/s15-post-page.md` (layout, panels 1-3 and 5, Behavior, Data); board `s15-post-page-board.png` panels 1-3 and 5; `post/02-components.md` P1-P5, P10-P11 and "Post page when comments are off".
 - **Tasks:**
-  - [ ] Route `/p/:postId` with `?comment=:id`; the screen takes the post already loaded (to show at once) or loads it.
-  - [ ] Top bar (back, "Post", "..." opening S2); scroll swaps the title for a mini author; the post card with the full caption (no "more"), media, dots and "1/3" chip, Follow chip (hidden on your posts; "Following" after, tap unfollows), actions, "Liked by …" row, date line.
-  - [ ] Comments section below the card: same list as S14 (the sheet's cubit, widgets and composer, inline); sort chip; the comment icon on the page scrolls to the section and focuses the field.
-  - [ ] `?comment=` opens with that comment first in the list (the cubit's `focusCommentId` → `p_focus`), highlighted for 2 s, with the "From your notification" chip for 2 s.
-  - [ ] Not available state (lock, text, Back to Home) for a post that is gone or not visible; the back arrow and "..." stay.
-  - [ ] Video plays with sound here (muted in the feed); likes, saves and comment counts update the feed card too.
-  - [ ] Strings EN + AR (`x-review`), semantics, RTL, 1.5x, wide window (`ContentWidth`).
+  - [x] Route `/p/:postId` with `?comment=:id`; the screen takes the post already loaded (to show at once) or loads it.
+  - [x] Top bar (back, "Post", "..." opening S2); scroll swaps the title for a mini author; the post card with the full caption (no "more"), media, dots and "1/3" chip, Follow chip (hidden on your posts; "Following" after, tap unfollows), actions, "Liked by …" row, date line.
+  - [x] Comments section below the card: same list as S14 (the sheet's cubit, widgets and composer, inline); sort chip; the comment icon on the page scrolls to the section and focuses the field.
+  - [x] `?comment=` opens with that comment first in the list (the cubit's `focusCommentId` → `p_focus`), highlighted for 2 s, with the "From your notification" chip for 2 s.
+  - [x] Not available state (lock, text, Back to Home) for a post that is gone or not visible; the back arrow and "..." stay.
+  - [x] Video plays with sound here (muted in the feed); likes, saves and comment counts update the feed card too.
+  - [x] Strings EN + AR (`x-review`), semantics, RTL, 1.5x, wide window (`ContentWidth`).
 - **Implementation steps:**
   1. `lib/core/router/app_routes.dart` (edit): `postPage(String id, {String? comment})`, `postPagePrefix = '/p/'`, the likes route `/p/:id/likes` (Phase 32); keep `commentsOf` for now (Phase 33 changes it).
   2. `lib/core/router/app_router.dart` (edit): resolve `/p/:id` before the switch like the story and profile routes; the route argument `PostPageArgs` (post, signed links, optional) lives in `features/post/presentation/utils/post_page_args.dart` (new).
@@ -782,16 +783,26 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 - **Done when:** panels 1, 2, 3 and 5 match; the page is reachable by its route; counts stay in step with the feed card.
 - **Verify:** analyze, tests, compare with `s15-post-page-board.png` panels 1-3 and 5.
 
+**Notes (builder, Phase 31):**
+- **`get_post` (decided with the user 2026-10-27):** new RPC `get_post(p_post)` in `supabase/migrations/20261026120000_get_post.sql` (copy `docs/specs/post/schema-get-post.sql`), a thin wrapper of `posts_by_ids([id])`: same row shape, no row when gone or not visible, hidden and muted posts still open. Validated in a rolled-back batch (unknown id gives no row, `anon` cannot run it), then **applied** after approval (`get_post`). Dart: `PostsDatasource.getPost`, `GetPostUseCase` (null when not visible).
+- **Moved to `features/post/presentation/utils/`** so the page reuses them without importing home: `FeedPost`, `FeedPostSigner`, `postCardData` / `postOptionsData` (`post_card_mapper.dart`), `feedVideos`. New helpers shared with the feed item: `postOptionsActionsOf` and `storyPostArgsOf` (the feed item now uses them).
+- Follow chip: new `FollowsDatasource.getStatus` + `GetFollowStatusUseCase` (follow feature); `PostPageCubit` reads it after the post loads and toggles with rollback. A pending request reads "Following".
+- Counts back to the feed: `PostCountsChanged` event (post domain) fired by `PostPageCubit.countsChanged`; `FeedCubit` puts it in `FeedState.counts`, Home's existing listener applies it. `PostCountModel` gained `savedByMe` (not in `post_counts`, null there) and `PostActionsCubit.applyCounts` applies it.
+- Page: `PostPageScreen` (providers + listeners: notices, leave when deleted, counts to the feed, comment count delta), `PostPageView`, widgets in `widgets/post_page/` (top bar with mini author, follow chip, date, comments section + pinned composer, notification chip, unavailable). `PostCard` gained `isDetail` (full caption, via `ExpandableCaption.showAll`), `authorTrailing`, `footer`. `CommentsList(isInline:)` lays the comments in the page's scroll and the page's `LoadMoreListener` asks for the next page; `CommentComposer(focusNode:)` lets the comment icon focus it. `PostVideoScope(startMuted: false)` gives sound on the page.
+- Route `/p/:id` (+ `?comment=`) in `AppRouter`; `AppRoutes.postPage`. `PostPageArgs` carries the loaded post and `focusComposer`.
+- Deviations: the "Liked by" row waits for Phase 32 (`liked_by_preview`); the notification highlight and chip use the comment with `isFocus` from the first page and last 2 s (not tested on a device); `commentsOf` and the two `TODO(post-plan T21)` markers stay until Phase 33.
+- Tests: `post_page_cubit_test.dart`, `post_page_widgets_test.dart`, `post_page_view_test.dart`, `post_page_route_test.dart`, `getPost` in the posts datasource test, `getStatus` in the follows datasource test, the feed counts event, `applyCounts` with a save.
+
 ### Phase 32: Likes list (S16)
-**Status:** [ ]
+**Status:** [x] code done 2026-10-27; analyze clean; post + router tests green (671); migration `post_likes_list` **applied** 2026-10-27 (B16); not opened on a device or compared with panel 4
 - **Goal:** "Liked by …" opens a list of the people who liked the post, searchable, with Follow buttons.
 - **Depends on:** 31; B16 to apply.
 - **Spec refs:** `post/screens/s15-post-page.md` "S16 Likes list" and Data; board `s15-post-page-board.png` panel 4; `features/follow` (`ToggleFollowUseCase`, `FollowStatus`).
 - **Tasks:**
-  - [ ] Migration `<timestamp>_post_likes_list.sql` (+ copy in `post/schema-post-likes-list.sql`): `post_likers(p_post, p_query, p_limit, p_before)` (the author sees everyone, others only people they can see, private accounts hidden; follow state), `liked_by_preview(p_post)` (first follower who liked + 2 avatars + total). Validate in a rolled-back batch, then apply after approval (B16).
-  - [ ] The "Liked by …" row on the post page now uses `liked_by_preview` and opens the list; hidden when there are no likes.
-  - [ ] Likes screen: back, "Likes · 1,204", search field (waits 300 ms after typing), rows with Follow / Following / Follow back (tap toggles at once, no confirm), paged list, empty search tile, error with Try again.
-  - [ ] Strings EN + AR (`x-review`), semantics, RTL.
+  - [x] Migration `<timestamp>_post_likes_list.sql` (+ copy in `post/schema-post-likes-list.sql`): `post_likers(p_post, p_query, p_limit, p_before)` (the author sees everyone, others only people they can see, private accounts hidden; follow state), `liked_by_preview(p_post)` (first follower who liked + 2 avatars + total). Validate in a rolled-back batch, then apply after approval (B16).
+  - [x] The "Liked by …" row on the post page now uses `liked_by_preview` and opens the list; hidden when there are no likes.
+  - [x] Likes screen: back, "Likes · 1,204", search field (waits 300 ms after typing), rows with Follow / Following / Follow back (tap toggles at once, no confirm), paged list, empty search tile, error with Try again.
+  - [x] Strings EN + AR (`x-review`), semantics, RTL.
 - **Implementation steps:**
   1. `supabase/migrations/...` and the spec copy (new), as above.
   2. `features/post/data/model/post_liker_model.dart`, `liked_by_preview_model.dart` (new); `features/post/data/datasource/post_likes_datasource.dart` (new: interface + adapter); `domain/entity/post_liker_entity.dart` (new); use cases `GetPostLikersUseCase`, `GetLikedByPreviewUseCase` (new). Follow / unfollow goes through the follow feature's `ToggleFollowUseCase` via a post use case if the conventions require (features trade only through use cases: check `lib/features/follow/domain/use_case/` and follow what `PostActionsCubit` already does).
@@ -805,18 +816,29 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 - **Done when:** panel 4 matches; the author sees everyone and others only people they may see (checked in SQL); search and Follow work.
 - **Verify:** analyze, tests, compare with panel 4. **I ask you first:** applying the migration (B16).
 
+**Notes (builder, Phase 32):**
+- **Migration** `supabase/migrations/20261027120000_post_likes_list.sql` (copy `docs/specs/post/schema-post-likes-list.sql`): `post_likers(p_post, p_query, p_limit, p_before_time, p_before_id)` and `liked_by_preview(p_post)`. Validated in a rolled-back batch on the live project (author sees the liker with follow state, a search miss gives no rows, `anon` cannot run it, nothing was left behind); **applied** after your yes (B16).
+- Deviations from the spec text: the cursor is two parameters (`p_before_time`, `p_before_id`) like comments, and the search parameter is `p_query`. `post_likers` also returns `total` (people you may see, not narrowed by the search) so the title reads "Likes · 1,204" with no argument on the route. `liked_by_preview` never names you: it picks the person you follow who liked it last, else the latest person you may see; "others" does not count you; no row when nobody else liked it (the row is hidden). The row names the username (board: "salma.ash"), up to two avatars.
+- Data: `PostLikesDatasource` (interface + adapter), `PostLikerModel`, `PostLikersPageModel`, `LikedByPreviewModel`; entities `PostLikerEntity`, `PostLikersPageEntity`, `PostLikersCursorEntity`, `LikedByPreviewEntity`; use cases `GetPostLikersUseCase`, `GetLikedByPreviewUseCase`. Follow goes through the follow feature's `ToggleFollowUseCase` (as `PostPageCubit` does); no extra post use case.
+- `PostLikesCubit` (freezed state): search after 300 ms (`TagLimits.searchDelay`), paging with `LoadMoreStatus`, pull to refresh keeps the rows, follow answers at once and is put back on failure, your own row has no button. `PostPageCubit.loadLikedBy()` fills `PostPageState.likedBy`; the page screen reloads it when you like or unlike here.
+- UI: `PostLikesScreen` / `PostLikesView` (`PagedScrollView`, `DecoratedSliver` card, skeleton, empty search tile, error tile), `PostLikerRow`, `PostLikedByRow` (in the card footer above the date). The Follow pill is now the shared `PostFollowButton` (the post page's chip uses it too, look unchanged). Route `/p/:id/likes` is resolved before `/p/:id`.
+- The "more" button in the board's Likes bar is not built: the spec gives it no action (no dead button).
+- Tests: `post_likes_cubit_test`, `post_liker_row_test` (EN + AR), `post_likes_datasource_test`, likes route in `post_page_route_test`; existing post page tests got the new constructor argument. Not run: the likes list on a device.
+
+- **Liked by you (added 2026-10-27):** when you are the only person who liked a post the row reads "Liked by you" and opens the list. Migration `20261027140000_liked_by_you.sql` (copy `docs/specs/post/schema-liked-by-you.sql`) replaces `liked_by_preview` with an extra `only_me` column; validated in a rolled-back batch; **applied 2026-10-27**.
+
 ### Phase 33: Entry points and notification jump
-**Status:** [ ]
+**Status:** [x] code done 2026-10-27; analyze clean; not opened on a device
 - **Goal:** every comment icon, framed original, story "View post", link and notification target opens the right place.
 - **Depends on:** 27-32.
 - **Spec refs:** `post/screens/s15-post-page.md` Behavior (Route); `post/00-overview.md` Navigation map; `post/02-components.md` P10-P11.
 - **Tasks:**
-  - [ ] The feed card's comment icon opens `CommentsSheet.show` (replaces `AppRoutes.commentsOf` in Home); tapping the caption or time opens the post page.
-  - [ ] The framed original on a share opens the original's post page; the story sticker's View post opens the post page. Remove both `TODO(post-plan T21)` markers.
-  - [ ] `AppRoutes.commentsOf` (`/post/:id/comments`) now opens the post page with the field focused (the same as the page's comment icon); delete the `TODO(home-plan H3)` placeholder branch in `AppRouter`.
-  - [ ] Deep link `pulse://...` path `/p/:postId` resolves through `AppRouter` (check `AndroidManifest.xml` and `Info.plist` already pass paths through; add nothing unless needed).
-  - [ ] A notification target is just the route `/p/:postId?comment=:id` (Activity itself is later, T24); nothing to build now beyond the route.
-  - [ ] Update the spec line in `s15-post-page.md` Behavior ("keeps opening the S14 sheet") to match.
+  - [x] The feed card's comment icon opens `CommentsSheet.show` (replaces `AppRoutes.commentsOf` in Home); tapping the caption or time opens the post page.
+  - [x] The framed original on a share opens the original's post page; the story sticker's View post opens the post page. Remove both `TODO(post-plan T21)` markers.
+  - [x] `AppRoutes.commentsOf` (`/post/:id/comments`) now opens the post page with the field focused (the same as the page's comment icon); delete the `TODO(home-plan H3)` placeholder branch in `AppRouter`.
+  - [ ] Deep link `pulse://...` path `/p/:postId` resolves through `AppRouter` (check `AndroidManifest.xml` and `Info.plist` already pass paths through; add nothing unless needed). (not done: needs a decision, see T25)
+  - [x] A notification target is just the route `/p/:postId?comment=:id` (Activity itself is later, T24); nothing to build now beyond the route.
+  - [x] Update the spec line in `s15-post-page.md` Behavior ("keeps opening the S14 sheet") to match.
 - **Implementation steps:**
   1. `lib/features/home/presentation/widgets/feed/feed_post_item.dart` (edit): `_openComments` calls `CommentsSheet.show(context, postId: ..., onCountChange: ...)`; `_openOriginal` pushes `AppRoutes.postPage(original.id)`; caption / time tap pushes the page with the loaded post as `PostPageArgs`.
   2. `lib/features/story/presentation/widgets/story_post/story_post_layer.dart` (edit): the pill pushes `AppRoutes.postPage(postId)`.
@@ -828,20 +850,27 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 - **Done when:** the comment icon opens the sheet, the original and the sticker open the post page, `/p/:id?comment=:id` opens the page with that comment first.
 - **Verify:** analyze, tests, device run (user).
 
+**Notes (builder, Phase 33):**
+- The feed card's comment icon already opened `CommentsSheet.show` (Phase 28); `AppRoutes.commentsOf` no longer has a user in the app. New `PostCardCallbacks.onOpenPost`: a tap on the caption (the "more" tap still expands) or the time opens `/p/:id` with the feed's loaded post as `PostPageArgs`; the post page itself leaves it null. The framed original and the story sticker's View post open `AppRoutes.postPage`. Both `TODO(post-plan T21)` markers and `TODO(home-plan H3)` are gone.
+- `/post/:id/comments` now opens the post page with the field focused. `/p/:id?comment=:id` already worked (Phase 31), so a notification target needs nothing more.
+- **Deep link not added:** the manifests only declare `pulse://reset-password` and Flutter's own deep-link routing is off (`supabase_flutter` reads the link), so `pulse://.../p/:id` would not reach `AppRouter`. Turning it on touches the password-recovery link, so it needs your decision (Activity and shared links come later, T24).
+- Tests: `/post/:id/comments` route test added. Not run: device check.
+
 ### Phase 34: Integration and polish (comments, post page, likes)
-**Status:** [ ]
+**Status:** [~] code and boot test done 2026-10-27; analyze clean; the live run and device size/RTL checks are open (the user)
 - **Goal:** the whole flow works end to end and passes RTL, accessibility and size checks.
 - **Depends on:** 26-33; B15 and B16 applied for the live run.
 - **Spec refs:** acceptance lists of S14 and S15 (incl. S16).
 - **Tasks:**
-  - [ ] App boot test in `test/app/post_integration_test.dart`: Home > comment icon > write > the comment shows > reply > long-press > Hide + Undo; Home > caption > post page > "Liked by" > Likes > Follow; a share's original > post page.
-  - [ ] DI wiring (`build_runner`); the new routes in `AppRouter`.
+  - [x] App boot test in `test/app/post_integration_test.dart`: Home > comment icon > write > the comment shows > reply > long-press > Hide + Undo; Home > caption > post page > "Liked by" > Likes > Follow; a share's original > post page.
+  - [x] DI wiring (`build_runner`); the new routes in `AppRouter`.
   - [ ] Live run (after B15 and B16): comment and reply; reply to a reply; the same Retry writes once; edit, delete with replies; hide by the post owner (the writer still sees it, a second account doesn't); like and double-tap; mention notification row; the focus jump from a link; likes list for the author and for another account; a deleted post shows "not available"; comments off.
   - [ ] RTL, 1.5x, 2.0x, 320 dp and wide window for the sheet, the post page and the likes list.
-  - [ ] Tick the S14 and S15 acceptance checklists; `grep -rn "TODO(post-plan"`: markers match the open Code TODOs rows (T23 new; T17 and T21 gone).
-  - [ ] Bring the Progress table at the top up to date.
+  - [~] S14 and S15 acceptance checklists stay open (they need a device and the boards: the user); `grep -rn "TODO(post-plan"`: markers match the open Code TODOs rows (T23 new; T17 and T21 gone).
+  - [x] Bring the Progress table at the top up to date.
 - **Done when:** all new acceptance lists ticked; analyze clean; full suite green (the known failures listed in Phase 25 are not from this work).
 - **Verify:** full test suite, analyze, device run (user).
+- **Notes:** the boot tests are in `post_integration_test.dart` (group "comments, post page and likes"): comment, reply under the first comment, Hide + Undo on your own post; caption > post page > Liked by > Likes > Follow; a share's framed original > post page. Long-press Hide needs the post to be yours, so that test uses an own post. DI and routes were already wired in 31-33. `grep TODO(post-plan`: T4, T7, T11, T13, T20, T23 remain (T17 and T21 gone); T25 lives in the manifests.
 
 ## Verification
 Each phase: `fvm flutter analyze` clean, `fvm flutter test` green, its "Done when" items ticked, screenshots compared where the phase has UI. The builder ticks the phase Status and notes deviations in the phase.

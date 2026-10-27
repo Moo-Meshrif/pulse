@@ -14,6 +14,7 @@ import 'package:pulse/features/post/domain/use_case/edit_comment_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_comment_replies_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_mention_candidates_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_post_comments_use_case.dart';
+
 import '../../../../helpers/memory_snapshot_storage.dart';
 
 class _MockComments extends Mock implements CommentsDatasource {}
@@ -60,12 +61,7 @@ void main() {
       final page = await GetPostCommentsUseCase(
         comments,
         CommentsLocalDatasource(MemorySnapshotStorage()),
-      )(
-        'p1',
-        sort: CommentSort.newest,
-        before: cursor,
-        focusCommentId: 'c9',
-      );
+      )('p1', sort: CommentSort.newest, before: cursor, focusCommentId: 'c9');
 
       expect(page.comments.single.id, 'c1');
       verify(

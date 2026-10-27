@@ -23,6 +23,9 @@ class PostCard extends StatelessWidget {
     required this.data,
     this.callbacks = const PostCardCallbacks(),
     this.isOptionsOpen = false,
+    this.isDetail = false,
+    this.authorTrailing,
+    this.footer,
   });
 
   final PostCardData data;
@@ -31,67 +34,85 @@ class PostCard extends StatelessWidget {
   /// True while this post's options sheet is open.
   final bool isOptionsOpen;
 
+  /// The post's own page: the whole caption.
+  final bool isDetail;
+
+  /// The Follow chip on the post page, before the options button.
+  final Widget? authorTrailing;
+
+  /// Under the action bar (the post page's date line).
+  final Widget? footer;
+
   @override
   Widget build(BuildContext context) {
     final caption = data.caption?.trim() ?? '';
     final hasCaption = caption.isNotEmpty;
     final hasMedia = data.media.isNotEmpty;
-    return Container(
-      padding: PostCardDimens.padding,
-      decoration: BoxDecoration(
-        color: context.appColors.surface,
-        borderRadius: BorderRadius.circular(PostCardDimens.radius),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PostAuthorRow(
-            data: data,
-            callbacks: callbacks,
-            isOptionsOpen: isOptionsOpen,
-          ),
-          if (hasCaption)
-            ExpandableCaption(
-              text: caption,
-              collapsedLines: hasMedia
-                  ? PostCardDimens.captionWithMediaCollapsedLines
-                  : PostCardDimens.captionOnlyCollapsedLines,
-              margin: hasMedia
-                  ? PostCardDimens.captionMargin
-                  : PostCardDimens.captionOnlyMargin,
-            )
-          else
-            SizedBox(height: PostCardDimens.captionMargin.top),
-          if (data.isShare)
-            _sharedOriginal()
-          else if (hasMedia)
-            PostMedia(
-              postId: data.id,
-              items: data.media,
-              onDoubleTap: data.isLiked ? null : callbacks.onDoubleTapLike,
-              tags: data.tags,
-              viewerId: data.viewerId,
-              onTaggedPerson: callbacks.onTaggedPerson,
-              onTaggedPeople: callbacks.onTaggedPeople,
-              onRemoveMyTag: callbacks.onRemoveMyTag,
+    // Any spot without its own tap opens the post's page; the controls inside win the tap.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: callbacks.onOpenPost,
+      child: Container(
+        padding: PostCardDimens.padding,
+        decoration: BoxDecoration(
+          color: context.appColors.surface,
+          borderRadius: BorderRadius.circular(PostCardDimens.radius),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PostAuthorRow(
+              data: data,
+              callbacks: callbacks,
+              isOptionsOpen: isOptionsOpen,
+              showOptions: !isDetail,
+              trailing: authorTrailing,
             ),
-          PostActionBar(
-            likeCount: data.likeCount,
-            commentCount: data.commentCount,
-            isLiked: data.isLiked,
-            isSaved: data.isSaved,
-            onLike: callbacks.onLike,
-            commentsEnabled: data.commentsEnabled,
-            onComment: data.commentsEnabled
-                ? callbacks.onComment
-                : () => _showCommentsOff(context),
-            onShare: callbacks.onShare,
-            showShare: data.canShare,
-            onlySave: data.isOnlyMe,
-            onSave: callbacks.onSave,
-          ),
-          if (!data.commentsEnabled) const PostCommentsOffLine(),
-        ],
+            if (hasCaption)
+              ExpandableCaption(
+                text: caption,
+                showAll: isDetail,
+                collapsedLines: hasMedia
+                    ? PostCardDimens.captionWithMediaCollapsedLines
+                    : PostCardDimens.captionOnlyCollapsedLines,
+                margin: hasMedia
+                    ? PostCardDimens.captionMargin
+                    : PostCardDimens.captionOnlyMargin,
+              )
+            else
+              SizedBox(height: PostCardDimens.captionMargin.top),
+            if (data.isShare)
+              _sharedOriginal()
+            else if (hasMedia)
+              PostMedia(
+                postId: data.id,
+                items: data.media,
+                onDoubleTap: data.isLiked ? null : callbacks.onDoubleTapLike,
+                tags: data.tags,
+                viewerId: data.viewerId,
+                onTaggedPerson: callbacks.onTaggedPerson,
+                onTaggedPeople: callbacks.onTaggedPeople,
+                onRemoveMyTag: callbacks.onRemoveMyTag,
+              ),
+            PostActionBar(
+              likeCount: data.likeCount,
+              commentCount: data.commentCount,
+              isLiked: data.isLiked,
+              isSaved: data.isSaved,
+              onLike: callbacks.onLike,
+              commentsEnabled: data.commentsEnabled,
+              onComment: data.commentsEnabled
+                  ? callbacks.onComment
+                  : () => _showCommentsOff(context),
+              onShare: callbacks.onShare,
+              showShare: data.canShare,
+              onlySave: data.isOnlyMe,
+              onSave: callbacks.onSave,
+            ),
+            if (!data.commentsEnabled) const PostCommentsOffLine(),
+            ?footer,
+          ],
+        ),
       ),
     );
   }

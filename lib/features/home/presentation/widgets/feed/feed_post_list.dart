@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/feed_post.dart';
+import '../../../../post/presentation/utils/feed_post.dart';
 import 'feed_post_item.dart';
 
 /// The post cards of the feed.

@@ -4,9 +4,9 @@ import '../../../../../core/error/failures.dart';
 import '../../../../../core/state/load_more_status.dart';
 import '../../../../../shared/content/data/model/post_count_model.dart';
 import '../../../../post/domain/entity/feed_cursor_entity.dart';
+import '../../../../post/presentation/utils/feed_post.dart';
 import '../../utils/enums/feed_mode.dart';
 import '../../utils/enums/feed_status.dart';
-import '../../utils/feed_post.dart';
 
 part 'feed_state.freezed.dart';
 

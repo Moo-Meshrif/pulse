@@ -2193,4 +2193,92 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get commentsReportNotePlaceholder =>
       'Tell us what\'s wrong with this comment…';
+
+  @override
+  String get postPageTitle => 'Post';
+
+  @override
+  String get postFollow => 'Follow';
+
+  @override
+  String get postFollowing => 'Following';
+
+  @override
+  String get postFromNotification => 'From your notification';
+
+  @override
+  String get postPageUnavailableBody =>
+      'It may have been deleted, or the owner limited who can see it.';
+
+  @override
+  String get postBackToHome => 'Back to Home';
+
+  @override
+  String postDateLine(String date, String time) {
+    return '$date · $time';
+  }
+
+  @override
+  String postLikedBy(String name, String others) {
+    return 'Liked by $name and $others';
+  }
+
+  @override
+  String postLikedByOne(String name) {
+    return 'Liked by $name';
+  }
+
+  @override
+  String postLikedByOthers(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString others',
+      one: '1 other',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postLikesOpen => 'Show everyone who liked this post';
+
+  @override
+  String postLikesTitle(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Likes · $countString';
+  }
+
+  @override
+  String get postLikesTitleBare => 'Likes';
+
+  @override
+  String get postLikesSearchHint => 'Search';
+
+  @override
+  String get postLikesSearchClear => 'Clear search';
+
+  @override
+  String get postLikesEmpty => 'No people found';
+
+  @override
+  String get postLikesFollowBack => 'Follow back';
+
+  @override
+  String get postLikesLoadMoreError => 'Couldn\'t load more · Retry';
+
+  @override
+  String get postLikesCaughtUp => 'That\'s everyone';
+
+  @override
+  String get postLikedByYou => 'Liked by you';
+
+  @override
+  String get postLikedByYouName => 'you';
 }

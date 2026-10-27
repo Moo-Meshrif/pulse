@@ -16,11 +16,15 @@ class ExpandableCaption extends StatefulWidget {
     required this.text,
     required this.collapsedLines,
     this.margin,
+    this.showAll = false,
   });
 
   final String text;
   final int collapsedLines;
   final EdgeInsetsGeometry? margin;
+
+  /// The post's own page: the whole caption, no "more".
+  final bool showAll;
 
   @override
   State<ExpandableCaption> createState() => _ExpandableCaptionState();
@@ -92,6 +96,12 @@ class _ExpandableCaptionState extends State<ExpandableCaption> {
     final colors = context.appColors;
     final style = context.text.bodySm.copyWith(color: colors.textPrimary);
     final moreStyle = context.text.moreLink.copyWith(color: colors.primary);
+    if (widget.showAll) {
+      return Padding(
+        padding: widget.margin ?? EdgeInsets.zero,
+        child: Text(widget.text, style: style),
+      );
+    }
     return Padding(
       padding: widget.margin ?? EdgeInsets.zero,
       child: LayoutBuilder(

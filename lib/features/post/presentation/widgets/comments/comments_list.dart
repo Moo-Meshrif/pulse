@@ -25,6 +25,32 @@ typedef _ListData = ({
   bool hasMore,
 });
 
+BlocSelector<CommentsCubit, CommentsState, _ListData> _selectList({
+  required Widget Function(BuildContext context, _Rows rows) builder,
+  required bool commentsEnabled,
+  required bool isPostOwner,
+  String? highlightedId,
+}) => BlocSelector<CommentsCubit, CommentsState, _ListData>(
+  selector: (state) => (
+    comments: state.comments,
+    replies: state.replies,
+    pending: state.pending,
+    replyToId: state.replyTo?.id,
+    more: state.more,
+    hasMore: state.nextCursor != null,
+  ),
+  builder: (context, data) => builder(
+    context,
+    _Rows(
+      cubit: context.read<CommentsCubit>(),
+      data: data,
+      commentsEnabled: commentsEnabled,
+      isPostOwner: isPostOwner,
+      highlightedId: highlightedId,
+    ),
+  ),
+);
+
 /// The comments, a page at a time: the next page starts when the list nears its end. No pull to refresh.
 class CommentsList extends StatelessWidget {
   const CommentsList({
@@ -40,80 +66,112 @@ class CommentsList extends StatelessWidget {
   final bool commentsEnabled;
 
   @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<CommentsCubit>();
-    final me = cubit.me;
-    return BlocSelector<CommentsCubit, CommentsState, _ListData>(
-      selector: (state) => (
-        comments: state.comments,
-        replies: state.replies,
-        pending: state.pending,
-        replyToId: state.replyTo?.id,
-        more: state.more,
-        hasMore: state.nextCursor != null,
+  Widget build(BuildContext context) => _selectList(
+    commentsEnabled: commentsEnabled,
+    isPostOwner: isPostOwner,
+    builder: (context, rows) => LoadMoreListener(
+      onLoadMore: context.read<CommentsCubit>().loadMore,
+      child: ListView.builder(itemCount: rows.count, itemBuilder: rows.item),
+    ),
+  );
+}
+
+/// The same rows for the post page, whose own scroll holds them: built lazily, and the page asks for the
+/// next page itself.
+class CommentsSliverList extends StatelessWidget {
+  const CommentsSliverList({
+    super.key,
+    required this.commentsEnabled,
+    required this.isPostOwner,
+    this.highlightedId,
+  });
+
+  /// A comment lit up for a moment (the one a notification points at), when none is being replied to.
+  final String? highlightedId;
+
+  final bool isPostOwner;
+  final bool commentsEnabled;
+
+  @override
+  Widget build(BuildContext context) => _selectList(
+    commentsEnabled: commentsEnabled,
+    isPostOwner: isPostOwner,
+    highlightedId: highlightedId,
+    builder: (context, rows) =>
+        SliverList.builder(itemCount: rows.count, itemBuilder: rows.item),
+  );
+}
+
+class _Rows {
+  _Rows({
+    required this.cubit,
+    required this.data,
+    required this.commentsEnabled,
+    required this.isPostOwner,
+    required this.highlightedId,
+  }) {
+    // Your unconfirmed comments: top-level ones lead the list, replies sit in their thread.
+    for (final item in data.pending) {
+      final parent = item.parentId;
+      if (parent == null) {
+        _topLevel.add(item);
+      } else {
+        (_repliesOf[parent] ??= []).add(item);
+      }
+    }
+  }
+
+  final CommentsCubit cubit;
+  final _ListData data;
+  final bool commentsEnabled;
+  final bool isPostOwner;
+  final String? highlightedId;
+  final _topLevel = <PendingComment>[];
+  final _repliesOf = <String, List<PendingComment>>{};
+
+  int get count =>
+      _topLevel.length + data.comments.length + (data.hasMore ? 1 : 0);
+
+  Widget item(BuildContext context, int index) {
+    final threadsStart = _topLevel.length;
+    if (index < threadsStart) {
+      final item = _topLevel[index];
+      return CommentPostingRow(
+        key: ValueKey(item.clientId),
+        pending: item,
+        me: cubit.me,
+        onRetry: () => cubit.retry(item.clientId),
+        onDelete: () => cubit.discardFailed(item.clientId),
+      );
+    }
+    final position = index - threadsStart;
+    if (position == data.comments.length) {
+      return _Footer(
+        status: data.more,
+        onRetry: () => cubit.loadMore(retry: true),
+      );
+    }
+    final comment = data.comments[position];
+    return CommentThread(
+      key: ValueKey(comment.id),
+      comment: comment,
+      repliesStatus: data.replies[comment.id],
+      pending: _repliesOf[comment.id] ?? const [],
+      me: cubit.me,
+      highlightedId: data.replyToId ?? highlightedId,
+      onLike: cubit.toggleLike,
+      onLikeOnce: cubit.likeOnly,
+      onOptions: (target) => CommentOptionsFlow.show(
+        context,
+        cubit: cubit,
+        comment: target,
+        isPostOwner: isPostOwner,
+        commentsEnabled: commentsEnabled,
       ),
-      builder: (context, data) {
-        // Your unconfirmed comments: top-level ones lead the list, replies sit in their thread.
-        final topLevel = <PendingComment>[];
-        final repliesOf = <String, List<PendingComment>>{};
-        for (final item in data.pending) {
-          final parent = item.parentId;
-          if (parent == null) {
-            topLevel.add(item);
-          } else {
-            (repliesOf[parent] ??= []).add(item);
-          }
-        }
-        final threadsStart = topLevel.length;
-        return LoadMoreListener(
-          onLoadMore: cubit.loadMore,
-          child: ListView.builder(
-            itemCount:
-                threadsStart + data.comments.length + (data.hasMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index < threadsStart) {
-                final item = topLevel[index];
-                return CommentPostingRow(
-                  key: ValueKey(item.clientId),
-                  pending: item,
-                  me: me,
-                  onRetry: () => cubit.retry(item.clientId),
-                  onDelete: () => cubit.discardFailed(item.clientId),
-                );
-              }
-              final position = index - threadsStart;
-              if (position == data.comments.length) {
-                return _Footer(
-                  status: data.more,
-                  onRetry: () => cubit.loadMore(retry: true),
-                );
-              }
-              final comment = data.comments[position];
-              return CommentThread(
-                key: ValueKey(comment.id),
-                comment: comment,
-                repliesStatus: data.replies[comment.id],
-                pending: repliesOf[comment.id] ?? const [],
-                me: me,
-                highlightedId: data.replyToId,
-                onLike: cubit.toggleLike,
-                onLikeOnce: cubit.likeOnly,
-                onOptions: (target) => CommentOptionsFlow.show(
-                  context,
-                  cubit: cubit,
-                  comment: target,
-                  isPostOwner: isPostOwner,
-                  commentsEnabled: commentsEnabled,
-                ),
-                onReply: commentsEnabled ? cubit.startReply : null,
-                onMoreReplies: () => cubit.loadMoreReplies(comment),
-                onRetry: cubit.retry,
-                onDiscard: cubit.discardFailed,
-              );
-            },
-          ),
-        );
-      },
+      onReply: commentsEnabled ? cubit.startReply : null,
+      onMoreReplies: () => cubit.loadMoreReplies(comment),
+      onRetry: cubit.retry,
+      onDiscard: cubit.discardFailed,
     );
   }
 }

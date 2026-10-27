@@ -8,11 +8,15 @@ class PostCountModel extends Equatable {
   final int? commentCount;
   final bool? likedByMe;
 
+  /// Not in `post_counts`; set by a screen that changed the save itself.
+  final bool? savedByMe;
+
   const PostCountModel({
     this.id,
     this.likeCount,
     this.commentCount,
     this.likedByMe,
+    this.savedByMe,
   });
 
   factory PostCountModel.fromJson(Map<String, dynamic> json) => PostCountModel(
@@ -23,5 +27,11 @@ class PostCountModel extends Equatable {
   );
 
   @override
-  List<Object?> get props => [id, likeCount, commentCount, likedByMe];
+  List<Object?> get props => [
+    id,
+    likeCount,
+    commentCount,
+    likedByMe,
+    savedByMe,
+  ];
 }

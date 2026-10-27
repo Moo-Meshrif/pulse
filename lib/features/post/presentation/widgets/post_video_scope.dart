@@ -19,10 +19,14 @@ class PostVideoScope extends StatefulWidget {
   const PostVideoScope({
     super.key,
     this.videos = const [],
+    this.startMuted = true,
     required this.child,
   });
 
   final List<AppVideoItem> videos;
+
+  /// False plays with sound from the start (the post page); the feed starts muted.
+  final bool startMuted;
   final Widget child;
 
   /// The nearest scope's coordinator and player window, or null. It never rebuilds the caller: the caller
@@ -42,11 +46,11 @@ class _PostVideoScopeState extends State<PostVideoScope> {
     scrollDebounce: Duration(milliseconds: 150),
   );
 
-  final _coordinator = PostVideoCoordinator();
+  late final _coordinator = PostVideoCoordinator(isMuted: widget.startMuted);
   late final VideoFlux<AppVideoItem> _flux;
   late final PostVideos _videos;
   String? _selectedId;
-  bool _wasMuted = true;
+  late bool _wasMuted = widget.startMuted;
 
   @override
   void initState() {

@@ -52,6 +52,8 @@ import '../../features/follow/domain/use_case/get_follow_request_count_use_case.
     as _i608;
 import '../../features/follow/domain/use_case/get_follow_requests_use_case.dart'
     as _i171;
+import '../../features/follow/domain/use_case/get_follow_status_use_case.dart'
+    as _i689;
 import '../../features/follow/domain/use_case/get_suggested_profiles_use_case.dart'
     as _i250;
 import '../../features/follow/domain/use_case/respond_to_follow_request_use_case.dart'
@@ -89,6 +91,8 @@ import '../../features/post/data/datasource/post_actions_datasource.dart'
     as _i512;
 import '../../features/post/data/datasource/post_draft_datasource.dart'
     as _i1007;
+import '../../features/post/data/datasource/post_likes_datasource.dart'
+    as _i634;
 import '../../features/post/data/datasource/post_tags_datasource.dart' as _i518;
 import '../../features/post/data/datasource/posts_datasource.dart' as _i141;
 import '../../features/post/data/datasource/visibility_notice_datasource.dart'
@@ -109,10 +113,15 @@ import '../../features/post/domain/use_case/get_comment_replies_use_case.dart'
     as _i509;
 import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i281;
+import '../../features/post/domain/use_case/get_liked_by_preview_use_case.dart'
+    as _i656;
 import '../../features/post/domain/use_case/get_mention_candidates_use_case.dart'
     as _i581;
 import '../../features/post/domain/use_case/get_post_comments_use_case.dart'
     as _i810;
+import '../../features/post/domain/use_case/get_post_likers_use_case.dart'
+    as _i23;
+import '../../features/post/domain/use_case/get_post_use_case.dart' as _i165;
 import '../../features/post/domain/use_case/get_posts_by_ids_use_case.dart'
     as _i1014;
 import '../../features/post/domain/use_case/get_tagged_people_use_case.dart'
@@ -147,6 +156,10 @@ import '../../features/post/presentation/cubit/comments/comments_cubit.dart'
     as _i805;
 import '../../features/post/presentation/cubit/post_actions/post_actions_cubit.dart'
     as _i238;
+import '../../features/post/presentation/cubit/post_likes/post_likes_cubit.dart'
+    as _i195;
+import '../../features/post/presentation/cubit/post_page/post_page_cubit.dart'
+    as _i410;
 import '../../features/post/presentation/cubit/post_visibility/post_visibility_cubit.dart'
     as _i922;
 import '../../features/post/presentation/cubit/share_sheet/share_sheet_cubit.dart'
@@ -158,6 +171,7 @@ import '../../features/post/presentation/cubit/tag_people/tag_people_cubit.dart'
 import '../../features/post/presentation/cubit/tagged_people/tagged_people_cubit.dart'
     as _i118;
 import '../../features/post/presentation/utils/comment_drafts.dart' as _i277;
+import '../../features/post/presentation/utils/feed_post.dart' as _i992;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
@@ -406,6 +420,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i201.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i634.PostLikesDatasource>(
+      () => _i634.SupabasePostLikesDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i152.InterestsDatasource>(
       () => _i152.SupabaseInterestsDatasource(gh<_i454.SupabaseClient>()),
     );
@@ -445,6 +462,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.factory<_i656.GetLikedByPreviewUseCase>(
+      () => _i656.GetLikedByPreviewUseCase(gh<_i634.PostLikesDatasource>()),
+    );
+    gh.factory<_i23.GetPostLikersUseCase>(
+      () => _i23.GetPostLikersUseCase(gh<_i634.PostLikesDatasource>()),
+    );
     gh.factory<_i427.StoryViewersCubit>(
       () => _i427.StoryViewersCubit(gh<_i474.StoriesDatasource>()),
     );
@@ -475,6 +498,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i171.GetFollowRequestsUseCase>(
       () => _i171.GetFollowRequestsUseCase(gh<_i1001.FollowsDatasource>()),
+    );
+    gh.factory<_i689.GetFollowStatusUseCase>(
+      () => _i689.GetFollowStatusUseCase(gh<_i1001.FollowsDatasource>()),
     );
     gh.factory<_i250.GetSuggestedProfilesUseCase>(
       () => _i250.GetSuggestedProfilesUseCase(gh<_i1001.FollowsDatasource>()),
@@ -606,6 +632,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i586.GetInterestsUseCase>(
       () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
+    );
+    gh.factory<_i165.GetPostUseCase>(
+      () => _i165.GetPostUseCase(gh<_i141.PostsDatasource>()),
     );
     gh.factory<_i1014.GetPostsByIdsUseCase>(
       () => _i1014.GetPostsByIdsUseCase(gh<_i141.PostsDatasource>()),
@@ -849,6 +878,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i837.PostShareRepository>(),
         gh<_i999.ContentPublishRepository>(),
         gh<_i557.EventBus>(),
+      ),
+    );
+    gh.factoryParam<_i410.PostPageCubit, String, _i992.FeedPost?>(
+      (postId, passed) => _i410.PostPageCubit(
+        gh<_i165.GetPostUseCase>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i689.GetFollowStatusUseCase>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        gh<_i656.GetLikedByPreviewUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        postId,
+        passed,
+      ),
+    );
+    gh.factoryParam<_i195.PostLikesCubit, String, dynamic>(
+      (postId, _) => _i195.PostLikesCubit(
+        gh<_i23.GetPostLikersUseCase>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        postId,
       ),
     );
     gh.factory<_i782.SignUpCubit>(

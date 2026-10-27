@@ -192,4 +192,29 @@ void main() {
       expect(request.url.queryParameters['status'], 'eq.pending');
     });
   });
+
+  group('follow status', () {
+    test('reads the status of your follow of one person', () async {
+      final backend = await signedIn(
+        (_) async => BackendDouble.json({'status': 'accepted'}),
+      );
+
+      final status = await SupabaseFollowsDatasource(backend.client)
+          .getStatus('u2');
+
+      expect(status, FollowStatus.accepted);
+      final request = backend.to('/follows').single;
+      expect(request.url.queryParameters['follower_id'], 'eq.$uid');
+      expect(request.url.queryParameters['following_id'], 'eq.u2');
+    });
+
+    test('no row is no follow', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([]));
+
+      final status = await SupabaseFollowsDatasource(backend.client)
+          .getStatus('u2');
+
+      expect(status, FollowStatus.none);
+    });
+  });
 }

@@ -25,6 +25,9 @@ abstract interface class FollowsDatasource {
   /// Unfollows [userId], or cancels a pending request to them.
   Future<void> unfollow(String userId);
 
+  /// Where the signed-in user's follow of [userId] stands now.
+  Future<FollowStatus> getStatus(String userId);
+
   /// Follows every id; returns how many were new.
   Future<int> followAll(List<String> userIds);
 
@@ -98,6 +101,17 @@ final class SupabaseFollowsDatasource implements FollowsDatasource {
         .eq('follower_id', _uid)
         .eq('following_id', userId),
   );
+
+  @override
+  Future<FollowStatus> getStatus(String userId) => Guard.run(() async {
+    final row = await _client
+        .from('follows')
+        .select('status')
+        .eq('follower_id', _uid)
+        .eq('following_id', userId)
+        .maybeSingle();
+    return FollowStatus.fromJson(row?['status']);
+  });
 
   @override
   Future<int> followAll(List<String> userIds) => Guard.run(() async {

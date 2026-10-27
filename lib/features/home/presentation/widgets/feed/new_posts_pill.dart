@@ -5,10 +5,10 @@ import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/l10n.dart';
 import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../post/presentation/utils/feed_post.dart';
 import '../../../../post/presentation/widgets/post_person_avatar.dart';
 import '../../dimens/home_dimens.dart';
 import '../../utils/feed_floaters_rules.dart';
-import '../../utils/feed_post.dart';
 
 /// The pill over the feed that says new posts are waiting: avatars of up to three of their authors, an
 /// arrow and the words. One tap takes them there. It sits in the same place in Arabic; the arrow does not

@@ -17,6 +17,7 @@ class PostCardCallbacks {
     this.onRemoveMyTag,
     this.onOriginalProfile,
     this.onOriginal,
+    this.onOpenPost,
   });
 
   final VoidCallback? onProfile;
@@ -46,4 +47,7 @@ class PostCardCallbacks {
 
   /// A share: a tap on the framed original.
   final VoidCallback? onOriginal;
+
+  /// A tap on the card where nothing else takes it (caption, time, gaps): the post's own page. Null on the page itself.
+  final VoidCallback? onOpenPost;
 }

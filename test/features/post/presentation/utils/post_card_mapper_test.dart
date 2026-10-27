@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/core/constants/app_assets.dart';
-import 'package:pulse/features/home/presentation/utils/post_card_mapper.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_mood_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_tag_entity.dart';
+import 'package:pulse/features/post/presentation/utils/post_card_mapper.dart';
 import 'package:pulse/features/post/presentation/utils/post_card_media.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
-import '../../../post/post_fixtures.dart';
+import '../../post_fixtures.dart';
 
 PostEntity _post({String? fullName, ContentAudience? visibility}) {
   final base = testPost('p1', authorId: 'a1', liked: true, saved: true);

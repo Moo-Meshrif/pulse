@@ -32,6 +32,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- TODO(post-plan T25): add a pulse://.../p/:postId filter once deep-link routing is decided. -->
             <!-- Password-reset email link (pulse://reset-password). supabase_flutter reads it and starts the
                  recovery session; the app then opens the reset screen itself, so Flutter's own deep-link
                  routing stays off. -->

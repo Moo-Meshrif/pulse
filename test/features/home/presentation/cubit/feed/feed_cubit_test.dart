@@ -11,6 +11,7 @@ import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
+import 'package:pulse/features/post/domain/event/post_counts_changed.dart';
 import 'package:pulse/features/post/domain/event/post_saved.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
@@ -525,6 +526,40 @@ void main() {
       bus.fire(PostSaved(testPost('p2')));
       await Future<void>.delayed(Duration.zero);
       expect(cubit.state.posts.map((p) => p.id), ['p1', 'p2']);
+      await cubit.close();
+    });
+
+    test('counts changed on the post page reach the feed counts', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      final cubit = build();
+      await cubit.start();
+
+      bus.fire(
+        const PostCountsChanged(
+          postId: 'p1',
+          likeCount: 12,
+          commentCount: 5,
+          likedByMe: true,
+          savedByMe: true,
+        ),
+      );
+      bus.fire(
+        const PostCountsChanged(
+          postId: 'elsewhere',
+          likeCount: 1,
+          commentCount: 1,
+          likedByMe: false,
+          savedByMe: false,
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.counts.keys, ['p1']);
+      final count = cubit.state.counts['p1']!;
+      expect(count.likeCount, 12);
+      expect(count.commentCount, 5);
+      expect(count.likedByMe, isTrue);
+      expect(count.savedByMe, isTrue);
       await cubit.close();
     });
 

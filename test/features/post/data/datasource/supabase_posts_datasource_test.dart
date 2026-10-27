@@ -58,6 +58,26 @@ void main() {
     ],
   };
 
+  group('getPost', () {
+    test('asks for one post and parses its row', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([row(1)]));
+
+      final post = await SupabasePostsDatasource(backend.client).getPost('p1');
+
+      expect(body(backend.to('/rpc/get_post').single), {'p_post': 'p1'});
+      expect(post!.id, 'p1');
+      expect(post.savedByMe, isTrue);
+    });
+
+    test('a post nobody can see is null', () async {
+      final backend = await signedIn((_) async => BackendDouble.json([]));
+
+      final post = await SupabasePostsDatasource(backend.client).getPost('p1');
+
+      expect(post, isNull);
+    });
+  });
+
   group('getHomeFeed', () {
     test('first page sends only the limit and parses the rows', () async {
       final backend = await signedIn((_) async => BackendDouble.json([row(1)]));

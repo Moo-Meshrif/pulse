@@ -70,8 +70,18 @@ abstract final class AppRoutes {
   // TODO(home-plan H2): /activity is not specced yet.
   static const activity = '/activity';
 
-  /// A post's comments (`/post/:postId/comments`); a placeholder until the comments page is specced.
-  // TODO(home-plan H3): the comments page is not specced yet.
+  /// One post on its own page (`/p/:postId`, with `?comment=:id` to put a comment first).
+  static String postPage(String postId, {String? comment}) => comment == null
+      ? '$postPagePrefix$postId'
+      : '$postPagePrefix$postId?comment=$comment';
+  static const postPagePrefix = '/p/';
+
+  /// The people who liked a post (`/p/:postId/likes`).
+  static String postLikes(String postId) =>
+      '$postPagePrefix$postId$likesSuffix';
+  static const likesSuffix = '/likes';
+
+  /// A post's comments (`/post/:postId/comments`): the post page with the comment field focused.
   static String commentsOf(String postId) =>
       '$postPrefix$postId$commentsSuffix';
   static const postPrefix = '/post/';

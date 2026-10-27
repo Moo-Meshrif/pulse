@@ -2185,4 +2185,95 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get commentsReportNotePlaceholder =>
       'أخبرنا بما يزعجك في هذا التعليق…';
+
+  @override
+  String get postPageTitle => 'المنشور';
+
+  @override
+  String get postFollow => 'متابعة';
+
+  @override
+  String get postFollowing => 'تتابعه';
+
+  @override
+  String get postFromNotification => 'من إشعارك';
+
+  @override
+  String get postPageUnavailableBody =>
+      'ربما تم حذفه، أو قيّد صاحبه من يمكنه رؤيته.';
+
+  @override
+  String get postBackToHome => 'العودة إلى الرئيسية';
+
+  @override
+  String postDateLine(String date, String time) {
+    return '$date · $time';
+  }
+
+  @override
+  String postLikedBy(String name, String others) {
+    return 'أعجب $name و$others';
+  }
+
+  @override
+  String postLikedByOne(String name) {
+    return 'أعجب $name';
+  }
+
+  @override
+  String postLikedByOthers(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString شخص آخر',
+      many: '$countString شخصًا آخر',
+      few: '$countString أشخاص آخرين',
+      two: 'شخصان آخران',
+      one: 'شخص آخر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get postLikesOpen => 'عرض كل من أعجبهم هذا المنشور';
+
+  @override
+  String postLikesTitle(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'الإعجابات · $countString';
+  }
+
+  @override
+  String get postLikesTitleBare => 'الإعجابات';
+
+  @override
+  String get postLikesSearchHint => 'بحث';
+
+  @override
+  String get postLikesSearchClear => 'مسح البحث';
+
+  @override
+  String get postLikesEmpty => 'لم يتم العثور على أحد';
+
+  @override
+  String get postLikesFollowBack => 'رد المتابعة';
+
+  @override
+  String get postLikesLoadMoreError => 'تعذّر تحميل المزيد · أعد المحاولة';
+
+  @override
+  String get postLikesCaughtUp => 'هذا كل الأشخاص';
+
+  @override
+  String get postLikedByYou => 'أعجبك هذا المنشور';
+
+  @override
+  String get postLikedByYouName => 'أعجبك';
 }

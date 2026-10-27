@@ -100,11 +100,10 @@ class _StoryPostLayerState extends State<StoryPostLayer> {
     );
   }
 
-  // TODO(post-plan T21): open the post page instead of its comments once it exists.
   Future<void> _viewPost(String postId) async {
     await AppNavigator.push(
       context,
-      AppRoutes.commentsOf(postId),
+      AppRoutes.postPage(postId),
       rootNavigator: true,
     );
     if (mounted && _isOpen) _close();

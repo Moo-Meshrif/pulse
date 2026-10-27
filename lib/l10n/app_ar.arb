@@ -2687,5 +2687,89 @@
   "commentsReportNotePlaceholder": "أخبرنا بما يزعجك في هذا التعليق…",
   "@commentsReportNotePlaceholder": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "postPageTitle": "المنشور",
+  "@postPageTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFollow": "متابعة",
+  "@postFollow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFollowing": "تتابعه",
+  "@postFollowing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postFromNotification": "من إشعارك",
+  "@postFromNotification": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postPageUnavailableBody": "ربما تم حذفه، أو قيّد صاحبه من يمكنه رؤيته.",
+  "@postPageUnavailableBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postBackToHome": "العودة إلى الرئيسية",
+  "@postBackToHome": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postDateLine": "{date} · {time}",
+  "@postDateLine": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikedBy": "أعجب {name} و{others}",
+  "@postLikedBy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikedByOne": "أعجب {name}",
+  "@postLikedByOne": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikedByOthers": "{count, plural, =1{شخص آخر} =2{شخصان آخران} few{{count} أشخاص آخرين} many{{count} شخصًا آخر} other{{count} شخص آخر}}",
+  "@postLikedByOthers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesOpen": "عرض كل من أعجبهم هذا المنشور",
+  "@postLikesOpen": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesTitle": "الإعجابات · {count}",
+  "@postLikesTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesTitleBare": "الإعجابات",
+  "@postLikesTitleBare": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesSearchHint": "بحث",
+  "@postLikesSearchHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesSearchClear": "مسح البحث",
+  "@postLikesSearchClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesEmpty": "لم يتم العثور على أحد",
+  "@postLikesEmpty": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesFollowBack": "رد المتابعة",
+  "@postLikesFollowBack": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesLoadMoreError": "تعذّر تحميل المزيد · أعد المحاولة",
+  "@postLikesLoadMoreError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikesCaughtUp": "هذا كل الأشخاص",
+  "@postLikesCaughtUp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikedByYou": "أعجبك هذا المنشور",
+  "@postLikedByYou": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "postLikedByYouName": "أعجبك",
+  "@postLikedByYouName": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

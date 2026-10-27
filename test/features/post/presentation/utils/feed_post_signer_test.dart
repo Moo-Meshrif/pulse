@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pulse/features/home/presentation/utils/feed_post_signer.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
+import 'package:pulse/features/post/presentation/utils/feed_post_signer.dart';
 
-import '../../../post/post_fixtures.dart';
+import '../../post_fixtures.dart';
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 

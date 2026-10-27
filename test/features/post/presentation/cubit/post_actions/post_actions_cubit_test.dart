@@ -339,6 +339,15 @@ void main() {
   });
 
   group('counts and replaced posts', () {
+    test('a save set on the post page lands on the post', () {
+      cubit.applyCounts(
+        [post],
+        {'p1': const PostCountModel(id: 'p1', savedByMe: true)},
+      );
+      expect(cubit.postOf(post).savedByMe, isTrue);
+      expect(cubit.postOf(post).likeCount, post.likeCount);
+    });
+
     test('new counts land on the post; equal ones change nothing', () {
       cubit.applyCounts(
         [post],

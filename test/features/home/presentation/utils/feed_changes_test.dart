@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pulse/features/home/presentation/utils/feed_changes.dart';
-import 'package:pulse/features/home/presentation/utils/feed_post.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
+import 'package:pulse/features/post/presentation/utils/feed_post.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
 
 FeedPost feedPost(String id, {String author = 'other', required int day}) =>

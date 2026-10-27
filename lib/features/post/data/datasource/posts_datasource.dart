@@ -30,6 +30,9 @@ abstract interface class PostsDatasource {
   /// one they can no longer see (or that is gone) is left out.
   Future<List<PostModel>> getPostsByIds(List<String> ids);
 
+  /// The post [id] in the shape of a feed row; null when it is gone or the signed-in user can't see it.
+  Future<PostModel?> getPost(String id);
+
   /// Signed links by object path; a path that cannot be signed is left out.
   Future<Map<String, String>> signMediaUrls(List<String> paths);
 
@@ -121,6 +124,17 @@ final class SupabasePostsDatasource implements PostsDatasource {
             .map(PostModel.fromJson)
             .toList();
       });
+
+  @override
+  Future<PostModel?> getPost(String id) => Guard.run(() async {
+    final rows = await _client.rpc<List<dynamic>>(
+      'get_post',
+      params: {'p_post': id},
+    );
+    return rows.isEmpty
+        ? null
+        : PostModel.fromJson(Map<String, dynamic>.from(rows.first as Map));
+  });
 
   @override
   Future<Map<String, String>> signMediaUrls(List<String> paths) =>

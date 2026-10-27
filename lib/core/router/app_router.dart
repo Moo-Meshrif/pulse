@@ -13,8 +13,11 @@ import '../../features/places/presentation/screen/add_location_screen.dart';
 import '../../features/post/domain/entity/post_mood_entity.dart';
 import '../../features/post/presentation/screen/add_edit_post_screen.dart';
 import '../../features/post/presentation/screen/feeling_screen.dart';
+import '../../features/post/presentation/screen/post_likes_screen.dart';
+import '../../features/post/presentation/screen/post_page_screen.dart';
 import '../../features/post/presentation/screen/tag_in_photo_screen.dart';
 import '../../features/post/presentation/screen/tag_people_screen.dart';
+import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
@@ -56,15 +59,60 @@ abstract final class AppRouter {
       );
     }
 
+    // `/p/:postId/likes`: who liked the post. Before the post page, whose id is the rest of the path.
+    if (path.startsWith(AppRoutes.postPagePrefix) &&
+        path.endsWith(AppRoutes.likesSuffix)) {
+      final postId = path.substring(
+        AppRoutes.postPagePrefix.length,
+        path.length - AppRoutes.likesSuffix.length,
+      );
+      if (postId.isNotEmpty) {
+        return _page(settings, PostLikesScreen(postId: postId));
+      }
+    }
+
+    // `/p/:postId`: the post page; the post already loaded may come as `PostPageArgs`.
+    if (path.startsWith(AppRoutes.postPagePrefix) &&
+        path.length > AppRoutes.postPagePrefix.length) {
+      final postId = path.substring(AppRoutes.postPagePrefix.length);
+      final given = settings.arguments is PostPageArgs
+          ? settings.arguments as PostPageArgs
+          : null;
+      final comment = Uri.parse(settings.name!).queryParameters['comment'];
+      return _page(
+        settings,
+        PostPageScreen(
+          args: PostPageArgs(
+            postId: postId,
+            post: given?.post,
+            focusCommentId: comment ?? given?.focusCommentId,
+            focusComposer: given?.focusComposer ?? false,
+          ),
+        ),
+      );
+    }
+
     // TODO(story-plan T3): a placeholder until the profile screens exist.
     if (path.startsWith(AppRoutes.profilePrefix) &&
         path.length > AppRoutes.profilePrefix.length) {
       return _page(settings, PlaceholderScreen(route: path));
     }
 
+    // `/post/:postId/comments`: the post page with the comment field focused.
     if (path.startsWith(AppRoutes.postPrefix) &&
         path.endsWith(AppRoutes.commentsSuffix)) {
-      return _page(settings, PlaceholderScreen(route: path));
+      final postId = path.substring(
+        AppRoutes.postPrefix.length,
+        path.length - AppRoutes.commentsSuffix.length,
+      );
+      if (postId.isNotEmpty) {
+        return _page(
+          settings,
+          PostPageScreen(
+            args: PostPageArgs(postId: postId, focusComposer: true),
+          ),
+        );
+      }
     }
 
     return switch (path) {

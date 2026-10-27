@@ -30,7 +30,8 @@ abstract final class CommentsDimens {
   static double get lineGap => AppScale.scale(2); // estimated
   static double get actionsGap => AppScale.scale(14); // estimated
   static const double heartTarget = 48; // tap target: fixed
-  static double get heart => AppScale.scale(18); // estimated: board 16 looked small
+  static double get heart =>
+      AppScale.scale(18); // estimated: board 16 looked small
 
   static double get badgeHeight => AppScale.scale(18);
   static double get badgeSide => AppScale.scale(6); // estimated

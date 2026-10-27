@@ -34,6 +34,7 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<!-- TODO(post-plan T25): handle pulse://.../p/:postId once deep-link routing is decided. -->
 			<key>CFBundleURLName</key>
 			<string>pulse.reset-password</string>
 			<key>CFBundleURLSchemes</key>

@@ -3823,6 +3823,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tell us what\'s wrong with this comment…'**
   String get commentsReportNotePlaceholder;
+
+  /// Title of the post page
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get postPageTitle;
+
+  /// Follow chip on the post page
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get postFollow;
+
+  /// Follow chip once you follow the author
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get postFollowing;
+
+  /// Chip under the bar when the page opened from a notification
+  ///
+  /// In en, this message translates to:
+  /// **'From your notification'**
+  String get postFromNotification;
+
+  /// Body of the post page when the post can't be seen
+  ///
+  /// In en, this message translates to:
+  /// **'It may have been deleted, or the owner limited who can see it.'**
+  String get postPageUnavailableBody;
+
+  /// Button of the post page when the post can't be seen
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get postBackToHome;
+
+  /// Date line under the post's actions on the post page
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {time}'**
+  String postDateLine(String date, String time);
+
+  /// Liked by row on the post page: the name and the count of the others are bold
+  ///
+  /// In en, this message translates to:
+  /// **'Liked by {name} and {others}'**
+  String postLikedBy(String name, String others);
+
+  /// Liked by row on the post page when one person liked it
+  ///
+  /// In en, this message translates to:
+  /// **'Liked by {name}'**
+  String postLikedByOne(String name);
+
+  /// Liked by row: the bold count of the other people
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 other} other{{count} others}}'**
+  String postLikedByOthers(int count);
+
+  /// Screen-reader hint of the Liked by row
+  ///
+  /// In en, this message translates to:
+  /// **'Show everyone who liked this post'**
+  String get postLikesOpen;
+
+  /// Likes list title with the number of people
+  ///
+  /// In en, this message translates to:
+  /// **'Likes · {count}'**
+  String postLikesTitle(int count);
+
+  /// Likes list title before the number is known
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get postLikesTitleBare;
+
+  /// Likes list search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get postLikesSearchHint;
+
+  /// Likes list search field clear button label
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get postLikesSearchClear;
+
+  /// Likes list when a search matches nobody
+  ///
+  /// In en, this message translates to:
+  /// **'No people found'**
+  String get postLikesEmpty;
+
+  /// Likes list button for someone who follows you
+  ///
+  /// In en, this message translates to:
+  /// **'Follow back'**
+  String get postLikesFollowBack;
+
+  /// Likes list footer when the next page failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get postLikesLoadMoreError;
+
+  /// Likes list footer after the last page
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s everyone'**
+  String get postLikesCaughtUp;
+
+  /// Liked by row on the post page when you are the only person who liked it
+  ///
+  /// In en, this message translates to:
+  /// **'Liked by you'**
+  String get postLikedByYou;
+
+  /// The bold word of the Liked by you row; it is the end of postLikedByYou
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get postLikedByYouName;
 }
 
 class _AppLocalizationsDelegate

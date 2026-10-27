@@ -26,7 +26,7 @@ Tokens [board]: top bar 52 + status, back 44, title Sora 18/700, more 44; mini a
 | 5 | Not available | bare `ic_lock_closed` 72, "This post isn't available" (Sora 16/700), "It may have been deleted, or the owner limited who can see it." (14 textSecondary), "Back to Home" primary pill. Used for deleted, private author you don't follow, audience changed and blocked. The back arrow and "..." stay |
 
 ## Behavior
-- **Route:** `/p/:postId` (+ `?comment=:id`); deep links, notifications, share-card original and story sticker all use it [board]. The old route `/post/:postId/comments` opens this page with the comment field focused; the S14 sheet is opened by the comment icon on a card (`CommentsSheet.show`) [plan decision, confirm].
+- **Route:** `/p/:postId` (+ `?comment=:id`); deep links, notifications, share-card original and story sticker all use it [board]. The old route `/post/:postId/comments` opens this page with the comment field focused; the S14 sheet is opened by the comment icon on a card (`CommentsSheet.show`); a tap on a card's caption or time opens this page [plan decision, done in Phase 33].
 - **From the feed:** the hero media is passed with the loaded post so the page shows at once, then refreshes (`get_post`) [board]. Likes, comments and saves update the page and the feed card together (same shared post state) [board].
 - **More (...)** opens S2 (Post options) for this post; **comments off** shows the bar instead of the composer (`../02-components.md`).
 - **Video** plays with sound on this page (muted in the feed) [board].

@@ -14,25 +14,38 @@ import 'package:pulse/core/services/location_service.dart';
 import 'package:pulse/core/services/media_picker_service.dart';
 import 'package:pulse/core/services/video_thumbnail_service.dart';
 import 'package:pulse/features/control/presentation/screen/control_screen.dart';
+import 'package:pulse/features/follow/data/datasource/follows_datasource.dart';
+import 'package:pulse/features/follow/data/enums/follow_status.dart';
 import 'package:pulse/features/places/data/datasource/places_datasource.dart';
 import 'package:pulse/features/places/data/enums/place_kind.dart';
 import 'package:pulse/features/places/data/model/place_model.dart';
 import 'package:pulse/features/places/presentation/screen/add_location_screen.dart';
+import 'package:pulse/features/post/data/datasource/comments_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_draft_datasource.dart';
+import 'package:pulse/features/post/data/datasource/post_likes_datasource.dart';
 import 'package:pulse/features/post/data/datasource/post_tags_datasource.dart';
 import 'package:pulse/features/post/data/datasource/posts_datasource.dart';
+import 'package:pulse/features/post/data/enums/comment_sort.dart';
 import 'package:pulse/features/post/data/enums/media_type.dart';
 import 'package:pulse/features/post/data/enums/mood_kind.dart';
+import 'package:pulse/features/post/data/model/comment_model.dart';
+import 'package:pulse/features/post/data/model/comment_page_model.dart';
 import 'package:pulse/features/post/data/model/feed_page_model.dart';
+import 'package:pulse/features/post/data/model/liked_by_preview_model.dart';
 import 'package:pulse/features/post/data/model/post_draft_model.dart';
+import 'package:pulse/features/post/data/model/post_liker_model.dart';
+import 'package:pulse/features/post/data/model/post_likers_page_model.dart';
 import 'package:pulse/features/post/data/model/post_media_model.dart';
 import 'package:pulse/features/post/data/model/post_model.dart';
 import 'package:pulse/features/post/data/model/post_tag_model.dart';
 import 'package:pulse/features/post/data/model/tag_person_model.dart';
 import 'package:pulse/features/post/presentation/screen/add_edit_post_screen.dart';
 import 'package:pulse/features/post/presentation/screen/feeling_screen.dart';
+import 'package:pulse/features/post/presentation/screen/post_likes_screen.dart';
+import 'package:pulse/features/post/presentation/screen/post_page_screen.dart';
 import 'package:pulse/features/post/presentation/screen/tag_in_photo_screen.dart';
 import 'package:pulse/features/post/presentation/screen/tag_people_screen.dart';
+import 'package:pulse/features/post/presentation/widgets/comments/comment_options_sheet.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/post/presentation/widgets/tag_in_photo/tag_photo_canvas.dart';
 import 'package:pulse/features/profile/data/enums/signup_step.dart';
@@ -51,6 +64,10 @@ import '../helpers/png_http_overrides.dart';
 import '../helpers/pump_app.dart';
 
 class _Posts extends Mock implements PostsDatasource {}
+
+class _Comments extends Mock implements CommentsDatasource {}
+
+class _Likes extends Mock implements PostLikesDatasource {}
 
 class _Privacy extends Mock implements PrivacyDatasource {}
 
@@ -117,12 +134,15 @@ void main() {
   late _Picker picker;
   late MockMediaFilesDatasource files;
   late MockPendingContentDatasource server;
+  late _Comments comments;
+  late _Likes likes;
 
   setUpAll(() {
     registerFallbackValue(File(''));
     registerFallbackValue(ContentAudience.public);
     registerFallbackValue(<dynamic>[]);
     registerFallbackValue(MoodKind.feeling);
+    registerFallbackValue(CommentSort.relevant);
     registerFallbackValue(const PickedMedia(path: '/x', isVideo: false));
   });
 
@@ -191,6 +211,8 @@ void main() {
       ),
     ).thenAnswer((_) async {});
     server = serverDraftOk();
+    comments = _Comments();
+    likes = _Likes();
   });
 
   /// What Share saved on the server for the one post shared.
@@ -240,6 +262,10 @@ void main() {
         getIt.registerSingleton<ConnectivityService>(connectivity);
         await getIt.unregister<VideoThumbnailService>();
         getIt.registerSingleton<VideoThumbnailService>(_Thumbnails());
+        await getIt.unregister<CommentsDatasource>();
+        getIt.registerSingleton<CommentsDatasource>(comments);
+        await getIt.unregister<PostLikesDatasource>();
+        getIt.registerSingleton<PostLikesDatasource>(likes);
         if (drafts != null) {
           await getIt.unregister<PostDraftDatasource>();
           getIt.registerSingleton<PostDraftDatasource>(drafts);
@@ -831,5 +857,285 @@ void main() {
         expect(find.text(l10nEn.newPostShared), findsOneWidget);
       },
     );
+  });
+
+  group('comments, post page and likes', () {
+    final at = DateTime(2026, 10, 20);
+
+    PostModel feedPost({String author = 'someone-else', bool shared = false}) =>
+        PostModel(
+          id: 'feed-post',
+          authorId: author,
+          username: author == 'me' ? 'me' : 'nour.adel',
+          fullName: author == 'me' ? 'Me Myself' : 'Nour Adel',
+          caption: 'Hello',
+          likeCount: 3,
+          commentCount: 1,
+          commentsEnabled: true,
+          visibility: ContentAudience.public,
+          createdAt: DateTime(2026, 10, 14),
+          likedByMe: false,
+          savedByMe: false,
+          media: const [],
+        );
+
+    CommentModel omarsComment() => CommentModel(
+      id: 'c1',
+      postId: 'feed-post',
+      authorId: 'u-omar',
+      username: 'omarkh',
+      fullName: 'Omar Khaled',
+      body: 'Great shot',
+      createdAt: at,
+      likeCount: 0,
+      likedByMe: false,
+      replyCount: 0,
+      replies: const [],
+      rank: 1,
+    );
+
+    CommentModel written(String id, String body, {String? parentId}) =>
+        CommentModel(
+          id: id,
+          postId: 'feed-post',
+          parentId: parentId,
+          authorId: 'me',
+          username: 'me',
+          fullName: 'Me Myself',
+          body: body,
+          createdAt: at,
+          likeCount: 0,
+          likedByMe: false,
+          replyCount: 0,
+          replies: const [],
+        );
+
+    void stubFeed(PostModel post) {
+      when(
+        () => posts.getHomeFeed(
+          limit: any(named: 'limit'),
+          beforeCreated: any(named: 'beforeCreated'),
+          beforeId: any(named: 'beforeId'),
+        ),
+      ).thenAnswer((_) async => FeedPageModel(posts: [post]));
+      when(() => posts.getPost('feed-post')).thenAnswer((_) async => post);
+    }
+
+    void stubComments(List<CommentModel> rows) {
+      when(
+        () => comments.getComments(
+          any(),
+          sort: any(named: 'sort'),
+          limit: any(named: 'limit'),
+          beforeRank: any(named: 'beforeRank'),
+          beforeCreated: any(named: 'beforeCreated'),
+          beforeId: any(named: 'beforeId'),
+          focusCommentId: any(named: 'focusCommentId'),
+        ),
+      ).thenAnswer((_) async => CommentPageModel(comments: rows));
+      when(
+        () => comments.getMentionCandidates(
+          any(),
+          any(),
+          limit: any(named: 'limit'),
+        ),
+      ).thenAnswer((_) async => const []);
+    }
+
+    Future<void> openComments(WidgetTester tester) async {
+      await tester.tap(find.bySemanticsLabel(l10nEn.postComment));
+      await settle(tester);
+      expect(find.text(l10nEn.commentsTitle), findsWidgets);
+    }
+
+    Future<void> longPressComment(WidgetTester tester, String name) async {
+      await tester.longPress(
+        find.bySemanticsLabel(l10nEn.commentBy(name)).first,
+      );
+      await settle(tester);
+    }
+
+    testWidgets(
+      'Home comment icon: write, reply, then Hide with Undo on your own post',
+      (tester) async {
+        stubFeed(feedPost(author: 'me'));
+        stubComments([omarsComment()]);
+        when(
+          () => comments.addComment(
+            'feed-post',
+            'Thanks!',
+            parentId: any(named: 'parentId'),
+            clientId: any(named: 'clientId'),
+          ),
+        ).thenAnswer((_) async => written('c2', 'Thanks!'));
+        when(
+          () => comments.addComment(
+            'feed-post',
+            'Me too',
+            parentId: 'c1',
+            clientId: any(named: 'clientId'),
+          ),
+        ).thenAnswer((_) async => written('c3', 'Me too', parentId: 'c1'));
+        when(() => comments.hideComment('c1', hidden: any(named: 'hidden')))
+            .thenAnswer((_) async {});
+        await boot(tester);
+
+        await openComments(tester);
+        expect(find.text('Great shot'), findsOneWidget);
+
+        // Write: the comment shows at once.
+        await tester.enterText(find.byType(TextField), 'Thanks!');
+        await tester.pump();
+        await tester.tap(find.bySemanticsLabel(l10nEn.commentsSend));
+        await settle(tester);
+        expect(find.text('Thanks!'), findsOneWidget);
+        verify(
+          () => comments.addComment(
+            'feed-post',
+            'Thanks!',
+            parentId: null,
+            clientId: any(named: 'clientId'),
+          ),
+        ).called(1);
+
+        // Reply: long-press > Reply writes under the first comment.
+        await longPressComment(tester, 'Omar Khaled');
+        await tester.tap(
+          find.descendant(
+            of: find.byType(CommentOptionsSheet),
+            matching: find.text(l10nEn.commentReply),
+          ),
+        );
+        await settle(tester);
+        expect(find.textContaining('omarkh'), findsWidgets);
+        await tester.enterText(find.byType(TextField), '@omarkh Me too');
+        await tester.pump();
+        await tester.tap(find.bySemanticsLabel(l10nEn.commentsSend));
+        await settle(tester);
+        verify(
+          () => comments.addComment(
+            'feed-post',
+            any(that: contains('Me too')),
+            parentId: 'c1',
+            clientId: any(named: 'clientId'),
+          ),
+        ).called(1);
+
+        // Hide (the post is mine) shows a notice with Undo, which brings it back.
+        await longPressComment(tester, 'Omar Khaled');
+        await tester.tap(find.text(l10nEn.commentsHide));
+        await settle(tester);
+        verify(() => comments.hideComment('c1', hidden: true)).called(1);
+        expect(Notices.current.value?.title, l10nEn.commentsHidden);
+        await tester.tap(find.text(l10nEn.undo));
+        await settle(tester);
+        verify(() => comments.hideComment('c1', hidden: false)).called(1);
+        Notices.clear();
+      },
+    );
+
+    testWidgets(
+      'caption opens the post page; Liked by opens Likes; Follow follows',
+      (tester) async {
+        stubFeed(feedPost());
+        stubComments(const []);
+        when(() => likes.getPreview('feed-post')).thenAnswer(
+          (_) async => const LikedByPreviewModel(
+            firstId: 'u-salma',
+            firstUsername: 'salma.ash',
+            firstFullName: 'Salma Ashraf',
+            others: 2,
+            avatars: [],
+            onlyMe: false,
+          ),
+        );
+        when(
+          () => likes.getLikers(
+            'feed-post',
+            query: any(named: 'query'),
+            limit: any(named: 'limit'),
+            beforeLikedAt: any(named: 'beforeLikedAt'),
+            beforeId: any(named: 'beforeId'),
+          ),
+        ).thenAnswer(
+          (_) async => PostLikersPageModel(
+            likers: [
+              PostLikerModel(
+                id: 'u-salma',
+                username: 'salma.ash',
+                fullName: 'Salma Ashraf',
+                likedAt: at,
+                followStatus: 'none',
+                followsMe: false,
+                total: 3,
+              ),
+            ],
+          ),
+        );
+        await boot(tester);
+        final follows = getIt<FollowsDatasource>();
+        when(() => follows.follow('u-salma'))
+            .thenAnswer((_) async => FollowStatus.accepted);
+
+        await tester.tap(find.text('Hello'));
+        await settle(tester);
+        expect(find.byType(PostPageScreen), findsOneWidget);
+
+        await tester.tap(find.bySemanticsLabel(RegExp('^Liked by')));
+        await settle(tester);
+        expect(find.byType(PostLikesScreen), findsOneWidget);
+        expect(find.text('Salma Ashraf'), findsOneWidget);
+
+        await tester.tap(find.text(l10nEn.postFollow));
+        await settle(tester);
+        verify(() => follows.follow('u-salma')).called(1);
+        expect(find.text(l10nEn.postFollowing), findsOneWidget);
+      },
+    );
+
+    testWidgets("a share's framed original opens the original's post page", (
+      tester,
+    ) async {
+      final original = feedPost();
+      stubComments(const []);
+      when(() => posts.getPost('feed-post')).thenAnswer((_) async => original);
+      when(() => likes.getPreview(any())).thenAnswer((_) async => null);
+      when(
+        () => posts.getHomeFeed(
+          limit: any(named: 'limit'),
+          beforeCreated: any(named: 'beforeCreated'),
+          beforeId: any(named: 'beforeId'),
+        ),
+      ).thenAnswer(
+        (_) async => FeedPageModel(
+          posts: [
+            PostModel(
+              id: 'my-share',
+              authorId: 'me',
+              username: 'me',
+              fullName: 'Me Myself',
+              caption: 'Worth a look',
+              likeCount: 0,
+              commentCount: 0,
+              commentsEnabled: true,
+              visibility: ContentAudience.public,
+              createdAt: DateTime(2026, 10, 21),
+              likedByMe: false,
+              savedByMe: false,
+              media: const [],
+              isShare: true,
+              sharedPostId: 'feed-post',
+              sharedPost: original,
+            ),
+          ],
+        ),
+      );
+      await boot(tester);
+
+      await tester.tap(find.text('Hello'));
+      await settle(tester);
+      expect(find.byType(PostPageScreen), findsOneWidget);
+      verify(() => posts.getPost('feed-post')).called(greaterThan(0));
+    });
   });
 }

@@ -21,6 +21,8 @@ class PostAuthorRow extends StatelessWidget {
     required this.callbacks,
     this.isOptionsOpen = false,
     this.isEmbedded = false,
+    this.showOptions = true,
+    this.trailing,
   });
 
   final PostCardData data;
@@ -29,6 +31,12 @@ class PostAuthorRow extends StatelessWidget {
 
   /// Inside the frame of a share: a smaller picture and no options button.
   final bool isEmbedded;
+
+  /// False on the post page, whose top bar has the options button.
+  final bool showOptions;
+
+  /// Drawn before the options button (the post page's Follow chip).
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -61,11 +69,13 @@ class PostAuthorRow extends StatelessWidget {
               createdAt: data.createdAt,
               audienceIcon: data.audienceIcon,
               onLocation: callbacks.onLocation,
+              onTime: callbacks.onOpenPost,
             ),
           ],
         ),
       ),
-      if (!isEmbedded)
+      ?trailing,
+      if (!isEmbedded && showOptions)
         _MoreButton(isOpen: isOptionsOpen, onTap: callbacks.onOptions),
     ],
   );

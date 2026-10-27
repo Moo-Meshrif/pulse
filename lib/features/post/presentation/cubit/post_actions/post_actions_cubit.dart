@@ -55,6 +55,7 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   /// Posts with a like or save request in flight: a second tap on the same post waits for the first.
   final _likePending = <String>{};
   final _savePending = <String>{};
+  final _likeRuns = <String, Future<void>>{};
 
   /// How long the "Post hidden" row keeps its Undo before the row goes.
   static const hiddenUndoWindow = Duration(seconds: 5);
@@ -99,15 +100,18 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
       final likes = count.likeCount ?? now.likeCount;
       final comments = count.commentCount ?? now.commentCount;
       final liked = count.likedByMe ?? now.likedByMe;
+      final saved = count.savedByMe ?? now.savedByMe;
       if (likes == now.likeCount &&
           comments == now.commentCount &&
-          liked == now.likedByMe) {
+          liked == now.likedByMe &&
+          saved == now.savedByMe) {
         continue;
       }
       changed[post.id] = now.copyWith(
         likeCount: likes,
         commentCount: comments,
         likedByMe: liked,
+        savedByMe: saved,
       );
     }
     if (changed.isEmpty) return;
@@ -134,7 +138,17 @@ class PostActionsCubit extends BaseCubit<PostActionsState> {
   Future<void> likeByDoubleTap(PostEntity loaded) =>
       setLiked(loaded, liked: true);
 
-  Future<void> setLiked(PostEntity loaded, {required bool liked}) async {
+  /// Ends when the like request of [postId] in flight ends (at once when there is none).
+  Future<void> likeSettled(String postId) => _likeRuns[postId] ?? Future.value();
+
+  Future<void> setLiked(PostEntity loaded, {required bool liked}) {
+    if (_likePending.contains(loaded.id)) return Future.value();
+    final run = _setLikedNow(loaded, liked: liked);
+    _likeRuns[loaded.id] = run;
+    return run;
+  }
+
+  Future<void> _setLikedNow(PostEntity loaded, {required bool liked}) async {
     final before = postOf(loaded);
     if (before.likedByMe == liked || !_likePending.add(loaded.id)) return;
     _emitPost(

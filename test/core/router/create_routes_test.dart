@@ -11,7 +11,6 @@ void main() {
     AppRoutes.createShort,
     AppRoutes.search,
     AppRoutes.activity,
-    AppRoutes.commentsOf('p1'),
   ]) {
     testWidgets('$route opens its placeholder', (tester) async {
       await tester.pumpWidget(

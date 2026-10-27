@@ -2898,5 +2898,122 @@
   "commentsReportNotePlaceholder": "Tell us what's wrong with this comment…",
   "@commentsReportNotePlaceholder": {
     "description": "Report sheet note field hint, comment"
+  },
+  "postPageTitle": "Post",
+  "@postPageTitle": {
+    "description": "Title of the post page"
+  },
+  "postFollow": "Follow",
+  "@postFollow": {
+    "description": "Follow chip on the post page"
+  },
+  "postFollowing": "Following",
+  "@postFollowing": {
+    "description": "Follow chip once you follow the author"
+  },
+  "postFromNotification": "From your notification",
+  "@postFromNotification": {
+    "description": "Chip under the bar when the page opened from a notification"
+  },
+  "postPageUnavailableBody": "It may have been deleted, or the owner limited who can see it.",
+  "@postPageUnavailableBody": {
+    "description": "Body of the post page when the post can't be seen"
+  },
+  "postBackToHome": "Back to Home",
+  "@postBackToHome": {
+    "description": "Button of the post page when the post can't be seen"
+  },
+  "postDateLine": "{date} · {time}",
+  "@postDateLine": {
+    "description": "Date line under the post's actions on the post page",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "postLikedBy": "Liked by {name} and {others}",
+  "@postLikedBy": {
+    "description": "Liked by row on the post page: the name and the count of the others are bold",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "others": {
+        "type": "String"
+      }
+    }
+  },
+  "postLikedByOne": "Liked by {name}",
+  "@postLikedByOne": {
+    "description": "Liked by row on the post page when one person liked it",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "postLikedByOthers": "{count, plural, =1{1 other} other{{count} others}}",
+  "@postLikedByOthers": {
+    "description": "Liked by row: the bold count of the other people",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "postLikesOpen": "Show everyone who liked this post",
+  "@postLikesOpen": {
+    "description": "Screen-reader hint of the Liked by row"
+  },
+  "postLikesTitle": "Likes · {count}",
+  "@postLikesTitle": {
+    "description": "Likes list title with the number of people",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "postLikesTitleBare": "Likes",
+  "@postLikesTitleBare": {
+    "description": "Likes list title before the number is known"
+  },
+  "postLikesSearchHint": "Search",
+  "@postLikesSearchHint": {
+    "description": "Likes list search field hint"
+  },
+  "postLikesSearchClear": "Clear search",
+  "@postLikesSearchClear": {
+    "description": "Likes list search field clear button label"
+  },
+  "postLikesEmpty": "No people found",
+  "@postLikesEmpty": {
+    "description": "Likes list when a search matches nobody"
+  },
+  "postLikesFollowBack": "Follow back",
+  "@postLikesFollowBack": {
+    "description": "Likes list button for someone who follows you"
+  },
+  "postLikesLoadMoreError": "Couldn't load more · Retry",
+  "@postLikesLoadMoreError": {
+    "description": "Likes list footer when the next page failed"
+  },
+  "postLikesCaughtUp": "That's everyone",
+  "@postLikesCaughtUp": {
+    "description": "Likes list footer after the last page"
+  },
+  "postLikedByYou": "Liked by you",
+  "@postLikedByYou": {
+    "description": "Liked by row on the post page when you are the only person who liked it"
+  },
+  "postLikedByYouName": "you",
+  "@postLikedByYouName": {
+    "description": "The bold word of the Liked by you row; it is the end of postLikedByYou"
   }
 }

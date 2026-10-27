@@ -6,9 +6,12 @@ import '../dimens/post_card_dimens.dart';
 /// visible, the most visible when several are, and the same one for as long as it stays visible enough.
 /// Videos start muted; the mute button is one switch for the whole list.
 class PostVideoCoordinator extends ChangeNotifier {
+  /// [_isMuted] false starts with sound: the post page (the feed starts muted).
+  PostVideoCoordinator({this._isMuted = true});
+
   final _fractions = <String, double>{};
   String? _activeId;
-  bool _isMuted = true;
+  bool _isMuted;
 
   /// The video that should play now, or null.
   String? get activeId => _activeId;

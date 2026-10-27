@@ -1,4 +1,4 @@
-import 'feed_post.dart';
+import '../../../post/presentation/utils/feed_post.dart';
 
 /// What a change check did to the feed's lists.
 typedef FeedChangeResult = ({

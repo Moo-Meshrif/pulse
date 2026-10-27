@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../post/presentation/utils/feed_post.dart';
 import '../../cubit/feed/feed_cubit.dart';
 import '../../cubit/feed/feed_state.dart';
 import '../../dimens/home_dimens.dart';
 import '../../utils/feed_floaters_rules.dart';
-import '../../utils/feed_post.dart';
 import 'back_to_top_button.dart';
 import 'new_posts_pill.dart';
 

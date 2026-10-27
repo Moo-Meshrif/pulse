@@ -7,6 +7,7 @@ import '../../../../../core/events/event_cubit_mixin.dart';
 import '../../../../../core/state/base_cubit.dart';
 import '../../../../../core/state/load_more_status.dart';
 import '../../../../../shared/content/data/enums/content_kind.dart';
+import '../../../../../shared/content/data/model/post_count_model.dart';
 import '../../../../../shared/content/domain/event/content_changed.dart';
 import '../../../../../shared/content/domain/event/content_ping.dart';
 import '../../../../../shared/content/domain/use_case/check_content_changes_use_case.dart';
@@ -17,16 +18,17 @@ import '../../../../post/domain/entity/feed_cursor_entity.dart';
 import '../../../../post/domain/entity/feed_page_entity.dart';
 import '../../../../post/domain/entity/post_entity.dart';
 import '../../../../post/domain/event/feed_refresh_requested.dart';
+import '../../../../post/domain/event/post_counts_changed.dart';
 import '../../../../post/domain/event/post_saved.dart';
 import '../../../../post/domain/use_case/get_home_feed_use_case.dart';
 import '../../../../post/domain/use_case/get_posts_by_ids_use_case.dart';
 import '../../../../post/domain/use_case/save_home_feed_use_case.dart';
 import '../../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
+import '../../../../post/presentation/utils/feed_post.dart';
+import '../../../../post/presentation/utils/feed_post_signer.dart';
 import '../../../../profile/domain/use_case/get_current_user_id_use_case.dart';
 import '../../utils/enums/feed_status.dart';
 import '../../utils/feed_changes.dart';
-import '../../utils/feed_post.dart';
-import '../../utils/feed_post_signer.dart';
 import 'feed_state.dart';
 
 /// The home feed: first load, pull to refresh and the next pages (docs/specs/home/screens/s1-home-feed.md).
@@ -79,6 +81,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   Future<void> start() async {
     listenTo<FeedRefreshRequested>((_) => _reload());
     listenTo<PostSaved>((event) => _postSaved(event.post));
+    listenTo<PostCountsChanged>(_countsChanged);
     listenTo<ContentChanged>(_contentChanged);
     listenTo<ContentPing>(_onPing);
     resumeLive();
@@ -375,6 +378,25 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     } else if (!state.pendingPosts.any((item) => item.id == post.id)) {
       _emitSaved(state.copyWith(pendingPosts: [post, ...state.pendingPosts]));
     }
+  }
+
+  /// The post page changed a post's counts or save: they go to its card through [FeedState.counts].
+  void _countsChanged(PostCountsChanged event) {
+    if (!state.posts.any((post) => post.id == event.postId)) return;
+    emit(
+      state.copyWith(
+        counts: {
+          ...state.counts,
+          event.postId: PostCountModel(
+            id: event.postId,
+            likeCount: event.likeCount,
+            commentCount: event.commentCount,
+            likedByMe: event.likedByMe,
+            savedByMe: event.savedByMe,
+          ),
+        },
+      ),
+    );
   }
 
   Future<FeedPost?> _signOrNull(PostEntity entity) async {
