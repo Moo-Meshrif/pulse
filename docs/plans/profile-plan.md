@@ -87,20 +87,20 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 **Status:** [ ]
 - **Goal:** the plan is saved.
 - **Tasks:**
-  - [ ] Save this plan.
+  - [x] Save this plan.
 - **Done when:** this file exists in docs/plans.
 
 ### Phase 1: Server for profiles and people lists
-**Status:** [ ]
+**Status:** [x] written and passing locally; live database not applied yet (waiting for approval)
 - **Goal:** the server can answer everything the profile pages and people lists need.
 - **Depends on:** Phase 0.
 - **Spec refs:** docs/specs/profile/00-overview.md ("Known gaps"), screens/s1-profile.md, s12-other-profile.md (Data mapping), s13-people-list.md.
 - **Tasks:**
-  - [ ] Add the profile columns (cover, verified).
-  - [ ] Add the profile page functions (own and other), the "followed by" preview, the posts grid, saved posts and tagged posts.
-  - [ ] Add the followers, following and mutual lists.
-  - [ ] Add the username lookup used by @mentions.
-  - [ ] Write the SQL tests.
+  - [x] Add the profile columns (cover, verified).
+  - [x] Add the profile page functions (own and other), the "followed by" preview, the posts grid, saved posts and tagged posts.
+  - [x] Add the followers, following and mutual lists.
+  - [x] Add the username lookup used by @mentions.
+  - [x] Write the SQL tests.
 - **Implementation steps:**
   1. `supabase/migrations/<timestamp>_profile_pages.sql` (new, follow the style of `20261027102442_post_likes_list.sql` and `20261010033816_follow_requests.sql`): `alter table public.profiles add column cover_url text, add column is_verified boolean not null default false`; no client grant on `is_verified` (admin-set); grant update on `cover_url` only. Add a public `covers` Storage bucket and the owner-only policies, copying the `avatars` bucket policies.
   2. Same file, `profile_by_id(p_user uuid)` (security definer, `search_path` set): returns the profile fields the page shows, posts/followers (accepted only)/following counts, `i_follow` (none | pending | accepted), `follows_me`, `can_message`, `is_private`, `blocked_by_me` (always false until Phase 2 adds blocking, which then replaces this function with `create or replace` to return no row when the target blocked the caller; the app shows "User not found").
