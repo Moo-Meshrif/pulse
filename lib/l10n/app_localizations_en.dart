@@ -2427,4 +2427,59 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profileOfflineNumbers =>
       'Connect to the internet to see the numbers.';
+
+  @override
+  String get peopleFollowersTitle => 'Followers';
+
+  @override
+  String get peopleFollowingTitle => 'Following';
+
+  @override
+  String get peopleMutualTitle => 'Followed by';
+
+  @override
+  String get peopleSearchHint => 'Search';
+
+  @override
+  String get peopleSearchClear => 'Clear search';
+
+  @override
+  String get peopleNoFollowers => 'No followers yet';
+
+  @override
+  String get peopleNoFollowersBody =>
+      'When people follow this account, they will show up here.';
+
+  @override
+  String get peopleNoFollowing => 'Not following anyone yet';
+
+  @override
+  String get peopleNoFollowingBody =>
+      'Accounts this person follows will show up here.';
+
+  @override
+  String get peopleNoMutual => 'No mutual followers';
+
+  @override
+  String get peopleNoMutualBody =>
+      'You follow nobody who follows this account.';
+
+  @override
+  String get peopleNoMatches => 'No one found';
+
+  @override
+  String get peopleNoMatchesBody => 'Try a different name or @name.';
+
+  @override
+  String get peoplePrivateTitle => 'This account is private';
+
+  @override
+  String get peoplePrivateBody =>
+      'Follow this account to see who follows it and who it follows.';
+
+  @override
+  String get peopleLoadMoreError => 'Couldn\'t load more · Retry';
+
+  @override
+  String get peopleCaughtUp => 'That\'s everyone';
 }

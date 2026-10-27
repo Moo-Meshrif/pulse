@@ -3132,5 +3132,73 @@
   "profileOfflineNumbers": "Connect to the internet to see the numbers.",
   "@profileOfflineNumbers": {
     "description": "Profile: note under the saved header shown offline"
+  },
+  "peopleFollowersTitle": "Followers",
+  "@peopleFollowersTitle": {
+    "description": "People list: title of the followers list"
+  },
+  "peopleFollowingTitle": "Following",
+  "@peopleFollowingTitle": {
+    "description": "People list: title of the following list"
+  },
+  "peopleMutualTitle": "Followed by",
+  "@peopleMutualTitle": {
+    "description": "People list: title of the list of people you follow who follow this person"
+  },
+  "peopleSearchHint": "Search",
+  "@peopleSearchHint": {
+    "description": "People list: search field hint"
+  },
+  "peopleSearchClear": "Clear search",
+  "@peopleSearchClear": {
+    "description": "People list: clear button label of the search field"
+  },
+  "peopleNoFollowers": "No followers yet",
+  "@peopleNoFollowers": {
+    "description": "People list: empty followers title"
+  },
+  "peopleNoFollowersBody": "When people follow this account, they will show up here.",
+  "@peopleNoFollowersBody": {
+    "description": "People list: empty followers text"
+  },
+  "peopleNoFollowing": "Not following anyone yet",
+  "@peopleNoFollowing": {
+    "description": "People list: empty following title"
+  },
+  "peopleNoFollowingBody": "Accounts this person follows will show up here.",
+  "@peopleNoFollowingBody": {
+    "description": "People list: empty following text"
+  },
+  "peopleNoMutual": "No mutual followers",
+  "@peopleNoMutual": {
+    "description": "People list: empty mutual title"
+  },
+  "peopleNoMutualBody": "You follow nobody who follows this account.",
+  "@peopleNoMutualBody": {
+    "description": "People list: empty mutual text"
+  },
+  "peopleNoMatches": "No one found",
+  "@peopleNoMatches": {
+    "description": "People list: search found nobody, title"
+  },
+  "peopleNoMatchesBody": "Try a different name or @name.",
+  "@peopleNoMatchesBody": {
+    "description": "People list: search found nobody, text"
+  },
+  "peoplePrivateTitle": "This account is private",
+  "@peoplePrivateTitle": {
+    "description": "People list: private account that you do not follow, title"
+  },
+  "peoplePrivateBody": "Follow this account to see who follows it and who it follows.",
+  "@peoplePrivateBody": {
+    "description": "People list: private account that you do not follow, text"
+  },
+  "peopleLoadMoreError": "Couldn't load more · Retry",
+  "@peopleLoadMoreError": {
+    "description": "People list: the next page failed"
+  },
+  "peopleCaughtUp": "That's everyone",
+  "@peopleCaughtUp": {
+    "description": "People list: end of the list"
   }
 }

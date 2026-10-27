@@ -19,6 +19,8 @@ import '../../features/post/presentation/screen/tag_in_photo_screen.dart';
 import '../../features/post/presentation/screen/tag_people_screen.dart';
 import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
+import '../../features/profile/data/enums/people_kind.dart';
+import '../../features/profile/presentation/screen/people_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -177,8 +179,11 @@ abstract final class AppRouter {
       AppRoutes.settingsHelp ||
       AppRoutes.settingsHelpTopic ||
       AppRoutes.settingsReport ||
-      AppRoutes.settingsTerms ||
-      AppRoutes.people => _page(settings, PlaceholderScreen(route: path)),
+      AppRoutes.settingsTerms => _page(
+        settings,
+        PlaceholderScreen(route: path),
+      ),
+      AppRoutes.people => _peoplePage(settings),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
       AppRoutes.search ||
       AppRoutes.activity => _page(settings, PlaceholderScreen(route: path)),
@@ -226,6 +231,17 @@ abstract final class AppRouter {
         email: query['email'],
       ),
     );
+  }
+
+  /// `/people?kind=followers|following|mutual&userId=…`; without both, nothing to show.
+  static Route<dynamic> _peoplePage(RouteSettings settings) {
+    final query = Uri.parse(settings.name ?? AppRoutes.people).queryParameters;
+    final kind = PeopleKind.fromJson(query['kind']);
+    final userId = query['userId'];
+    if (kind == null || userId == null || userId.isEmpty) {
+      return _page(settings, const NotFoundScreen());
+    }
+    return _page(settings, PeopleScreen(kind: kind, userId: userId));
   }
 
   /// First launch shows onboarding; afterwards the splash screen picks Sign in, Home or the sign-up step

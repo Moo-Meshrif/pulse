@@ -113,4 +113,8 @@ abstract final class AppRoutes {
 
   /// A list of people (followers, following, mutual); takes `kind` and `userId` query values.
   static const people = '/people';
+
+  /// The list of [kind] ('followers', 'following' or 'mutual') of the person [userId].
+  static String peopleOf(String kind, String userId) =>
+      '$people?kind=$kind&userId=${Uri.encodeQueryComponent(userId)}';
 }

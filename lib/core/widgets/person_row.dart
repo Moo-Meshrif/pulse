@@ -69,6 +69,7 @@ class PersonRow extends StatelessWidget {
                         child: AppText(
                           name,
                           style: context.text.name,
+                          color: colors.textPrimary,
                           maxLines: 1,
                         ),
                       ),

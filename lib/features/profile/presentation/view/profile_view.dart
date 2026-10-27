@@ -8,8 +8,6 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
-import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/model/profile_page_model.dart';
 import '../cubit/profile/profile_cubit.dart';
@@ -21,8 +19,8 @@ import '../widgets/grid_section.dart';
 import '../widgets/photo_viewer.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_skeleton.dart';
+import '../widgets/profile_stats.dart';
 import '../widgets/profile_tabs.dart';
-import '../widgets/stats_card.dart';
 
 /// The Profile tab's page: the header, the numbers, the tabs and the grid.
 class ProfileView extends StatelessWidget {
@@ -83,7 +81,7 @@ class _Page extends StatelessWidget {
       refreshIconFilled: AppAssets.profileFilled,
       bottomSpace: NavClearance.of(context),
       loadMoreSkeleton: const GridSkeleton(),
-      slivers: const [_Header(), _Stats(), _Tabs(), GridSection()],
+      slivers: const [_Header(), ProfileStats(), _Tabs(), GridSection()],
     );
   }
 }
@@ -119,46 +117,6 @@ class _Header extends StatelessWidget {
           );
         },
       );
-}
-
-/// The numbers, or a note that they need a connection when the header is the saved copy.
-class _Stats extends StatelessWidget {
-  const _Stats();
-
-  @override
-  Widget build(BuildContext context) => BlocBuilder<ProfileCubit, ProfileState>(
-    buildWhen: (before, state) =>
-        before.page != state.page || before.fromDevice != state.fromDevice,
-    builder: (context, state) {
-      final page = state.page;
-      if (page == null) return const SliverToBoxAdapter();
-      if (state.fromDevice) {
-        return SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.s16,
-              vertical: AppSpacing.s16,
-            ),
-            child: AppText(
-              context.l10n.profileOfflineNumbers,
-              style: context.text.bodyXs,
-              color: context.appColors.textSecondary,
-            ),
-          ),
-        );
-      }
-      return SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.only(top: AppSpacing.s16),
-          child: StatsCard(
-            posts: page.postsCount ?? 0,
-            followers: page.followersCount ?? 0,
-            following: page.followingCount ?? 0,
-          ),
-        ),
-      );
-    },
-  );
 }
 
 class _Tabs extends StatelessWidget {

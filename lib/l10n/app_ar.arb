@@ -2964,5 +2964,73 @@
   "profileOfflineNumbers": "اتصل بالإنترنت لعرض الأرقام.",
   "@profileOfflineNumbers": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleFollowersTitle": "المتابعون",
+  "@peopleFollowersTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleFollowingTitle": "يتابع",
+  "@peopleFollowingTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleMutualTitle": "يتابعه",
+  "@peopleMutualTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleSearchHint": "بحث",
+  "@peopleSearchHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleSearchClear": "مسح البحث",
+  "@peopleSearchClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowers": "لا يوجد متابعون بعد",
+  "@peopleNoFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowersBody": "عندما يتابع الناس هذا الحساب سيظهرون هنا.",
+  "@peopleNoFollowersBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowing": "لا يتابع أحدًا بعد",
+  "@peopleNoFollowing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowingBody": "الحسابات التي يتابعها هذا الشخص ستظهر هنا.",
+  "@peopleNoFollowingBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMutual": "لا يوجد متابعون مشتركون",
+  "@peopleNoMutual": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMutualBody": "لا تتابع أحدًا يتابع هذا الحساب.",
+  "@peopleNoMutualBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMatches": "لم يتم العثور على أحد",
+  "@peopleNoMatches": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMatchesBody": "جرّب اسمًا أو @اسم مستخدم آخر.",
+  "@peopleNoMatchesBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peoplePrivateTitle": "هذا الحساب خاص",
+  "@peoplePrivateTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peoplePrivateBody": "تابع هذا الحساب لترى من يتابعه ومن يتابع.",
+  "@peoplePrivateBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleLoadMoreError": "تعذّر تحميل المزيد · أعد المحاولة",
+  "@peopleLoadMoreError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleCaughtUp": "هذا كل الأشخاص",
+  "@peopleCaughtUp": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

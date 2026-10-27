@@ -4231,6 +4231,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to the internet to see the numbers.'**
   String get profileOfflineNumbers;
+
+  /// People list: title of the followers list
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get peopleFollowersTitle;
+
+  /// People list: title of the following list
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get peopleFollowingTitle;
+
+  /// People list: title of the list of people you follow who follow this person
+  ///
+  /// In en, this message translates to:
+  /// **'Followed by'**
+  String get peopleMutualTitle;
+
+  /// People list: search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get peopleSearchHint;
+
+  /// People list: clear button label of the search field
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get peopleSearchClear;
+
+  /// People list: empty followers title
+  ///
+  /// In en, this message translates to:
+  /// **'No followers yet'**
+  String get peopleNoFollowers;
+
+  /// People list: empty followers text
+  ///
+  /// In en, this message translates to:
+  /// **'When people follow this account, they will show up here.'**
+  String get peopleNoFollowersBody;
+
+  /// People list: empty following title
+  ///
+  /// In en, this message translates to:
+  /// **'Not following anyone yet'**
+  String get peopleNoFollowing;
+
+  /// People list: empty following text
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts this person follows will show up here.'**
+  String get peopleNoFollowingBody;
+
+  /// People list: empty mutual title
+  ///
+  /// In en, this message translates to:
+  /// **'No mutual followers'**
+  String get peopleNoMutual;
+
+  /// People list: empty mutual text
+  ///
+  /// In en, this message translates to:
+  /// **'You follow nobody who follows this account.'**
+  String get peopleNoMutualBody;
+
+  /// People list: search found nobody, title
+  ///
+  /// In en, this message translates to:
+  /// **'No one found'**
+  String get peopleNoMatches;
+
+  /// People list: search found nobody, text
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different name or @name.'**
+  String get peopleNoMatchesBody;
+
+  /// People list: private account that you do not follow, title
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private'**
+  String get peoplePrivateTitle;
+
+  /// People list: private account that you do not follow, text
+  ///
+  /// In en, this message translates to:
+  /// **'Follow this account to see who follows it and who it follows.'**
+  String get peoplePrivateBody;
+
+  /// People list: the next page failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get peopleLoadMoreError;
+
+  /// People list: end of the list
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s everyone'**
+  String get peopleCaughtUp;
 }
 
 class _AppLocalizationsDelegate

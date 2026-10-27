@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -193,13 +193,13 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, cubit test, compare with `docs/specs/profile/screenshots/s1-profile.png`. **I ask you first:** the plus sign (new package) for sharing, if `share_plus` is not already in `pubspec.yaml`.
 
 ### Phase 5: People lists
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit test passes; not yet run on a device (needs the Phase 1 migration applied to the live database)
 - **Goal:** Followers, Following and "Followed by" lists open from the numbers.
 - **Depends on:** Phases 1, 3, 4.
 - **Spec refs:** screens/s13-people-list.md, screens/s6-blocked-accounts.md (row look).
 - **Tasks:**
-  - [ ] List data, screen with search, follow pill on each row.
-  - [ ] Wire stats taps and the route.
+  - [x] List data, screen with search, follow pill on each row.
+  - [x] Wire stats taps and the route.
 - **Implementation steps:**
   1. `lib/features/profile/data/datasource/people_datasource.dart` (new): `followers(userId, {query, before})`, `following(...)`, `mutual(...)` using the RPCs from Phase 1; model `person_model.dart` (new).
   2. Follow actions: call the existing use cases of `features/follow` (`toggle_follow_use_case.dart`, `get_follow_status_use_case.dart`); the screen never touches the follow datasource (features trade through use cases). If a list-row follow needs a status-returning use case that does not exist, add `follow_person_use_case.dart` (new) in `features/follow/domain/use_case/`.

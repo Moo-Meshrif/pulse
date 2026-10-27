@@ -2422,4 +2422,57 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileOfflineNumbers => 'اتصل بالإنترنت لعرض الأرقام.';
+
+  @override
+  String get peopleFollowersTitle => 'المتابعون';
+
+  @override
+  String get peopleFollowingTitle => 'يتابع';
+
+  @override
+  String get peopleMutualTitle => 'يتابعه';
+
+  @override
+  String get peopleSearchHint => 'بحث';
+
+  @override
+  String get peopleSearchClear => 'مسح البحث';
+
+  @override
+  String get peopleNoFollowers => 'لا يوجد متابعون بعد';
+
+  @override
+  String get peopleNoFollowersBody =>
+      'عندما يتابع الناس هذا الحساب سيظهرون هنا.';
+
+  @override
+  String get peopleNoFollowing => 'لا يتابع أحدًا بعد';
+
+  @override
+  String get peopleNoFollowingBody =>
+      'الحسابات التي يتابعها هذا الشخص ستظهر هنا.';
+
+  @override
+  String get peopleNoMutual => 'لا يوجد متابعون مشتركون';
+
+  @override
+  String get peopleNoMutualBody => 'لا تتابع أحدًا يتابع هذا الحساب.';
+
+  @override
+  String get peopleNoMatches => 'لم يتم العثور على أحد';
+
+  @override
+  String get peopleNoMatchesBody => 'جرّب اسمًا أو @اسم مستخدم آخر.';
+
+  @override
+  String get peoplePrivateTitle => 'هذا الحساب خاص';
+
+  @override
+  String get peoplePrivateBody => 'تابع هذا الحساب لترى من يتابعه ومن يتابع.';
+
+  @override
+  String get peopleLoadMoreError => 'تعذّر تحميل المزيد · أعد المحاولة';
+
+  @override
+  String get peopleCaughtUp => 'هذا كل الأشخاص';
 }

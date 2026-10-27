@@ -145,12 +145,14 @@ import '../../features/post/presentation/utils/feed_post.dart' as _i992;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
+import '../../features/profile/data/datasource/people_datasource.dart' as _i784;
 import '../../features/profile/data/datasource/profile_datasource.dart'
     as _i320;
 import '../../features/profile/data/datasource/profile_local_datasource.dart'
     as _i126;
 import '../../features/profile/data/datasource/profile_page_datasource.dart'
     as _i874;
+import '../../features/profile/data/enums/people_kind.dart' as _i509;
 import '../../features/profile/data/repository/profile_repository.dart'
     as _i508;
 import '../../features/profile/domain/use_case/clear_local_profile_use_case.dart'
@@ -177,6 +179,8 @@ import '../../features/profile/domain/use_case/save_interests_use_case.dart'
     as _i597;
 import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
     as _i255;
+import '../../features/profile/presentation/cubit/people/people_cubit.dart'
+    as _i264;
 import '../../features/profile/presentation/cubit/profile/profile_cubit.dart'
     as _i771;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i127;
@@ -417,6 +421,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i604.LegalDatasource>(
       () => _i604.SupabaseLegalDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i784.PeopleDatasource>(
+      () => _i784.SupabasePeopleDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i568.ActivityDatasource>(
       () => _i568.SupabaseActivityDatasource(gh<_i454.SupabaseClient>()),
@@ -794,6 +801,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i463.ContentMediaRepository>(),
         gh<_i999.ContentPublishRepository>(),
         gh<_i591.PendingContentDatasource>(),
+      ),
+    );
+    gh.factoryParam<_i264.PeopleCubit, _i509.PeopleKind, String>(
+      (kind, userId) => _i264.PeopleCubit(
+        gh<_i784.PeopleDatasource>(),
+        gh<_i874.ProfilePageDatasource>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        kind,
+        userId,
       ),
     );
     gh.factory<_i308.StoryRailCubit>(
