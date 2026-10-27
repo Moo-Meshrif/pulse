@@ -89,6 +89,7 @@ flutter:
     - assets/animations/
     - assets/images/onboarding/en/
     - assets/images/onboarding/ar/
+    - assets/images/profile/
 
   # Fonts (docs/specs/_theme/typography.md): Sora for headings, Noto Sans for everything
   # else, Noto Sans Arabic for Arabic (see AppTextStyles).

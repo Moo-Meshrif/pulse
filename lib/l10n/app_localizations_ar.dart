@@ -2280,4 +2280,85 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get postLikedByYouName => 'أعجبك';
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get settingsAccount => 'الحساب';
+
+  @override
+  String get settingsPreferences => 'التفضيلات';
+
+  @override
+  String get settingsSupport => 'الدعم';
+
+  @override
+  String get settingsPersonalInfo => 'المعلومات الشخصية';
+
+  @override
+  String get settingsPasswordSecurity => 'كلمة المرور والأمان';
+
+  @override
+  String get settingsPrivacy => 'الخصوصية';
+
+  @override
+  String get settingsBlocked => 'الحسابات المحظورة';
+
+  @override
+  String get settingsNotifications => 'الإشعارات';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get settingsAutoplay => 'تشغيل الشورتس تلقائيًا';
+
+  @override
+  String get settingsAutoplaySub => 'شغّل الفيديوهات تلقائيًا عبر الواي فاي';
+
+  @override
+  String get settingsDataSaver => 'توفير البيانات';
+
+  @override
+  String get settingsDataSaverSub =>
+      'حمّل وسائط بجودة أقل عند استخدام بيانات الجوال';
+
+  @override
+  String get settingsDarkMode => 'الوضع الداكن';
+
+  @override
+  String get settingsDarkModeSub => 'أريح للعين ليلًا';
+
+  @override
+  String get settingsHelp => 'مركز المساعدة';
+
+  @override
+  String get settingsReport => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get settingsTerms => 'الشروط والسياسات';
+
+  @override
+  String get settingsLogOut => 'تسجيل الخروج';
+
+  @override
+  String get settingsDelete => 'حذف الحساب';
+
+  @override
+  String settingsVersion(String version) {
+    return 'بولس · الإصدار $version';
+  }
+
+  @override
+  String get valuePublic => 'عام';
+
+  @override
+  String get valuePrivate => 'خاص';
+
+  @override
+  String get valueOn => 'مفعّل';
+
+  @override
+  String get valueOff => 'متوقف';
 }

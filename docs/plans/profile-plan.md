@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [ ] 0 · [ ] 1 · [x] 2 · [ ] 3 · [ ] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [ ] 4 · [ ] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -141,15 +141,15 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** SQL tests, Supabase advisors check for the new tables. **I ask you first:** applying migrations to the live database.
 
 ### Phase 3: Shared pieces for the new pages
-**Status:** [ ]
+**Status:** [x] written; analyze clean; not yet run in the app (widgets first appear in Phase 4+)
 - **Goal:** the building blocks (rows, switches, cards, accordion) exist and can be seen.
 - **Depends on:** Phase 0.
 - **Spec refs:** 01-design-tokens.md, 02-components.md, assets.md.
 - **Tasks:**
-  - [ ] Register the new icons and the default cover.
-  - [ ] Add the profile and settings dimens.
-  - [ ] Build the shared rows and cards used by several pages.
-  - [ ] Add the first batch of text for English and Arabic.
+  - [x] Register the new icons and the default cover.
+  - [x] Add the profile and settings dimens.
+  - [x] Build the shared rows and cards used by several pages.
+  - [x] Add the first batch of text for English and Arabic.
 - **Implementation steps:**
   1. `lib/core/constants/app_assets.dart` (edit): add `icSliders`, `icGrid`, `icStateBlocked` and the default cover path (`assets/images/profile/cover_default.png`). Check `pubspec.yaml` already lists `assets/icons/` and add `assets/images/profile/` if missing.
   2. `lib/features/profile/presentation/dimens/profile_dimens.dart` (new): values from 01-design-tokens.md for the header, stats card, tabs, grid and locked card; scaled like `StoryDimens`.

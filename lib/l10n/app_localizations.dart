@@ -3955,6 +3955,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'you'**
   String get postLikedByYouName;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get settingsPreferences;
+
+  /// No description provided for @settingsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSupport;
+
+  /// No description provided for @settingsPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal info'**
+  String get settingsPersonalInfo;
+
+  /// No description provided for @settingsPasswordSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Password & security'**
+  String get settingsPasswordSecurity;
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked accounts'**
+  String get settingsBlocked;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsAutoplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Autoplay shorts'**
+  String get settingsAutoplay;
+
+  /// No description provided for @settingsAutoplaySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Play videos automatically on Wi-Fi'**
+  String get settingsAutoplaySub;
+
+  /// No description provided for @settingsDataSaver.
+  ///
+  /// In en, this message translates to:
+  /// **'Data saver'**
+  String get settingsDataSaver;
+
+  /// No description provided for @settingsDataSaverSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Load lower-quality media on mobile data'**
+  String get settingsDataSaverSub;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Easier on the eyes at night'**
+  String get settingsDarkModeSub;
+
+  /// No description provided for @settingsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help center'**
+  String get settingsHelp;
+
+  /// No description provided for @settingsReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get settingsReport;
+
+  /// No description provided for @settingsTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & policies'**
+  String get settingsTerms;
+
+  /// No description provided for @settingsLogOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get settingsLogOut;
+
+  /// No description provided for @settingsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settingsDelete;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse · version {version}'**
+  String settingsVersion(String version);
+
+  /// No description provided for @valuePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get valuePublic;
+
+  /// No description provided for @valuePrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get valuePrivate;
+
+  /// No description provided for @valueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get valueOn;
+
+  /// No description provided for @valueOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get valueOff;
 }
 
 class _AppLocalizationsDelegate

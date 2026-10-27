@@ -12,6 +12,7 @@ export 'loading_dimens.dart';
 export 'logo_dimens.dart';
 export 'notice_dimens.dart';
 export 'search_field_dimens.dart';
+export 'settings_dimens.dart';
 
 /// Spacing scale (dp) from docs/specs/_theme/spacing-radius-shadows.md. Getters over [AppScale.scale],
 /// never `const`: the factor changes with the window.

@@ -111,6 +111,11 @@ abstract final class AppAssets {
   static const lockClosed = '$_icons/ic_lock_closed.svg';
   static const cloudAlertThin = '$_icons/ic_cloud_alert_thin.svg';
   static const cardX = '$_icons/ic_card_x.svg';
+  static const sliders = '$_icons/ic_sliders.svg';
+  static const grid = '$_icons/ic_grid.svg';
+  static const stateBlocked = '$_icons/ic_state_blocked.svg';
+
+  static const profileCover = 'assets/images/profile/cover_default.png';
 
   // Onboarding illustrations: PNGs with the text baked in, one set per language.
   // Placeholder file names; the user will edit them (docs/specs/onboarding/assets.md).

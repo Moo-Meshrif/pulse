@@ -2775,5 +2775,114 @@
   "postLikedByYouName": "أعجبك",
   "@postLikedByYouName": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsTitle": "الإعدادات",
+  "@settingsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsAccount": "الحساب",
+  "@settingsAccount": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPreferences": "التفضيلات",
+  "@settingsPreferences": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsSupport": "الدعم",
+  "@settingsSupport": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPersonalInfo": "المعلومات الشخصية",
+  "@settingsPersonalInfo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPasswordSecurity": "كلمة المرور والأمان",
+  "@settingsPasswordSecurity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPrivacy": "الخصوصية",
+  "@settingsPrivacy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsBlocked": "الحسابات المحظورة",
+  "@settingsBlocked": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsNotifications": "الإشعارات",
+  "@settingsNotifications": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLanguage": "اللغة",
+  "@settingsLanguage": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsAutoplay": "تشغيل الشورتس تلقائيًا",
+  "@settingsAutoplay": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsAutoplaySub": "شغّل الفيديوهات تلقائيًا عبر الواي فاي",
+  "@settingsAutoplaySub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDataSaver": "توفير البيانات",
+  "@settingsDataSaver": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDataSaverSub": "حمّل وسائط بجودة أقل عند استخدام بيانات الجوال",
+  "@settingsDataSaverSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDarkMode": "الوضع الداكن",
+  "@settingsDarkMode": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDarkModeSub": "أريح للعين ليلًا",
+  "@settingsDarkModeSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsHelp": "مركز المساعدة",
+  "@settingsHelp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsReport": "الإبلاغ عن مشكلة",
+  "@settingsReport": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsTerms": "الشروط والسياسات",
+  "@settingsTerms": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLogOut": "تسجيل الخروج",
+  "@settingsLogOut": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDelete": "حذف الحساب",
+  "@settingsDelete": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsVersion": "بولس · الإصدار {version}",
+  "@settingsVersion": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "valuePublic": "عام",
+  "@valuePublic": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "valuePrivate": "خاص",
+  "@valuePrivate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "valueOn": "مفعّل",
+  "@valueOn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "valueOff": "متوقف",
+  "@valueOff": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

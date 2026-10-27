@@ -2285,4 +2285,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postLikedByYouName => 'you';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsPreferences => 'Preferences';
+
+  @override
+  String get settingsSupport => 'Support';
+
+  @override
+  String get settingsPersonalInfo => 'Personal info';
+
+  @override
+  String get settingsPasswordSecurity => 'Password & security';
+
+  @override
+  String get settingsPrivacy => 'Privacy';
+
+  @override
+  String get settingsBlocked => 'Blocked accounts';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsAutoplay => 'Autoplay shorts';
+
+  @override
+  String get settingsAutoplaySub => 'Play videos automatically on Wi-Fi';
+
+  @override
+  String get settingsDataSaver => 'Data saver';
+
+  @override
+  String get settingsDataSaverSub => 'Load lower-quality media on mobile data';
+
+  @override
+  String get settingsDarkMode => 'Dark mode';
+
+  @override
+  String get settingsDarkModeSub => 'Easier on the eyes at night';
+
+  @override
+  String get settingsHelp => 'Help center';
+
+  @override
+  String get settingsReport => 'Report a problem';
+
+  @override
+  String get settingsTerms => 'Terms & policies';
+
+  @override
+  String get settingsLogOut => 'Log out';
+
+  @override
+  String get settingsDelete => 'Delete account';
+
+  @override
+  String settingsVersion(String version) {
+    return 'Pulse · version $version';
+  }
+
+  @override
+  String get valuePublic => 'Public';
+
+  @override
+  String get valuePrivate => 'Private';
+
+  @override
+  String get valueOn => 'On';
+
+  @override
+  String get valueOff => 'Off';
 }

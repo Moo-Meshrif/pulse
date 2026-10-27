@@ -3019,5 +3019,38 @@
   "postLikedByYouName": "you",
   "@postLikedByYouName": {
     "description": "The bold word of the Liked by you row; it is the end of postLikedByYou"
-  }
+  },
+  "settingsTitle": "Settings",
+  "settingsAccount": "Account",
+  "settingsPreferences": "Preferences",
+  "settingsSupport": "Support",
+  "settingsPersonalInfo": "Personal info",
+  "settingsPasswordSecurity": "Password & security",
+  "settingsPrivacy": "Privacy",
+  "settingsBlocked": "Blocked accounts",
+  "settingsNotifications": "Notifications",
+  "settingsLanguage": "Language",
+  "settingsAutoplay": "Autoplay shorts",
+  "settingsAutoplaySub": "Play videos automatically on Wi-Fi",
+  "settingsDataSaver": "Data saver",
+  "settingsDataSaverSub": "Load lower-quality media on mobile data",
+  "settingsDarkMode": "Dark mode",
+  "settingsDarkModeSub": "Easier on the eyes at night",
+  "settingsHelp": "Help center",
+  "settingsReport": "Report a problem",
+  "settingsTerms": "Terms & policies",
+  "settingsLogOut": "Log out",
+  "settingsDelete": "Delete account",
+  "settingsVersion": "Pulse · version {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "valuePublic": "Public",
+  "valuePrivate": "Private",
+  "valueOn": "On",
+  "valueOff": "Off"
 }
