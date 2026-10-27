@@ -134,13 +134,14 @@ class PostPageCubit extends BaseCubit<PostPageState>
   }
 
   /// The page changed the post (like, save, comments): the feed card follows.
-  void countsChanged(PostEntity post) => fire(
+  void countsChanged(PostEntity post, {Future<void>? likeSettled}) => fire(
     PostCountsChanged(
       postId: post.id,
       likeCount: post.likeCount,
       commentCount: post.commentCount,
       likedByMe: post.likedByMe,
       savedByMe: post.savedByMe,
+      likeSettled: likeSettled,
     ),
   );
 }

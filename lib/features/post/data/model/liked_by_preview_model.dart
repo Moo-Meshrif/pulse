@@ -1,8 +1,10 @@
 import '../../../../core/utils/equatable.dart';
 import '../../../../core/utils/json_mapper.dart';
 
-/// The row of `liked_by_preview()`: the person named in "Liked by", how many others, and up to two avatars.
+/// The row of `liked_by_preview()` (or one row of `liked_by_previews()`): the person named in "Liked by", how many others, and up to two avatars.
 class LikedByPreviewModel extends Equatable {
+  /// The post the row is for; only `liked_by_previews()` sends it.
+  final String? postId;
   final String? firstId;
   final String? firstUsername;
   final String? firstFullName;
@@ -13,6 +15,7 @@ class LikedByPreviewModel extends Equatable {
   final bool? onlyMe;
 
   const LikedByPreviewModel({
+    this.postId,
     this.firstId,
     this.firstUsername,
     this.firstFullName,
@@ -23,6 +26,7 @@ class LikedByPreviewModel extends Equatable {
 
   factory LikedByPreviewModel.fromJson(Map<String, dynamic> json) =>
       LikedByPreviewModel(
+        postId: JsonMapper.string(json['post_id']),
         firstId: JsonMapper.string(json['first_id']),
         firstUsername: JsonMapper.string(json['first_username']),
         firstFullName: JsonMapper.string(json['first_full_name']),
@@ -38,6 +42,7 @@ class LikedByPreviewModel extends Equatable {
 
   @override
   List<Object?> get props => [
+    postId,
     firstId,
     firstUsername,
     firstFullName,

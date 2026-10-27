@@ -11,6 +11,7 @@ import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cub
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
 import 'package:pulse/features/post/domain/use_case/delete_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_home_feed_use_case.dart';
+import 'package:pulse/features/post/domain/use_case/get_liked_by_previews_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/get_posts_by_ids_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/hide_post_use_case.dart';
 import 'package:pulse/features/post/domain/use_case/remove_my_tag_use_case.dart';
@@ -130,6 +131,7 @@ void registerHomeDoubles() {
         changes.startLive,
         changes.stopLive,
         MockSaveHomeFeed(),
+        quietLikedBy(),
       );
     })
     ..registerFactory(
@@ -174,3 +176,13 @@ void registerHomeDoubles() {
 }
 
 class MockSaveHomeFeed extends Mock implements SaveHomeFeedUseCase {}
+
+class MockGetLikedByPreviews extends Mock
+    implements GetLikedByPreviewsUseCase {}
+
+/// A "Liked by" use case that finds no lines.
+MockGetLikedByPreviews quietLikedBy() {
+  final likedBy = MockGetLikedByPreviews();
+  when(() => likedBy(any())).thenAnswer((_) async => {});
+  return likedBy;
+}

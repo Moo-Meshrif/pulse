@@ -25,7 +25,7 @@ class PostLikedByRow extends StatelessWidget {
         selector: (state) => state.likedBy,
         builder: (context, likedBy) => likedBy == null
             ? const SizedBox.shrink()
-            : _Row(
+            : LikedByRow(
                 likedBy: likedBy,
                 onTap: () => AppNavigator.push<void>(
                   context,
@@ -36,8 +36,9 @@ class PostLikedByRow extends StatelessWidget {
       );
 }
 
-class _Row extends StatelessWidget {
-  const _Row({required this.likedBy, required this.onTap});
+/// The row itself, drawn from [likedBy]; used by the post page and the feed.
+class LikedByRow extends StatelessWidget {
+  const LikedByRow({super.key, required this.likedBy, required this.onTap});
 
   final LikedByPreviewEntity likedBy;
   final VoidCallback onTap;

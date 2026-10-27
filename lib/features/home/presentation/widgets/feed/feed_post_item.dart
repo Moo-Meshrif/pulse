@@ -5,6 +5,7 @@ import '../../../../../core/error/failures.dart';
 import '../../../../../core/extensions/notice_context.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
+import '../../../../post/domain/entity/liked_by_preview_entity.dart';
 import '../../../../post/domain/entity/post_entity.dart';
 import '../../../../post/presentation/cubit/post_actions/post_actions_cubit.dart';
 import '../../../../post/presentation/cubit/post_actions/post_actions_state.dart';
@@ -25,9 +26,11 @@ import '../../../../post/presentation/widgets/comments/comments_sheet.dart';
 import '../../../../post/presentation/widgets/hidden_post_row.dart';
 import '../../../../post/presentation/widgets/post_card.dart';
 import '../../../../post/presentation/widgets/post_options/post_options_flow.dart';
+import '../../../../post/presentation/widgets/post_page/post_liked_by_row.dart';
 import '../../../../post/presentation/widgets/share_sheet/share_sheet.dart';
 import '../../../../post/presentation/widgets/tagged_people/tagged_people_sheet.dart';
 import '../../cubit/feed/feed_cubit.dart';
+import '../../cubit/feed/feed_state.dart';
 import '../../dimens/home_dimens.dart';
 import 'fresh_ring.dart';
 
@@ -239,6 +242,22 @@ class _FeedPostItemState extends State<FeedPostItem> {
     }
   }
 
+  /// "Liked by …" under the buttons: only once the feed has loaded it and the post still has likes.
+  Widget _likedByFooter(PostEntity post) =>
+      BlocSelector<FeedCubit, FeedState, LikedByPreviewEntity?>(
+        selector: (state) => state.likedBy[post.id],
+        builder: (context, likedBy) => likedBy == null || post.likeCount <= 0
+            ? const SizedBox.shrink()
+            : LikedByRow(
+                likedBy: likedBy,
+                onTap: () => AppNavigator.push<void>(
+                  context,
+                  AppRoutes.postLikes(post.id),
+                  rootNavigator: true,
+                ),
+              ),
+      );
+
   @override
   Widget build(BuildContext context) =>
       BlocSelector<
@@ -268,6 +287,9 @@ class _FeedPostItemState extends State<FeedPostItem> {
                       ),
                       callbacks: _callbacks(),
                       isOptionsOpen: _isOptionsOpen,
+                      footer: _likedByFooter(
+                        _shown(current.changed, current.isOriginalGone),
+                      ),
                     ),
                   ),
                 ),

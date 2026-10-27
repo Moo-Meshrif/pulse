@@ -9,6 +9,7 @@ import 'package:pulse/features/home/presentation/cubit/feed/feed_cubit.dart';
 import 'package:pulse/features/home/presentation/utils/enums/feed_status.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
+import 'package:pulse/features/post/domain/entity/liked_by_preview_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/event/post_counts_changed.dart';
@@ -41,6 +42,7 @@ void main() {
   late MockStartContentLive startLive;
   late MockStopContentLive stopLive;
   late MockSaveHomeFeed saveFeed;
+  late MockGetLikedByPreviews likedBy;
 
   final cursor = FeedCursorEntity(createdAt: DateTime(2026, 10, 13), id: 'p2');
 
@@ -60,6 +62,7 @@ void main() {
     startLive = changes.startLive;
     stopLive = changes.stopLive;
     saveFeed = MockSaveHomeFeed();
+    likedBy = quietLikedBy();
     when(currentUser.call).thenReturn('me');
     when(() => sign(any())).thenAnswer((_) async => {});
     when(() => getFeed(saved: true))
@@ -77,6 +80,7 @@ void main() {
     startLive,
     stopLive,
     saveFeed,
+    likedBy,
   );
 
   void pages(FeedPageEntity first, [FeedPageEntity? second]) {
@@ -571,6 +575,131 @@ void main() {
       bus.fire(const FeedRefreshRequested());
       await Future<void>.delayed(Duration.zero);
       verify(() => getFeed(cursor: null)).called(1);
+    });
+  });
+
+  group('liked by', () {
+    const line = LikedByPreviewEntity(
+      firstName: 'salma.ash',
+      others: 3,
+      avatars: [],
+    );
+    const mine = LikedByPreviewEntity(
+      firstName: 'me',
+      others: 0,
+      avatars: [],
+      isOnlyMe: true,
+    );
+
+    test('fills after a page, only for posts that have likes', () async {
+      pages(
+        FeedPageEntity(posts: [testPost('p1'), testPost('p2', likes: 0)]),
+      );
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': line});
+      final cubit = build();
+      await cubit.start();
+
+      expect(cubit.state.likedBy, {'p1': line});
+      await cubit.close();
+    });
+
+    test('a failure leaves the lines hidden', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      when(() => likedBy(any())).thenThrow(const NetworkFailure());
+      final cubit = build();
+      await cubit.start();
+
+      expect(cubit.state.status, FeedStatus.ready);
+      expect(cubit.state.likedBy, isEmpty);
+      await cubit.close();
+    });
+
+    test('reads the line again after the like request ends', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': line});
+      final cubit = build();
+      await cubit.start();
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': mine});
+      final settled = Completer<void>();
+
+      cubit.likeChanged('p1', liked: true, settled: settled.future);
+      await Future<void>.delayed(Duration.zero);
+      expect(cubit.state.likedBy['p1'], line);
+
+      settled.complete();
+      await Future<void>.delayed(Duration.zero);
+      expect(cubit.state.likedBy['p1'], mine);
+      await cubit.close();
+    });
+
+    test('taking back the only like clears the line at once', () async {
+      pages(FeedPageEntity(posts: [testPost('p1', liked: true)]));
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': mine});
+      final cubit = build();
+      await cubit.start();
+
+      cubit.likeChanged(
+        'p1',
+        liked: false,
+        settled: Completer<void>().future,
+      );
+
+      expect(cubit.state.likedBy, isEmpty);
+      await cubit.close();
+    });
+
+    test('a post nobody likes any more loses its line', () async {
+      pages(FeedPageEntity(posts: [testPost('p1', liked: true)]));
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': line});
+      final cubit = build();
+      await cubit.start();
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {});
+
+      cubit.likeChanged('p1', liked: false, settled: Future.value());
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.likedBy, isEmpty);
+      await cubit.close();
+    });
+
+    test('a like change from the post page reads the line', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      final cubit = build();
+      await cubit.start();
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {'p1': mine});
+
+      bus.fire(
+        PostCountsChanged(
+          postId: 'p1',
+          likeCount: 11,
+          commentCount: 2,
+          likedByMe: true,
+          savedByMe: false,
+          likeSettled: Future.value(),
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(cubit.state.likedBy['p1'], mine);
+      await cubit.close();
+    });
+
+    test('an answer after a refresh is ignored', () async {
+      pages(FeedPageEntity(posts: [testPost('p1')]));
+      final late = Completer<Map<String, LikedByPreviewEntity>>();
+      when(() => likedBy(['p1'])).thenAnswer((_) => late.future);
+      final cubit = build();
+      final starting = cubit.start();
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      when(() => likedBy(['p1'])).thenAnswer((_) async => {});
+      await cubit.refresh();
+      late.complete({'p1': line});
+      await starting;
+
+      expect(cubit.state.likedBy, isEmpty);
+      await cubit.close();
     });
   });
 

@@ -21,6 +21,7 @@ import '../../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../../post/domain/event/post_counts_changed.dart';
 import '../../../../post/domain/event/post_saved.dart';
 import '../../../../post/domain/use_case/get_home_feed_use_case.dart';
+import '../../../../post/domain/use_case/get_liked_by_previews_use_case.dart';
 import '../../../../post/domain/use_case/get_posts_by_ids_use_case.dart';
 import '../../../../post/domain/use_case/save_home_feed_use_case.dart';
 import '../../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
@@ -46,6 +47,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     this._startLive,
     this._stopLive,
     this._saveFeed,
+    this._likedByPreviews,
   ) : _signer = FeedPostSigner(signMedia),
       super(FeedState(userId: currentUserId()));
 
@@ -58,6 +60,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   final StartContentLiveUseCase _startLive;
   final StopContentLiveUseCase _stopLive;
   final SaveHomeFeedUseCase _saveFeed;
+  final GetLikedByPreviewsUseCase _likedByPreviews;
 
   /// Most posts read in one check; one request carries at most 50.
   static const _maxRead = 50;
@@ -65,6 +68,14 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   /// How long a post that just arrived keeps its ring (the ring fades by itself in the card).
   static const _freshStay = Duration(seconds: 4);
   Timer? _freshTimer;
+
+  /// Posts whose "Liked by" line was asked for in the current [FeedState.generation], so a post nobody liked
+  /// is not asked again on every page.
+  final _askedLikedBy = <String>{};
+  int _askedGeneration = 0;
+
+  /// What the last like change told about each post, to tell a new change from a repeat.
+  final _likedSeen = <String, bool>{};
 
   /// Whether the feed is scrolled to the top (the floaters tell): only then may the fresh page replace
   /// the saved posts.
@@ -119,6 +130,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
       onFailure: (_) => state.copyWith(isSyncing: false),
     );
     await _signLeftovers();
+    await _fillLikedBy();
   }
 
   /// A refresh that ended first wins: its posts are newer than this page's.
@@ -234,7 +246,12 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   }
 
   /// Reads the changed and new posts and puts them in place (see [applyFreshPosts]).
-  Future<void> _readChanged(List<String> ids) => run(
+  Future<void> _readChanged(List<String> ids) async {
+    await _readChangedPosts(ids);
+    await _fillLikedBy();
+  }
+
+  Future<void> _readChangedPosts(List<String> ids) => run(
     () async => _signer.sign(await _postsByIds(ids)),
     onSuccess: (fresh) {
       final result = applyFreshPosts(
@@ -315,7 +332,12 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
       state.loadMore == LoadMoreStatus.loading;
 
   /// First load, and Try again after it failed.
-  Future<void> load() => run(
+  Future<void> load() async {
+    await _load();
+    await _fillLikedBy();
+  }
+
+  Future<void> _load() => run(
     () => _page(null),
     prevent:
         state.status == FeedStatus.loading || state.status == FeedStatus.ready,
@@ -327,7 +349,12 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
 
   /// Pull to refresh: the posts on screen stay until the new ones arrive. [silent] skips the refresh band,
   /// for a refresh the person did not ask for.
-  Future<void> refresh({bool silent = false}) => run(
+  Future<void> refresh({bool silent = false}) async {
+    await _refresh(silent: silent);
+    await _fillLikedBy();
+  }
+
+  Future<void> _refresh({required bool silent}) => run(
     () => _page(null),
     prevent:
         state.status != FeedStatus.ready ||
@@ -340,7 +367,12 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   );
 
   /// The next page, also the retry after it failed.
-  Future<void> loadMore() {
+  Future<void> loadMore() async {
+    await _loadMore();
+    await _fillLikedBy();
+  }
+
+  Future<void> _loadMore() {
     final cursor = state.nextCursor;
     return run(
       () => _page(cursor),
@@ -380,7 +412,8 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     }
   }
 
-  /// The post page changed a post's counts or save: they go to its card through [FeedState.counts].
+  /// The post page changed a post's counts or save: they go to its card through [FeedState.counts]. A like
+  /// made there changes its "Liked by" line too.
   void _countsChanged(PostCountsChanged event) {
     if (!state.posts.any((post) => post.id == event.postId)) return;
     emit(
@@ -397,6 +430,72 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
         },
       ),
     );
+    likeChanged(
+      event.postId,
+      liked: event.likedByMe,
+      settled: event.likeSettled ?? Future.value(),
+    );
+  }
+
+  /// The like of a post on screen is [liked]; nothing happens when that is already known. When it was the only like the line goes at once;
+  /// the new line is read after [settled] (the like request ends), since the server only knows it then.
+  void likeChanged(
+    String postId, {
+    required bool liked,
+    required Future<void> settled,
+  }) {
+    final post = state.posts.where((post) => post.id == postId);
+    if (post.isEmpty) return;
+    if ((_likedSeen[postId] ?? post.first.entity.likedByMe) == liked) return;
+    _likedSeen[postId] = liked;
+    if (!liked && (state.likedBy[postId]?.isOnlyMe ?? false)) {
+      emit(state.copyWith(likedBy: {...state.likedBy}..remove(postId)));
+    }
+    unawaited(settled.then((_) => _refreshLikedBy(postId)));
+  }
+
+  Future<void> _refreshLikedBy(String postId) {
+    final generation = state.generation;
+    return run(
+      () => _likedByPreviews([postId]),
+      prevent: !state.posts.any((post) => post.id == postId),
+      onSuccess: (found) {
+        if (state.generation != generation) return null;
+        final likedBy = {...state.likedBy};
+        final line = found[postId];
+        line == null ? likedBy.remove(postId) : likedBy[postId] = line;
+        return state.copyWith(likedBy: likedBy);
+      },
+      onFailure: (_) => null,
+    );
+  }
+
+  /// Reads the "Liked by" lines of the posts on screen that have likes and were not asked for yet, in
+  /// requests of up to 50. A failure leaves those lines hidden and lets a later call ask again.
+  Future<void> _fillLikedBy() async {
+    if (_askedGeneration != state.generation) {
+      _askedLikedBy.clear();
+      _likedSeen.clear();
+      _askedGeneration = state.generation;
+    }
+    final ids = [
+      for (final post in state.posts)
+        if (post.entity.likeCount > 0 && _askedLikedBy.add(post.id)) post.id,
+    ];
+    final generation = state.generation;
+    for (var from = 0; from < ids.length; from += _maxRead) {
+      final batch = ids.skip(from).take(_maxRead).toList();
+      await run(
+        () => _likedByPreviews(batch),
+        onSuccess: (found) => state.generation != generation
+            ? null
+            : state.copyWith(likedBy: {...state.likedBy, ...found}),
+        onFailure: (_) {
+          if (state.generation == generation) _askedLikedBy.removeAll(batch);
+          return null;
+        },
+      );
+    }
   }
 
   Future<FeedPost?> _signOrNull(PostEntity entity) async {
@@ -442,6 +541,7 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
     isSyncing: false,
     loadMore: LoadMoreStatus.idle,
     generation: state.generation + 1,
+    likedBy: const {},
     pendingDeleteIds: const {},
     failure: null,
   );

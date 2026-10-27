@@ -23,9 +23,13 @@ abstract interface class PostLikesDatasource {
 
   /// The "Liked by" row of [postId]; null when nobody else liked it.
   Future<LikedByPreviewModel?> getPreview(String postId);
+
+  /// The "Liked by" rows of up to 50 [postIds], by post id. Posts that are not visible or have no likes
+  /// are missing from the map.
+  Future<Map<String, LikedByPreviewModel>> getPreviews(List<String> postIds);
 }
 
-/// [PostLikesDatasource] as an adapter over Supabase: `post_likers` and `liked_by_preview`.
+/// [PostLikesDatasource] as an adapter over Supabase: `post_likers`, `liked_by_preview` and `liked_by_previews`.
 @LazySingleton(as: PostLikesDatasource)
 final class SupabasePostLikesDatasource implements PostLikesDatasource {
   SupabasePostLikesDatasource(this._client);
@@ -76,6 +80,24 @@ final class SupabasePostLikesDatasource implements PostLikesDatasource {
                 Map<String, dynamic>.from(list.first as Map),
               );
       });
+
+  @override
+  Future<Map<String, LikedByPreviewModel>> getPreviews(
+    List<String> postIds,
+  ) async {
+    if (postIds.isEmpty) return const {};
+    return _call('liked_by_previews', {'p_posts': postIds}, (rows) {
+      final previews = <String, LikedByPreviewModel>{};
+      for (final row in rows as List<dynamic>) {
+        final model = LikedByPreviewModel.fromJson(
+          Map<String, dynamic>.from(row as Map),
+        );
+        final postId = model.postId;
+        if (postId != null) previews[postId] = model;
+      }
+      return previews;
+    });
+  }
 
   /// Calls [function], reads the answer with [parse], and turns the "post unavailable" refusal into a failure.
   Future<T> _call<T>(

@@ -32,6 +32,7 @@ import 'package:pulse/features/post/data/enums/comment_sort.dart';
 import 'package:pulse/features/post/domain/entity/comment_page_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_cursor_entity.dart';
 import 'package:pulse/features/post/domain/entity/feed_page_entity.dart';
+import 'package:pulse/features/post/domain/entity/liked_by_preview_entity.dart';
 import 'package:pulse/features/post/domain/entity/post_entity.dart';
 import 'package:pulse/features/post/domain/event/feed_refresh_requested.dart';
 import 'package:pulse/features/post/domain/use_case/add_comment_use_case.dart';
@@ -55,6 +56,7 @@ import 'package:pulse/features/post/presentation/cubit/share_sheet/share_sheet_c
 import 'package:pulse/features/post/presentation/utils/comment_drafts.dart';
 import 'package:pulse/features/post/presentation/widgets/hidden_post_row.dart';
 import 'package:pulse/features/post/presentation/widgets/post_card.dart';
+import 'package:pulse/features/post/presentation/widgets/post_page/post_liked_by_row.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
@@ -143,6 +145,7 @@ Finder _icon(String asset) =>
 
 void main() {
   late _GetFeed getFeed;
+  late MockGetLikedByPreviews likedBy;
   late _RequestCount requestCount;
   late _GetRail getRail;
   late _Like like;
@@ -183,6 +186,7 @@ void main() {
   setUp(() async {
     await getIt.reset();
     getFeed = _GetFeed();
+    likedBy = quietLikedBy();
     requestCount = _RequestCount();
     like = _Like();
     hide = _Hide();
@@ -219,6 +223,7 @@ void main() {
           changes.startLive,
           changes.stopLive,
           MockSaveHomeFeed(),
+          likedBy,
         );
       })
       ..registerFactory(
@@ -993,6 +998,39 @@ void main() {
         },
       );
     }
+
+    testView(
+      'the "Liked by" line shows under a post that has a line, in EN and AR',
+      (tester) async {
+        for (final locale in const [Locale('en'), Locale('ar')]) {
+          when(() => likedBy(any())).thenAnswer(
+            (_) async => {
+              'p1': const LikedByPreviewEntity(
+                firstName: 'salma.ash',
+                others: 3,
+                avatars: [],
+              ),
+            },
+          );
+          await show(tester, locale: locale);
+          final l10n = locale.languageCode == 'ar' ? l10nAr : l10nEn;
+          expect(
+            find.bySemanticsLabel(
+              l10n.postLikedBy('salma.ash', l10n.postLikedByOthers(3)),
+            ),
+            findsOneWidget,
+          );
+        }
+      },
+    );
+
+    testView('no "Liked by" line without a line from the server', (
+      tester,
+    ) async {
+      await show(tester);
+      expect(find.text(l10nEn.postLikesOpen), findsNothing);
+      expect(find.byType(LikedByRow), findsNothing);
+    });
 
     testWidgets('a wide window keeps the feed at the content width, centered', (
       tester,

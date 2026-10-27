@@ -136,4 +136,36 @@ void main() {
       );
     });
   });
+
+  group('getPreviews', () {
+    test('sends the ids and maps the rows by post id', () async {
+      late Map<String, dynamic> sent;
+      final backend = await signedIn((request) async {
+        sent = jsonDecode(request.body) as Map<String, dynamic>;
+        return BackendDouble.json([
+          {'post_id': 'p1', 'first_username': 'salma.ash', 'others': 3},
+          {'post_id': 'p2', 'first_username': 'omar', 'others': 0},
+        ]);
+      });
+      final previews = await SupabasePostLikesDatasource(backend.client)
+          .getPreviews(['p1', 'p2', 'p3']);
+
+      expect(sent['p_posts'], ['p1', 'p2', 'p3']);
+      expect(previews.keys, ['p1', 'p2']);
+      expect(previews['p1']?.firstUsername, 'salma.ash');
+      expect(previews['p1']?.others, 3);
+    });
+
+    test('no ids makes no request', () async {
+      var calls = 0;
+      final backend = await signedIn((_) async {
+        calls++;
+        return BackendDouble.json([]);
+      });
+      final previews = await SupabasePostLikesDatasource(backend.client)
+          .getPreviews([]);
+      expect(previews, isEmpty);
+      expect(calls, 0);
+    });
+  });
 }

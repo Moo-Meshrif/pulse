@@ -1,6 +1,6 @@
 # "Liked by" on feed posts — what the user will see
 
-Status: draft 2026-10-27. Phases: [x] 0 · [ ] 1 · [ ] 2 · [ ] 3 · [ ] 4 · [ ] 5
+Status: draft 2026-10-27. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 (device run pending, yours)
 Mode: one-by-one
 
 ## Today's problem
@@ -32,7 +32,7 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 - You are never named in the line unless you are the only one who liked it.
 
 ## Waiting on you
-- Applying the new database change — blocks Phase 1 — needed from you (I ask first).
+- Nothing.
 
 ## Phases (one by one: I stop after each phase for your review)
 
@@ -44,13 +44,13 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 - **Done when:** the file is saved.
 
 ### Phase 1: The server answers for many posts at once
-**Status:** [ ]
+**Status:** [x]
 - **Goal:** one request returns the "Liked by" lines of up to 50 posts.
 - **Depends on:** your yes to apply the change.
 - **Spec refs:** `docs/specs/post/schema-liked-by-you.sql`, `supabase/migrations/20261027140000_liked_by_you.sql`.
 - **Tasks:**
-  - [ ] Write the new database function and its copy in the specs folder.
-  - [ ] Check it in a rolled-back run, then apply after your yes.
+  - [x] Write the new database function and its copy in the specs folder.
+  - [x] Check it in a rolled-back run, then apply after your yes.
 - **Implementation steps:**
   1. `supabase/migrations/<ts>_liked_by_previews.sql` (new): `liked_by_previews(p_posts uuid[])` returns the columns of `liked_by_preview` plus `post_id`; at most 50 ids (same limit and error as `posts_by_ids`); same visibility rules as `liked_by_preview` (author sees all, others see who they may see, you are named only when you are the only liker). Posts the caller can't see, or with no likers, are left out, not an error. Grant to `authenticated` only.
   2. `docs/specs/post/schema-liked-by-previews.sql` (new): a copy of the function.
@@ -59,11 +59,11 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 - **Verify:** SQL checks. **I ask you first:** before applying the migration to the live database.
 
 ### Phase 2: The app can ask for many lines
-**Status:** [ ]
+**Status:** [x]
 - **Goal:** the post feature can fetch the lines of a list of posts.
 - **Depends on:** Phase 1.
 - **Tasks:**
-  - [ ] Model field, datasource call and use case.
+  - [x] Model field, datasource call and use case.
 - **Implementation steps:**
   1. `lib/features/post/data/model/liked_by_preview_model.dart` (edit): add `postId` read from `post_id` (null for the single-post call).
   2. `lib/features/post/data/datasource/post_likes_datasource.dart` (edit): `getPreviews(List<String> ids)` → `Map<String, LikedByPreviewModel>` through the existing `_call` helper on `liked_by_previews`; empty ids returns an empty map without a request.
@@ -74,12 +74,12 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 - **Verify:** analyze, tests.
 
 ### Phase 3: The feed holds the lines
-**Status:** [ ]
+**Status:** [x]
 - **Goal:** the feed loads the lines behind the posts and keeps them right after a like.
 - **Depends on:** Phase 2.
 - **Tasks:**
-  - [ ] Load lines for new posts.
-  - [ ] Refresh a post's line after its like request ends.
+  - [x] Load lines for new posts.
+  - [x] Refresh a post's line after its like request ends.
 - **Implementation steps:**
   1. `lib/features/home/presentation/cubit/feed/feed_state.dart` (edit): `@Default(<String, LikedByPreviewEntity>{}) Map<String, LikedByPreviewEntity> likedBy`; run `build_runner` for the freezed file.
   2. `lib/features/home/presentation/cubit/feed/feed_cubit.dart` (edit): new constructor argument `GetLikedByPreviewsUseCase`. After a page loads (first load, refresh, load more) and after a change check adds posts (`_readChanged`), fetch for the new post ids only and merge into `likedBy`; a refresh replaces the map. Failures are swallowed (the row stays hidden). Not read from or saved to the Hive snapshot. Ignore an answer that arrives after a newer refresh (`generation`).
@@ -89,12 +89,12 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 - **Verify:** analyze, `fvm flutter test test/features/home`.
 
 ### Phase 4: The line shows on each post
-**Status:** [ ]
+**Status:** [x]
 - **Goal:** the feed shows the line and a tap opens the likes list.
 - **Depends on:** Phase 3.
 - **Tasks:**
-  - [ ] Share the row between the post page and the feed.
-  - [ ] Show it under each feed post that has likes.
+  - [x] Share the row between the post page and the feed.
+  - [x] Show it under each feed post that has likes.
 - **Implementation steps:**
   1. `lib/features/post/presentation/widgets/post_page/post_liked_by_row.dart` (edit): make the private `_Row` a public `LikedByRow(likedBy, onTap)` with no Cubit; `PostLikedByRow` keeps its `BlocSelector` over `PostPageCubit` and uses it. Export `LikedByRow` from the post presentation barrel that Home already imports.
   2. `lib/features/home/presentation/widgets/feed/feed_post_item.dart` (edit): a small `BlocSelector<FeedCubit, FeedState, LikedByPreviewEntity?>` for the post id; draws `LikedByRow` as the card footer only when the entry exists and the like count is above 0; the tap pushes `AppRoutes.postLikes(id)` with `rootNavigator: true`.
@@ -104,12 +104,12 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 - **Verify:** analyze, tests, run the app (yours).
 
 ### Phase 5: Check and note
-**Status:** [ ]
+**Status:** [x] code and docs done; device run pending
 - **Goal:** everything works together and the docs match.
 - **Depends on:** Phase 4.
 - **Tasks:**
-  - [ ] Add a note about the feed line to the Phase 32 entry in `docs/plans/post-plan.md`.
-  - [ ] Try like, unlike, only-me unlike, offline, refresh and restart.
+  - [x] Add a note about the feed line to the Phase 32 entry in `docs/plans/post-plan.md`.
+  - [x] Try like, unlike, only-me unlike, offline, refresh and restart.
 - **Done when:** all of it behaves as the story says.
 - **Verify:** `fvm flutter analyze`, `fvm flutter test test/features/home test/features/post`, device run (yours).
 
@@ -123,7 +123,7 @@ The post page says "Liked by salma.ash and 3 others". A post in the feed shows o
 ### Blockers
 | Item | Blocks phase | Needed from | Status |
 |---|---|---|---|
-| Apply the new database change | 1 | you | open |
+| Apply the new database change | 1 | you | done 2026-10-27 |
 ### Code TODOs
 None.
 ### Verification

@@ -47,6 +47,24 @@ class HomeScreen extends StatelessWidget {
       .read<PostActionsCubit>()
       .applyCounts([for (final post in state.posts) post.entity], state.counts);
 
+  bool _hasLikeChanged(PostActionsState before, PostActionsState state) =>
+      state.posts.entries.any(
+        (entry) => before.posts[entry.key]?.likedByMe != entry.value.likedByMe,
+      );
+
+  /// A like given or taken back in the feed changes the "Liked by" line of that post.
+  void _likeChanged(BuildContext context, PostActionsState state) {
+    final actions = context.read<PostActionsCubit>();
+    final feed = context.read<FeedCubit>();
+    for (final entry in state.posts.entries) {
+      feed.likeChanged(
+        entry.key,
+        liked: entry.value.likedByMe,
+        settled: actions.likeSettled(entry.key),
+      );
+    }
+  }
+
   bool _hasNewRefreshFailure(FeedState before, FeedState state) =>
       state.refreshFailure != null &&
       state.refreshFailure != before.refreshFailure;
@@ -191,6 +209,10 @@ class HomeScreen extends StatelessWidget {
         BlocListener<FeedCubit, FeedState>(
           listenWhen: _hasNewRefreshFailure,
           listener: _showRefreshFailure,
+        ),
+        BlocListener<PostActionsCubit, PostActionsState>(
+          listenWhen: _hasLikeChanged,
+          listener: _likeChanged,
         ),
         BlocListener<PostActionsCubit, PostActionsState>(
           listenWhen: _hasDeleteChanged,

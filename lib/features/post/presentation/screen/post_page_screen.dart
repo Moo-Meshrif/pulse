@@ -64,7 +64,13 @@ class PostPageScreen extends StatelessWidget {
               before.posts[args.postId] != now.posts[args.postId],
           listener: (context, state) {
             final post = state.posts[args.postId];
-            if (post != null) context.read<PostPageCubit>().countsChanged(post);
+            if (post == null) return;
+            context.read<PostPageCubit>().countsChanged(
+              post,
+              likeSettled: context
+                  .read<PostActionsCubit>()
+                  .likeSettled(args.postId),
+            );
           },
         ),
         // A like made here changes who is named in "Liked by".

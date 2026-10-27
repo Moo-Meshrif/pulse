@@ -115,6 +115,8 @@ import '../../features/post/domain/use_case/get_home_feed_use_case.dart'
     as _i281;
 import '../../features/post/domain/use_case/get_liked_by_preview_use_case.dart'
     as _i656;
+import '../../features/post/domain/use_case/get_liked_by_previews_use_case.dart'
+    as _i1044;
 import '../../features/post/domain/use_case/get_mention_candidates_use_case.dart'
     as _i581;
 import '../../features/post/domain/use_case/get_post_comments_use_case.dart'
@@ -464,6 +466,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i656.GetLikedByPreviewUseCase>(
       () => _i656.GetLikedByPreviewUseCase(gh<_i634.PostLikesDatasource>()),
+    );
+    gh.factory<_i1044.GetLikedByPreviewsUseCase>(
+      () => _i1044.GetLikedByPreviewsUseCase(gh<_i634.PostLikesDatasource>()),
     );
     gh.factory<_i23.GetPostLikersUseCase>(
       () => _i23.GetPostLikersUseCase(gh<_i634.PostLikesDatasource>()),
@@ -838,20 +843,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i491.RemoveMyTagUseCase>(),
       ),
     );
-    gh.factory<_i592.FeedCubit>(
-      () => _i592.FeedCubit(
-        gh<_i281.GetHomeFeedUseCase>(),
-        gh<_i599.SignPostMediaUrlsUseCase>(),
-        gh<_i557.EventBus>(),
-        gh<_i91.GetCurrentUserIdUseCase>(),
-        gh<_i673.CheckContentChangesUseCase>(),
-        gh<_i1014.GetPostsByIdsUseCase>(),
-        gh<_i20.GetPostCountsUseCase>(),
-        gh<_i78.StartContentLiveUseCase>(),
-        gh<_i429.StopContentLiveUseCase>(),
-        gh<_i341.SaveHomeFeedUseCase>(),
-      ),
-    );
     gh.factory<_i465.StoryViewerCubit>(
       () => _i465.StoryViewerCubit(
         gh<_i849.GetStoryRailUseCase>(),
@@ -1053,6 +1044,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i121.WatchPasswordRecoveryUseCase>(),
       ),
       dispose: _i431.disposeRecoveryLinkHandler,
+    );
+    gh.factory<_i592.FeedCubit>(
+      () => _i592.FeedCubit(
+        gh<_i281.GetHomeFeedUseCase>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i557.EventBus>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        gh<_i673.CheckContentChangesUseCase>(),
+        gh<_i1014.GetPostsByIdsUseCase>(),
+        gh<_i20.GetPostCountsUseCase>(),
+        gh<_i78.StartContentLiveUseCase>(),
+        gh<_i429.StopContentLiveUseCase>(),
+        gh<_i341.SaveHomeFeedUseCase>(),
+        gh<_i1044.GetLikedByPreviewsUseCase>(),
+      ),
     );
     gh.lazySingleton<_i97.SessionGuard>(
       () => appModule.sessionGuard(

@@ -4,6 +4,7 @@ import '../../../../../core/error/failures.dart';
 import '../../../../../core/state/load_more_status.dart';
 import '../../../../../shared/content/data/model/post_count_model.dart';
 import '../../../../post/domain/entity/feed_cursor_entity.dart';
+import '../../../../post/domain/entity/liked_by_preview_entity.dart';
 import '../../../../post/presentation/utils/feed_post.dart';
 import '../../utils/enums/feed_mode.dart';
 import '../../utils/enums/feed_status.dart';
@@ -52,6 +53,11 @@ abstract class FeedState with _$FeedState {
 
     /// The newest counts of the posts on screen, from the last check.
     @Default(<String, PostCountModel>{}) Map<String, PostCountModel> counts,
+
+    /// The "Liked by" line of the posts on screen that have one; a post missing here shows none. Never saved
+    /// on the phone.
+    @Default(<String, LikedByPreviewEntity>{})
+    Map<String, LikedByPreviewEntity> likedBy,
 
     /// Why the first load failed.
     Failure? failure,

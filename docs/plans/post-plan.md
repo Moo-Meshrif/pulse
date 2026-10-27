@@ -826,6 +826,7 @@ Deviations: (1) the primer is shown while the permission is not granted unless "
 - Tests: `post_likes_cubit_test`, `post_liker_row_test` (EN + AR), `post_likes_datasource_test`, likes route in `post_page_route_test`; existing post page tests got the new constructor argument. Not run: the likes list on a device.
 
 - **Liked by you (added 2026-10-27):** when you are the only person who liked a post the row reads "Liked by you" and opens the list. Migration `20261027140000_liked_by_you.sql` (copy `docs/specs/post/schema-liked-by-you.sql`) replaces `liked_by_preview` with an extra `only_me` column; validated in a rolled-back batch; **applied 2026-10-27**.
+- **Feed line (added 2026-10-27, see `docs/plans/feed-liked-by-plan.md`):** each feed post with likes shows the same `LikedByRow` (shared, public in the post presentation barrel) as a card footer; a tap opens `/p/:id/likes`. Lines come from `liked_by_previews(p_posts uuid[])` (migration `20261027150000_liked_by_previews.sql`, copy `docs/specs/post/schema-liked-by-previews.sql`, up to 50 posts) through `GetLikedByPreviewsUseCase`; `FeedCubit.likedBy` holds them, refetches after `PostActionsCubit.likeSettled`, and they are not saved in the Hive snapshot. Not run on a device.
 
 ### Phase 33: Entry points and notification jump
 **Status:** [x] code done 2026-10-27; analyze clean; not opened on a device

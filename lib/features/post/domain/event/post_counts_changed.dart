@@ -9,6 +9,7 @@ class PostCountsChanged extends Equatable {
     required this.commentCount,
     required this.likedByMe,
     required this.savedByMe,
+    this.likeSettled,
   });
 
   final String postId;
@@ -16,6 +17,9 @@ class PostCountsChanged extends Equatable {
   final int commentCount;
   final bool likedByMe;
   final bool savedByMe;
+
+  /// Ends when the like request still in flight ends; not part of equality.
+  final Future<void>? likeSettled;
 
   @override
   List<Object?> get props => [
