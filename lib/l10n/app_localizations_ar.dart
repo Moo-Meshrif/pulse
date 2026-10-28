@@ -2538,4 +2538,101 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get locationCurrentUnavailable =>
       'تعذّر العثور على موقعك. تأكد من تشغيل الموقع.';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsPush => 'الإشعارات الفورية';
+
+  @override
+  String get notificationsPushSub => 'استلم التنبيهات على هذا الجهاز';
+
+  @override
+  String get notificationsSectionActivity => 'النشاط';
+
+  @override
+  String get notificationsSectionMessages => 'الرسائل';
+
+  @override
+  String get notificationsSectionPulse => 'من بولس';
+
+  @override
+  String get notificationsLikes => 'الإعجابات';
+
+  @override
+  String get notificationsLikesSub => 'على منشوراتك وشورتسك';
+
+  @override
+  String get notificationsComments => 'التعليقات والردود';
+
+  @override
+  String get notificationsCommentsSub => 'عندما يشارك أحد في المحادثة';
+
+  @override
+  String get notificationsMentions => 'الإشارات والوسوم';
+
+  @override
+  String get notificationsMentionsSub => 'عند الإشارة إليك في منشور';
+
+  @override
+  String get notificationsFollowers => 'متابعون جدد';
+
+  @override
+  String get notificationsFollowersSub => 'عندما يتابعك أحد';
+
+  @override
+  String get notificationsDirect => 'الرسائل المباشرة';
+
+  @override
+  String get notificationsDirectSub => 'المحادثات الفردية';
+
+  @override
+  String get notificationsGroups => 'محادثات المجموعات';
+
+  @override
+  String get notificationsGroupsSub => 'كل رسالة في المجموعات التي أنت فيها';
+
+  @override
+  String get notificationsShorts => 'شورتس من تتابعهم';
+
+  @override
+  String get notificationsShortsSub => 'عندما ينشرون شيئًا جديدًا';
+
+  @override
+  String get notificationsDigest => 'ملخص أسبوعي بالبريد';
+
+  @override
+  String get notificationsDigestSub => 'أبرز ما فاتك';
+
+  @override
+  String get notificationsProduct => 'تحديثات المنتج';
+
+  @override
+  String get notificationsProductSub => 'ميزات جديدة ونصائح';
+
+  @override
+  String get languageTitle => 'اللغة';
+
+  @override
+  String get languageSearch => 'ابحث عن لغة';
+
+  @override
+  String get languageSearchClear => 'مسح البحث';
+
+  @override
+  String get languageSectionApp => 'لغة التطبيق';
+
+  @override
+  String get languageRtlNote =>
+      'العربية تحوّل التطبيق بالكامل من اليمين إلى اليسار.';
+
+  @override
+  String get languageNone => 'لم يتم العثور على لغات';
+
+  @override
+  String get languageNameEnglish => 'الإنجليزية';
+
+  @override
+  String get languageNameArabic => 'العربية';
 }

@@ -149,6 +149,8 @@ import '../../features/profile/data/datasource/app_preferences_datasource.dart'
     as _i875;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
+import '../../features/profile/data/datasource/notification_prefs_datasource.dart'
+    as _i309;
 import '../../features/profile/data/datasource/people_datasource.dart' as _i784;
 import '../../features/profile/data/datasource/profile_datasource.dart'
     as _i320;
@@ -185,6 +187,8 @@ import '../../features/profile/domain/use_case/save_interests_use_case.dart'
     as _i597;
 import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
     as _i255;
+import '../../features/profile/presentation/cubit/notifications/notifications_cubit.dart'
+    as _i1000;
 import '../../features/profile/presentation/cubit/people/people_cubit.dart'
     as _i264;
 import '../../features/profile/presentation/cubit/personal_info/personal_info_cubit.dart'
@@ -291,6 +295,7 @@ import '../services/connectivity_service.dart' as _i47;
 import '../services/device_tier.dart' as _i876;
 import '../services/gallery_service.dart' as _i841;
 import '../services/launch_service.dart' as _i1016;
+import '../services/locale_service.dart' as _i729;
 import '../services/location_service.dart' as _i669;
 import '../services/media_picker_service.dart' as _i715;
 import '../services/palette_service.dart' as _i886;
@@ -463,6 +468,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i320.ProfileDatasource>(
       () => _i320.SupabaseProfileDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i309.NotificationPrefsDatasource>(
+      () =>
+          _i309.SupabaseNotificationPrefsDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.factory<_i427.StoryViewersCubit>(
       () => _i427.StoryViewersCubit(gh<_i474.StoriesDatasource>()),
     );
@@ -611,6 +620,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.EventBus>(),
       ),
     );
+    gh.factory<_i1000.NotificationsCubit>(
+      () => _i1000.NotificationsCubit(gh<_i309.NotificationPrefsDatasource>()),
+    );
     gh.lazySingleton<_i974.PlacesRepository>(
       () => _i974.PlacesRepositoryImpl(
         gh<_i438.PlacesDatasource>(),
@@ -619,6 +631,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i586.GetInterestsUseCase>(
       () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
+    );
+    gh.lazySingleton<_i729.LocaleService>(
+      () => _i729.StoredLocaleService(gh<_i201.LocalStorageService>()),
     );
     gh.factory<_i597.SaveInterestsUseCase>(
       () => _i597.SaveInterestsUseCase(

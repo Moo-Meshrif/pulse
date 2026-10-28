@@ -20,6 +20,8 @@ import '../../features/post/presentation/screen/tag_people_screen.dart';
 import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
 import '../../features/profile/data/enums/people_kind.dart';
+import '../../features/profile/presentation/screen/language_screen.dart';
+import '../../features/profile/presentation/screen/notifications_screen.dart';
 import '../../features/profile/presentation/screen/people_screen.dart';
 import '../../features/profile/presentation/screen/personal_info_screen.dart';
 import '../../features/profile/presentation/screen/settings_screen.dart';
@@ -175,12 +177,15 @@ abstract final class AppRouter {
         settings,
         const PersonalInfoScreen(),
       ),
+      AppRoutes.settingsNotifications => _page(
+        settings,
+        const NotificationsScreen(),
+      ),
+      AppRoutes.settingsLanguage => _page(settings, const LanguageScreen()),
       // These Settings pages stay placeholders until their phases of docs/plans/profile-plan.md.
       AppRoutes.settingsSecurity ||
       AppRoutes.settingsPrivacy ||
       AppRoutes.settingsBlocked ||
-      AppRoutes.settingsNotifications ||
-      AppRoutes.settingsLanguage ||
       AppRoutes.settingsHelp ||
       AppRoutes.settingsHelpTopic ||
       AppRoutes.settingsReport ||

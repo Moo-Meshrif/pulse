@@ -3112,5 +3112,133 @@
   "locationCurrentUnavailable": "تعذّر العثور على موقعك. تأكد من تشغيل الموقع.",
   "@locationCurrentUnavailable": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsTitle": "الإشعارات",
+  "@notificationsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsPush": "الإشعارات الفورية",
+  "@notificationsPush": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsPushSub": "استلم التنبيهات على هذا الجهاز",
+  "@notificationsPushSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsSectionActivity": "النشاط",
+  "@notificationsSectionActivity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsSectionMessages": "الرسائل",
+  "@notificationsSectionMessages": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsSectionPulse": "من بولس",
+  "@notificationsSectionPulse": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsLikes": "الإعجابات",
+  "@notificationsLikes": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsLikesSub": "على منشوراتك وشورتسك",
+  "@notificationsLikesSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsComments": "التعليقات والردود",
+  "@notificationsComments": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsCommentsSub": "عندما يشارك أحد في المحادثة",
+  "@notificationsCommentsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsMentions": "الإشارات والوسوم",
+  "@notificationsMentions": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsMentionsSub": "عند الإشارة إليك في منشور",
+  "@notificationsMentionsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsFollowers": "متابعون جدد",
+  "@notificationsFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsFollowersSub": "عندما يتابعك أحد",
+  "@notificationsFollowersSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDirect": "الرسائل المباشرة",
+  "@notificationsDirect": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDirectSub": "المحادثات الفردية",
+  "@notificationsDirectSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsGroups": "محادثات المجموعات",
+  "@notificationsGroups": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsGroupsSub": "كل رسالة في المجموعات التي أنت فيها",
+  "@notificationsGroupsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsShorts": "شورتس من تتابعهم",
+  "@notificationsShorts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsShortsSub": "عندما ينشرون شيئًا جديدًا",
+  "@notificationsShortsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDigest": "ملخص أسبوعي بالبريد",
+  "@notificationsDigest": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDigestSub": "أبرز ما فاتك",
+  "@notificationsDigestSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsProduct": "تحديثات المنتج",
+  "@notificationsProduct": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsProductSub": "ميزات جديدة ونصائح",
+  "@notificationsProductSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageTitle": "اللغة",
+  "@languageTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageSearch": "ابحث عن لغة",
+  "@languageSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageSearchClear": "مسح البحث",
+  "@languageSearchClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageSectionApp": "لغة التطبيق",
+  "@languageSectionApp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageRtlNote": "العربية تحوّل التطبيق بالكامل من اليمين إلى اليسار.",
+  "@languageRtlNote": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageNone": "لم يتم العثور على لغات",
+  "@languageNone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageNameEnglish": "الإنجليزية",
+  "@languageNameEnglish": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageNameArabic": "العربية",
+  "@languageNameArabic": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

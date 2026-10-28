@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -254,13 +254,13 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, cubit test, compare with `s3-personal-info.png`.
 
 ### Phase 8: Notifications and language
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit and locale tests pass; not yet run on a device in both languages. Push switch saves the server flag only (T12: no OS permission service yet).
 - **Goal:** notification switches save to your account; the app language changes at once.
 - **Depends on:** Phases 3, 6.
 - **Spec refs:** screens/s7-notifications.md, s8-language.md.
 - **Tasks:**
-  - [ ] Notifications page.
-  - [ ] Language page and app-wide language switch.
+  - [x] Notifications page.
+  - [x] Language page and app-wide language switch.
 - **Implementation steps:**
   1. `lib/features/profile/data/datasource/notification_prefs_datasource.dart` (new): read the caller's `notification_prefs` row (missing row = defaults); `set(Map<String, bool>)` calls `set_notification_prefs`; model `notification_prefs_model.dart` (new).
   2. `lib/features/profile/presentation/cubit/notifications/notifications_cubit.dart` + state (new): optimistic toggle with rollback and error notice; Push switch turning on asks the OS permission through the existing notification setup (check `lib/core/services` for it; if none exists leave `// TODO(profile-plan T12): ask the OS permission when push is wired` and keep the server flag only).

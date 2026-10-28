@@ -4453,6 +4453,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t find your location. Check that location is on.'**
   String get locationCurrentUnavailable;
+
+  /// Notifications page: title
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// Notifications: push switch
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get notificationsPush;
+
+  /// Notifications: push switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Get alerts on this device'**
+  String get notificationsPushSub;
+
+  /// Notifications: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get notificationsSectionActivity;
+
+  /// Notifications: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get notificationsSectionMessages;
+
+  /// Notifications: section label
+  ///
+  /// In en, this message translates to:
+  /// **'From Pulse'**
+  String get notificationsSectionPulse;
+
+  /// Notifications: likes switch
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get notificationsLikes;
+
+  /// Notifications: likes subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'On your posts and shorts'**
+  String get notificationsLikesSub;
+
+  /// Notifications: comments switch
+  ///
+  /// In en, this message translates to:
+  /// **'Comments & replies'**
+  String get notificationsComments;
+
+  /// Notifications: comments subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When someone joins the conversation'**
+  String get notificationsCommentsSub;
+
+  /// Notifications: mentions switch
+  ///
+  /// In en, this message translates to:
+  /// **'Mentions & tags'**
+  String get notificationsMentions;
+
+  /// Notifications: mentions subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When you\'re tagged in a post'**
+  String get notificationsMentionsSub;
+
+  /// Notifications: followers switch
+  ///
+  /// In en, this message translates to:
+  /// **'New followers'**
+  String get notificationsFollowers;
+
+  /// Notifications: followers subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When someone follows you'**
+  String get notificationsFollowersSub;
+
+  /// Notifications: direct messages switch
+  ///
+  /// In en, this message translates to:
+  /// **'Direct messages'**
+  String get notificationsDirect;
+
+  /// Notifications: direct messages subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'One-on-one chats'**
+  String get notificationsDirectSub;
+
+  /// Notifications: group chats switch
+  ///
+  /// In en, this message translates to:
+  /// **'Group chats'**
+  String get notificationsGroups;
+
+  /// Notifications: group chats subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Every message in groups you\'re in'**
+  String get notificationsGroupsSub;
+
+  /// Notifications: shorts switch
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts from people you follow'**
+  String get notificationsShorts;
+
+  /// Notifications: shorts subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When they post something new'**
+  String get notificationsShortsSub;
+
+  /// Notifications: email digest switch
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly email digest'**
+  String get notificationsDigest;
+
+  /// Notifications: email digest subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights you might have missed'**
+  String get notificationsDigestSub;
+
+  /// Notifications: product updates switch
+  ///
+  /// In en, this message translates to:
+  /// **'Product updates'**
+  String get notificationsProduct;
+
+  /// Notifications: product updates subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'New features and tips'**
+  String get notificationsProductSub;
+
+  /// Language page: title
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageTitle;
+
+  /// Language page: search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search languages'**
+  String get languageSearch;
+
+  /// Language page: clear search button label
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get languageSearchClear;
+
+  /// Language page: section label
+  ///
+  /// In en, this message translates to:
+  /// **'App language'**
+  String get languageSectionApp;
+
+  /// Language page: footnote
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic switches the whole app to right-to-left.'**
+  String get languageRtlNote;
+
+  /// Language page: empty search result
+  ///
+  /// In en, this message translates to:
+  /// **'No languages found'**
+  String get languageNone;
+
+  /// Language page: English language, second line
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageNameEnglish;
+
+  /// Language page: Arabic language, second line
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get languageNameArabic;
 }
 
 class _AppLocalizationsDelegate

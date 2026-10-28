@@ -3280,5 +3280,133 @@
   "locationCurrentUnavailable": "Couldn't find your location. Check that location is on.",
   "@locationCurrentUnavailable": {
     "description": "Add location: notice when Use current location finds no place"
+  },
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "Notifications page: title"
+  },
+  "notificationsPush": "Push notifications",
+  "@notificationsPush": {
+    "description": "Notifications: push switch"
+  },
+  "notificationsPushSub": "Get alerts on this device",
+  "@notificationsPushSub": {
+    "description": "Notifications: push switch subtitle"
+  },
+  "notificationsSectionActivity": "Activity",
+  "@notificationsSectionActivity": {
+    "description": "Notifications: section label"
+  },
+  "notificationsSectionMessages": "Messages",
+  "@notificationsSectionMessages": {
+    "description": "Notifications: section label"
+  },
+  "notificationsSectionPulse": "From Pulse",
+  "@notificationsSectionPulse": {
+    "description": "Notifications: section label"
+  },
+  "notificationsLikes": "Likes",
+  "@notificationsLikes": {
+    "description": "Notifications: likes switch"
+  },
+  "notificationsLikesSub": "On your posts and shorts",
+  "@notificationsLikesSub": {
+    "description": "Notifications: likes subtitle"
+  },
+  "notificationsComments": "Comments & replies",
+  "@notificationsComments": {
+    "description": "Notifications: comments switch"
+  },
+  "notificationsCommentsSub": "When someone joins the conversation",
+  "@notificationsCommentsSub": {
+    "description": "Notifications: comments subtitle"
+  },
+  "notificationsMentions": "Mentions & tags",
+  "@notificationsMentions": {
+    "description": "Notifications: mentions switch"
+  },
+  "notificationsMentionsSub": "When you're tagged in a post",
+  "@notificationsMentionsSub": {
+    "description": "Notifications: mentions subtitle"
+  },
+  "notificationsFollowers": "New followers",
+  "@notificationsFollowers": {
+    "description": "Notifications: followers switch"
+  },
+  "notificationsFollowersSub": "When someone follows you",
+  "@notificationsFollowersSub": {
+    "description": "Notifications: followers subtitle"
+  },
+  "notificationsDirect": "Direct messages",
+  "@notificationsDirect": {
+    "description": "Notifications: direct messages switch"
+  },
+  "notificationsDirectSub": "One-on-one chats",
+  "@notificationsDirectSub": {
+    "description": "Notifications: direct messages subtitle"
+  },
+  "notificationsGroups": "Group chats",
+  "@notificationsGroups": {
+    "description": "Notifications: group chats switch"
+  },
+  "notificationsGroupsSub": "Every message in groups you're in",
+  "@notificationsGroupsSub": {
+    "description": "Notifications: group chats subtitle"
+  },
+  "notificationsShorts": "Shorts from people you follow",
+  "@notificationsShorts": {
+    "description": "Notifications: shorts switch"
+  },
+  "notificationsShortsSub": "When they post something new",
+  "@notificationsShortsSub": {
+    "description": "Notifications: shorts subtitle"
+  },
+  "notificationsDigest": "Weekly email digest",
+  "@notificationsDigest": {
+    "description": "Notifications: email digest switch"
+  },
+  "notificationsDigestSub": "Highlights you might have missed",
+  "@notificationsDigestSub": {
+    "description": "Notifications: email digest subtitle"
+  },
+  "notificationsProduct": "Product updates",
+  "@notificationsProduct": {
+    "description": "Notifications: product updates switch"
+  },
+  "notificationsProductSub": "New features and tips",
+  "@notificationsProductSub": {
+    "description": "Notifications: product updates subtitle"
+  },
+  "languageTitle": "Language",
+  "@languageTitle": {
+    "description": "Language page: title"
+  },
+  "languageSearch": "Search languages",
+  "@languageSearch": {
+    "description": "Language page: search hint"
+  },
+  "languageSearchClear": "Clear search",
+  "@languageSearchClear": {
+    "description": "Language page: clear search button label"
+  },
+  "languageSectionApp": "App language",
+  "@languageSectionApp": {
+    "description": "Language page: section label"
+  },
+  "languageRtlNote": "Arabic switches the whole app to right-to-left.",
+  "@languageRtlNote": {
+    "description": "Language page: footnote"
+  },
+  "languageNone": "No languages found",
+  "@languageNone": {
+    "description": "Language page: empty search result"
+  },
+  "languageNameEnglish": "English",
+  "@languageNameEnglish": {
+    "description": "Language page: English language, second line"
+  },
+  "languageNameArabic": "Arabic",
+  "@languageNameArabic": {
+    "description": "Language page: Arabic language, second line"
   }
 }

@@ -2545,4 +2545,101 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get locationCurrentUnavailable =>
       'Couldn\'t find your location. Check that location is on.';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsPush => 'Push notifications';
+
+  @override
+  String get notificationsPushSub => 'Get alerts on this device';
+
+  @override
+  String get notificationsSectionActivity => 'Activity';
+
+  @override
+  String get notificationsSectionMessages => 'Messages';
+
+  @override
+  String get notificationsSectionPulse => 'From Pulse';
+
+  @override
+  String get notificationsLikes => 'Likes';
+
+  @override
+  String get notificationsLikesSub => 'On your posts and shorts';
+
+  @override
+  String get notificationsComments => 'Comments & replies';
+
+  @override
+  String get notificationsCommentsSub => 'When someone joins the conversation';
+
+  @override
+  String get notificationsMentions => 'Mentions & tags';
+
+  @override
+  String get notificationsMentionsSub => 'When you\'re tagged in a post';
+
+  @override
+  String get notificationsFollowers => 'New followers';
+
+  @override
+  String get notificationsFollowersSub => 'When someone follows you';
+
+  @override
+  String get notificationsDirect => 'Direct messages';
+
+  @override
+  String get notificationsDirectSub => 'One-on-one chats';
+
+  @override
+  String get notificationsGroups => 'Group chats';
+
+  @override
+  String get notificationsGroupsSub => 'Every message in groups you\'re in';
+
+  @override
+  String get notificationsShorts => 'Shorts from people you follow';
+
+  @override
+  String get notificationsShortsSub => 'When they post something new';
+
+  @override
+  String get notificationsDigest => 'Weekly email digest';
+
+  @override
+  String get notificationsDigestSub => 'Highlights you might have missed';
+
+  @override
+  String get notificationsProduct => 'Product updates';
+
+  @override
+  String get notificationsProductSub => 'New features and tips';
+
+  @override
+  String get languageTitle => 'Language';
+
+  @override
+  String get languageSearch => 'Search languages';
+
+  @override
+  String get languageSearchClear => 'Clear search';
+
+  @override
+  String get languageSectionApp => 'App language';
+
+  @override
+  String get languageRtlNote =>
+      'Arabic switches the whole app to right-to-left.';
+
+  @override
+  String get languageNone => 'No languages found';
+
+  @override
+  String get languageNameEnglish => 'English';
+
+  @override
+  String get languageNameArabic => 'Arabic';
 }

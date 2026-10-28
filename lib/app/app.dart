@@ -8,6 +8,7 @@ import '../core/router/app_routes.dart';
 import '../core/router/recovery_link_handler.dart';
 import '../core/router/session_guard.dart';
 import '../core/services/device_tier.dart';
+import '../core/services/locale_service.dart';
 import '../core/theme/app_scale.dart';
 import '../core/theme/app_scroll_behavior.dart';
 import '../core/theme/app_theme.dart';
@@ -36,6 +37,7 @@ class _AppState extends State<App> {
   // the ones in `SessionGuard.keepsScreen`.
   final _sessionGuard = getIt<SessionGuard>();
   final _deviceTier = getIt<DeviceTier>();
+  final _localeService = getIt<LocaleService>();
 
   @override
   void initState() {
@@ -47,34 +49,39 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) => AppScaleScope(
-    builder: (context) => MaterialApp(
-      navigatorKey: _navigator,
-      navigatorObservers: [_sessionGuard],
-      // Fonts are already scaled by AppScale; cap the user's text scale so the two together stay <= 2.0x.
-      // Dark status bar icons by default (light theme); dark screens override with their own region.
-      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: MediaQuery.withClampedTextScaling(
-          maxScaleFactor: AppScale.maxSystemTextScale,
-          child: DeviceTierScope(
-            tier: _deviceTier,
-            child: NoticeHost(child: child!),
+    builder: (context) => ValueListenableBuilder<Locale?>(
+      valueListenable: _localeService.locale,
+      builder: (context, locale, _) => MaterialApp(
+        navigatorKey: _navigator,
+        navigatorObservers: [_sessionGuard],
+        // Fonts are already scaled by AppScale; cap the user's text scale so the two together stay <= 2.0x.
+        // Dark status bar icons by default (light theme); dark screens override with their own region.
+        builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: AppScale.maxSystemTextScale,
+            child: DeviceTierScope(
+              tier: _deviceTier,
+              child: NoticeHost(child: child!),
+            ),
           ),
         ),
+        onGenerateTitle: (context) => context.l10n.appTitle,
+        debugShowCheckedModeBanner: false,
+        scrollBehavior: const AppScrollBehavior(),
+        theme: AppTheme.light,
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          CountryNamesDelegate(),
+        ],
+        // Null until the person picks a language in Settings: then the device language applies.
+        locale: locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localeResolutionCallback: App._resolveLocale,
+        initialRoute: AppRoutes.root,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        onGenerateInitialRoutes: AppRouter.onGenerateInitialRoutes,
       ),
-      onGenerateTitle: (context) => context.l10n.appTitle,
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: const AppScrollBehavior(),
-      theme: AppTheme.light,
-      localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        CountryNamesDelegate(),
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      localeResolutionCallback: App._resolveLocale,
-      initialRoute: AppRoutes.root,
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      onGenerateInitialRoutes: AppRouter.onGenerateInitialRoutes,
     ),
   );
 }

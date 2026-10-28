@@ -62,8 +62,11 @@ class SettingsNotificationsRow extends StatelessWidget {
             true => context.l10n.valueOn,
             false => context.l10n.valueOff,
           },
-          onTap: () =>
-              AppNavigator.push(context, AppRoutes.settingsNotifications),
+          onTap: () async {
+            final cubit = context.read<SettingsCubit>();
+            await AppNavigator.push(context, AppRoutes.settingsNotifications);
+            await cubit.load();
+          },
         ),
       );
 }
