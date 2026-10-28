@@ -21,6 +21,7 @@ import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
 import '../../features/profile/data/enums/people_kind.dart';
 import '../../features/profile/presentation/screen/people_screen.dart';
+import '../../features/profile/presentation/screen/settings_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -168,8 +169,8 @@ abstract final class AppRouter {
         settings,
         FeelingScreen(current: settings.arguments as PostMoodEntity?),
       ),
-      // Settings and its pages stay placeholders until their phases of docs/plans/profile-plan.md.
-      AppRoutes.settings ||
+      AppRoutes.settings => _page(settings, const SettingsScreen()),
+      // These Settings pages stay placeholders until their phases of docs/plans/profile-plan.md.
       AppRoutes.settingsPersonalInfo ||
       AppRoutes.settingsSecurity ||
       AppRoutes.settingsPrivacy ||

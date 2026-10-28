@@ -53,7 +53,11 @@ class SwitchRow extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppText(title, style: context.text.body),
+                        AppText(
+                          title,
+                          style: context.text.body,
+                          color: colors.textPrimary,
+                        ),
                         if (subtitle != null)
                           AppText(
                             subtitle!,

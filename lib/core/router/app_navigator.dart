@@ -20,11 +20,16 @@ abstract final class AppNavigator {
     String route,
   ) => Navigator.of(context).pushReplacementNamed<T, R>(route);
 
-  /// Clears the stack (e.g. after onboarding ends).
+  /// Clears the stack (e.g. after onboarding ends). [rootNavigator] clears the app's root Navigator, for
+  /// leaving from inside a tab of the main shell (log out).
   static Future<T?> resetTo<T extends Object?>(
     BuildContext context,
-    String route,
-  ) => Navigator.of(context).pushNamedAndRemoveUntil<T>(route, (_) => false);
+    String route, {
+    bool rootNavigator = false,
+  }) => Navigator.of(
+    context,
+    rootNavigator: rootNavigator,
+  ).pushNamedAndRemoveUntil<T>(route, (_) => false);
 
   static void back<T extends Object?>(BuildContext context, [T? result]) =>
       Navigator.of(context).pop<T>(result);

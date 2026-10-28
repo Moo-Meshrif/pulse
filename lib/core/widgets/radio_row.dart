@@ -36,7 +36,13 @@ class RadioRow extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: SettingsDimens.rowSide),
             child: Row(
               children: [
-                Expanded(child: AppText(title, style: context.text.body)),
+                Expanded(
+                  child: AppText(
+                    title,
+                    style: context.text.body,
+                    color: context.appColors.textPrimary,
+                  ),
+                ),
                 SizedBox(width: SettingsDimens.rowGap),
                 Container(
                   width: SettingsDimens.radio,

@@ -108,7 +108,11 @@ class _Header extends StatelessWidget {
               trailing: CoverButton(
                 icon: AppAssets.sliders,
                 label: context.l10n.profileSettingsA11y,
-                onPressed: () => AppNavigator.push(context, AppRoutes.settings),
+                onPressed: () => AppNavigator.push(
+                  context,
+                  AppRoutes.settings,
+                  rootNavigator: true,
+                ),
               ),
               onAvatarTap: avatarUrl == null
                   ? null

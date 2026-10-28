@@ -51,4 +51,11 @@ abstract final class StorageKeys {
 
   // post: the keys above of one user with the time each was saved, so old ones can be dropped
   static String commentsIndex(String userId) => 'comments_index_$userId';
+
+  // profile: Settings switches kept on this phone (Autoplay shorts, Data saver)
+  static const autoplayShorts = 'autoplay_shorts';
+  static const dataSaver = 'data_saver';
+
+  // profile: the language the user chose (`en` or `ar`); none means the device language
+  static const appLocale = 'app_locale';
 }

@@ -4333,6 +4333,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That\'s everyone'**
   String get peopleCaughtUp;
+
+  /// Settings: title of the log out dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Log out?'**
+  String get settingsLogOutTitle;
+
+  /// Settings: body of the log out dialog
+  ///
+  /// In en, this message translates to:
+  /// **'You will need to sign in again.'**
+  String get settingsLogOutBody;
+
+  /// Settings: title of the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get settingsDeleteTitle;
+
+  /// Settings: body of the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes your profile, posts and stories. This cannot be undone.'**
+  String get settingsDeleteBody;
+
+  /// Settings: label of the password field in the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get settingsDeletePasswordLabel;
+
+  /// Settings: hint of the password field in the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get settingsDeletePasswordHint;
+
+  /// Settings: error under the password field when it is wrong
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password'**
+  String get settingsDeleteWrongPassword;
+
+  /// Settings: notice when the disabled Dark mode row is tapped
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode is coming soon'**
+  String get settingsDarkModeSoon;
+
+  /// Settings: the English language, as the Language row value
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglish;
+
+  /// Settings: the Arabic language, as the Language row value
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get settingsLanguageArabic;
 }
 
 class _AppLocalizationsDelegate

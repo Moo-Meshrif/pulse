@@ -2475,4 +2475,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get peopleCaughtUp => 'هذا كل الأشخاص';
+
+  @override
+  String get settingsLogOutTitle => 'تسجيل الخروج؟';
+
+  @override
+  String get settingsLogOutBody => 'ستحتاج إلى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get settingsDeleteTitle => 'حذف حسابك؟';
+
+  @override
+  String get settingsDeleteBody =>
+      'سيؤدي هذا إلى حذف ملفك ومنشوراتك وقصصك نهائيًا ولا يمكن التراجع.';
+
+  @override
+  String get settingsDeletePasswordLabel => 'كلمة المرور';
+
+  @override
+  String get settingsDeletePasswordHint => 'أدخل كلمة المرور';
+
+  @override
+  String get settingsDeleteWrongPassword => 'كلمة المرور غير صحيحة';
+
+  @override
+  String get settingsDarkModeSoon => 'الوضع الداكن قادم قريبًا';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageArabic => 'العربية';
 }

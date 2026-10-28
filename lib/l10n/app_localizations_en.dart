@@ -2482,4 +2482,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get peopleCaughtUp => 'That\'s everyone';
+
+  @override
+  String get settingsLogOutTitle => 'Log out?';
+
+  @override
+  String get settingsLogOutBody => 'You will need to sign in again.';
+
+  @override
+  String get settingsDeleteTitle => 'Delete your account?';
+
+  @override
+  String get settingsDeleteBody =>
+      'This permanently deletes your profile, posts and stories. This cannot be undone.';
+
+  @override
+  String get settingsDeletePasswordLabel => 'Password';
+
+  @override
+  String get settingsDeletePasswordHint => 'Enter your password';
+
+  @override
+  String get settingsDeleteWrongPassword => 'Wrong password';
+
+  @override
+  String get settingsDarkModeSoon => 'Dark mode is coming soon';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageArabic => 'العربية';
 }

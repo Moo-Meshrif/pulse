@@ -18,6 +18,10 @@ abstract final class SettingsDimens {
   static double get chevron => AppScale.scale(18);
   static double get valueGap => AppScale.scale(6);
 
+  /// The most of the screen width a row's value (Public, On, English) may take; the title gets the rest.
+  static const double valueMaxWidthShare =
+      0.35; // unscaled: a share of the width
+
   // Switch 52 x 32, thumb 24 with a primary ring. [estimated]
   static double get switchWidth => AppScale.scale(52);
   static double get switchHeight => AppScale.scale(32);

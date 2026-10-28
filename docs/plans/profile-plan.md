@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [ ] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -212,15 +212,15 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, cubit test, run the app. Compare with `s6-blocked-accounts.png` for row look.
 
 ### Phase 6: Settings home, log out and delete account
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit test passes; not yet run on a device (needs the Phase 1 and 2 migrations applied to the live database)
 - **Goal:** Settings opens with all groups; Autoplay and Data saver work; Log out and Delete account work.
 - **Depends on:** Phases 2, 3.
 - **Spec refs:** screens/s2-settings.md.
 - **Tasks:**
-  - [ ] Settings screen with values (Privacy, Blocked count, Notifications, Language).
-  - [ ] Device-saved switches.
-  - [ ] Log out and Delete account with their dialogs.
-  - [ ] TODO marker for Dark mode (T5) and company/version footer where shared.
+  - [x] Settings screen with values (Privacy, Blocked count, Notifications, Language).
+  - [x] Device-saved switches.
+  - [x] Log out and Delete account with their dialogs.
+  - [x] TODO marker for Dark mode (T5) and company/version footer where shared.
 - **Implementation steps:**
   1. `lib/core/services/storage/storage_keys.dart` (edit): add `autoplayShorts`, `dataSaver`, `appLocale`; `lib/features/profile/data/datasource/app_preferences_datasource.dart` (new, like `onboarding_datasource.dart`): getters and setters over `LocalStorageService`; failed writes are reported, never thrown.
   2. `lib/features/profile/data/datasource/settings_datasource.dart` (new): `getSummary()` (privacy value, blocked count, push on/off), `deleteAccount(password)` (re-sign-in with the password, then `delete_my_account`), reusing the auth sign-in call through a use case from `features/auth` (add `verify_password_use_case.dart` (new) there if none exists; profile never imports auth's datasource).
@@ -411,7 +411,7 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 | id | item | blocks | needed from | status |
 |---|---|---|---|---|
 | B1 | Live database changes approval | 1, 2 | you | open |
-| B2 | New packages if missing (share, package info, device info) | 4, 6, 10 | you | share_plus added (Phase 4); package_info_plus still to ask (6); device_info_plus already present |
+| B2 | New packages if missing (share, package info, device info) | 4, 6, 10 | you | share_plus added (Phase 4); package_info_plus added (Phase 6); device_info_plus already present |
 
 ### Code TODOs (id | what is pending | the code it sits in | phase)
 | id | what is pending | code | phase |

@@ -59,15 +59,28 @@ class SettingsRow extends StatelessWidget {
                   ),
                   SizedBox(width: SettingsDimens.rowGap),
                 ],
-                Expanded(child: AppText(title, style: context.text.body)),
+                Expanded(
+                  child: AppText(
+                    title,
+                    style: context.text.body,
+                    color: colors.textPrimary,
+                  ),
+                ),
                 if (value != null) ...[
                   SizedBox(width: SettingsDimens.rowGap),
-                  Flexible(
+                  // Not a Flexible: that would share the free width equally with the title and wrap it.
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth:
+                          MediaQuery.sizeOf(context).width *
+                          SettingsDimens.valueMaxWidthShare,
+                    ),
                     child: AppText(
                       value!,
                       style: context.text.bodySm,
                       color: colors.textSecondary,
                       maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

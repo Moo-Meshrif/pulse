@@ -3200,5 +3200,45 @@
   "peopleCaughtUp": "That's everyone",
   "@peopleCaughtUp": {
     "description": "People list: end of the list"
+  },
+  "settingsLogOutTitle": "Log out?",
+  "@settingsLogOutTitle": {
+    "description": "Settings: title of the log out dialog"
+  },
+  "settingsLogOutBody": "You will need to sign in again.",
+  "@settingsLogOutBody": {
+    "description": "Settings: body of the log out dialog"
+  },
+  "settingsDeleteTitle": "Delete your account?",
+  "@settingsDeleteTitle": {
+    "description": "Settings: title of the delete account dialog"
+  },
+  "settingsDeleteBody": "This permanently deletes your profile, posts and stories. This cannot be undone.",
+  "@settingsDeleteBody": {
+    "description": "Settings: body of the delete account dialog"
+  },
+  "settingsDeletePasswordLabel": "Password",
+  "@settingsDeletePasswordLabel": {
+    "description": "Settings: label of the password field in the delete account dialog"
+  },
+  "settingsDeletePasswordHint": "Enter your password",
+  "@settingsDeletePasswordHint": {
+    "description": "Settings: hint of the password field in the delete account dialog"
+  },
+  "settingsDeleteWrongPassword": "Wrong password",
+  "@settingsDeleteWrongPassword": {
+    "description": "Settings: error under the password field when it is wrong"
+  },
+  "settingsDarkModeSoon": "Dark mode is coming soon",
+  "@settingsDarkModeSoon": {
+    "description": "Settings: notice when the disabled Dark mode row is tapped"
+  },
+  "settingsLanguageEnglish": "English",
+  "@settingsLanguageEnglish": {
+    "description": "Settings: the English language, as the Language row value"
+  },
+  "settingsLanguageArabic": "العربية",
+  "@settingsLanguageArabic": {
+    "description": "Settings: the Arabic language, as the Language row value"
   }
 }

@@ -31,6 +31,8 @@ import '../../features/auth/domain/use_case/is_recovery_pending_use_case.dart'
 import '../../features/auth/domain/use_case/is_signed_in_use_case.dart'
     as _i710;
 import '../../features/auth/domain/use_case/sign_out_use_case.dart' as _i1036;
+import '../../features/auth/domain/use_case/verify_password_use_case.dart'
+    as _i602;
 import '../../features/auth/domain/use_case/watch_password_recovery_use_case.dart'
     as _i121;
 import '../../features/auth/domain/use_case/watch_session_ended_use_case.dart'
@@ -143,6 +145,8 @@ import '../../features/post/presentation/cubit/tagged_people/tagged_people_cubit
 import '../../features/post/presentation/utils/comment_drafts.dart' as _i277;
 import '../../features/post/presentation/utils/feed_post.dart' as _i992;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
+import '../../features/profile/data/datasource/app_preferences_datasource.dart'
+    as _i875;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
 import '../../features/profile/data/datasource/people_datasource.dart' as _i784;
@@ -152,6 +156,8 @@ import '../../features/profile/data/datasource/profile_local_datasource.dart'
     as _i126;
 import '../../features/profile/data/datasource/profile_page_datasource.dart'
     as _i874;
+import '../../features/profile/data/datasource/settings_datasource.dart'
+    as _i388;
 import '../../features/profile/data/enums/people_kind.dart' as _i509;
 import '../../features/profile/data/repository/profile_repository.dart'
     as _i508;
@@ -183,6 +189,8 @@ import '../../features/profile/presentation/cubit/people/people_cubit.dart'
     as _i264;
 import '../../features/profile/presentation/cubit/profile/profile_cubit.dart'
     as _i771;
+import '../../features/profile/presentation/cubit/settings/settings_cubit.dart'
+    as _i75;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i127;
 import '../../features/story/data/datasource/stories_datasource.dart' as _i474;
 import '../../features/story/data/datasource/story_camera_hint_datasource.dart'
@@ -273,6 +281,7 @@ import '../../shared/content/domain/use_case/stop_content_live_use_case.dart'
 import '../events/event_bus.dart' as _i557;
 import '../router/recovery_link_handler.dart' as _i358;
 import '../router/session_guard.dart' as _i96;
+import '../services/app_version_service.dart' as _i212;
 import '../services/blurhash_service.dart' as _i905;
 import '../services/camera_device.dart' as _i64;
 import '../services/camera_permission_service.dart' as _i754;
@@ -345,6 +354,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i94.PhotoPickerService>(
       () => _i94.ImagePickerPhotoPickerService(),
+    );
+    gh.lazySingleton<_i212.AppVersionService>(
+      () => _i212.PackageInfoVersionService(),
     );
     gh.lazySingleton<_i327.VideoOverlayService>(
       () => _i327.ChannelVideoOverlayService(),
@@ -421,6 +433,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i604.LegalDatasource>(
       () => _i604.SupabaseLegalDatasource(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i388.SettingsDatasource>(
+      () => _i388.SupabaseSettingsDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i784.PeopleDatasource>(
       () => _i784.SupabasePeopleDatasource(gh<_i454.SupabaseClient>()),
@@ -557,6 +572,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i722.VisibilityNoticeDatasource>(
       () => _i722.VisibilityNoticeDatasource(gh<_i201.LocalStorageService>()),
+    );
+    gh.lazySingleton<_i875.AppPreferencesDatasource>(
+      () => _i875.AppPreferencesDatasource(gh<_i201.LocalStorageService>()),
     );
     gh.lazySingleton<_i126.ProfileLocalDatasource>(
       () => _i126.ProfileLocalDatasource(gh<_i201.LocalStorageService>()),
@@ -718,11 +736,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1036.SignOutUseCase>(
       () => _i1036.SignOutUseCase(gh<_i43.AuthDatasource>()),
     );
+    gh.factory<_i602.VerifyPasswordUseCase>(
+      () => _i602.VerifyPasswordUseCase(gh<_i43.AuthDatasource>()),
+    );
     gh.factory<_i121.WatchPasswordRecoveryUseCase>(
       () => _i121.WatchPasswordRecoveryUseCase(gh<_i43.AuthDatasource>()),
     );
     gh.factory<_i260.ResetPasswordCubit>(
       () => _i260.ResetPasswordCubit(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i75.SettingsCubit>(
+      () => _i75.SettingsCubit(
+        gh<_i388.SettingsDatasource>(),
+        gh<_i875.AppPreferencesDatasource>(),
+        gh<_i428.ClearLocalProfileUseCase>(),
+        gh<_i1036.SignOutUseCase>(),
+        gh<_i602.VerifyPasswordUseCase>(),
+        gh<_i212.AppVersionService>(),
+      ),
     );
     gh.factory<_i465.StoryViewerCubit>(
       () => _i465.StoryViewerCubit(

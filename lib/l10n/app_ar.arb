@@ -3032,5 +3032,45 @@
   "peopleCaughtUp": "هذا كل الأشخاص",
   "@peopleCaughtUp": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLogOutTitle": "تسجيل الخروج؟",
+  "@settingsLogOutTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLogOutBody": "ستحتاج إلى تسجيل الدخول مرة أخرى.",
+  "@settingsLogOutBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeleteTitle": "حذف حسابك؟",
+  "@settingsDeleteTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeleteBody": "سيؤدي هذا إلى حذف ملفك ومنشوراتك وقصصك نهائيًا ولا يمكن التراجع.",
+  "@settingsDeleteBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeletePasswordLabel": "كلمة المرور",
+  "@settingsDeletePasswordLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeletePasswordHint": "أدخل كلمة المرور",
+  "@settingsDeletePasswordHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeleteWrongPassword": "كلمة المرور غير صحيحة",
+  "@settingsDeleteWrongPassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDarkModeSoon": "الوضع الداكن قادم قريبًا",
+  "@settingsDarkModeSoon": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLanguageEnglish": "English",
+  "@settingsLanguageEnglish": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLanguageArabic": "العربية",
+  "@settingsLanguageArabic": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

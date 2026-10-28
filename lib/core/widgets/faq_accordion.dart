@@ -87,7 +87,11 @@ class _FaqRow extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: AppText(item.question, style: context.text.body),
+                      child: AppText(
+                        item.question,
+                        style: context.text.body,
+                        color: context.appColors.textPrimary,
+                      ),
                     ),
                     SizedBox(width: SettingsDimens.rowGap),
                     AnimatedRotation(
