@@ -28,7 +28,6 @@ import '../../../../post/domain/use_case/save_home_feed_use_case.dart';
 import '../../../../post/domain/use_case/sign_post_media_urls_use_case.dart';
 import '../../../../post/presentation/utils/feed_post.dart';
 import '../../../../post/presentation/utils/feed_post_signer.dart';
-import '../../../../profile/domain/event/profile_updated.dart';
 import '../../../../profile/domain/use_case/get_current_user_id_use_case.dart';
 import '../../utils/enums/feed_status.dart';
 import '../../utils/feed_changes.dart';
@@ -86,6 +85,9 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   @override
   EventBus get events => _events;
 
+  /// The signed-in person's id; fixed for the session, so a plain read is enough.
+  String? get userId => state.userId;
+
   void setAtTop(bool atTop) => _atTop = atTop;
 
   /// Shows the feed saved on the phone at once, then loads the fresh one behind it; with nothing saved it
@@ -94,8 +96,6 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   Future<void> start() async {
     listenTo<FeedRefreshRequested>((_) => _reload());
     listenTo<PostSaved>((event) => _postSaved(event.post));
-    // The person's name or photo changed: the fresh page brings it onto their posts.
-    listenTo<ProfileUpdated>((_) => _freshFirstPage());
     listenTo<PostCountsChanged>(_countsChanged);
     listenTo<ContentChanged>(_contentChanged);
     listenTo<ContentDeleteEvent>(_onDelete);

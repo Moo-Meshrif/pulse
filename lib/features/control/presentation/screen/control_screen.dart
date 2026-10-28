@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/router/app_navigator.dart';
 import '../../../home/presentation/screen/home_screen.dart';
+import '../../../profile/presentation/cubit/own_author/own_author_cubit.dart';
 import '../../../profile/presentation/screen/profile_screen.dart';
 import '../cubit/control_cubit.dart';
 import '../cubit/control_state.dart';
@@ -28,8 +29,12 @@ class ControlScreen extends StatelessWidget {
   };
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (_) => getIt<ControlCubit>()..start(),
+  Widget build(BuildContext context) => MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => getIt<ControlCubit>()..start()),
+      // The signed-in person's name and photo for every tab that draws them as an author.
+      BlocProvider(create: (_) => getIt<OwnAuthorCubit>()..start()),
+    ],
     child: BlocListener<ControlCubit, ControlState>(
       listenWhen: (_, state) => state.redirect != null,
       listener: (context, state) =>

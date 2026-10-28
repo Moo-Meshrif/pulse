@@ -26,7 +26,11 @@ class SettingsPrivacyRow extends StatelessWidget {
             true => context.l10n.valuePrivate,
             false => context.l10n.valuePublic,
           },
-          onTap: () => AppNavigator.push(context, AppRoutes.settingsPrivacy),
+          onTap: () async {
+            final cubit = context.read<SettingsCubit>();
+            await AppNavigator.push(context, AppRoutes.settingsPrivacy);
+            await cubit.load();
+          },
         ),
       );
 }
@@ -42,7 +46,11 @@ class SettingsBlockedRow extends StatelessWidget {
           icon: AppAssets.block,
           title: context.l10n.settingsBlocked,
           value: count?.toString(),
-          onTap: () => AppNavigator.push(context, AppRoutes.settingsBlocked),
+          onTap: () async {
+            final cubit = context.read<SettingsCubit>();
+            await AppNavigator.push(context, AppRoutes.settingsBlocked);
+            await cubit.load();
+          },
         ),
       );
 }

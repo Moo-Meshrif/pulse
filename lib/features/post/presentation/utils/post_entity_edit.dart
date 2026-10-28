@@ -86,4 +86,45 @@ extension PostEntityEdit on PostEntity {
     isShare: isShare,
     original: original,
   );
+
+  /// The post with [authorId]'s name and photo replaced by the given ones, on the post and on the original
+  /// it shares. Returns this when neither is theirs.
+  PostEntity withAuthor({
+    required String authorId,
+    required String username,
+    String? fullName,
+    String? avatarUrl,
+  }) {
+    final shared = original?.withAuthor(
+      authorId: authorId,
+      username: username,
+      fullName: fullName,
+      avatarUrl: avatarUrl,
+    );
+    final isAuthor = this.authorId == authorId;
+    if (!isAuthor && identical(shared, original)) return this;
+    return PostEntity(
+      id: id,
+      authorId: this.authorId,
+      username: isAuthor ? username : this.username,
+      fullName: isAuthor ? fullName : this.fullName,
+      avatarUrl: isAuthor ? avatarUrl : this.avatarUrl,
+      caption: caption,
+      location: location,
+      likeCount: likeCount,
+      commentCount: commentCount,
+      commentsEnabled: commentsEnabled,
+      visibility: visibility,
+      createdAt: createdAt,
+      likedByMe: likedByMe,
+      savedByMe: savedByMe,
+      media: media,
+      mood: mood,
+      tags: tags,
+      tagCount: tagCount,
+      iAmTagged: iAmTagged,
+      isShare: isShare,
+      original: shared,
+    );
+  }
 }

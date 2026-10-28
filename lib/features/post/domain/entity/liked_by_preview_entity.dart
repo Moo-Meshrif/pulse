@@ -18,6 +18,30 @@ class LikedByPreviewEntity extends Equatable {
     this.isOnlyMe = false,
   });
 
+  /// The row with [authorId]'s avatar replaced by the given name and photo; this when they are not on it.
+  LikedByPreviewEntity withAvatarOf(
+    String authorId, {
+    required String name,
+    String? avatarUrl,
+  }) {
+    if (!avatars.any((avatar) => avatar.id == authorId)) return this;
+    return LikedByPreviewEntity(
+      firstName: firstName,
+      others: others,
+      isOnlyMe: isOnlyMe,
+      avatars: [
+        for (final avatar in avatars)
+          avatar.id == authorId
+              ? LikedByAvatarEntity(
+                  id: authorId,
+                  name: name,
+                  avatarUrl: avatarUrl,
+                )
+              : avatar,
+      ],
+    );
+  }
+
   @override
   List<Object?> get props => [firstName, others, avatars, isOnlyMe];
 }

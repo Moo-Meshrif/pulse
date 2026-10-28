@@ -20,10 +20,12 @@ import '../../features/post/presentation/screen/tag_people_screen.dart';
 import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
 import '../../features/profile/data/enums/people_kind.dart';
+import '../../features/profile/presentation/screen/blocked_screen.dart';
 import '../../features/profile/presentation/screen/language_screen.dart';
 import '../../features/profile/presentation/screen/notifications_screen.dart';
 import '../../features/profile/presentation/screen/people_screen.dart';
 import '../../features/profile/presentation/screen/personal_info_screen.dart';
+import '../../features/profile/presentation/screen/privacy_screen.dart';
 import '../../features/profile/presentation/screen/settings_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
@@ -182,10 +184,10 @@ abstract final class AppRouter {
         const NotificationsScreen(),
       ),
       AppRoutes.settingsLanguage => _page(settings, const LanguageScreen()),
+      AppRoutes.settingsPrivacy => _page(settings, const PrivacyScreen()),
+      AppRoutes.settingsBlocked => _page(settings, const BlockedScreen()),
       // These Settings pages stay placeholders until their phases of docs/plans/profile-plan.md.
       AppRoutes.settingsSecurity ||
-      AppRoutes.settingsPrivacy ||
-      AppRoutes.settingsBlocked ||
       AppRoutes.settingsHelp ||
       AppRoutes.settingsHelpTopic ||
       AppRoutes.settingsReport ||

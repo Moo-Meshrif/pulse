@@ -3240,5 +3240,164 @@
   "languageNameArabic": "العربية",
   "@languageNameArabic": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "privacyTitle": "الخصوصية",
+  "@privacyTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "privateAccount": "حساب خاص",
+  "@privateAccount": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "privateAccountSub": "فقط من توافق عليهم يمكنهم رؤية منشوراتك وشورتسك ومتابعيك.",
+  "@privateAccountSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "whoCanMessage": "من يمكنه مراسلتك",
+  "@whoCanMessage": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "everyone": "الجميع",
+  "@everyone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleYouFollow": "الأشخاص الذين تتابعهم",
+  "@peopleYouFollow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "noOne": "لا أحد",
+  "@noOne": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "whoCanComment": "من يمكنه التعليق",
+  "@whoCanComment": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followersOnly": "المتابعون فقط",
+  "@followersOnly": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "turnOffComments": "إيقاف التعليقات",
+  "@turnOffComments": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "visibility": "الظهور",
+  "@visibility": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "activityStatus": "إظهار حالة النشاط",
+  "@activityStatus": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "activityStatusSub": "دع أصدقاءك يرون متى تكون متصلًا",
+  "@activityStatusSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "appearInSearch": "الظهور في البحث",
+  "@appearInSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "appearInSearchSub": "يمكن للناس إيجادك بالاسم أو البريد الإلكتروني",
+  "@appearInSearchSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedAccounts": "الحسابات المحظورة",
+  "@blockedAccounts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedTitle": "الحسابات المحظورة",
+  "@blockedTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedIntro": "لا يستطيع المحظورون رؤية ملفك أو مراسلتك أو إيجادك في البحث. ولا يتم إخبارهم بأنك حظرتهم.",
+  "@blockedIntro": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedAgo": "@{username} · محظور {ago}",
+  "@blockedAgo": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "unblock": "إلغاء الحظر",
+  "@unblock": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedEmpty": "لا توجد حسابات محظورة",
+  "@blockedEmpty": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "unblocked": "تم إلغاء حظر @{username}",
+  "@unblocked": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "timeAgoNow": "الآن",
+  "@timeAgoNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "timeAgoMinutes": "{count, plural, =0{الآن} =1{منذ دقيقة} =2{منذ دقيقتين} few{منذ {count} دقائق} many{منذ {count} دقيقة} other{منذ {count} دقيقة}}",
+  "@timeAgoMinutes": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoHours": "{count, plural, =0{الآن} =1{منذ ساعة} =2{منذ ساعتين} few{منذ {count} ساعات} many{منذ {count} ساعة} other{منذ {count} ساعة}}",
+  "@timeAgoHours": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoDays": "{count, plural, =0{اليوم} =1{منذ يوم} =2{منذ يومين} few{منذ {count} أيام} many{منذ {count} يومًا} other{منذ {count} يوم}}",
+  "@timeAgoDays": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoWeeks": "{count, plural, =0{هذا الأسبوع} =1{منذ أسبوع} =2{منذ أسبوعين} few{منذ {count} أسابيع} many{منذ {count} أسبوعًا} other{منذ {count} أسبوع}}",
+  "@timeAgoWeeks": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoMonths": "{count, plural, =0{هذا الشهر} =1{منذ شهر} =2{منذ شهرين} few{منذ {count} أشهر} many{منذ {count} شهرًا} other{منذ {count} شهر}}",
+  "@timeAgoMonths": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoYears": "{count, plural, =0{هذا العام} =1{منذ سنة} =2{منذ سنتين} few{منذ {count} سنوات} many{منذ {count} سنة} other{منذ {count} سنة}}",
+  "@timeAgoYears": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

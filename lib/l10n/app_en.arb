@@ -2107,22 +2107,47 @@
   "postPublishingMany": "Posting {count} posts…",
   "@postPublishingMany": {
     "description": "Banner title while several posts are being sent",
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "postPublishProgress": "{done} of {total} done · {percent}%",
   "@postPublishProgress": {
     "description": "Banner line under the title while several posts are being sent",
-    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}, "percent": {"type": "int"}}
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
   },
   "postPublishDoneOf": "{done} of {total} done",
   "@postPublishDoneOf": {
     "description": "Banner line when every post in the line is out",
-    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "postPublishRowTitle": "Post {n}",
   "@postPublishRowTitle": {
     "description": "Name of a post in the expanded banner list",
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "postPublishRowPosted": "Posted",
   "@postPublishRowPosted": {
@@ -2143,17 +2168,32 @@
   "postPublishOfflineSub": "{count, plural, =1{1 post paused} other{{count} posts paused}} · resumes automatically",
   "@postPublishOfflineSub": {
     "description": "Banner line when posts wait for the internet",
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "postPublishSomePosted": "{done} of {total} posted",
   "@postPublishSomePosted": {
     "description": "Banner title when some posts are out and one failed",
-    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "postPublishSomeFailed": "{count, plural, =1{1 post didn't upload} other{{count} posts didn't upload}}",
   "@postPublishSomeFailed": {
     "description": "Banner line when posts failed to send",
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "postPublishShowAll": "Show all posts",
   "@postPublishShowAll": {
@@ -3408,5 +3448,93 @@
   "languageNameArabic": "Arabic",
   "@languageNameArabic": {
     "description": "Language page: Arabic language, second line"
+  },
+  "privacyTitle": "Privacy",
+  "privateAccount": "Private account",
+  "privateAccountSub": "Only people you approve can see your posts, shorts and followers.",
+  "whoCanMessage": "Who can message you",
+  "everyone": "Everyone",
+  "peopleYouFollow": "People you follow",
+  "noOne": "No one",
+  "whoCanComment": "Who can comment",
+  "followersOnly": "Followers only",
+  "turnOffComments": "Turn off comments",
+  "visibility": "Visibility",
+  "activityStatus": "Show activity status",
+  "activityStatusSub": "Let friends see when you're online",
+  "appearInSearch": "Appear in search",
+  "appearInSearchSub": "People can find you by name or email",
+  "blockedAccounts": "Blocked accounts",
+  "blockedTitle": "Blocked accounts",
+  "blockedIntro": "Blocked people can't see your profile, message you or find you in search. They aren't told you blocked them.",
+  "blockedAgo": "@{username} · Blocked {ago}",
+  "@blockedAgo": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "unblock": "Unblock",
+  "blockedEmpty": "No blocked accounts",
+  "unblocked": "Unblocked @{username}",
+  "@unblocked": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "timeAgoNow": "just now",
+  "timeAgoMinutes": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoHours": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoDays": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoWeeks": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@timeAgoWeeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoMonths": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@timeAgoMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoYears": "{count, plural, =1{1 year ago} other{{count} years ago}}",
+  "@timeAgoYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

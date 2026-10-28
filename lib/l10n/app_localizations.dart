@@ -4645,6 +4645,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arabic'**
   String get languageNameArabic;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacyTitle;
+
+  /// No description provided for @privateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Private account'**
+  String get privateAccount;
+
+  /// No description provided for @privateAccountSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Only people you approve can see your posts, shorts and followers.'**
+  String get privateAccountSub;
+
+  /// No description provided for @whoCanMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can message you'**
+  String get whoCanMessage;
+
+  /// No description provided for @everyone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone'**
+  String get everyone;
+
+  /// No description provided for @peopleYouFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'People you follow'**
+  String get peopleYouFollow;
+
+  /// No description provided for @noOne.
+  ///
+  /// In en, this message translates to:
+  /// **'No one'**
+  String get noOne;
+
+  /// No description provided for @whoCanComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can comment'**
+  String get whoCanComment;
+
+  /// No description provided for @followersOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Followers only'**
+  String get followersOnly;
+
+  /// No description provided for @turnOffComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off comments'**
+  String get turnOffComments;
+
+  /// No description provided for @visibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility'**
+  String get visibility;
+
+  /// No description provided for @activityStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Show activity status'**
+  String get activityStatus;
+
+  /// No description provided for @activityStatusSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Let friends see when you\'re online'**
+  String get activityStatusSub;
+
+  /// No description provided for @appearInSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Appear in search'**
+  String get appearInSearch;
+
+  /// No description provided for @appearInSearchSub.
+  ///
+  /// In en, this message translates to:
+  /// **'People can find you by name or email'**
+  String get appearInSearchSub;
+
+  /// No description provided for @blockedAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked accounts'**
+  String get blockedAccounts;
+
+  /// No description provided for @blockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked accounts'**
+  String get blockedTitle;
+
+  /// No description provided for @blockedIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked people can\'t see your profile, message you or find you in search. They aren\'t told you blocked them.'**
+  String get blockedIntro;
+
+  /// No description provided for @blockedAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'@{username} · Blocked {ago}'**
+  String blockedAgo(String username, String ago);
+
+  /// No description provided for @unblock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get unblock;
+
+  /// No description provided for @blockedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No blocked accounts'**
+  String get blockedEmpty;
+
+  /// No description provided for @unblocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblocked @{username}'**
+  String unblocked(String username);
+
+  /// No description provided for @timeAgoNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeAgoNow;
+
+  /// No description provided for @timeAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String timeAgoMinutes(int count);
+
+  /// No description provided for @timeAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String timeAgoHours(int count);
+
+  /// No description provided for @timeAgoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String timeAgoDays(int count);
+
+  /// No description provided for @timeAgoWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week ago} other{{count} weeks ago}}'**
+  String timeAgoWeeks(int count);
+
+  /// No description provided for @timeAgoMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
+  String timeAgoMonths(int count);
+
+  /// No description provided for @timeAgoYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 year ago} other{{count} years ago}}'**
+  String timeAgoYears(int count);
 }
 
 class _AppLocalizationsDelegate

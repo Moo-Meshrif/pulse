@@ -43,6 +43,9 @@ abstract interface class ProfileRepository {
   /// Deletes the cover on the server and in the saved copy.
   Future<void> removeCover();
 
+  /// The saved copy of the signed-in user's profile, or null with no copy or no session. No request.
+  ProfileEntity? savedProfile();
+
   /// The sign-up step in the saved copy of the signed-in user, or null with no copy or no session. No request.
   SignupStep? savedSignupStep();
 
@@ -122,6 +125,13 @@ class ProfileRepositoryImpl implements ProfileRepository {
     final userId = _remote.currentUserId;
     final saved = userId == null ? null : _local.read(userId);
     if (saved != null) await _local.write(saved.copyWith(clearCover: true));
+  }
+
+  @override
+  ProfileEntity? savedProfile() {
+    final userId = _remote.currentUserId;
+    final saved = userId == null ? null : _local.read(userId);
+    return saved == null ? null : _toEntity(saved);
   }
 
   @override

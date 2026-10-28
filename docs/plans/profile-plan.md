@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -275,14 +275,14 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, tests, run the app in both languages; compare with `s7-notifications.png`, `s8-language.png`.
 
 ### Phase 9: Privacy and blocked accounts
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit tests pass; not yet run on a device or compared with the screenshots. Message choice is stored only (T9 marker in `privacy_settings_datasource.dart`). The Unblock pill is disabled while it runs (no spinner).
 - **Goal:** your privacy choices save at once; you can see and unblock blocked accounts.
 - **Depends on:** Phases 2, 3, 6.
 - **Spec refs:** screens/s5-privacy.md, s6-blocked-accounts.md.
 - **Tasks:**
-  - [ ] Privacy page with 4 cards.
-  - [ ] Blocked accounts list with Unblock.
-  - [ ] TODO marker for message enforcement (T9).
+  - [x] Privacy page with 4 cards.
+  - [x] Blocked accounts list with Unblock.
+  - [x] TODO marker for message enforcement (T9).
 - **Implementation steps:**
   1. `lib/features/profile/data/datasource/privacy_settings_datasource.dart` (new, name differs from `shared/content` `privacy_datasource.dart`, which handles post audience): read and update `is_private`, `who_can_message`, `who_can_comment`, `show_activity`, `appear_in_search` on `profiles`; enums `message_audience.dart`, `comment_audience.dart` (new) in `data/enums/` with wire values.
   2. `lib/features/profile/data/datasource/blocks_datasource.dart` (new): `list({before})` -> `blocked_users`, `block(userId)`, `unblock(userId)`, `count()`; model `blocked_person_model.dart` (new). Used again by Phase 12.

@@ -2635,4 +2635,170 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get languageNameArabic => 'العربية';
+
+  @override
+  String get privacyTitle => 'الخصوصية';
+
+  @override
+  String get privateAccount => 'حساب خاص';
+
+  @override
+  String get privateAccountSub =>
+      'فقط من توافق عليهم يمكنهم رؤية منشوراتك وشورتسك ومتابعيك.';
+
+  @override
+  String get whoCanMessage => 'من يمكنه مراسلتك';
+
+  @override
+  String get everyone => 'الجميع';
+
+  @override
+  String get peopleYouFollow => 'الأشخاص الذين تتابعهم';
+
+  @override
+  String get noOne => 'لا أحد';
+
+  @override
+  String get whoCanComment => 'من يمكنه التعليق';
+
+  @override
+  String get followersOnly => 'المتابعون فقط';
+
+  @override
+  String get turnOffComments => 'إيقاف التعليقات';
+
+  @override
+  String get visibility => 'الظهور';
+
+  @override
+  String get activityStatus => 'إظهار حالة النشاط';
+
+  @override
+  String get activityStatusSub => 'دع أصدقاءك يرون متى تكون متصلًا';
+
+  @override
+  String get appearInSearch => 'الظهور في البحث';
+
+  @override
+  String get appearInSearchSub =>
+      'يمكن للناس إيجادك بالاسم أو البريد الإلكتروني';
+
+  @override
+  String get blockedAccounts => 'الحسابات المحظورة';
+
+  @override
+  String get blockedTitle => 'الحسابات المحظورة';
+
+  @override
+  String get blockedIntro =>
+      'لا يستطيع المحظورون رؤية ملفك أو مراسلتك أو إيجادك في البحث. ولا يتم إخبارهم بأنك حظرتهم.';
+
+  @override
+  String blockedAgo(String username, String ago) {
+    return '@$username · محظور $ago';
+  }
+
+  @override
+  String get unblock => 'إلغاء الحظر';
+
+  @override
+  String get blockedEmpty => 'لا توجد حسابات محظورة';
+
+  @override
+  String unblocked(String username) {
+    return 'تم إلغاء حظر @$username';
+  }
+
+  @override
+  String get timeAgoNow => 'الآن';
+
+  @override
+  String timeAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count دقيقة',
+      many: 'منذ $count دقيقة',
+      few: 'منذ $count دقائق',
+      two: 'منذ دقيقتين',
+      one: 'منذ دقيقة',
+      zero: 'الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count ساعة',
+      many: 'منذ $count ساعة',
+      few: 'منذ $count ساعات',
+      two: 'منذ ساعتين',
+      one: 'منذ ساعة',
+      zero: 'الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count يوم',
+      many: 'منذ $count يومًا',
+      few: 'منذ $count أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم',
+      zero: 'اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count أسبوع',
+      many: 'منذ $count أسبوعًا',
+      few: 'منذ $count أسابيع',
+      two: 'منذ أسبوعين',
+      one: 'منذ أسبوع',
+      zero: 'هذا الأسبوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count شهر',
+      many: 'منذ $count شهرًا',
+      few: 'منذ $count أشهر',
+      two: 'منذ شهرين',
+      one: 'منذ شهر',
+      zero: 'هذا الشهر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count سنة',
+      many: 'منذ $count سنة',
+      few: 'منذ $count سنوات',
+      two: 'منذ سنتين',
+      one: 'منذ سنة',
+      zero: 'هذا العام',
+    );
+    return '$_temp0';
+  }
 }

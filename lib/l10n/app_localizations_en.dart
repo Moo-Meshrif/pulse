@@ -2642,4 +2642,145 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageNameArabic => 'Arabic';
+
+  @override
+  String get privacyTitle => 'Privacy';
+
+  @override
+  String get privateAccount => 'Private account';
+
+  @override
+  String get privateAccountSub =>
+      'Only people you approve can see your posts, shorts and followers.';
+
+  @override
+  String get whoCanMessage => 'Who can message you';
+
+  @override
+  String get everyone => 'Everyone';
+
+  @override
+  String get peopleYouFollow => 'People you follow';
+
+  @override
+  String get noOne => 'No one';
+
+  @override
+  String get whoCanComment => 'Who can comment';
+
+  @override
+  String get followersOnly => 'Followers only';
+
+  @override
+  String get turnOffComments => 'Turn off comments';
+
+  @override
+  String get visibility => 'Visibility';
+
+  @override
+  String get activityStatus => 'Show activity status';
+
+  @override
+  String get activityStatusSub => 'Let friends see when you\'re online';
+
+  @override
+  String get appearInSearch => 'Appear in search';
+
+  @override
+  String get appearInSearchSub => 'People can find you by name or email';
+
+  @override
+  String get blockedAccounts => 'Blocked accounts';
+
+  @override
+  String get blockedTitle => 'Blocked accounts';
+
+  @override
+  String get blockedIntro =>
+      'Blocked people can\'t see your profile, message you or find you in search. They aren\'t told you blocked them.';
+
+  @override
+  String blockedAgo(String username, String ago) {
+    return '@$username · Blocked $ago';
+  }
+
+  @override
+  String get unblock => 'Unblock';
+
+  @override
+  String get blockedEmpty => 'No blocked accounts';
+
+  @override
+  String unblocked(String username) {
+    return 'Unblocked @$username';
+  }
+
+  @override
+  String get timeAgoNow => 'just now';
+
+  @override
+  String timeAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks ago',
+      one: '1 week ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months ago',
+      one: '1 month ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years ago',
+      one: '1 year ago',
+    );
+    return '$_temp0';
+  }
 }
