@@ -2783,4 +2783,64 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get securityChangeSection => 'Change password';
+
+  @override
+  String get securityCurrentPassword => 'Current password';
+
+  @override
+  String get securityUpdate => 'Update';
+
+  @override
+  String get securityLoginProtection => 'Login protection';
+
+  @override
+  String get securityTwoFactor => 'Two-factor authentication';
+
+  @override
+  String get securityTwoFactorSub =>
+      'Ask for a code when signing in on a new device';
+
+  @override
+  String get securityLoginAlerts => 'Login alerts';
+
+  @override
+  String get securityLoginAlertsSub => 'Tell me about logins from new places';
+
+  @override
+  String get securityWhereLoggedIn => 'Where you\'re logged in';
+
+  @override
+  String securityThisDevice(String device) {
+    return '$device · This device';
+  }
+
+  @override
+  String get securityThisDeviceFallback => 'This device';
+
+  @override
+  String get securityActiveNow => 'Active now';
+
+  @override
+  String get securityLogOutOthersTitle => 'Log out other devices?';
+
+  @override
+  String get securityLogOutOthersBody => 'They will need to sign in again.';
+
+  @override
+  String get securityOthersLoggedOut => 'Other devices logged out';
+
+  @override
+  String get securityPasswordUpdated => 'Password updated';
+
+  @override
+  String get securityResetSent => 'We sent a reset link to your email';
+
+  @override
+  String get securityWrongCurrent => 'Current password is wrong';
+
+  @override
+  String get securityComingSoon => 'This is coming soon';
 }

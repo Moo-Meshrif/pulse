@@ -26,10 +26,16 @@ import '../../features/activity/domain/use_case/get_unread_activity_count_use_ca
 import '../../features/auth/data/datasource/auth_datasource.dart' as _i43;
 import '../../features/auth/data/datasource/password_recovery_tracker.dart'
     as _i236;
+import '../../features/auth/domain/use_case/change_password_use_case.dart'
+    as _i863;
 import '../../features/auth/domain/use_case/is_recovery_pending_use_case.dart'
     as _i730;
 import '../../features/auth/domain/use_case/is_signed_in_use_case.dart'
     as _i710;
+import '../../features/auth/domain/use_case/send_own_password_reset_use_case.dart'
+    as _i832;
+import '../../features/auth/domain/use_case/sign_out_others_use_case.dart'
+    as _i1025;
 import '../../features/auth/domain/use_case/sign_out_use_case.dart' as _i1036;
 import '../../features/auth/domain/use_case/verify_password_use_case.dart'
     as _i602;
@@ -175,7 +181,7 @@ import '../../features/profile/domain/use_case/forget_last_account_use_case.dart
 import '../../features/profile/domain/use_case/get_current_user_id_use_case.dart'
     as _i91;
 import '../../features/profile/domain/use_case/get_interests_use_case.dart'
-    as _i586;
+    as _i587;
 import '../../features/profile/domain/use_case/get_last_account_use_case.dart'
     as _i727;
 import '../../features/profile/domain/use_case/get_signup_draft_use_case.dart'
@@ -204,6 +210,8 @@ import '../../features/profile/presentation/cubit/privacy/privacy_cubit.dart'
     as _i300;
 import '../../features/profile/presentation/cubit/profile/profile_cubit.dart'
     as _i771;
+import '../../features/profile/presentation/cubit/security/security_cubit.dart'
+    as _i558;
 import '../../features/profile/presentation/cubit/settings/settings_cubit.dart'
     as _i75;
 import '../../features/splash/presentation/cubit/splash_cubit.dart' as _i127;
@@ -301,6 +309,7 @@ import '../services/blurhash_service.dart' as _i905;
 import '../services/camera_device.dart' as _i64;
 import '../services/camera_permission_service.dart' as _i754;
 import '../services/connectivity_service.dart' as _i47;
+import '../services/device_name_service.dart' as _i586;
 import '../services/device_tier.dart' as _i876;
 import '../services/gallery_service.dart' as _i841;
 import '../services/launch_service.dart' as _i1016;
@@ -376,6 +385,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i327.VideoOverlayService>(
       () => _i327.ChannelVideoOverlayService(),
+    );
+    gh.lazySingleton<_i586.DeviceNameService>(
+      () => _i586.DeviceInfoNameService(),
     );
     gh.lazySingleton<_i143.VideoThumbnailService>(
       () => _i143.PackageVideoThumbnailService(),
@@ -653,8 +665,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i366.RecentPlacesDatasource>(),
       ),
     );
-    gh.factory<_i586.GetInterestsUseCase>(
-      () => _i586.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
+    gh.factory<_i587.GetInterestsUseCase>(
+      () => _i587.GetInterestsUseCase(gh<_i152.InterestsDatasource>()),
     );
     gh.lazySingleton<_i729.LocaleService>(
       () => _i729.StoredLocaleService(gh<_i201.LocalStorageService>()),
@@ -781,11 +793,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i47.ConnectivityService>(),
       ),
     );
+    gh.factory<_i863.ChangePasswordUseCase>(
+      () => _i863.ChangePasswordUseCase(gh<_i43.AuthDatasource>()),
+    );
     gh.factory<_i730.IsRecoveryPendingUseCase>(
       () => _i730.IsRecoveryPendingUseCase(gh<_i43.AuthDatasource>()),
     );
     gh.factory<_i710.IsSignedInUseCase>(
       () => _i710.IsSignedInUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i832.SendOwnPasswordResetUseCase>(
+      () => _i832.SendOwnPasswordResetUseCase(gh<_i43.AuthDatasource>()),
+    );
+    gh.factory<_i1025.SignOutOthersUseCase>(
+      () => _i1025.SignOutOthersUseCase(gh<_i43.AuthDatasource>()),
     );
     gh.factory<_i1036.SignOutUseCase>(
       () => _i1036.SignOutUseCase(gh<_i43.AuthDatasource>()),
@@ -834,7 +855,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i357.SaveAboutYouUseCase>(),
         gh<_i255.SaveProfileDetailsUseCase>(),
         gh<_i94.PhotoPickerService>(),
-        gh<_i586.GetInterestsUseCase>(),
+        gh<_i587.GetInterestsUseCase>(),
         gh<_i597.SaveInterestsUseCase>(),
         gh<_i250.GetSuggestedProfilesUseCase>(),
         gh<_i130.ToggleFollowUseCase>(),
@@ -929,6 +950,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i722.VisibilityNoticeDatasource>(),
         postId,
         audience,
+      ),
+    );
+    gh.factory<_i558.SecurityCubit>(
+      () => _i558.SecurityCubit(
+        gh<_i863.ChangePasswordUseCase>(),
+        gh<_i832.SendOwnPasswordResetUseCase>(),
+        gh<_i1025.SignOutOthersUseCase>(),
+        gh<_i586.DeviceNameService>(),
       ),
     );
     gh.factory<_i639.BellDotCubit>(

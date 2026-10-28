@@ -3399,5 +3399,86 @@
         "type": "int"
       }
     }
+  },
+  "securityChangeSection": "تغيير كلمة المرور",
+  "@securityChangeSection": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityCurrentPassword": "كلمة المرور الحالية",
+  "@securityCurrentPassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityUpdate": "تحديث",
+  "@securityUpdate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLoginProtection": "حماية تسجيل الدخول",
+  "@securityLoginProtection": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityTwoFactor": "المصادقة الثنائية",
+  "@securityTwoFactor": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityTwoFactorSub": "اطلب رمزًا عند تسجيل الدخول من جهاز جديد",
+  "@securityTwoFactorSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLoginAlerts": "تنبيهات تسجيل الدخول",
+  "@securityLoginAlerts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLoginAlertsSub": "أخبرني عن تسجيل الدخول من أماكن جديدة",
+  "@securityLoginAlertsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityWhereLoggedIn": "الأجهزة المسجّل عليها",
+  "@securityWhereLoggedIn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityThisDevice": "{device} · هذا الجهاز",
+  "@securityThisDevice": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "securityThisDeviceFallback": "هذا الجهاز",
+  "@securityThisDeviceFallback": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityActiveNow": "نشط الآن",
+  "@securityActiveNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLogOutOthersTitle": "تسجيل الخروج من الأجهزة الأخرى؟",
+  "@securityLogOutOthersTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLogOutOthersBody": "سيحتاجون إلى تسجيل الدخول مرة أخرى.",
+  "@securityLogOutOthersBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityOthersLoggedOut": "تم تسجيل الخروج من الأجهزة الأخرى",
+  "@securityOthersLoggedOut": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityPasswordUpdated": "تم تحديث كلمة المرور",
+  "@securityPasswordUpdated": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityResetSent": "أرسلنا رابط إعادة التعيين إلى بريدك الإلكتروني",
+  "@securityResetSent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityWrongCurrent": "كلمة المرور الحالية غير صحيحة",
+  "@securityWrongCurrent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityComingSoon": "هذه الميزة قادمة قريبًا",
+  "@securityComingSoon": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

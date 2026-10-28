@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [x] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -295,14 +295,14 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, tests, compare with `s5-privacy.png`, `s6-blocked-accounts.png`.
 
 ### Phase 10: Password and security
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit tests pass; not yet run on a device or compared with the screenshot. Device list is one row (this phone); device name from `device_info_plus` through `DeviceNameService`.
 - **Goal:** you can change your password and log out of other devices.
 - **Depends on:** Phases 3, 6.
 - **Spec refs:** screens/s4-password-security.md.
 - **Tasks:**
-  - [ ] Change password with the same rules as sign-up.
-  - [ ] Forgot password, Log out of all other devices.
-  - [ ] Coming soon items with TODO markers (T4).
+  - [x] Change password with the same rules as sign-up.
+  - [x] Forgot password, Log out of all other devices.
+  - [x] Coming soon items with TODO markers (T4).
 - **Implementation steps:**
   1. `features/auth/domain/use_case/` (edit/new, check what exists): `change_password_use_case.dart` (verify current password, then update), `sign_out_others_use_case.dart`, reuse the forgot-password use case; add them in `features/auth` and call them from the profile cubit (features trade through use cases).
   2. `cubit/security/security_cubit.dart` + state (new): fields, rules check (reuse the password rules and strength from sign-up/reset), `update()`, `logOutOthers()`.

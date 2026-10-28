@@ -3536,5 +3536,86 @@
         "type": "int"
       }
     }
+  },
+  "securityChangeSection": "Change password",
+  "@securityChangeSection": {
+    "description": "Password & security: section label"
+  },
+  "securityCurrentPassword": "Current password",
+  "@securityCurrentPassword": {
+    "description": "Password & security: field label"
+  },
+  "securityUpdate": "Update",
+  "@securityUpdate": {
+    "description": "Password & security: update button"
+  },
+  "securityLoginProtection": "Login protection",
+  "@securityLoginProtection": {
+    "description": "Password & security: section label"
+  },
+  "securityTwoFactor": "Two-factor authentication",
+  "@securityTwoFactor": {
+    "description": "Password & security: switch title"
+  },
+  "securityTwoFactorSub": "Ask for a code when signing in on a new device",
+  "@securityTwoFactorSub": {
+    "description": "Password & security: switch subtitle"
+  },
+  "securityLoginAlerts": "Login alerts",
+  "@securityLoginAlerts": {
+    "description": "Password & security: switch title"
+  },
+  "securityLoginAlertsSub": "Tell me about logins from new places",
+  "@securityLoginAlertsSub": {
+    "description": "Password & security: switch subtitle"
+  },
+  "securityWhereLoggedIn": "Where you're logged in",
+  "@securityWhereLoggedIn": {
+    "description": "Password & security: section label"
+  },
+  "securityThisDevice": "{device} · This device",
+  "@securityThisDevice": {
+    "description": "Password & security: title of this phone's row",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "securityThisDeviceFallback": "This device",
+  "@securityThisDeviceFallback": {
+    "description": "Password & security: title when the phone's name is unknown"
+  },
+  "securityActiveNow": "Active now",
+  "@securityActiveNow": {
+    "description": "Password & security: subtitle of this phone's row"
+  },
+  "securityLogOutOthersTitle": "Log out other devices?",
+  "@securityLogOutOthersTitle": {
+    "description": "Password & security: dialog title"
+  },
+  "securityLogOutOthersBody": "They will need to sign in again.",
+  "@securityLogOutOthersBody": {
+    "description": "Password & security: dialog body"
+  },
+  "securityOthersLoggedOut": "Other devices logged out",
+  "@securityOthersLoggedOut": {
+    "description": "Password & security: notice"
+  },
+  "securityPasswordUpdated": "Password updated",
+  "@securityPasswordUpdated": {
+    "description": "Password & security: notice"
+  },
+  "securityResetSent": "We sent a reset link to your email",
+  "@securityResetSent": {
+    "description": "Password & security: notice"
+  },
+  "securityWrongCurrent": "Current password is wrong",
+  "@securityWrongCurrent": {
+    "description": "Password & security: error under the current password field"
+  },
+  "securityComingSoon": "This is coming soon",
+  "@securityComingSoon": {
+    "description": "Password & security: notice for the items not built yet"
   }
 }

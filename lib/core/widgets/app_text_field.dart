@@ -39,12 +39,16 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.counterMax,
     this.inputFormatters,
+    this.fillColor,
   }) : assert(
          counterMax == null || controller != null,
          'The counter reads the controller',
        );
 
   final String label;
+
+  /// The field's fill; `surface` when null (`surfaceMuted` inside a white card).
+  final Color? fillColor;
   final bool required;
   final String? hint;
   final TextEditingController? controller;
@@ -134,7 +138,7 @@ class _AppTextFieldState extends State<AppTextField> {
             textBaseline: TextBaseline.alphabetic,
           ),
           filled: true,
-          fillColor: colors.surface,
+          fillColor: widget.fillColor ?? colors.surface,
           contentPadding: InputDimens.padding,
           prefixIcon: widget.prefix,
           prefix: widget.prefix != null || widget.prefixText == null

@@ -4819,6 +4819,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 year ago} other{{count} years ago}}'**
   String timeAgoYears(int count);
+
+  /// Password & security: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get securityChangeSection;
+
+  /// Password & security: field label
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get securityCurrentPassword;
+
+  /// Password & security: update button
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get securityUpdate;
+
+  /// Password & security: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Login protection'**
+  String get securityLoginProtection;
+
+  /// Password & security: switch title
+  ///
+  /// In en, this message translates to:
+  /// **'Two-factor authentication'**
+  String get securityTwoFactor;
+
+  /// Password & security: switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a code when signing in on a new device'**
+  String get securityTwoFactorSub;
+
+  /// Password & security: switch title
+  ///
+  /// In en, this message translates to:
+  /// **'Login alerts'**
+  String get securityLoginAlerts;
+
+  /// Password & security: switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me about logins from new places'**
+  String get securityLoginAlertsSub;
+
+  /// Password & security: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Where you\'re logged in'**
+  String get securityWhereLoggedIn;
+
+  /// Password & security: title of this phone's row
+  ///
+  /// In en, this message translates to:
+  /// **'{device} · This device'**
+  String securityThisDevice(String device);
+
+  /// Password & security: title when the phone's name is unknown
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get securityThisDeviceFallback;
+
+  /// Password & security: subtitle of this phone's row
+  ///
+  /// In en, this message translates to:
+  /// **'Active now'**
+  String get securityActiveNow;
+
+  /// Password & security: dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Log out other devices?'**
+  String get securityLogOutOthersTitle;
+
+  /// Password & security: dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'They will need to sign in again.'**
+  String get securityLogOutOthersBody;
+
+  /// Password & security: notice
+  ///
+  /// In en, this message translates to:
+  /// **'Other devices logged out'**
+  String get securityOthersLoggedOut;
+
+  /// Password & security: notice
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get securityPasswordUpdated;
+
+  /// Password & security: notice
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a reset link to your email'**
+  String get securityResetSent;
+
+  /// Password & security: error under the current password field
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is wrong'**
+  String get securityWrongCurrent;
+
+  /// Password & security: notice for the items not built yet
+  ///
+  /// In en, this message translates to:
+  /// **'This is coming soon'**
+  String get securityComingSoon;
 }
 
 class _AppLocalizationsDelegate

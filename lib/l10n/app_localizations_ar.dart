@@ -2801,4 +2801,64 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get securityChangeSection => 'تغيير كلمة المرور';
+
+  @override
+  String get securityCurrentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get securityUpdate => 'تحديث';
+
+  @override
+  String get securityLoginProtection => 'حماية تسجيل الدخول';
+
+  @override
+  String get securityTwoFactor => 'المصادقة الثنائية';
+
+  @override
+  String get securityTwoFactorSub => 'اطلب رمزًا عند تسجيل الدخول من جهاز جديد';
+
+  @override
+  String get securityLoginAlerts => 'تنبيهات تسجيل الدخول';
+
+  @override
+  String get securityLoginAlertsSub => 'أخبرني عن تسجيل الدخول من أماكن جديدة';
+
+  @override
+  String get securityWhereLoggedIn => 'الأجهزة المسجّل عليها';
+
+  @override
+  String securityThisDevice(String device) {
+    return '$device · هذا الجهاز';
+  }
+
+  @override
+  String get securityThisDeviceFallback => 'هذا الجهاز';
+
+  @override
+  String get securityActiveNow => 'نشط الآن';
+
+  @override
+  String get securityLogOutOthersTitle => 'تسجيل الخروج من الأجهزة الأخرى؟';
+
+  @override
+  String get securityLogOutOthersBody => 'سيحتاجون إلى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get securityOthersLoggedOut => 'تم تسجيل الخروج من الأجهزة الأخرى';
+
+  @override
+  String get securityPasswordUpdated => 'تم تحديث كلمة المرور';
+
+  @override
+  String get securityResetSent =>
+      'أرسلنا رابط إعادة التعيين إلى بريدك الإلكتروني';
+
+  @override
+  String get securityWrongCurrent => 'كلمة المرور الحالية غير صحيحة';
+
+  @override
+  String get securityComingSoon => 'هذه الميزة قادمة قريبًا';
 }

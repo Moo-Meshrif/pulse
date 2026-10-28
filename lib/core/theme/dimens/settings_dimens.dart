@@ -14,6 +14,7 @@ abstract final class SettingsDimens {
   static double get rowSide => AppScale.scale(12);
   static double get rowGap => AppScale.scale(12);
   static double get tile => AppScale.scale(36);
+  static double get deviceTile => AppScale.scale(40);
   static double get tileIcon => AppScale.scale(18);
   static double get chevron => AppScale.scale(18);
   static double get valueGap => AppScale.scale(6);
