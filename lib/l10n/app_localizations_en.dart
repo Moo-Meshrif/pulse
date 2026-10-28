@@ -2513,4 +2513,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLanguageArabic => 'العربية';
+
+  @override
+  String get personalInfoTitle => 'Personal info';
+
+  @override
+  String get personalInfoChangeCover => 'Change cover photo';
+
+  @override
+  String get personalInfoChangePhotoA11y => 'Change profile photo';
+
+  @override
+  String get personalInfoLocationLabel => 'Location';
+
+  @override
+  String get personalInfoLocationHint => 'Add a place';
+
+  @override
+  String get personalInfoPrivateNote =>
+      'Your email, phone and birthday are private and never shown on your profile.';
+
+  @override
+  String get personalInfoSave => 'Save changes';
+
+  @override
+  String get personalInfoDiscardBody => 'Your edits will be lost.';
+
+  @override
+  String get personalInfoSaved => 'Profile updated';
+
+  @override
+  String get locationCurrentUnavailable =>
+      'Couldn\'t find your location. Check that location is on.';
 }

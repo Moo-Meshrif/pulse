@@ -135,16 +135,19 @@ void main() {
   });
 
   group('deleteAccount', () {
-    test('a wrong password shows under the field and deletes nothing', () async {
-      when(() => verifyPassword('nope')).thenThrow(wrongPassword);
+    test(
+      'a wrong password shows under the field and deletes nothing',
+      () async {
+        when(() => verifyPassword('nope')).thenThrow(wrongPassword);
 
-      await cubit.deleteAccount('nope');
+        await cubit.deleteAccount('nope');
 
-      expect(cubit.state.passwordWrong, isTrue);
-      expect(cubit.state.isDeleting, isFalse);
-      expect(cubit.state.signedOut, isFalse);
-      verifyNever(() => settings.deleteAccount());
-    });
+        expect(cubit.state.passwordWrong, isTrue);
+        expect(cubit.state.isDeleting, isFalse);
+        expect(cubit.state.signedOut, isFalse);
+        verifyNever(() => settings.deleteAccount());
+      },
+    );
 
     test('typing again clears the wrong password message', () async {
       when(() => verifyPassword('nope')).thenThrow(wrongPassword);
@@ -177,15 +180,18 @@ void main() {
       expect(cubit.state.failure, isNull);
     });
 
-    test('a server failure is reported, not shown as a wrong password', () async {
-      when(() => settings.deleteAccount()).thenThrow(const ServerFailure());
+    test(
+      'a server failure is reported, not shown as a wrong password',
+      () async {
+        when(() => settings.deleteAccount()).thenThrow(const ServerFailure());
 
-      await cubit.deleteAccount('secret');
+        await cubit.deleteAccount('secret');
 
-      expect(cubit.state.passwordWrong, isFalse);
-      expect(cubit.state.signedOut, isFalse);
-      expect(cubit.state.failure, const ServerFailure());
-    });
+        expect(cubit.state.passwordWrong, isFalse);
+        expect(cubit.state.signedOut, isFalse);
+        expect(cubit.state.failure, const ServerFailure());
+      },
+    );
 
     test('an empty password does nothing', () async {
       await cubit.deleteAccount('');

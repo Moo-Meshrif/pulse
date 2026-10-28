@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/error/failures.dart';
+import 'package:pulse/core/events/event_bus.dart';
 import 'package:pulse/core/services/launch_service.dart';
 import 'package:pulse/core/state/load_more_status.dart';
 import 'package:pulse/features/post/domain/use_case/sign_post_media_urls_use_case.dart';
@@ -62,7 +63,7 @@ void main() {
         .thenAnswer((_) async => [tile(3)]);
     when(() => sign(any())).thenAnswer((_) async => {'path1': 'https://u/1'});
     when(() => launch.shareText(any())).thenAnswer((_) async => true);
-    cubit = ProfileCubit(pages, profiles, userId, sign, launch);
+    cubit = ProfileCubit(pages, profiles, userId, sign, launch, EventBus());
   });
 
   tearDown(() => cubit.close());

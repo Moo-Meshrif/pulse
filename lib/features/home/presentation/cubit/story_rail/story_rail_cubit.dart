@@ -15,6 +15,7 @@ import '../../../../../shared/content/domain/use_case/get_publish_status_use_cas
 import '../../../../../shared/content/domain/use_case/retry_publish_use_case.dart';
 import '../../../../post/domain/event/feed_refresh_requested.dart';
 import '../../../../profile/domain/entity/last_account_entity.dart';
+import '../../../../profile/domain/event/profile_updated.dart';
 import '../../../../profile/domain/use_case/get_last_account_use_case.dart';
 import '../../../../story/domain/entity/story_rail_item_entity.dart';
 import '../../../../story/domain/event/story_author_seen.dart';
@@ -60,6 +61,7 @@ class StoryRailCubit extends BaseCubit<StoryRailState>
   /// posting, a refresh of Home, or a story that was added or deleted elsewhere (the change check).
   Future<void> start() async {
     listenTo<StoryRailChanged>((_) => load());
+    listenTo<ProfileUpdated>((_) => load());
     listenTo<StoryAuthorSeen>(_onAuthorSeen);
     listenTo<ContentDeleteEvent>(_onDelete);
     listenTo<FeedRefreshRequested>((_) => load());

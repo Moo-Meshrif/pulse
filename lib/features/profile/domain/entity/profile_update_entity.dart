@@ -13,6 +13,7 @@ class ProfileUpdateEntity extends Equatable {
   final String? city;
   final String? phone;
   final String? avatarUrl;
+  final String? coverUrl;
   final SignupStep? signupStep;
 
   /// Empties bio, city, phone and the photo on the profile.
@@ -27,6 +28,7 @@ class ProfileUpdateEntity extends Equatable {
     this.city,
     this.phone,
     this.avatarUrl,
+    this.coverUrl,
     this.signupStep,
     this.clearDetails = false,
   });
@@ -41,6 +43,7 @@ class ProfileUpdateEntity extends Equatable {
     city,
     phone,
     avatarUrl,
+    coverUrl,
     signupStep,
     clearDetails,
   ];

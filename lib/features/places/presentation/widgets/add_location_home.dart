@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
+import '../../../../core/notice/notices.dart';
 import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entity/place_entity.dart';
@@ -18,6 +19,11 @@ import 'location_section.dart';
 /// Panel 1: where you are, the places near you, and the last places you picked.
 class AddLocationHome extends StatelessWidget {
   const AddLocationHome({super.key});
+
+  Future<void> _useCurrent(BuildContext context, AddLocationCubit cubit) async {
+    final message = context.l10n.locationCurrentUnavailable;
+    if (!await cubit.useCurrentLocation()) Notices.error(message);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,19 +54,18 @@ class AddLocationHome extends StatelessWidget {
                   ),
                 ),
               ),
-            if (here != null)
-              LocationSection(
-                rows: [
-                  LocationPlaceRow(
-                    icon: AppAssets.crosshair,
-                    isHighlighted: true,
-                    title: l10n.locationUseCurrent,
-                    detail: here.displayName,
-                    isSelected: isSelected(here),
-                    onTap: () => cubit.select(here),
-                  ),
-                ],
-              ),
+            LocationSection(
+              rows: [
+                LocationPlaceRow(
+                  icon: AppAssets.crosshair,
+                  isHighlighted: true,
+                  title: l10n.locationUseCurrent,
+                  detail: here?.displayName,
+                  isSelected: here != null && isSelected(here),
+                  onTap: () => _useCurrent(context, cubit),
+                ),
+              ],
+            ),
             if (state.nearby.isNotEmpty)
               LocationSection(
                 label: l10n.locationNearby,

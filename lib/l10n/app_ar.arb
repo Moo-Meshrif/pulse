@@ -3072,5 +3072,45 @@
   "settingsLanguageArabic": "العربية",
   "@settingsLanguageArabic": {
     "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoTitle": "المعلومات الشخصية",
+  "@personalInfoTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoChangeCover": "تغيير صورة الغلاف",
+  "@personalInfoChangeCover": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoChangePhotoA11y": "تغيير صورة الملف الشخصي",
+  "@personalInfoChangePhotoA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoLocationLabel": "الموقع",
+  "@personalInfoLocationLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoLocationHint": "أضف مكانًا",
+  "@personalInfoLocationHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoPrivateNote": "بريدك الإلكتروني وهاتفك وتاريخ ميلادك خاصة ولا تظهر في ملفك الشخصي.",
+  "@personalInfoPrivateNote": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoSave": "حفظ التغييرات",
+  "@personalInfoSave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoDiscardBody": "ستفقد تعديلاتك.",
+  "@personalInfoDiscardBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoSaved": "تم تحديث الملف الشخصي",
+  "@personalInfoSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationCurrentUnavailable": "تعذّر العثور على موقعك. تأكد من تشغيل الموقع.",
+  "@locationCurrentUnavailable": {
+    "x-review": "Arabic draft: pending user approval"
   }
 }

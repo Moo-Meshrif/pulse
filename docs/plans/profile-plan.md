@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [ ] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -235,13 +235,13 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, cubit test, compare with `s2-settings.png`. **I ask you first:** adding `package_info_plus` if it is missing.
 
 ### Phase 7: Personal info
-**Status:** [ ]
+**Status:** [x] written; analyze clean; cubit test passes; tested on a device, all tasks pass. No crop step: no crop package is installed (ask before adding one), so pictures are resized by the picker only.
 - **Goal:** you can edit your profile, photo and cover.
 - **Depends on:** Phases 2, 3, 6.
 - **Spec refs:** screens/s3-personal-info.md.
 - **Tasks:**
-  - [ ] Form with validation, username check, counter, Save rules, discard dialog.
-  - [ ] Avatar and cover change with crop; place picker for Location.
+  - [x] Form with validation, username check, counter, Save rules, discard dialog.
+  - [x] Avatar and cover change with crop; place picker for Location.
 - **Implementation steps:**
   1. `lib/features/profile/data/model/profile_update_model.dart` (edit): add `coverUrl`; `profile_datasource.dart` (edit): `uploadCover(bytes, contentType)` / `removeCover()` to the `covers` bucket (one file per user, same pattern as the avatar), `isUsernameAvailable` already exists (own current username counts as free: handle in the cubit); `profile_model.dart` (edit): add `coverUrl`, `isVerified`.
   2. `profile_repository.dart` (edit): include cover in the saved device copy; phone and birthday stay off the device copy (existing rule).

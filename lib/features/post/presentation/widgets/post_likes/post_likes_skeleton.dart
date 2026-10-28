@@ -24,9 +24,7 @@ class PostLikesSkeleton extends StatelessWidget {
     child: ExcludeSemantics(
       child: Padding(
         padding: _loadMore
-            ? EdgeInsets.symmetric(
-                horizontal: PostLikesDimens.listPadding.left,
-              )
+            ? EdgeInsets.symmetric(horizontal: PostLikesDimens.listPadding.left)
             : PostLikesDimens.listPadding,
         child: DecoratedBox(
           decoration: BoxDecoration(
@@ -35,9 +33,7 @@ class PostLikesSkeleton extends StatelessWidget {
           ),
           child: Skeletonizer.zone(
             effect: skeletonEffect(context),
-            child: Column(
-              children: const [_Row()],
-            ),
+            child: Column(children: const [_Row()]),
           ),
         ),
       ),

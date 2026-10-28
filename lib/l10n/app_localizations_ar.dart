@@ -2506,4 +2506,36 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsLanguageArabic => 'العربية';
+
+  @override
+  String get personalInfoTitle => 'المعلومات الشخصية';
+
+  @override
+  String get personalInfoChangeCover => 'تغيير صورة الغلاف';
+
+  @override
+  String get personalInfoChangePhotoA11y => 'تغيير صورة الملف الشخصي';
+
+  @override
+  String get personalInfoLocationLabel => 'الموقع';
+
+  @override
+  String get personalInfoLocationHint => 'أضف مكانًا';
+
+  @override
+  String get personalInfoPrivateNote =>
+      'بريدك الإلكتروني وهاتفك وتاريخ ميلادك خاصة ولا تظهر في ملفك الشخصي.';
+
+  @override
+  String get personalInfoSave => 'حفظ التغييرات';
+
+  @override
+  String get personalInfoDiscardBody => 'ستفقد تعديلاتك.';
+
+  @override
+  String get personalInfoSaved => 'تم تحديث الملف الشخصي';
+
+  @override
+  String get locationCurrentUnavailable =>
+      'تعذّر العثور على موقعك. تأكد من تشغيل الموقع.';
 }

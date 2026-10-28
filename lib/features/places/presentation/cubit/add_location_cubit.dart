@@ -73,6 +73,26 @@ class AddLocationCubit extends BaseCubit<AddLocationState> {
     await recheckAccess();
   }
 
+  /// "Use current location": asks for the permission when it is missing, finds where the device is, and
+  /// picks that place. Returns false only when the permission is on but no place could be found (the
+  /// screen says so); a refused permission is not an error.
+  Future<bool> useCurrentLocation() async {
+    if (state.currentPlace == null) {
+      if (state.hasLocationAccess) {
+        await _loadNearby();
+      } else {
+        // Granting loads the nearby places and the current one.
+        await allowLocation();
+      }
+    }
+    final here = state.currentPlace;
+    if (here != null) {
+      await select(here);
+      return true;
+    }
+    return !state.hasLocationAccess;
+  }
+
   /// "Not now": search and recent only, and the primer does not come back.
   Future<void> notNow() async {
     emit(state.copyWith(showPrimer: false));

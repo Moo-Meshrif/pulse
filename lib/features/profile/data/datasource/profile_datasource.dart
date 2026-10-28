@@ -17,6 +17,9 @@ abstract interface class ProfileDatasource {
   /// The signed-in user's id, or null without a session.
   String? get currentUserId;
 
+  /// The signed-in user's email, or null without a session.
+  String? get currentEmail;
+
   Future<ProfileModel> getProfile();
 
   /// Whether [username] matches the format and nobody else has it.
@@ -31,6 +34,12 @@ abstract interface class ProfileDatasource {
 
   /// Deletes the stored picture and clears the profile's avatar.
   Future<void> removeAvatar();
+
+  /// Stores the cover and returns its public URL (not yet saved on the profile).
+  Future<String> uploadCover(Uint8List bytes, {required String contentType});
+
+  /// Deletes the stored cover and clears the profile's cover.
+  Future<void> removeCover();
 }
 
 /// [ProfileDatasource] as an adapter over Supabase: the `profiles` table, its `is_username_available`
@@ -40,11 +49,15 @@ final class SupabaseProfileDatasource implements ProfileDatasource {
   SupabaseProfileDatasource(this._client);
 
   static const _avatarsBucket = 'avatars';
+  static const _coversBucket = 'covers';
 
   final SupabaseClient _client;
 
   @override
   String? get currentUserId => _client.auth.currentUser?.id;
+
+  @override
+  String? get currentEmail => _client.auth.currentUser?.email;
 
   /// The signed-in user's id; no session is `AuthFailure(sessionExpired)`.
   String get _uid =>
@@ -53,6 +66,7 @@ final class SupabaseProfileDatasource implements ProfileDatasource {
 
   /// One file per user, replaced on every upload.
   String get _avatarPath => '$_uid/avatar';
+  String get _coverPath => '$_uid/cover';
 
   @override
   Future<ProfileModel> getProfile() => Guard.run(() async {
@@ -99,5 +113,24 @@ final class SupabaseProfileDatasource implements ProfileDatasource {
   Future<void> removeAvatar() => Guard.run(() async {
     await _client.storage.from(_avatarsBucket).remove([_avatarPath]);
     await _client.from('profiles').update({'avatar_url': null}).eq('id', _uid);
+  });
+
+  @override
+  Future<String> uploadCover(Uint8List bytes, {required String contentType}) =>
+      Guard.run(() async {
+        final storage = _client.storage.from(_coversBucket);
+        await storage.uploadBinary(
+          _coverPath,
+          bytes,
+          fileOptions: FileOptions(contentType: contentType, upsert: true),
+        );
+        return '${storage.getPublicUrl(_coverPath)}'
+            '?v=${clock.now().millisecondsSinceEpoch}';
+      });
+
+  @override
+  Future<void> removeCover() => Guard.run(() async {
+    await _client.storage.from(_coversBucket).remove([_coverPath]);
+    await _client.from('profiles').update({'cover_url': null}).eq('id', _uid);
   });
 }

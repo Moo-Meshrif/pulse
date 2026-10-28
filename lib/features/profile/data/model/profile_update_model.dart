@@ -13,6 +13,7 @@ class ProfileUpdateModel extends Equatable {
   final String? city;
   final String? phone;
   final String? avatarUrl;
+  final String? coverUrl;
   final SignupStep? signupStep;
 
   /// Sets bio, city, phone and avatar_url to null (Skip with discard); fields given beside it win.
@@ -27,6 +28,7 @@ class ProfileUpdateModel extends Equatable {
     this.city,
     this.phone,
     this.avatarUrl,
+    this.coverUrl,
     this.signupStep,
     this.clearDetails = false,
   });
@@ -43,10 +45,12 @@ class ProfileUpdateModel extends Equatable {
     if (fullName != null) 'full_name': fullName,
     if (birthday != null) 'birthday': _dateOnly(birthday!),
     if (gender != null) 'gender': gender!.value,
-    if (bio != null) 'bio': bio,
-    if (city != null) 'city': city,
-    if (phone != null) 'phone': phone,
+    // An empty text clears the column (the phone check allows no empty string).
+    if (bio != null) 'bio': bio!.isEmpty ? null : bio,
+    if (city != null) 'city': city!.isEmpty ? null : city,
+    if (phone != null) 'phone': phone!.isEmpty ? null : phone,
     if (avatarUrl != null) 'avatar_url': avatarUrl,
+    if (coverUrl != null) 'cover_url': coverUrl,
     if (signupStep != null) 'signup_step': signupStep!.number,
   };
 
@@ -65,6 +69,7 @@ class ProfileUpdateModel extends Equatable {
     city,
     phone,
     avatarUrl,
+    coverUrl,
     signupStep,
     clearDetails,
   ];

@@ -187,6 +187,8 @@ import '../../features/profile/domain/use_case/save_profile_details_use_case.dar
     as _i255;
 import '../../features/profile/presentation/cubit/people/people_cubit.dart'
     as _i264;
+import '../../features/profile/presentation/cubit/personal_info/personal_info_cubit.dart'
+    as _i919;
 import '../../features/profile/presentation/cubit/profile/profile_cubit.dart'
     as _i771;
 import '../../features/profile/presentation/cubit/settings/settings_cubit.dart'
@@ -602,6 +604,13 @@ extension GetItInjectableX on _i174.GetIt {
         list,
       ),
     );
+    gh.factory<_i919.PersonalInfoCubit>(
+      () => _i919.PersonalInfoCubit(
+        gh<_i508.ProfileRepository>(),
+        gh<_i94.PhotoPickerService>(),
+        gh<_i557.EventBus>(),
+      ),
+    );
     gh.lazySingleton<_i974.PlacesRepository>(
       () => _i974.PlacesRepositoryImpl(
         gh<_i438.PlacesDatasource>(),
@@ -1015,6 +1024,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i599.SignPostMediaUrlsUseCase>(
       () => _i599.SignPostMediaUrlsUseCase(gh<_i699.PostRepository>()),
     );
+    gh.factory<_i771.ProfileCubit>(
+      () => _i771.ProfileCubit(
+        gh<_i874.ProfilePageDatasource>(),
+        gh<_i508.ProfileRepository>(),
+        gh<_i91.GetCurrentUserIdUseCase>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i1016.LaunchService>(),
+        gh<_i557.EventBus>(),
+      ),
+    );
     gh.factoryParam<_i195.PostLikesCubit, String, dynamic>(
       (postId, _) => _i195.PostLikesCubit(
         gh<_i699.PostRepository>(),
@@ -1030,15 +1049,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i541.GetPublishStatusUseCase>(),
         gh<_i727.GetLastAccountUseCase>(),
         postId,
-      ),
-    );
-    gh.factory<_i771.ProfileCubit>(
-      () => _i771.ProfileCubit(
-        gh<_i874.ProfilePageDatasource>(),
-        gh<_i508.ProfileRepository>(),
-        gh<_i91.GetCurrentUserIdUseCase>(),
-        gh<_i599.SignPostMediaUrlsUseCase>(),
-        gh<_i1016.LaunchService>(),
       ),
     );
     gh.factoryParam<_i97.TagPeopleCubit, _i425.TagPeopleArgs, dynamic>(

@@ -24,6 +24,9 @@ abstract interface class ProfileRepository {
 
   Future<bool> isUsernameAvailable(String username);
 
+  /// The signed-in user's email (read only), or null without a session.
+  String? get email;
+
   /// Writes only the fields that are set, then saves the profile as the server now stores it, and
   /// returns it. A taken username is `ConflictFailure`.
   Future<ProfileEntity> updateProfile(ProfileUpdateEntity update);
@@ -33,6 +36,12 @@ abstract interface class ProfileRepository {
 
   /// Deletes the picture on the server and in the saved copy.
   Future<void> removeAvatar();
+
+  /// Stores the cover and returns its public URL (not yet saved on the profile).
+  Future<String> uploadCover(Uint8List bytes, {required String contentType});
+
+  /// Deletes the cover on the server and in the saved copy.
+  Future<void> removeCover();
 
   /// The sign-up step in the saved copy of the signed-in user, or null with no copy or no session. No request.
   SignupStep? savedSignupStep();
@@ -82,6 +91,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
       _remote.isUsernameAvailable(username);
 
   @override
+  String? get email => _remote.currentEmail;
+
+  @override
   Future<ProfileEntity> updateProfile(ProfileUpdateEntity update) async {
     final profile = await _remote.updateProfile(_toUpdateModel(update));
     await _local.write(profile);
@@ -98,6 +110,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
     final userId = _remote.currentUserId;
     final saved = userId == null ? null : _local.read(userId);
     if (saved != null) await _local.write(saved.copyWith(clearAvatar: true));
+  }
+
+  @override
+  Future<String> uploadCover(Uint8List bytes, {required String contentType}) =>
+      _remote.uploadCover(bytes, contentType: contentType);
+
+  @override
+  Future<void> removeCover() async {
+    await _remote.removeCover();
+    final userId = _remote.currentUserId;
+    final saved = userId == null ? null : _local.read(userId);
+    if (saved != null) await _local.write(saved.copyWith(clearCover: true));
   }
 
   @override
@@ -145,6 +169,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     city: model.city,
     phone: model.phone,
     avatarUrl: model.avatarUrl,
+    coverUrl: model.coverUrl,
     signupStep: model.signupStep,
   );
 
@@ -158,6 +183,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         city: update.city,
         phone: update.phone,
         avatarUrl: update.avatarUrl,
+        coverUrl: update.coverUrl,
         signupStep: update.signupStep,
         clearDetails: update.clearDetails,
       );

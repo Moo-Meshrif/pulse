@@ -10,6 +10,7 @@ abstract class SettingsState with _$SettingsState {
   const factory SettingsState({
     /// The values beside the rows; null until they arrive (the rows show no value) or when they fail.
     SettingsSummaryModel? summary,
+
     /// The app version, e.g. `1.2.0`; null until read.
     String? version,
     @Default(true) bool autoplayShorts,

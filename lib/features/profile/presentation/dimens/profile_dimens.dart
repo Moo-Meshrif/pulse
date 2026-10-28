@@ -3,6 +3,15 @@ import '../../../../core/theme/app_scale.dart';
 /// Profile page values (docs/specs/profile/01-design-tokens.md). Tap targets stay fixed; the rest scales.
 /// Values tagged `[estimated]` were measured on screenshots.
 abstract final class ProfileDimens {
+  // Personal info.
+  static double get editAvatar => AppScale.scale(96);
+  static const double editAvatarRing = 3; // unscaled: stroke [estimated]
+  static const double editBadgeRing = 2; // unscaled: stroke
+  static double get editBadge => AppScale.scale(32);
+  static double get editBadgeIcon => AppScale.scale(16);
+  static double get editLocationIcon => AppScale.scale(20);
+  static double get editLinkGap => AppScale.scale(12);
+
   // Header.
   static double get coverHeight => AppScale.scale(170);
   static double get avatar => AppScale.scale(80);

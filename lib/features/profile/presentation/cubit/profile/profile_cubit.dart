@@ -2,6 +2,8 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/enums/auth_failure_reason.dart';
 import '../../../../../core/error/failures.dart';
+import '../../../../../core/events/event_bus.dart';
+import '../../../../../core/events/event_cubit_mixin.dart';
 import '../../../../../core/services/launch_service.dart';
 import '../../../../../core/state/base_cubit.dart';
 import '../../../../../core/state/load_more_status.dart';
@@ -10,6 +12,7 @@ import '../../../data/datasource/profile_page_datasource.dart';
 import '../../../data/model/profile_grid_item_model.dart';
 import '../../../data/model/profile_page_model.dart';
 import '../../../data/repository/profile_repository.dart';
+import '../../../domain/event/profile_updated.dart';
 import '../../../domain/use_case/get_current_user_id_use_case.dart';
 import '../../utils/enums/profile_status.dart';
 import '../../utils/enums/profile_tab.dart';
@@ -19,20 +22,28 @@ import 'profile_state.dart';
 /// The signed-in user's own profile page: the header, the numbers and the Posts and Saved grids
 /// (docs/specs/profile/screens/s1-profile.md).
 @injectable
-class ProfileCubit extends BaseCubit<ProfileState> {
+class ProfileCubit extends BaseCubit<ProfileState>
+    with EventCubitMixin<ProfileState> {
   ProfileCubit(
     this._pages,
     this._profiles,
     this._currentUserId,
     this._signMedia,
     this._launch,
-  ) : super(const ProfileState());
+    this._events,
+  ) : super(const ProfileState()) {
+    listenTo<ProfileUpdated>((_) => _loadHeader(quiet: true));
+  }
 
   final ProfilePageDatasource _pages;
   final ProfileRepository _profiles;
   final GetCurrentUserIdUseCase _currentUserId;
   final SignPostMediaUrlsUseCase _signMedia;
   final LaunchService _launch;
+  final EventBus _events;
+
+  @override
+  EventBus get events => _events;
 
   /// Loads the header and the active tab's first page, together.
   Future<void> load() async {

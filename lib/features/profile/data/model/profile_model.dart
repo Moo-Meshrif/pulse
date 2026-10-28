@@ -14,6 +14,8 @@ class ProfileModel extends Equatable {
   final String? city;
   final String? phone;
   final String? avatarUrl;
+  final String? coverUrl;
+  final bool isVerified;
   final SignupStep? signupStep;
 
   const ProfileModel({
@@ -26,6 +28,8 @@ class ProfileModel extends Equatable {
     this.city,
     this.phone,
     this.avatarUrl,
+    this.coverUrl,
+    this.isVerified = false,
     this.signupStep,
   });
 
@@ -39,6 +43,8 @@ class ProfileModel extends Equatable {
     city: JsonMapper.string(json['city']),
     phone: JsonMapper.string(json['phone']),
     avatarUrl: JsonMapper.string(json['avatar_url']),
+    coverUrl: JsonMapper.string(json['cover_url']),
+    isVerified: JsonMapper.boolean(json['is_verified']) ?? false,
     signupStep: SignupStep.fromJson(json['signup_step']),
   );
 
@@ -52,6 +58,8 @@ class ProfileModel extends Equatable {
     'city': city,
     'phone': phone,
     'avatar_url': avatarUrl,
+    'cover_url': coverUrl,
+    'is_verified': isVerified,
     'signup_step': signupStep?.number,
   };
 
@@ -65,6 +73,8 @@ class ProfileModel extends Equatable {
     String? phone,
     String? avatarUrl,
     bool clearAvatar = false,
+    String? coverUrl,
+    bool clearCover = false,
     SignupStep? signupStep,
   }) => ProfileModel(
     id: id,
@@ -76,6 +86,8 @@ class ProfileModel extends Equatable {
     city: city ?? this.city,
     phone: phone ?? this.phone,
     avatarUrl: clearAvatar ? null : (avatarUrl ?? this.avatarUrl),
+    coverUrl: clearCover ? null : (coverUrl ?? this.coverUrl),
+    isVerified: isVerified,
     signupStep: signupStep ?? this.signupStep,
   );
 
@@ -90,6 +102,8 @@ class ProfileModel extends Equatable {
     city,
     phone,
     avatarUrl,
+    coverUrl,
+    isVerified,
     signupStep,
   ];
 }

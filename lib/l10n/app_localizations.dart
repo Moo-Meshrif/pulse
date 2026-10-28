@@ -4393,6 +4393,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'العربية'**
   String get settingsLanguageArabic;
+
+  /// Personal info: title
+  ///
+  /// In en, this message translates to:
+  /// **'Personal info'**
+  String get personalInfoTitle;
+
+  /// Personal info: link under the avatar
+  ///
+  /// In en, this message translates to:
+  /// **'Change cover photo'**
+  String get personalInfoChangeCover;
+
+  /// Personal info: camera badge label
+  ///
+  /// In en, this message translates to:
+  /// **'Change profile photo'**
+  String get personalInfoChangePhotoA11y;
+
+  /// Personal info: Location field label
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get personalInfoLocationLabel;
+
+  /// Personal info: Location field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Add a place'**
+  String get personalInfoLocationHint;
+
+  /// Personal info: note under phone and birthday
+  ///
+  /// In en, this message translates to:
+  /// **'Your email, phone and birthday are private and never shown on your profile.'**
+  String get personalInfoPrivateNote;
+
+  /// Personal info: save button
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get personalInfoSave;
+
+  /// Personal info: discard dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'Your edits will be lost.'**
+  String get personalInfoDiscardBody;
+
+  /// Personal info: notice after saving
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get personalInfoSaved;
+
+  /// Add location: notice when Use current location finds no place
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t find your location. Check that location is on.'**
+  String get locationCurrentUnavailable;
 }
 
 class _AppLocalizationsDelegate

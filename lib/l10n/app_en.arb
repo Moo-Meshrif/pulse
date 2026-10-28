@@ -3240,5 +3240,45 @@
   "settingsLanguageArabic": "العربية",
   "@settingsLanguageArabic": {
     "description": "Settings: the Arabic language, as the Language row value"
+  },
+  "personalInfoTitle": "Personal info",
+  "@personalInfoTitle": {
+    "description": "Personal info: title"
+  },
+  "personalInfoChangeCover": "Change cover photo",
+  "@personalInfoChangeCover": {
+    "description": "Personal info: link under the avatar"
+  },
+  "personalInfoChangePhotoA11y": "Change profile photo",
+  "@personalInfoChangePhotoA11y": {
+    "description": "Personal info: camera badge label"
+  },
+  "personalInfoLocationLabel": "Location",
+  "@personalInfoLocationLabel": {
+    "description": "Personal info: Location field label"
+  },
+  "personalInfoLocationHint": "Add a place",
+  "@personalInfoLocationHint": {
+    "description": "Personal info: Location field hint"
+  },
+  "personalInfoPrivateNote": "Your email, phone and birthday are private and never shown on your profile.",
+  "@personalInfoPrivateNote": {
+    "description": "Personal info: note under phone and birthday"
+  },
+  "personalInfoSave": "Save changes",
+  "@personalInfoSave": {
+    "description": "Personal info: save button"
+  },
+  "personalInfoDiscardBody": "Your edits will be lost.",
+  "@personalInfoDiscardBody": {
+    "description": "Personal info: discard dialog body"
+  },
+  "personalInfoSaved": "Profile updated",
+  "@personalInfoSaved": {
+    "description": "Personal info: notice after saving"
+  },
+  "locationCurrentUnavailable": "Couldn't find your location. Check that location is on.",
+  "@locationCurrentUnavailable": {
+    "description": "Add location: notice when Use current location finds no place"
   }
 }

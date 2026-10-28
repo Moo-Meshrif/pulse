@@ -30,6 +30,7 @@ class AppTextField extends StatefulWidget {
     this.isPassword = false,
     this.prefixText,
     this.prefix,
+    this.suffix,
     this.forceLtr = false,
     this.readOnly = false,
     this.enabled = true,
@@ -65,6 +66,9 @@ class AppTextField extends StatefulWidget {
 
   /// A widget before the text, e.g. the phone country code; wins over [prefixText].
   final Widget? prefix;
+
+  /// A widget at the end of the field, e.g. a status icon; ignored for a password field.
+  final Widget? suffix;
   final bool forceLtr;
   final bool readOnly;
   final bool enabled;
@@ -140,7 +144,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   style: context.text.body,
                   color: colors.textSecondary,
                 ),
-          suffixIcon: widget.isPassword ? _eyeButton(context) : null,
+          suffixIcon: widget.isPassword ? _eyeButton(context) : widget.suffix,
           suffixIconConstraints: BoxConstraints(
             minWidth: InputDimens.eyeTapTarget,
             minHeight: InputDimens.eyeTapTarget,

@@ -74,7 +74,9 @@ class ProfileSkeleton extends StatelessWidget {
                       borderRadius: BorderRadius.zero,
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.only(start: AppSpacing.s16),
+                      padding: EdgeInsetsDirectional.only(
+                        start: AppSpacing.s16,
+                      ),
                       child: Transform.translate(
                         offset: Offset(0, -ProfileDimens.avatarOverlap),
                         child: Container(
