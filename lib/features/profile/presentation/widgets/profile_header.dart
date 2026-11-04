@@ -18,20 +18,22 @@ class ProfileHeader extends StatelessWidget {
     required this.leading,
     required this.trailing,
     this.onAvatarTap,
+    this.blocked = false,
   });
 
   final ProfilePageModel page;
   final Widget leading;
   final Widget trailing;
   final VoidCallback? onAvatarTap;
+  final bool blocked;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final top = MediaQuery.paddingOf(context).top;
     final coverHeight = ProfileDimens.coverHeight + top;
-    final bio = page.bio ?? '';
-    final city = page.city ?? '';
+    final bio = blocked ? '' : page.bio ?? '';
+    final city = blocked ? '' : page.city ?? '';
     final avatarOuter =
         ProfileDimens.avatar +
         2 * (ProfileDimens.avatarWhiteRing + ProfileDimens.avatarRing);
@@ -48,7 +50,36 @@ class ProfileHeader extends StatelessWidget {
                 start: 0,
                 end: 0,
                 height: coverHeight,
-                child: _Cover(url: page.coverUrl),
+                child: ColorFiltered(
+                  colorFilter: blocked
+                      ? const ColorFilter.matrix(<double>[
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                        ])
+                      : const ColorFilter.mode(
+                          Colors.transparent,
+                          BlendMode.dst,
+                        ),
+                  child: _Cover(url: page.coverUrl),
+                ),
               ),
               PositionedDirectional(
                 top: top + ProfileDimens.coverButtonTop,
@@ -63,7 +94,36 @@ class ProfileHeader extends StatelessWidget {
               PositionedDirectional(
                 top: coverHeight - ProfileDimens.avatarOverlap,
                 start: AppSpacing.s16,
-                child: _Avatar(page: page, onTap: onAvatarTap),
+                child: ColorFiltered(
+                  colorFilter: blocked
+                      ? const ColorFilter.matrix(<double>[
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                        ])
+                      : const ColorFilter.mode(
+                          Colors.transparent,
+                          BlendMode.dst,
+                        ),
+                  child: _Avatar(page: page, onTap: onAvatarTap),
+                ),
               ),
             ],
           ),

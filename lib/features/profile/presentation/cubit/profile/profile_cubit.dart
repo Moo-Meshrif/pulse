@@ -66,9 +66,9 @@ class ProfileCubit extends BaseCubit<ProfileState>
 
   /// Opens the share sheet with the link of this profile.
   Future<void> shareProfile() async {
-    final username = state.page?.username;
-    if (username == null) return;
-    await _launch.shareText(profileLink(username));
+    final userId = state.page?.id;
+    if (userId == null) return;
+    await _launch.shareText(profileLink(userId));
   }
 
   /// The "Try again" of a grid that failed to load.

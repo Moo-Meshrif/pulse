@@ -26,6 +26,7 @@ import '../../features/profile/presentation/screen/notifications_screen.dart';
 import '../../features/profile/presentation/screen/people_screen.dart';
 import '../../features/profile/presentation/screen/personal_info_screen.dart';
 import '../../features/profile/presentation/screen/privacy_screen.dart';
+import '../../features/profile/presentation/screen/profile_route_screen.dart';
 import '../../features/profile/presentation/screen/security_screen.dart';
 import '../../features/profile/presentation/screen/settings_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
@@ -101,10 +102,12 @@ abstract final class AppRouter {
       );
     }
 
-    // TODO(story-plan T3): a placeholder until the profile screens exist.
     if (path.startsWith(AppRoutes.profilePrefix) &&
         path.length > AppRoutes.profilePrefix.length) {
-      return _page(settings, PlaceholderScreen(route: path));
+      final id = Uri.decodeComponent(
+        path.substring(AppRoutes.profilePrefix.length),
+      );
+      return _page(settings, ProfileRouteScreen(userId: id));
     }
 
     // `/post/:postId/comments`: the post page with the comment field focused.

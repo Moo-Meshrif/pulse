@@ -2843,4 +2843,87 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securityComingSoon => 'This is coming soon';
+
+  @override
+  String get otherProfileNotFound => 'User not found';
+
+  @override
+  String get otherOptions => 'Profile options';
+
+  @override
+  String get otherOptionsSoon => 'Profile options are coming soon';
+
+  @override
+  String get otherFollowsYou => 'Follows you';
+
+  @override
+  String get otherFollowBack => 'Follow back';
+
+  @override
+  String get otherMessage => 'Message';
+
+  @override
+  String get otherMessageSoon => 'Messages are coming soon';
+
+  @override
+  String get otherTagged => 'Tagged';
+
+  @override
+  String get otherBlockedTitle => 'You blocked this account';
+
+  @override
+  String get otherBlockedBody =>
+      'They can\'t see your profile, posts or message you.';
+
+  @override
+  String get otherPrivateTitle => 'This account is private';
+
+  @override
+  String get otherPrivateBody =>
+      'Follow to see their posts, shorts and stories.';
+
+  @override
+  String otherPrivateRequested(String name) {
+    return 'Request sent. You\'ll see their posts once $name accepts.';
+  }
+
+  @override
+  String get otherRequestSent => 'Follow request sent';
+
+  @override
+  String get otherRequestSentHint => 'Tap Requested to cancel.';
+
+  @override
+  String get otherCancelRequest => 'Cancel request?';
+
+  @override
+  String get otherCancelRequestBody => 'Cancel your follow request?';
+
+  @override
+  String get otherCancelRequestConfirm => 'Cancel request';
+
+  @override
+  String otherUnfollowTitle(String name) {
+    return 'Unfollow $name?';
+  }
+
+  @override
+  String get otherUnfollowBody =>
+      'This account is private. You may have to request to follow again.';
+
+  @override
+  String get otherUnfollow => 'Unfollow';
+
+  @override
+  String get otherNoPostsBody => 'Posts will show up here.';
+
+  @override
+  String otherFollowedBy(String names) {
+    return 'Followed by $names';
+  }
+
+  @override
+  String otherFollowedByMore(String names, int count) {
+    return 'Followed by $names and $count others';
+  }
 }

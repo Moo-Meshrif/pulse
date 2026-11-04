@@ -2861,4 +2861,84 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get securityComingSoon => 'هذه الميزة قادمة قريبًا';
+
+  @override
+  String get otherProfileNotFound => 'المستخدم غير موجود';
+
+  @override
+  String get otherOptions => 'خيارات الملف الشخصي';
+
+  @override
+  String get otherOptionsSoon => 'خيارات الملف الشخصي قادمة قريبًا';
+
+  @override
+  String get otherFollowsYou => 'يتابعك';
+
+  @override
+  String get otherFollowBack => 'رد المتابعة';
+
+  @override
+  String get otherMessage => 'رسالة';
+
+  @override
+  String get otherMessageSoon => 'الرسائل قادمة قريبًا';
+
+  @override
+  String get otherTagged => 'الوسوم';
+
+  @override
+  String get otherBlockedTitle => 'لقد حظرت هذا الحساب';
+
+  @override
+  String get otherBlockedBody => 'لا يستطيع رؤية ملفك أو منشوراتك أو مراسلتك.';
+
+  @override
+  String get otherPrivateTitle => 'هذا الحساب خاص';
+
+  @override
+  String get otherPrivateBody => 'تابعه لترى منشوراته وشورتسه وقصصه.';
+
+  @override
+  String otherPrivateRequested(String name) {
+    return 'تم إرسال الطلب. سترى منشوراته بعد أن يقبل $name.';
+  }
+
+  @override
+  String get otherRequestSent => 'تم إرسال طلب المتابعة';
+
+  @override
+  String get otherRequestSentHint => 'اضغط تم الطلب للإلغاء.';
+
+  @override
+  String get otherCancelRequest => 'إلغاء الطلب؟';
+
+  @override
+  String get otherCancelRequestBody => 'هل تريد إلغاء طلب المتابعة؟';
+
+  @override
+  String get otherCancelRequestConfirm => 'إلغاء الطلب';
+
+  @override
+  String otherUnfollowTitle(String name) {
+    return 'إلغاء متابعة $name؟';
+  }
+
+  @override
+  String get otherUnfollowBody => 'قد تحتاج إلى طلب المتابعة مرة أخرى.';
+
+  @override
+  String get otherUnfollow => 'إلغاء المتابعة';
+
+  @override
+  String get otherNoPostsBody => 'ستظهر المنشورات هنا.';
+
+  @override
+  String otherFollowedBy(String names) {
+    return 'يتابعه $names';
+  }
+
+  @override
+  String otherFollowedByMore(String names, int count) {
+    return 'يتابعه $names و$count آخرون';
+  }
 }

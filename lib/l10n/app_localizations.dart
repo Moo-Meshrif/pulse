@@ -4933,6 +4933,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This is coming soon'**
   String get securityComingSoon;
+
+  /// No description provided for @otherProfileNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get otherProfileNotFound;
+
+  /// No description provided for @otherOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile options'**
+  String get otherOptions;
+
+  /// No description provided for @otherOptionsSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile options are coming soon'**
+  String get otherOptionsSoon;
+
+  /// No description provided for @otherFollowsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows you'**
+  String get otherFollowsYou;
+
+  /// No description provided for @otherFollowBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow back'**
+  String get otherFollowBack;
+
+  /// No description provided for @otherMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get otherMessage;
+
+  /// No description provided for @otherMessageSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages are coming soon'**
+  String get otherMessageSoon;
+
+  /// No description provided for @otherTagged.
+  ///
+  /// In en, this message translates to:
+  /// **'Tagged'**
+  String get otherTagged;
+
+  /// No description provided for @otherBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You blocked this account'**
+  String get otherBlockedTitle;
+
+  /// No description provided for @otherBlockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They can\'t see your profile, posts or message you.'**
+  String get otherBlockedBody;
+
+  /// No description provided for @otherPrivateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private'**
+  String get otherPrivateTitle;
+
+  /// No description provided for @otherPrivateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow to see their posts, shorts and stories.'**
+  String get otherPrivateBody;
+
+  /// No description provided for @otherPrivateRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. You\'ll see their posts once {name} accepts.'**
+  String otherPrivateRequested(String name);
+
+  /// No description provided for @otherRequestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow request sent'**
+  String get otherRequestSent;
+
+  /// No description provided for @otherRequestSentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Requested to cancel.'**
+  String get otherRequestSentHint;
+
+  /// No description provided for @otherCancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request?'**
+  String get otherCancelRequest;
+
+  /// No description provided for @otherCancelRequestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel your follow request?'**
+  String get otherCancelRequestBody;
+
+  /// No description provided for @otherCancelRequestConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request'**
+  String get otherCancelRequestConfirm;
+
+  /// No description provided for @otherUnfollowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow {name}?'**
+  String otherUnfollowTitle(String name);
+
+  /// No description provided for @otherUnfollowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private. You may have to request to follow again.'**
+  String get otherUnfollowBody;
+
+  /// No description provided for @otherUnfollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get otherUnfollow;
+
+  /// No description provided for @otherNoPostsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Posts will show up here.'**
+  String get otherNoPostsBody;
+
+  /// No description provided for @otherFollowedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed by {names}'**
+  String otherFollowedBy(String names);
+
+  /// No description provided for @otherFollowedByMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed by {names} and {count} others'**
+  String otherFollowedByMore(String names, int count);
 }
 
 class _AppLocalizationsDelegate

@@ -13,6 +13,7 @@ class CommentModel extends Equatable {
   final String? fullName;
   final String? avatarUrl;
   final String? body;
+  final Map<String, String>? mentionIds;
   final DateTime? createdAt;
   final DateTime? editedAt;
   final int? likeCount;
@@ -40,6 +41,7 @@ class CommentModel extends Equatable {
     this.fullName,
     this.avatarUrl,
     this.body,
+    this.mentionIds,
     this.createdAt,
     this.editedAt,
     this.likeCount,
@@ -60,6 +62,7 @@ class CommentModel extends Equatable {
     fullName: JsonMapper.string(json['full_name']),
     avatarUrl: JsonMapper.string(json['avatar_url']),
     body: JsonMapper.string(json['body']),
+    mentionIds: _mentionIds(json['mention_ids']),
     createdAt: JsonMapper.date(json['created_at']),
     editedAt: JsonMapper.date(json['edited_at']),
     likeCount: JsonMapper.integer(json['like_count']),
@@ -75,6 +78,15 @@ class CommentModel extends Equatable {
     rank: JsonMapper.integer(json['rank']),
   );
 
+  static Map<String, String>? _mentionIds(Object? value) {
+    if (value is! Map) return null;
+    return Map.unmodifiable({
+      for (final entry in value.entries)
+        if (entry.key is String && entry.value is String)
+          entry.key as String: entry.value as String,
+    });
+  }
+
   /// The copy kept on the device, read back by [CommentModel.fromJson].
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -85,6 +97,7 @@ class CommentModel extends Equatable {
     'full_name': fullName,
     'avatar_url': avatarUrl,
     'body': body,
+    'mention_ids': mentionIds,
     'created_at': createdAt?.toUtc().toIso8601String(),
     'edited_at': editedAt?.toUtc().toIso8601String(),
     'like_count': likeCount,
@@ -106,6 +119,7 @@ class CommentModel extends Equatable {
     fullName,
     avatarUrl,
     body,
+    mentionIds,
     createdAt,
     editedAt,
     likeCount,

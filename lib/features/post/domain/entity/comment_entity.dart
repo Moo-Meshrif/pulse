@@ -12,6 +12,7 @@ class CommentEntity extends Equatable {
   final String? fullName;
   final String? avatarUrl;
   final String body;
+  final Map<String, String> mentionIds;
   final DateTime createdAt;
   final DateTime? editedAt;
   final int likeCount;
@@ -41,6 +42,7 @@ class CommentEntity extends Equatable {
     this.fullName,
     this.avatarUrl,
     required this.body,
+    this.mentionIds = const {},
     required this.createdAt,
     this.editedAt,
     required this.likeCount,
@@ -57,6 +59,7 @@ class CommentEntity extends Equatable {
 
   CommentEntity copyWith({
     String? body,
+    Map<String, String>? mentionIds,
     DateTime? editedAt,
     int? likeCount,
     bool? likedByMe,
@@ -71,6 +74,7 @@ class CommentEntity extends Equatable {
     fullName: fullName,
     avatarUrl: avatarUrl,
     body: body ?? this.body,
+    mentionIds: mentionIds ?? this.mentionIds,
     createdAt: createdAt,
     editedAt: editedAt ?? this.editedAt,
     likeCount: likeCount ?? this.likeCount,
@@ -98,6 +102,7 @@ class CommentEntity extends Equatable {
     fullName,
     avatarUrl,
     body,
+    mentionIds,
     createdAt,
     editedAt,
     likeCount,

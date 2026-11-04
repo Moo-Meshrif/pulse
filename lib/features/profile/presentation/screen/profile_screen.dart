@@ -9,7 +9,9 @@ import '../view/profile_view.dart';
 
 /// The Profile tab's root page: your own profile (docs/specs/profile/screens/s1-profile.md).
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, this.showBack = false});
+
+  final bool showBack;
 
   bool _hasNewRefreshFailure(ProfileState before, ProfileState state) =>
       state.refreshFailure != null &&
@@ -21,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
     child: BlocListener<ProfileCubit, ProfileState>(
       listenWhen: _hasNewRefreshFailure,
       listener: (context, state) => context.showFailure(state.refreshFailure),
-      child: const ProfileView(),
+      child: ProfileView(showBack: showBack),
     ),
   );
 }

@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/extensions/context_extensions.dart';
+import '../../../../../core/extensions/l10n.dart';
+import '../../../../../core/notice/notices.dart';
 import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/theme/app_text_styles.dart';
@@ -9,9 +11,10 @@ import '../../utils/comment_mentions.dart';
 
 /// The words of a comment with each `@username` in the primary color; a tap opens that profile.
 class CommentBody extends StatefulWidget {
-  const CommentBody(this.body, {super.key});
+  const CommentBody(this.body, {super.key, this.mentionIds = const {}});
 
   final String body;
+  final Map<String, String> mentionIds;
 
   @override
   State<CommentBody> createState() => _CommentBodyState();
@@ -38,8 +41,12 @@ class _CommentBodyState extends State<CommentBody> {
   }
 
   void _open(String username) {
-    // TODO(post-plan T23): the profile screen is a placeholder; it will take the username.
-    AppNavigator.push(context, AppRoutes.profileOf(username));
+    final id = widget.mentionIds[username.toLowerCase()];
+    if (id == null) {
+      Notices.error(context.l10n.otherProfileNotFound);
+      return;
+    }
+    AppNavigator.push<void>(context, AppRoutes.profileOf(id));
   }
 
   InlineSpan _span(CommentPart part, Color color) {

@@ -156,6 +156,8 @@ import '../../features/profile/data/datasource/app_preferences_datasource.dart'
 import '../../features/profile/data/datasource/blocks_datasource.dart' as _i4;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
+import '../../features/profile/data/datasource/mutual_preview_datasource.dart'
+    as _i213;
 import '../../features/profile/data/datasource/notification_prefs_datasource.dart'
     as _i309;
 import '../../features/profile/data/datasource/people_datasource.dart' as _i784;
@@ -200,6 +202,8 @@ import '../../features/profile/presentation/cubit/blocked/blocked_cubit.dart'
     as _i321;
 import '../../features/profile/presentation/cubit/notifications/notifications_cubit.dart'
     as _i1000;
+import '../../features/profile/presentation/cubit/other_profile/other_profile_cubit.dart'
+    as _i783;
 import '../../features/profile/presentation/cubit/own_author/own_author_cubit.dart'
     as _i378;
 import '../../features/profile/presentation/cubit/people/people_cubit.dart'
@@ -440,6 +444,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i201.LocalStorageService>(
       () => _i201.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i213.MutualPreviewDatasource>(
+      () => _i213.MutualPreviewDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i634.PostLikesDatasource>(
       () => _i634.SupabasePostLikesDatasource(gh<_i454.SupabaseClient>()),
@@ -1127,6 +1134,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factoryParam<_i97.TagPeopleCubit, _i425.TagPeopleArgs, dynamic>(
       (args, _) => _i97.TagPeopleCubit(gh<_i699.PostRepository>(), args),
+    );
+    gh.factoryParam<_i783.OtherProfileCubit, String, dynamic>(
+      (userId, _) => _i783.OtherProfileCubit(
+        gh<_i874.ProfilePageDatasource>(),
+        gh<_i130.ToggleFollowUseCase>(),
+        gh<_i4.BlocksDatasource>(),
+        gh<_i599.SignPostMediaUrlsUseCase>(),
+        gh<_i213.MutualPreviewDatasource>(),
+        userId,
+      ),
     );
     gh.factory<_i592.FeedCubit>(
       () => _i592.FeedCubit(

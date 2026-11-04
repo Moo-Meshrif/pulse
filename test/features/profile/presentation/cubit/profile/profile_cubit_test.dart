@@ -191,6 +191,6 @@ void main() {
 
     await cubit.shareProfile();
 
-    verify(() => launch.shareText(any(that: contains('/u/ada')))).called(1);
+    verify(() => launch.shareText('https://pulse.app/profile/me')).called(1);
   });
 }

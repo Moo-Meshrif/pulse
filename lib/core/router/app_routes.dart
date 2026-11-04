@@ -58,7 +58,7 @@ abstract final class AppRoutes {
   static String storyOf(String authorId) => '$storyPrefix$authorId';
   static const storyPrefix = '/story/';
 
-  /// A person's profile (`/profile/:userId`); a placeholder until the profile screens exist.
+  /// A person's profile (`/profile/:userId`).
   static String profileOf(String userId) => '$profilePrefix$userId';
   static const profilePrefix = '/profile/';
 

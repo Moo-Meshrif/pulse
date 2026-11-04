@@ -1,7 +1,7 @@
 # Profile and Settings — what the user will see
 
 Source specs: docs/specs/profile/, docs/specs/_theme/
-Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [x] 10 · [ ] 11 · [ ] 12 · [ ] 13 · [ ] 14
+Status: approved 2026-10-28. Phases: [x] 0 · [x] 1 · [x] 2 · [x] 3 · [x] 4 · [x] 5 · [x] 6 · [x] 7 · [x] 8 · [x] 9 · [x] 10 · [x] 11 · [ ] 12 · [ ] 13 · [ ] 14
 Mode: one-by-one
 
 ## Today's problem
@@ -314,18 +314,18 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, test, compare with `s4-password-security.png`. **I ask you first:** adding `device_info_plus` if missing.
 
 ### Phase 11: Someone else's profile
-**Status:** [ ]
+**Status:** [x] written; analyze and Cubit tests pass; live migrations and two-account device and visual checks remain pending. The Following and Options sheets remain in Phase 12.
 - **Goal:** `/profile/:id` opens a real profile with follow, private, requested and blocked states.
 - **Depends on:** Phases 1, 2, 4, 5.
 - **Spec refs:** screens/s12-other-profile.md (states 1-5 and 7).
 - **Tasks:**
-  - [ ] Other-profile screen using the shared header and grid.
-  - [ ] Follow buttons and states, locked card, blocked card, user-not-found.
-  - [ ] Tagged tab, "Followed by" row, own id opens the Profile tab page.
-  - [ ] Router: replace the placeholder.
+  - [x] Other-profile screen using the shared header and grid.
+  - [x] Follow buttons and states, locked card, blocked card, user-not-found.
+  - [x] Tagged tab, "Followed by" row, own id opens the Profile tab page.
+  - [x] Router: replace the placeholder.
 - **Implementation steps:**
-  1. `lib/core/router/app_router.dart` (edit): remove the placeholder branch marked `TODO(story-plan T3)`; `/profile/:idOrUsername` opens `OtherProfileScreen(userId)`; when the id is the signed-in user (compare with `GetCurrentUserIdUseCase`) show `ProfileScreen` pushed inside the nearest Navigator without the sliders-first assumption; `AppRoutes.profileOf` stays.
-  2. `lib/features/post/presentation/widgets/comments/comment_body.dart` (edit): the mention tap resolves the username to an id with the `profile_id_by_username` RPC (via a `GetProfileIdByUsernameUseCase` (new) in `features/profile/domain/use_case/`) and then calls `profileOf(id)`; unknown name = notice "User not found".
+  1. `lib/core/router/app_router.dart` (edit): remove the placeholder branch marked `TODO(story-plan T3)`; `/profile/:id` opens `OtherProfileScreen(userId)`; when the id is the signed-in user (compare with `GetCurrentUserIdUseCase`) show `ProfileScreen` pushed inside the nearest Navigator without the sliders-first assumption; `AppRoutes.profileOf` stays.
+  2. `lib/features/post/presentation/widgets/comments/comment_body.dart` (edit): use the mention ID returned with the comment and call `profileOf(id)`; unresolved name = notice "User not found".
   3. `cubit/other_profile/other_profile_cubit.dart` + state (new): loads `profile_by_id`; no row = `notFound`; follow button states (none, followBack, following, requested) derived from `iFollow` and `followsMe`; optimistic follow/unfollow through `ToggleFollowUseCase`; cancel request; mutual preview; tabs Posts / Shorts / Tagged.
   4. `screen/other_profile_screen.dart`, `view/other_profile_view.dart` (new): reuse `ProfileHeader` (other variant: back button and "..." button), `StatsCard`, `PostGrid`, new `follow_buttons.dart`, `locked_card.dart` (ic_lock_closed, private text and requested text), blocked state card (`ic_state_blocked`, Unblock pill), `followed_by_row.dart` (3 avatars + text, tap -> people mutual).
   5. Message button: shown unless `canMessage` is false; tap shows "Messages are coming soon" with `// TODO(profile-plan T6): open Chat when it exists`.

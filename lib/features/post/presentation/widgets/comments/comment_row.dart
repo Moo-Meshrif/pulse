@@ -153,7 +153,7 @@ class _Content extends StatelessWidget {
                 ],
               ),
               SizedBox(height: CommentsDimens.lineGap),
-              CommentBody(comment.body),
+              CommentBody(comment.body, mentionIds: comment.mentionIds),
             ],
           ),
         ),

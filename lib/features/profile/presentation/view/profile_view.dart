@@ -24,7 +24,9 @@ import '../widgets/profile_tabs.dart';
 
 /// The Profile tab's page: the header, the numbers, the tabs and the grid.
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  const ProfileView({super.key, this.showBack = false});
+
+  final bool showBack;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -32,14 +34,16 @@ class ProfileView extends StatelessWidget {
     body: AppSafeArea(
       top: false,
       bottomSpace: NavClearance.of(context),
-      child: const ContentWidth(child: _Body()),
+      child: ContentWidth(child: _Body(showBack: showBack)),
     ),
   );
 }
 
 /// The skeleton until the header answers, then the page; or the failed page.
 class _Body extends StatelessWidget {
-  const _Body();
+  const _Body({required this.showBack});
+
+  final bool showBack;
 
   @override
   Widget build(BuildContext context) =>
@@ -53,13 +57,15 @@ class _Body extends StatelessWidget {
               onRetry: () => context.read<ProfileCubit>().load(),
             ),
           ),
-          ProfileStatus.ready => const _Page(),
+          ProfileStatus.ready => _Page(showBack: showBack),
         },
       );
 }
 
 class _Page extends StatelessWidget {
-  const _Page();
+  const _Page({required this.showBack});
+
+  final bool showBack;
 
   // An empty grid has no end to reach: its empty page is the footer.
   PagingInfo _paging(ProfileState state) => (
@@ -81,46 +87,56 @@ class _Page extends StatelessWidget {
       refreshIconFilled: AppAssets.profileFilled,
       bottomSpace: NavClearance.of(context),
       loadMoreSkeleton: const GridSkeleton(),
-      slivers: const [_Header(), ProfileStats(), _Tabs(), GridSection()],
+      slivers: [
+        _Header(showBack: showBack),
+        const ProfileStats(),
+        const _Tabs(),
+        const GridSection(),
+      ],
     );
   }
 }
 
 class _Header extends StatelessWidget {
-  const _Header();
+  const _Header({required this.showBack});
+
+  final bool showBack;
 
   @override
-  Widget build(BuildContext context) =>
-      BlocSelector<ProfileCubit, ProfileState, ProfilePageModel?>(
-        selector: (state) => state.page,
-        builder: (context, page) {
-          if (page == null) return const SliverToBoxAdapter();
-          final avatarUrl = page.avatarUrl;
-          return SliverToBoxAdapter(
-            child: ProfileHeader(
-              page: page,
-              leading: CoverButton(
-                icon: AppAssets.send,
-                label: context.l10n.profileShareA11y,
-                onPressed: () =>
-                    unawaited(context.read<ProfileCubit>().shareProfile()),
-              ),
-              trailing: CoverButton(
-                icon: AppAssets.sliders,
-                label: context.l10n.profileSettingsA11y,
-                onPressed: () => AppNavigator.push(
-                  context,
-                  AppRoutes.settings,
-                  rootNavigator: true,
-                ),
-              ),
-              onAvatarTap: avatarUrl == null
-                  ? null
-                  : () => PhotoViewer.show(context, avatarUrl),
+  Widget build(
+    BuildContext context,
+  ) => BlocSelector<ProfileCubit, ProfileState, ProfilePageModel?>(
+    selector: (state) => state.page,
+    builder: (context, page) {
+      if (page == null) return const SliverToBoxAdapter();
+      final avatarUrl = page.avatarUrl;
+      return SliverToBoxAdapter(
+        child: ProfileHeader(
+          page: page,
+          leading: CoverButton(
+            icon: showBack ? AppAssets.arrowBack : AppAssets.send,
+            label: showBack ? context.l10n.back : context.l10n.profileShareA11y,
+            directional: showBack,
+            onPressed: showBack
+                ? () => AppNavigator.back(context)
+                : () => unawaited(context.read<ProfileCubit>().shareProfile()),
+          ),
+          trailing: CoverButton(
+            icon: AppAssets.sliders,
+            label: context.l10n.profileSettingsA11y,
+            onPressed: () => AppNavigator.push(
+              context,
+              AppRoutes.settings,
+              rootNavigator: true,
             ),
-          );
-        },
+          ),
+          onAvatarTap: avatarUrl == null
+              ? null
+              : () => PhotoViewer.show(context, avatarUrl),
+        ),
       );
+    },
+  );
 }
 
 class _Tabs extends StatelessWidget {

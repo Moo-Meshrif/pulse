@@ -31,6 +31,7 @@ abstract final class CommentEntityMapper {
       fullName: comment.fullName,
       avatarUrl: comment.avatarUrl,
       body: body,
+      mentionIds: comment.mentionIds ?? const {},
       createdAt: createdAt,
       editedAt: comment.editedAt,
       likeCount: comment.likeCount ?? 0,

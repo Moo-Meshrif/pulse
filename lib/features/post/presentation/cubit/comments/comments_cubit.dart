@@ -289,7 +289,11 @@ class CommentsCubit extends BaseCubit<CommentsState> {
           comments: CommentEdit.update(
             state.comments,
             target.id,
-            (c) => c.copyWith(body: comment.body, editedAt: comment.editedAt),
+            (c) => c.copyWith(
+              body: comment.body,
+              mentionIds: comment.mentionIds,
+              editedAt: comment.editedAt,
+            ),
           ),
         );
       },
