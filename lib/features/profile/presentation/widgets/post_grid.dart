@@ -7,6 +7,40 @@ import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/model/profile_grid_item_model.dart';
 import '../dimens/profile_dimens.dart';
+import '../utils/enums/profile_status.dart';
+import 'profile_skeleton.dart';
+
+class ProfileGridContent extends StatelessWidget {
+  const ProfileGridContent({
+    super.key,
+    required this.status,
+    required this.items,
+    required this.urls,
+    required this.onRetry,
+    required this.empty,
+    required this.errorHeight,
+  });
+
+  final ProfileStatus status;
+  final List<ProfileGridItemModel> items;
+  final Map<String, String> urls;
+  final VoidCallback onRetry;
+  final Widget empty;
+  final double errorHeight;
+
+  @override
+  Widget build(BuildContext context) => switch (status) {
+    ProfileStatus.loading => const SliverToBoxAdapter(child: GridSkeleton()),
+    ProfileStatus.failed => SliverToBoxAdapter(
+      child: SizedBox(
+        height: errorHeight,
+        child: AppEmpty.failed(onRetry: onRetry),
+      ),
+    ),
+    ProfileStatus.ready when items.isEmpty => empty,
+    ProfileStatus.ready => PostGrid(items: items, urls: urls),
+  };
+}
 
 /// Square tiles, three to a row. [urls] holds the signed picture links by storage path; a tile whose link
 /// is not there yet shows its blurhash.

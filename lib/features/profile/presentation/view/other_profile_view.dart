@@ -125,7 +125,8 @@ class OtherProfileView extends StatelessWidget {
                         trailing: CoverButton(
                           icon: AppAssets.moreHorizontal,
                           label: l10n.otherOptions,
-                          onPressed: () => ProfileSheets.options(context, cubit),
+                          onPressed: () =>
+                              ProfileSheets.options(context, cubit),
                         ),
                         onAvatarTap: page.avatarUrl == null || blocked
                             ? null
@@ -148,8 +149,11 @@ class OtherProfileView extends StatelessWidget {
                         SliverToBoxAdapter(
                           child: FollowedByRow(
                             data: state.mutual,
-                            onTap: () =>
-                                _people(context, PeopleKind.mutual, cubit.userId),
+                            onTap: () => _people(
+                              context,
+                              PeopleKind.mutual,
+                              cubit.userId,
+                            ),
                           ),
                         ),
                       SliverToBoxAdapter(
@@ -267,25 +271,21 @@ class OtherProfileView extends StatelessWidget {
                           body: l10n.profileShortsSoonBody,
                         ),
                       )
-                    else if (state.gridStatus == ProfileStatus.loading)
-                      const SliverToBoxAdapter(child: GridSkeleton())
-                    else if (state.gridStatus == ProfileStatus.failed)
-                      SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 250,
-                          child: AppEmpty.failed(onRetry: cubit.loadGrid),
-                        ),
-                      )
-                    else if (state.items.isEmpty)
-                      SliverToBoxAdapter(
-                        child: OtherProfileCard(
-                          icon: AppAssets.inbox,
-                          title: l10n.profileNoPosts,
-                          body: l10n.otherNoPostsBody,
-                        ),
-                      )
                     else
-                      PostGrid(items: state.items, urls: state.urls),
+                      ProfileGridContent(
+                        status: state.gridStatus,
+                        items: state.items,
+                        urls: state.urls,
+                        onRetry: cubit.loadGrid,
+                        errorHeight: 250,
+                        empty: SliverToBoxAdapter(
+                          child: OtherProfileCard(
+                            icon: AppAssets.inbox,
+                            title: l10n.profileNoPosts,
+                            body: l10n.otherNoPostsBody,
+                          ),
+                        ),
+                      ),
                     if (state.more == LoadMoreStatus.loading)
                       const SliverToBoxAdapter(child: GridSkeleton()),
                     if (state.more == LoadMoreStatus.failed)

@@ -11,10 +11,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../cubit/profile/profile_cubit.dart';
 import '../cubit/profile/profile_state.dart';
 import '../dimens/profile_dimens.dart';
-import '../utils/enums/profile_status.dart';
 import '../utils/enums/profile_tab.dart';
 import 'post_grid.dart';
-import 'profile_skeleton.dart';
 
 /// The active tab's tiles, or its loading, empty, failed or coming-soon page.
 class GridSection extends StatelessWidget {
@@ -39,38 +37,30 @@ class GridSection extends StatelessWidget {
           message: l10n.profileShortsSoonBody,
         );
       }
-      return switch (state.gridStatus) {
-        ProfileStatus.loading => const SliverToBoxAdapter(
-          child: GridSkeleton(),
-        ),
-        ProfileStatus.failed => SliverToBoxAdapter(
-          child: SizedBox(
-            height: ProfileDimens.emptyHeight,
-            child: AppEmpty.failed(
-              onRetry: () => context.read<ProfileCubit>().retryGrid(),
-            ),
-          ),
-        ),
-        ProfileStatus.ready when state.items.isEmpty =>
-          state.tab == ProfileTab.saved
-              ? _Message(
-                  icon: AppAssets.bookmark,
-                  title: l10n.profileNoSaved,
-                  message: l10n.profileNoSavedBody,
-                )
-              : _Message(
-                  icon: AppAssets.inbox,
-                  title: l10n.profileNoPosts,
-                  message: l10n.profileNoPostsBody,
-                  primaryLabel: l10n.profileSharePost,
-                  onPrimary: () => AppNavigator.push(
-                    context,
-                    AppRoutes.createPost,
-                    rootNavigator: true,
-                  ),
+      return ProfileGridContent(
+        status: state.gridStatus,
+        items: state.items,
+        urls: state.urls,
+        onRetry: () => context.read<ProfileCubit>().retryGrid(),
+        errorHeight: ProfileDimens.emptyHeight,
+        empty: state.tab == ProfileTab.saved
+            ? _Message(
+                icon: AppAssets.bookmark,
+                title: l10n.profileNoSaved,
+                message: l10n.profileNoSavedBody,
+              )
+            : _Message(
+                icon: AppAssets.inbox,
+                title: l10n.profileNoPosts,
+                message: l10n.profileNoPostsBody,
+                primaryLabel: l10n.profileSharePost,
+                onPrimary: () => AppNavigator.push(
+                  context,
+                  AppRoutes.createPost,
+                  rootNavigator: true,
                 ),
-        ProfileStatus.ready => PostGrid(items: state.items, urls: state.urls),
-      };
+              ),
+      );
     },
   );
 }
