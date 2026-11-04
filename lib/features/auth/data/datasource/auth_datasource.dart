@@ -4,8 +4,10 @@ import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/app_config.dart';
+import '../../../../core/enums/auth_failure_reason.dart';
 import '../../../../core/enums/recovery_signal.dart';
 import '../../../../core/enums/signed_out_reason.dart';
+import '../../../../core/error/failures.dart';
 import '../../../../core/error/guard.dart';
 import '../../../../core/services/storage/snapshot_storage.dart';
 import 'password_recovery_tracker.dart';
@@ -46,6 +48,10 @@ abstract interface class AuthDatasource {
   /// the same `AuthFailure(invalidCredentials)`; `emailNotConfirmed` comes only after the right password. A
   /// backend that cannot do this must not offer username sign-in.
   Future<void> signIn({required String identifier, required String password});
+
+  /// Checks [password] against the signed-in account by signing in again with its email. Wrong password:
+  /// `AuthFailure(invalidCredentials)`; no session: `AuthFailure(sessionExpired)`.
+  Future<void> verifyPassword(String password);
 
   /// Creates the account and emails the 6-digit code. Returns true when the email already had an account
   /// (nothing was created and no code was sent). The screen must not tell the user: it shows the same next
@@ -158,6 +164,15 @@ final class SupabaseAuthDatasource implements AuthDatasource {
         await _auth.setSession(refreshToken);
         await _recovery.end();
       });
+
+  @override
+  Future<void> verifyPassword(String password) async {
+    final email = _auth.currentUser?.email;
+    if (email == null) {
+      throw const AuthFailure(AuthFailureReason.sessionExpired);
+    }
+    await signIn(identifier: email, password: password);
+  }
 
   @override
   Future<bool> signUp({required String email, required String password}) =>

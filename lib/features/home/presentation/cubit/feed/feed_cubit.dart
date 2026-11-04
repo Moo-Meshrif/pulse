@@ -85,6 +85,9 @@ class FeedCubit extends BaseCubit<FeedState> with EventCubitMixin<FeedState> {
   @override
   EventBus get events => _events;
 
+  /// The signed-in person's id; fixed for the session, so a plain read is enough.
+  String? get userId => state.userId;
+
   void setAtTop(bool atTop) => _atTop = atTop;
 
   /// Shows the feed saved on the phone at once, then loads the fresh one behind it; with nothing saved it

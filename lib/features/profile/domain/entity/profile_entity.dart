@@ -13,6 +13,7 @@ class ProfileEntity extends Equatable {
   final String? city;
   final String? phone;
   final String? avatarUrl;
+  final String? coverUrl;
   final SignupStep? signupStep;
 
   const ProfileEntity({
@@ -25,6 +26,7 @@ class ProfileEntity extends Equatable {
     this.city,
     this.phone,
     this.avatarUrl,
+    this.coverUrl,
     this.signupStep,
   });
 
@@ -42,6 +44,7 @@ class ProfileEntity extends Equatable {
     city,
     phone,
     avatarUrl,
+    coverUrl,
     signupStep,
   ];
 }

@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,8 @@ import 'package:pulse/core/widgets/widgets.dart';
 import 'package:pulse/features/home/presentation/cubit/story_rail/story_rail_cubit.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_item.dart';
 import 'package:pulse/features/home/presentation/widgets/story_rail/story_rail.dart';
+import 'package:pulse/features/profile/presentation/cubit/own_author/own_author_cubit.dart';
+import 'package:pulse/features/profile/presentation/cubit/own_author/own_author_state.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/entity/story_viewer_args.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
@@ -20,7 +23,6 @@ import 'package:pulse/shared/content/domain/use_case/get_publish_status_use_case
 import 'package:pulse/shared/content/domain/use_case/retry_publish_use_case.dart';
 
 import '../../../../helpers/content_mocks.dart';
-
 import '../../../../helpers/pump_app.dart';
 import '../../home_doubles.dart';
 
@@ -41,6 +43,8 @@ StoryRailItemEntity person(
   allSeen: allSeen,
 );
 
+class _OwnAuthor extends MockCubit<OwnAuthorState> implements OwnAuthorCubit {}
+
 void main() {
   late StoryRailCubit cubit;
   late _GetRail getRail;
@@ -48,7 +52,11 @@ void main() {
   late EventBus bus;
   late List<RouteSettings> pushed;
 
+  late _OwnAuthor ownAuthor;
+
   setUp(() {
+    ownAuthor = _OwnAuthor();
+    when(() => ownAuthor.state).thenReturn(const OwnAuthorState());
     getRail = _GetRail();
     retry = _Retry();
     bus = EventBus();
@@ -78,7 +86,13 @@ void main() {
     await cubit.start();
     await tester.pumpApp(
       Scaffold(
-        body: BlocProvider.value(value: cubit, child: const StoryRail()),
+        body: MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: cubit),
+            BlocProvider<OwnAuthorCubit>.value(value: ownAuthor),
+          ],
+          child: const StoryRail(),
+        ),
       ),
       locale: locale,
       onGenerateRoute: (settings) {

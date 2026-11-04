@@ -2775,5 +2775,840 @@
   "postLikedByYouName": "أعجبك",
   "@postLikedByYouName": {
     "x-review": "Arabic draft: pending user approval"
-  }
+  },
+  "settingsTitle": "الإعدادات",
+  "@settingsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsAccount": "الحساب",
+  "@settingsAccount": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPreferences": "التفضيلات",
+  "@settingsPreferences": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsSupport": "الدعم",
+  "@settingsSupport": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPersonalInfo": "المعلومات الشخصية",
+  "@settingsPersonalInfo": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPasswordSecurity": "كلمة المرور والأمان",
+  "@settingsPasswordSecurity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsPrivacy": "الخصوصية",
+  "@settingsPrivacy": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsBlocked": "الحسابات المحظورة",
+  "@settingsBlocked": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsNotifications": "الإشعارات",
+  "@settingsNotifications": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLanguage": "اللغة",
+  "@settingsLanguage": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsAutoplay": "تشغيل الشورتس تلقائيًا",
+  "@settingsAutoplay": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsAutoplaySub": "شغّل الفيديوهات تلقائيًا عبر الواي فاي",
+  "@settingsAutoplaySub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDataSaver": "توفير البيانات",
+  "@settingsDataSaver": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDataSaverSub": "حمّل وسائط بجودة أقل عند استخدام بيانات الجوال",
+  "@settingsDataSaverSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDarkMode": "الوضع الداكن",
+  "@settingsDarkMode": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDarkModeSub": "أريح للعين ليلًا",
+  "@settingsDarkModeSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsHelp": "مركز المساعدة",
+  "@settingsHelp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsReport": "الإبلاغ عن مشكلة",
+  "@settingsReport": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsTerms": "الشروط والسياسات",
+  "@settingsTerms": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLogOut": "تسجيل الخروج",
+  "@settingsLogOut": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDelete": "حذف الحساب",
+  "@settingsDelete": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsVersion": "بولس · الإصدار {version}",
+  "@settingsVersion": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "valuePublic": "عام",
+  "@valuePublic": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "valuePrivate": "خاص",
+  "@valuePrivate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "valueOn": "مفعّل",
+  "@valueOn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "valueOff": "متوقف",
+  "@valueOff": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTabPosts": "المنشورات",
+  "@profileTabPosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTabShorts": "الشورتس",
+  "@profileTabShorts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileTabSaved": "المحفوظات",
+  "@profileTabSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profilePosts": "المنشورات",
+  "@profilePosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileFollowers": "المتابعون",
+  "@profileFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileFollowing": "يتابع",
+  "@profileFollowing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoPosts": "لا توجد منشورات بعد",
+  "@profileNoPosts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoPostsBody": "المنشورات التي تشاركها ستظهر هنا.",
+  "@profileNoPostsBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileSharePost": "شارك أول منشور لك",
+  "@profileSharePost": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoSaved": "لا يوجد شيء محفوظ بعد",
+  "@profileNoSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileNoSavedBody": "اضغط على علامة الحفظ في أي منشور ليظهر هنا. أنت وحدك من يراه.",
+  "@profileNoSavedBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileShortsSoon": "الشورتس قادمة قريبًا",
+  "@profileShortsSoon": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileShortsSoonBody": "ستظهر مقاطع الفيديو القصيرة هنا.",
+  "@profileShortsSoonBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileShareA11y": "مشاركة الملف الشخصي",
+  "@profileShareA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileSettingsA11y": "الإعدادات",
+  "@profileSettingsA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileViewPhotoA11y": "عرض صورة الملف الشخصي",
+  "@profileViewPhotoA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profilePostA11y": "فتح المنشور",
+  "@profilePostA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileLoadMoreError": "تعذّر تحميل المزيد · أعد المحاولة",
+  "@profileLoadMoreError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileCaughtUp": "هذا كل شيء",
+  "@profileCaughtUp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "profileOfflineNumbers": "اتصل بالإنترنت لعرض الأرقام.",
+  "@profileOfflineNumbers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleFollowersTitle": "المتابعون",
+  "@peopleFollowersTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleFollowingTitle": "يتابع",
+  "@peopleFollowingTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleMutualTitle": "يتابعه",
+  "@peopleMutualTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleSearchHint": "بحث",
+  "@peopleSearchHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleSearchClear": "مسح البحث",
+  "@peopleSearchClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowers": "لا يوجد متابعون بعد",
+  "@peopleNoFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowersBody": "عندما يتابع الناس هذا الحساب سيظهرون هنا.",
+  "@peopleNoFollowersBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowing": "لا يتابع أحدًا بعد",
+  "@peopleNoFollowing": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoFollowingBody": "الحسابات التي يتابعها هذا الشخص ستظهر هنا.",
+  "@peopleNoFollowingBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMutual": "لا يوجد متابعون مشتركون",
+  "@peopleNoMutual": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMutualBody": "لا تتابع أحدًا يتابع هذا الحساب.",
+  "@peopleNoMutualBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMatches": "لم يتم العثور على أحد",
+  "@peopleNoMatches": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleNoMatchesBody": "جرّب اسمًا أو @اسم مستخدم آخر.",
+  "@peopleNoMatchesBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peoplePrivateTitle": "هذا الحساب خاص",
+  "@peoplePrivateTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peoplePrivateBody": "تابع هذا الحساب لترى من يتابعه ومن يتابع.",
+  "@peoplePrivateBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleLoadMoreError": "تعذّر تحميل المزيد · أعد المحاولة",
+  "@peopleLoadMoreError": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleCaughtUp": "هذا كل الأشخاص",
+  "@peopleCaughtUp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLogOutTitle": "تسجيل الخروج؟",
+  "@settingsLogOutTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLogOutBody": "ستحتاج إلى تسجيل الدخول مرة أخرى.",
+  "@settingsLogOutBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeleteTitle": "حذف حسابك؟",
+  "@settingsDeleteTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeleteBody": "سيؤدي هذا إلى حذف ملفك ومنشوراتك وقصصك نهائيًا ولا يمكن التراجع.",
+  "@settingsDeleteBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeletePasswordLabel": "كلمة المرور",
+  "@settingsDeletePasswordLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeletePasswordHint": "أدخل كلمة المرور",
+  "@settingsDeletePasswordHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDeleteWrongPassword": "كلمة المرور غير صحيحة",
+  "@settingsDeleteWrongPassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsDarkModeSoon": "الوضع الداكن قادم قريبًا",
+  "@settingsDarkModeSoon": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLanguageEnglish": "English",
+  "@settingsLanguageEnglish": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "settingsLanguageArabic": "العربية",
+  "@settingsLanguageArabic": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoTitle": "المعلومات الشخصية",
+  "@personalInfoTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoChangeCover": "تغيير صورة الغلاف",
+  "@personalInfoChangeCover": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoChangePhotoA11y": "تغيير صورة الملف الشخصي",
+  "@personalInfoChangePhotoA11y": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoLocationLabel": "الموقع",
+  "@personalInfoLocationLabel": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoLocationHint": "أضف مكانًا",
+  "@personalInfoLocationHint": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoPrivateNote": "بريدك الإلكتروني وهاتفك وتاريخ ميلادك خاصة ولا تظهر في ملفك الشخصي.",
+  "@personalInfoPrivateNote": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoSave": "حفظ التغييرات",
+  "@personalInfoSave": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoDiscardBody": "ستفقد تعديلاتك.",
+  "@personalInfoDiscardBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "personalInfoSaved": "تم تحديث الملف الشخصي",
+  "@personalInfoSaved": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "locationCurrentUnavailable": "تعذّر العثور على موقعك. تأكد من تشغيل الموقع.",
+  "@locationCurrentUnavailable": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsTitle": "الإشعارات",
+  "@notificationsTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsPush": "الإشعارات الفورية",
+  "@notificationsPush": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsPushSub": "استلم التنبيهات على هذا الجهاز",
+  "@notificationsPushSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsSectionActivity": "النشاط",
+  "@notificationsSectionActivity": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsSectionMessages": "الرسائل",
+  "@notificationsSectionMessages": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsSectionPulse": "من بولس",
+  "@notificationsSectionPulse": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsLikes": "الإعجابات",
+  "@notificationsLikes": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsLikesSub": "على منشوراتك وشورتسك",
+  "@notificationsLikesSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsComments": "التعليقات والردود",
+  "@notificationsComments": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsCommentsSub": "عندما يشارك أحد في المحادثة",
+  "@notificationsCommentsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsMentions": "الإشارات والوسوم",
+  "@notificationsMentions": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsMentionsSub": "عند الإشارة إليك في منشور",
+  "@notificationsMentionsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsFollowers": "متابعون جدد",
+  "@notificationsFollowers": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsFollowersSub": "عندما يتابعك أحد",
+  "@notificationsFollowersSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDirect": "الرسائل المباشرة",
+  "@notificationsDirect": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDirectSub": "المحادثات الفردية",
+  "@notificationsDirectSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsGroups": "محادثات المجموعات",
+  "@notificationsGroups": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsGroupsSub": "كل رسالة في المجموعات التي أنت فيها",
+  "@notificationsGroupsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsShorts": "شورتس من تتابعهم",
+  "@notificationsShorts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsShortsSub": "عندما ينشرون شيئًا جديدًا",
+  "@notificationsShortsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDigest": "ملخص أسبوعي بالبريد",
+  "@notificationsDigest": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsDigestSub": "أبرز ما فاتك",
+  "@notificationsDigestSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsProduct": "تحديثات المنتج",
+  "@notificationsProduct": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "notificationsProductSub": "ميزات جديدة ونصائح",
+  "@notificationsProductSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageTitle": "اللغة",
+  "@languageTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageSearch": "ابحث عن لغة",
+  "@languageSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageSearchClear": "مسح البحث",
+  "@languageSearchClear": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageSectionApp": "لغة التطبيق",
+  "@languageSectionApp": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageRtlNote": "العربية تحوّل التطبيق بالكامل من اليمين إلى اليسار.",
+  "@languageRtlNote": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageNone": "لم يتم العثور على لغات",
+  "@languageNone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageNameEnglish": "الإنجليزية",
+  "@languageNameEnglish": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "languageNameArabic": "العربية",
+  "@languageNameArabic": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "privacyTitle": "الخصوصية",
+  "@privacyTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "privateAccount": "حساب خاص",
+  "@privateAccount": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "privateAccountSub": "فقط من توافق عليهم يمكنهم رؤية منشوراتك وشورتسك ومتابعيك.",
+  "@privateAccountSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "whoCanMessage": "من يمكنه مراسلتك",
+  "@whoCanMessage": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "everyone": "الجميع",
+  "@everyone": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "peopleYouFollow": "الأشخاص الذين تتابعهم",
+  "@peopleYouFollow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "noOne": "لا أحد",
+  "@noOne": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "whoCanComment": "من يمكنه التعليق",
+  "@whoCanComment": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "followersOnly": "المتابعون فقط",
+  "@followersOnly": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "turnOffComments": "إيقاف التعليقات",
+  "@turnOffComments": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "visibility": "الظهور",
+  "@visibility": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "activityStatus": "إظهار حالة النشاط",
+  "@activityStatus": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "activityStatusSub": "دع أصدقاءك يرون متى تكون متصلًا",
+  "@activityStatusSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "appearInSearch": "الظهور في البحث",
+  "@appearInSearch": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "appearInSearchSub": "يمكن للناس إيجادك بالاسم أو البريد الإلكتروني",
+  "@appearInSearchSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedAccounts": "الحسابات المحظورة",
+  "@blockedAccounts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedTitle": "الحسابات المحظورة",
+  "@blockedTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedIntro": "لا يستطيع المحظورون رؤية ملفك أو مراسلتك أو إيجادك في البحث. ولا يتم إخبارهم بأنك حظرتهم.",
+  "@blockedIntro": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedAgo": "@{username} · محظور {ago}",
+  "@blockedAgo": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "unblock": "إلغاء الحظر",
+  "@unblock": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "blockedEmpty": "لا توجد حسابات محظورة",
+  "@blockedEmpty": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "unblocked": "تم إلغاء حظر @{username}",
+  "@unblocked": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "timeAgoNow": "الآن",
+  "@timeAgoNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "timeAgoMinutes": "{count, plural, =0{الآن} =1{منذ دقيقة} =2{منذ دقيقتين} few{منذ {count} دقائق} many{منذ {count} دقيقة} other{منذ {count} دقيقة}}",
+  "@timeAgoMinutes": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoHours": "{count, plural, =0{الآن} =1{منذ ساعة} =2{منذ ساعتين} few{منذ {count} ساعات} many{منذ {count} ساعة} other{منذ {count} ساعة}}",
+  "@timeAgoHours": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoDays": "{count, plural, =0{اليوم} =1{منذ يوم} =2{منذ يومين} few{منذ {count} أيام} many{منذ {count} يومًا} other{منذ {count} يوم}}",
+  "@timeAgoDays": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoWeeks": "{count, plural, =0{هذا الأسبوع} =1{منذ أسبوع} =2{منذ أسبوعين} few{منذ {count} أسابيع} many{منذ {count} أسبوعًا} other{منذ {count} أسبوع}}",
+  "@timeAgoWeeks": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoMonths": "{count, plural, =0{هذا الشهر} =1{منذ شهر} =2{منذ شهرين} few{منذ {count} أشهر} many{منذ {count} شهرًا} other{منذ {count} شهر}}",
+  "@timeAgoMonths": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoYears": "{count, plural, =0{هذا العام} =1{منذ سنة} =2{منذ سنتين} few{منذ {count} سنوات} many{منذ {count} سنة} other{منذ {count} سنة}}",
+  "@timeAgoYears": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "securityChangeSection": "تغيير كلمة المرور",
+  "@securityChangeSection": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityCurrentPassword": "كلمة المرور الحالية",
+  "@securityCurrentPassword": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityUpdate": "تحديث",
+  "@securityUpdate": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLoginProtection": "حماية تسجيل الدخول",
+  "@securityLoginProtection": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityTwoFactor": "المصادقة الثنائية",
+  "@securityTwoFactor": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityTwoFactorSub": "اطلب رمزًا عند تسجيل الدخول من جهاز جديد",
+  "@securityTwoFactorSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLoginAlerts": "تنبيهات تسجيل الدخول",
+  "@securityLoginAlerts": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLoginAlertsSub": "أخبرني عن تسجيل الدخول من أماكن جديدة",
+  "@securityLoginAlertsSub": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityWhereLoggedIn": "الأجهزة المسجّل عليها",
+  "@securityWhereLoggedIn": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityThisDevice": "{device} · هذا الجهاز",
+  "@securityThisDevice": {
+    "x-review": "Arabic draft: pending user approval",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "securityThisDeviceFallback": "هذا الجهاز",
+  "@securityThisDeviceFallback": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityActiveNow": "نشط الآن",
+  "@securityActiveNow": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLogOutOthersTitle": "تسجيل الخروج من الأجهزة الأخرى؟",
+  "@securityLogOutOthersTitle": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityLogOutOthersBody": "سيحتاجون إلى تسجيل الدخول مرة أخرى.",
+  "@securityLogOutOthersBody": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityOthersLoggedOut": "تم تسجيل الخروج من الأجهزة الأخرى",
+  "@securityOthersLoggedOut": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityPasswordUpdated": "تم تحديث كلمة المرور",
+  "@securityPasswordUpdated": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityResetSent": "أرسلنا رابط إعادة التعيين إلى بريدك الإلكتروني",
+  "@securityResetSent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityWrongCurrent": "كلمة المرور الحالية غير صحيحة",
+  "@securityWrongCurrent": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "securityComingSoon": "هذه الميزة قادمة قريبًا",
+  "@securityComingSoon": {
+    "x-review": "Arabic draft: pending user approval"
+  },
+  "otherProfileNotFound": "المستخدم غير موجود",
+  "otherOptions": "خيارات الملف الشخصي",
+  "otherOptionsSoon": "خيارات الملف الشخصي قادمة قريبًا",
+  "otherFollowsYou": "يتابعك",
+  "otherFollowBack": "رد المتابعة",
+  "otherMessage": "رسالة",
+  "otherMessageSoon": "الرسائل قادمة قريبًا",
+  "otherTagged": "الوسوم",
+  "otherBlockedTitle": "لقد حظرت هذا الحساب",
+  "otherBlockedBody": "لا يستطيع رؤية ملفك أو منشوراتك أو مراسلتك.",
+  "otherPrivateTitle": "هذا الحساب خاص",
+  "otherPrivateBody": "تابعه لترى منشوراته وشورتسه وقصصه.",
+  "otherPrivateRequested": "تم إرسال الطلب. سترى منشوراته بعد أن يقبل {name}.",
+  "@otherPrivateRequested": {"placeholders": {"name": {"type": "String"}}},
+  "otherRequestSent": "تم إرسال طلب المتابعة",
+  "otherRequestSentHint": "اضغط تم الطلب للإلغاء.",
+  "otherCancelRequest": "إلغاء الطلب؟",
+  "otherCancelRequestBody": "هل تريد إلغاء طلب المتابعة؟",
+  "otherCancelRequestConfirm": "إلغاء الطلب",
+  "otherUnfollowTitle": "إلغاء متابعة {name}؟",
+  "@otherUnfollowTitle": {"placeholders": {"name": {"type": "String"}}},
+  "otherUnfollowBody": "قد تحتاج إلى طلب المتابعة مرة أخرى.",
+  "otherUnfollow": "إلغاء المتابعة",
+  "otherNoPostsBody": "ستظهر المنشورات هنا.",
+  "otherFollowedBy": "يتابعه {names}",
+  "@otherFollowedBy": {"placeholders": {"names": {"type": "String"}}},
+  "otherFollowedByMore": "يتابعه {names} و{count} آخرون",
+  "@otherFollowedByMore": {"placeholders": {"names": {"type": "String"}, "count": {"type": "int"}}},
+  "profileShare": "مشاركة الملف الشخصي",
+  "@profileShare": {"description": "Draft Arabic; needs native review."},
+  "profileCopyLink": "نسخ رابط الملف",
+  "@profileCopyLink": {"description": "Draft Arabic; needs native review."},
+  "profileLinkCopied": "تم نسخ رابط الملف",
+  "@profileLinkCopied": {"description": "Draft Arabic; needs native review."},
+  "profileMute": "كتم",
+  "@profileMute": {"description": "Draft Arabic; needs native review."},
+  "profileMuteSub": "إخفاء منشوراتهم وقصصهم",
+  "@profileMuteSub": {"description": "Draft Arabic; needs native review."},
+  "profileCloseFriends": "إضافة إلى الأصدقاء المقرّبين",
+  "@profileCloseFriends": {"description": "Draft Arabic; needs native review."},
+  "profileCloseFriendsSub": "شاهد قصصهم بالحلقة الخضراء",
+  "@profileCloseFriendsSub": {"description": "Draft Arabic; needs native review."},
+  "profilePostNotifications": "إشعارات المنشورات",
+  "@profilePostNotifications": {"description": "Draft Arabic; needs native review."},
+  "profilePostNotificationsSub": "احصل على إشعار عندما ينشرون",
+  "@profilePostNotificationsSub": {"description": "Draft Arabic; needs native review."},
+  "profileBlock": "حظر @{username}",
+  "@profileBlock": {"description": "Draft Arabic; needs native review.", "placeholders": {"username": {"type": "String"}}},
+  "profileBlockTitle": "حظر @{username}؟",
+  "@profileBlockTitle": {"description": "Draft Arabic; needs native review.", "placeholders": {"username": {"type": "String"}}},
+  "profileBlockBody": "لن يرى ملفك ومنشوراتك ولن يستطيع مراسلتك. ولن يتم إخباره.",
+  "@profileBlockBody": {"description": "Draft Arabic; needs native review."},
+  "profileBlockAction": "حظر",
+  "@profileBlockAction": {"description": "Draft Arabic; needs native review."},
+  "profileReport": "إبلاغ",
+  "@profileReport": {"description": "Draft Arabic; needs native review."},
+  "profileReportTitle": "الإبلاغ عن الملف الشخصي",
+  "@profileReportTitle": {"description": "Draft Arabic; needs native review."},
+  "profileReportBody": "لماذا تبلغ عن هذا الملف؟ بلاغك مجهول.",
+  "@profileReportBody": {"description": "Draft Arabic; needs native review."},
+  "profileReportSent": "سنراجع هذا الملف الشخصي.",
+  "@profileReportSent": {"description": "Draft Arabic; needs native review."},
+  "profileReportNote": "أخبرنا ما المشكلة في هذا الملف…",
+  "@profileReportNote": {"description": "Draft Arabic; needs native review."},
+  "helpTitle": "مركز المساعدة",
+  "@helpTitle": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpTopics": "المواضيع",
+  "@helpTopics": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "commonQuestions": "الأسئلة الشائعة",
+  "@commonQuestions": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "chatWithUs": "تحدث معنا",
+  "@chatWithUs": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "chatSoon": "الدردشة مع الدعم قادمة قريبًا",
+  "@chatSoon": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpTopicEmpty": "لا توجد أسئلة هنا بعد",
+  "@helpTopicEmpty": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportTitle": "الإبلاغ عن مشكلة",
+  "@reportTitle": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportWhatsWrong": "ما المشكلة؟",
+  "@reportWhatsWrong": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportCatFeed": "الرئيسية",
+  "@reportCatFeed": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportCatShorts": "الشورتس",
+  "@reportCatShorts": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportCatChat": "المحادثات",
+  "@reportCatChat": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportCatProfile": "الملف الشخصي",
+  "@reportCatProfile": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportCatSigningIn": "تسجيل الدخول",
+  "@reportCatSigningIn": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportTellMore": "أخبرنا بالمزيد",
+  "@reportTellMore": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportHint": "ماذا حدث، وماذا كنت تتوقع أن يحدث؟",
+  "@reportHint": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportScreenshots": "لقطات الشاشة",
+  "@reportScreenshots": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportAdd": "إضافة",
+  "@reportAdd": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportIncludeLogs": "أرفق معلومات الجهاز وسجلات التطبيق لمساعدتنا في الإصلاح بشكل أسرع",
+  "@reportIncludeLogs": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportThanks": "شكرًا، وصل بلاغك",
+  "@reportThanks": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportRemoveScreenshot": "إزالة لقطة الشاشة",
+  "@reportRemoveScreenshot": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportDiscardBody": "سيتم فقدان بلاغك.",
+  "@reportDiscardBody": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "reportImageTooLarge": "يجب ألا تتجاوز لقطة الشاشة ٥ ميغابايت",
+  "@reportImageTooLarge": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpTermsTitle": "الشروط والسياسات",
+  "@helpTermsTitle": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpLastUpdated": "آخر تحديث {date}",
+  "@helpLastUpdated": {"description": "Phase 13; Arabic needs native review (x-review)", "placeholders": {"date": {"type": "String"}}},
+  "helpYourData": "بياناتك",
+  "@helpYourData": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpDownloadData": "نزّل بياناتك",
+  "@helpDownloadData": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpDownloadDataSub": "احصل على نسخة من منشوراتك وشورتسك ورسائلك",
+  "@helpDownloadDataSub": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpAdPreferences": "تفضيلات الإعلانات",
+  "@helpAdPreferences": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpAdPreferencesSub": "تحكم في كيفية تأثير نشاطك على الإعلانات",
+  "@helpAdPreferencesSub": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpDataSoon": "هذه الميزة قادمة قريبًا",
+  "@helpDataSoon": {"description": "Phase 13; Arabic needs native review (x-review)"},
+  "helpCopyright": "© {year} {company}",
+  "@helpCopyright": {"description": "Phase 13; Arabic needs native review (x-review)", "placeholders": {"year": {"type": "String"}, "company": {"type": "String"}}},
+  "helpTermsOfService": "شروط الخدمة",
+  "@helpTermsOfService": {"description": "Terms and policies document title; Arabic needs native review (x-review)"},
+  "reportMessageTooShort": "أدخل 10 أحرف على الأقل",
+  "@reportMessageTooShort": {"description": "Report description validation; Arabic needs native review (x-review)"}
 }

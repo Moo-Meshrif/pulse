@@ -65,12 +65,9 @@ void main() {
     ]);
   });
 
-  test(
-    "someone else's Followers post offers neither Share nor Copy link",
-    () {
-      expect(layout(isPublic: false).quick, [PostOption.save]);
-    },
-  );
+  test("someone else's Followers post offers neither Share nor Copy link", () {
+    expect(layout(isPublic: false).quick, [PostOption.save]);
+  });
 
   test('your own Followers post offers Share but no Copy link', () {
     expect(layout(isMine: true, isPublic: false).quick, [

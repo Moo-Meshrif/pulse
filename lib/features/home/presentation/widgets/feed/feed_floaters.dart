@@ -9,14 +9,12 @@ import '../../cubit/feed/feed_cubit.dart';
 import '../../cubit/feed/feed_state.dart';
 import '../../dimens/home_dimens.dart';
 import '../../utils/feed_floaters_rules.dart';
-import 'back_to_top_button.dart';
 import 'new_posts_pill.dart';
 
-enum _Floater { none, pill, backToTop }
+enum _Floater { none, pill }
 
 /// What floats over the feed (docs/specs/home/screens/s2-new-posts-pill.md): the "New posts" pill when
-/// posts wait and the person is more than a screen down, the round back to top button when they are more
-/// than three screens down and nothing waits. It also lets new posts in at once while the person is near
+/// posts wait and the person is away from the top. It also lets new posts in at once while the person is near
 /// the top. It reads where the feed is scrolled to from the tab's primary scroll controller and only
 /// rebuilds when what floats changes.
 class FeedFloaters extends StatefulWidget {
@@ -72,7 +70,6 @@ class _FeedFloatersState extends State<FeedFloaters> {
     final position = _position;
     if (position == null) return;
     final offset = position.pixels;
-    final viewport = position.viewportDimension;
     _reportAtTop(FeedFloatersRules.isAtTop(offset));
     // Back at the top: what waited goes in, nothing the person reads moves.
     if (_waitingCount > 0 && FeedFloatersRules.isAtTop(offset)) {
@@ -86,12 +83,6 @@ class _FeedFloatersState extends State<FeedFloaters> {
       isExpired: _isExpired,
     )) {
       _floater.value = _Floater.pill;
-    } else if (FeedFloatersRules.showBackToTop(
-      offset: offset,
-      viewport: viewport,
-      pending: _pillCount,
-    )) {
-      _floater.value = _Floater.backToTop;
     } else {
       _floater.value = _Floater.none;
     }
@@ -193,16 +184,6 @@ class _FeedFloatersState extends State<FeedFloaters> {
                         )
                       : const SizedBox.shrink(),
                 ),
-              ),
-            ),
-            PositionedDirectional(
-              end: HomeDimens.backToTopEnd,
-              bottom: HomeDimens.backToTopAboveNav,
-              child: AnimatedSwitcher(
-                duration: duration,
-                child: floater == _Floater.backToTop
-                    ? BackToTopButton(onTap: _scrollToTop)
-                    : const SizedBox.shrink(),
               ),
             ),
           ],

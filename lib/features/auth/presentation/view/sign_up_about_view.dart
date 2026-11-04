@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,12 +6,12 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/dimens/app_dimens.dart';
+import '../../../../core/utils/birthday.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../profile/data/enums/gender.dart';
 import '../cubit/sign_up/sign_up_cubit.dart';
 import '../cubit/sign_up/sign_up_state.dart';
 import '../dimens/auth_dimens.dart';
-import '../utils/birthday.dart';
 import '../utils/l10n/gender_l10n.dart';
 import '../widgets/auth_header.dart';
 
@@ -54,14 +55,8 @@ class _SignUpAboutViewState extends State<SignUpAboutView> {
     super.dispose();
   }
 
-  bool _birthdayChanged(SignUpState before, SignUpState state) =>
-      before.birthday != state.birthday;
-
-  void _showBirthdayInField(BuildContext context, SignUpState state) =>
-      _birthday.text = _birthdayText(state.birthday);
-
   Future<void> _pickBirthday() async {
-    final today = DateUtils.dateOnly(DateTime.now());
+    final today = DateUtils.dateOnly(clock.now());
     final picked = await showDatePicker(
       context: context,
       initialDate: _cubit.state.birthday ?? DateTime(today.year - minAge),
@@ -76,8 +71,8 @@ class _SignUpAboutViewState extends State<SignUpAboutView> {
     final l10n = context.l10n;
     final colors = context.appColors;
     return BlocListener<SignUpCubit, SignUpState>(
-      listenWhen: _birthdayChanged,
-      listener: _showBirthdayInField,
+      listenWhen: (before, state) => before.birthday != state.birthday,
+      listener: (_, state) => _birthday.text = _birthdayText(state.birthday),
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: EdgeInsets.fromLTRB(

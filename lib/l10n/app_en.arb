@@ -2107,22 +2107,47 @@
   "postPublishingMany": "Posting {count} posts…",
   "@postPublishingMany": {
     "description": "Banner title while several posts are being sent",
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "postPublishProgress": "{done} of {total} done · {percent}%",
   "@postPublishProgress": {
     "description": "Banner line under the title while several posts are being sent",
-    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}, "percent": {"type": "int"}}
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
   },
   "postPublishDoneOf": "{done} of {total} done",
   "@postPublishDoneOf": {
     "description": "Banner line when every post in the line is out",
-    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "postPublishRowTitle": "Post {n}",
   "@postPublishRowTitle": {
     "description": "Name of a post in the expanded banner list",
-    "placeholders": {"n": {"type": "int"}}
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "postPublishRowPosted": "Posted",
   "@postPublishRowPosted": {
@@ -2143,17 +2168,32 @@
   "postPublishOfflineSub": "{count, plural, =1{1 post paused} other{{count} posts paused}} · resumes automatically",
   "@postPublishOfflineSub": {
     "description": "Banner line when posts wait for the internet",
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "postPublishSomePosted": "{done} of {total} posted",
   "@postPublishSomePosted": {
     "description": "Banner title when some posts are out and one failed",
-    "placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "postPublishSomeFailed": "{count, plural, =1{1 post didn't upload} other{{count} posts didn't upload}}",
   "@postPublishSomeFailed": {
     "description": "Banner line when posts failed to send",
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "postPublishShowAll": "Show all posts",
   "@postPublishShowAll": {
@@ -3019,5 +3059,677 @@
   "postLikedByYouName": "you",
   "@postLikedByYouName": {
     "description": "The bold word of the Liked by you row; it is the end of postLikedByYou"
-  }
+  },
+  "settingsTitle": "Settings",
+  "settingsAccount": "Account",
+  "settingsPreferences": "Preferences",
+  "settingsSupport": "Support",
+  "settingsPersonalInfo": "Personal info",
+  "settingsPasswordSecurity": "Password & security",
+  "settingsPrivacy": "Privacy",
+  "settingsBlocked": "Blocked accounts",
+  "settingsNotifications": "Notifications",
+  "settingsLanguage": "Language",
+  "settingsAutoplay": "Autoplay shorts",
+  "settingsAutoplaySub": "Play videos automatically on Wi-Fi",
+  "settingsDataSaver": "Data saver",
+  "settingsDataSaverSub": "Load lower-quality media on mobile data",
+  "settingsDarkMode": "Dark mode",
+  "settingsDarkModeSub": "Easier on the eyes at night",
+  "settingsHelp": "Help center",
+  "settingsReport": "Report a problem",
+  "settingsTerms": "Terms & policies",
+  "settingsLogOut": "Log out",
+  "settingsDelete": "Delete account",
+  "settingsVersion": "Pulse · version {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "valuePublic": "Public",
+  "valuePrivate": "Private",
+  "valueOn": "On",
+  "valueOff": "Off",
+  "profileTabPosts": "Posts",
+  "@profileTabPosts": {
+    "description": "Profile tab: the person's posts"
+  },
+  "profileTabShorts": "Shorts",
+  "@profileTabShorts": {
+    "description": "Profile tab: the person's shorts"
+  },
+  "profileTabSaved": "Saved",
+  "@profileTabSaved": {
+    "description": "Profile tab: posts the signed-in person saved"
+  },
+  "profilePosts": "Posts",
+  "@profilePosts": {
+    "description": "Profile numbers: label under the post count"
+  },
+  "profileFollowers": "Followers",
+  "@profileFollowers": {
+    "description": "Profile numbers: label under the followers count"
+  },
+  "profileFollowing": "Following",
+  "@profileFollowing": {
+    "description": "Profile numbers: label under the following count"
+  },
+  "profileNoPosts": "No posts yet",
+  "@profileNoPosts": {
+    "description": "Profile Posts tab: empty title"
+  },
+  "profileNoPostsBody": "Posts you share will show up here.",
+  "@profileNoPostsBody": {
+    "description": "Profile Posts tab: empty message"
+  },
+  "profileSharePost": "Share your first post",
+  "@profileSharePost": {
+    "description": "Profile Posts tab: empty button that opens the post composer"
+  },
+  "profileNoSaved": "Nothing saved yet",
+  "@profileNoSaved": {
+    "description": "Profile Saved tab: empty title"
+  },
+  "profileNoSavedBody": "Tap the bookmark on a post to keep it here. Only you can see this.",
+  "@profileNoSavedBody": {
+    "description": "Profile Saved tab: empty message"
+  },
+  "profileShortsSoon": "Shorts are coming soon",
+  "@profileShortsSoon": {
+    "description": "Profile Shorts tab: title"
+  },
+  "profileShortsSoonBody": "Short videos will live here.",
+  "@profileShortsSoonBody": {
+    "description": "Profile Shorts tab: message"
+  },
+  "profileShareA11y": "Share profile",
+  "@profileShareA11y": {
+    "description": "Profile: label of the share button"
+  },
+  "profileSettingsA11y": "Settings",
+  "@profileSettingsA11y": {
+    "description": "Profile: label of the settings button"
+  },
+  "profileViewPhotoA11y": "View profile photo",
+  "@profileViewPhotoA11y": {
+    "description": "Profile: label of the avatar, which opens the photo"
+  },
+  "profilePostA11y": "Open post",
+  "@profilePostA11y": {
+    "description": "Profile grid: label of a post tile"
+  },
+  "profileLoadMoreError": "Couldn't load more · Retry",
+  "@profileLoadMoreError": {
+    "description": "Profile grid footer when loading the next page failed"
+  },
+  "profileCaughtUp": "That's everything",
+  "@profileCaughtUp": {
+    "description": "Profile grid footer at the end of the list"
+  },
+  "profileOfflineNumbers": "Connect to the internet to see the numbers.",
+  "@profileOfflineNumbers": {
+    "description": "Profile: note under the saved header shown offline"
+  },
+  "peopleFollowersTitle": "Followers",
+  "@peopleFollowersTitle": {
+    "description": "People list: title of the followers list"
+  },
+  "peopleFollowingTitle": "Following",
+  "@peopleFollowingTitle": {
+    "description": "People list: title of the following list"
+  },
+  "peopleMutualTitle": "Followed by",
+  "@peopleMutualTitle": {
+    "description": "People list: title of the list of people you follow who follow this person"
+  },
+  "peopleSearchHint": "Search",
+  "@peopleSearchHint": {
+    "description": "People list: search field hint"
+  },
+  "peopleSearchClear": "Clear search",
+  "@peopleSearchClear": {
+    "description": "People list: clear button label of the search field"
+  },
+  "peopleNoFollowers": "No followers yet",
+  "@peopleNoFollowers": {
+    "description": "People list: empty followers title"
+  },
+  "peopleNoFollowersBody": "When people follow this account, they will show up here.",
+  "@peopleNoFollowersBody": {
+    "description": "People list: empty followers text"
+  },
+  "peopleNoFollowing": "Not following anyone yet",
+  "@peopleNoFollowing": {
+    "description": "People list: empty following title"
+  },
+  "peopleNoFollowingBody": "Accounts this person follows will show up here.",
+  "@peopleNoFollowingBody": {
+    "description": "People list: empty following text"
+  },
+  "peopleNoMutual": "No mutual followers",
+  "@peopleNoMutual": {
+    "description": "People list: empty mutual title"
+  },
+  "peopleNoMutualBody": "You follow nobody who follows this account.",
+  "@peopleNoMutualBody": {
+    "description": "People list: empty mutual text"
+  },
+  "peopleNoMatches": "No one found",
+  "@peopleNoMatches": {
+    "description": "People list: search found nobody, title"
+  },
+  "peopleNoMatchesBody": "Try a different name or @name.",
+  "@peopleNoMatchesBody": {
+    "description": "People list: search found nobody, text"
+  },
+  "peoplePrivateTitle": "This account is private",
+  "@peoplePrivateTitle": {
+    "description": "People list: private account that you do not follow, title"
+  },
+  "peoplePrivateBody": "Follow this account to see who follows it and who it follows.",
+  "@peoplePrivateBody": {
+    "description": "People list: private account that you do not follow, text"
+  },
+  "peopleLoadMoreError": "Couldn't load more · Retry",
+  "@peopleLoadMoreError": {
+    "description": "People list: the next page failed"
+  },
+  "peopleCaughtUp": "That's everyone",
+  "@peopleCaughtUp": {
+    "description": "People list: end of the list"
+  },
+  "settingsLogOutTitle": "Log out?",
+  "@settingsLogOutTitle": {
+    "description": "Settings: title of the log out dialog"
+  },
+  "settingsLogOutBody": "You will need to sign in again.",
+  "@settingsLogOutBody": {
+    "description": "Settings: body of the log out dialog"
+  },
+  "settingsDeleteTitle": "Delete your account?",
+  "@settingsDeleteTitle": {
+    "description": "Settings: title of the delete account dialog"
+  },
+  "settingsDeleteBody": "This permanently deletes your profile, posts and stories. This cannot be undone.",
+  "@settingsDeleteBody": {
+    "description": "Settings: body of the delete account dialog"
+  },
+  "settingsDeletePasswordLabel": "Password",
+  "@settingsDeletePasswordLabel": {
+    "description": "Settings: label of the password field in the delete account dialog"
+  },
+  "settingsDeletePasswordHint": "Enter your password",
+  "@settingsDeletePasswordHint": {
+    "description": "Settings: hint of the password field in the delete account dialog"
+  },
+  "settingsDeleteWrongPassword": "Wrong password",
+  "@settingsDeleteWrongPassword": {
+    "description": "Settings: error under the password field when it is wrong"
+  },
+  "settingsDarkModeSoon": "Dark mode is coming soon",
+  "@settingsDarkModeSoon": {
+    "description": "Settings: notice when the disabled Dark mode row is tapped"
+  },
+  "settingsLanguageEnglish": "English",
+  "@settingsLanguageEnglish": {
+    "description": "Settings: the English language, as the Language row value"
+  },
+  "settingsLanguageArabic": "العربية",
+  "@settingsLanguageArabic": {
+    "description": "Settings: the Arabic language, as the Language row value"
+  },
+  "personalInfoTitle": "Personal info",
+  "@personalInfoTitle": {
+    "description": "Personal info: title"
+  },
+  "personalInfoChangeCover": "Change cover photo",
+  "@personalInfoChangeCover": {
+    "description": "Personal info: link under the avatar"
+  },
+  "personalInfoChangePhotoA11y": "Change profile photo",
+  "@personalInfoChangePhotoA11y": {
+    "description": "Personal info: camera badge label"
+  },
+  "personalInfoLocationLabel": "Location",
+  "@personalInfoLocationLabel": {
+    "description": "Personal info: Location field label"
+  },
+  "personalInfoLocationHint": "Add a place",
+  "@personalInfoLocationHint": {
+    "description": "Personal info: Location field hint"
+  },
+  "personalInfoPrivateNote": "Your email, phone and birthday are private and never shown on your profile.",
+  "@personalInfoPrivateNote": {
+    "description": "Personal info: note under phone and birthday"
+  },
+  "personalInfoSave": "Save changes",
+  "@personalInfoSave": {
+    "description": "Personal info: save button"
+  },
+  "personalInfoDiscardBody": "Your edits will be lost.",
+  "@personalInfoDiscardBody": {
+    "description": "Personal info: discard dialog body"
+  },
+  "personalInfoSaved": "Profile updated",
+  "@personalInfoSaved": {
+    "description": "Personal info: notice after saving"
+  },
+  "locationCurrentUnavailable": "Couldn't find your location. Check that location is on.",
+  "@locationCurrentUnavailable": {
+    "description": "Add location: notice when Use current location finds no place"
+  },
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "Notifications page: title"
+  },
+  "notificationsPush": "Push notifications",
+  "@notificationsPush": {
+    "description": "Notifications: push switch"
+  },
+  "notificationsPushSub": "Get alerts on this device",
+  "@notificationsPushSub": {
+    "description": "Notifications: push switch subtitle"
+  },
+  "notificationsSectionActivity": "Activity",
+  "@notificationsSectionActivity": {
+    "description": "Notifications: section label"
+  },
+  "notificationsSectionMessages": "Messages",
+  "@notificationsSectionMessages": {
+    "description": "Notifications: section label"
+  },
+  "notificationsSectionPulse": "From Pulse",
+  "@notificationsSectionPulse": {
+    "description": "Notifications: section label"
+  },
+  "notificationsLikes": "Likes",
+  "@notificationsLikes": {
+    "description": "Notifications: likes switch"
+  },
+  "notificationsLikesSub": "On your posts and shorts",
+  "@notificationsLikesSub": {
+    "description": "Notifications: likes subtitle"
+  },
+  "notificationsComments": "Comments & replies",
+  "@notificationsComments": {
+    "description": "Notifications: comments switch"
+  },
+  "notificationsCommentsSub": "When someone joins the conversation",
+  "@notificationsCommentsSub": {
+    "description": "Notifications: comments subtitle"
+  },
+  "notificationsMentions": "Mentions & tags",
+  "@notificationsMentions": {
+    "description": "Notifications: mentions switch"
+  },
+  "notificationsMentionsSub": "When you're tagged in a post",
+  "@notificationsMentionsSub": {
+    "description": "Notifications: mentions subtitle"
+  },
+  "notificationsFollowers": "New followers",
+  "@notificationsFollowers": {
+    "description": "Notifications: followers switch"
+  },
+  "notificationsFollowersSub": "When someone follows you",
+  "@notificationsFollowersSub": {
+    "description": "Notifications: followers subtitle"
+  },
+  "notificationsDirect": "Direct messages",
+  "@notificationsDirect": {
+    "description": "Notifications: direct messages switch"
+  },
+  "notificationsDirectSub": "One-on-one chats",
+  "@notificationsDirectSub": {
+    "description": "Notifications: direct messages subtitle"
+  },
+  "notificationsGroups": "Group chats",
+  "@notificationsGroups": {
+    "description": "Notifications: group chats switch"
+  },
+  "notificationsGroupsSub": "Every message in groups you're in",
+  "@notificationsGroupsSub": {
+    "description": "Notifications: group chats subtitle"
+  },
+  "notificationsShorts": "Shorts from people you follow",
+  "@notificationsShorts": {
+    "description": "Notifications: shorts switch"
+  },
+  "notificationsShortsSub": "When they post something new",
+  "@notificationsShortsSub": {
+    "description": "Notifications: shorts subtitle"
+  },
+  "notificationsDigest": "Weekly email digest",
+  "@notificationsDigest": {
+    "description": "Notifications: email digest switch"
+  },
+  "notificationsDigestSub": "Highlights you might have missed",
+  "@notificationsDigestSub": {
+    "description": "Notifications: email digest subtitle"
+  },
+  "notificationsProduct": "Product updates",
+  "@notificationsProduct": {
+    "description": "Notifications: product updates switch"
+  },
+  "notificationsProductSub": "New features and tips",
+  "@notificationsProductSub": {
+    "description": "Notifications: product updates subtitle"
+  },
+  "languageTitle": "Language",
+  "@languageTitle": {
+    "description": "Language page: title"
+  },
+  "languageSearch": "Search languages",
+  "@languageSearch": {
+    "description": "Language page: search hint"
+  },
+  "languageSearchClear": "Clear search",
+  "@languageSearchClear": {
+    "description": "Language page: clear search button label"
+  },
+  "languageSectionApp": "App language",
+  "@languageSectionApp": {
+    "description": "Language page: section label"
+  },
+  "languageRtlNote": "Arabic switches the whole app to right-to-left.",
+  "@languageRtlNote": {
+    "description": "Language page: footnote"
+  },
+  "languageNone": "No languages found",
+  "@languageNone": {
+    "description": "Language page: empty search result"
+  },
+  "languageNameEnglish": "English",
+  "@languageNameEnglish": {
+    "description": "Language page: English language, second line"
+  },
+  "languageNameArabic": "Arabic",
+  "@languageNameArabic": {
+    "description": "Language page: Arabic language, second line"
+  },
+  "privacyTitle": "Privacy",
+  "privateAccount": "Private account",
+  "privateAccountSub": "Only people you approve can see your posts, shorts and followers.",
+  "whoCanMessage": "Who can message you",
+  "everyone": "Everyone",
+  "peopleYouFollow": "People you follow",
+  "noOne": "No one",
+  "whoCanComment": "Who can comment",
+  "followersOnly": "Followers only",
+  "turnOffComments": "Turn off comments",
+  "visibility": "Visibility",
+  "activityStatus": "Show activity status",
+  "activityStatusSub": "Let friends see when you're online",
+  "appearInSearch": "Appear in search",
+  "appearInSearchSub": "People can find you by name or email",
+  "blockedAccounts": "Blocked accounts",
+  "blockedTitle": "Blocked accounts",
+  "blockedIntro": "Blocked people can't see your profile, message you or find you in search. They aren't told you blocked them.",
+  "blockedAgo": "@{username} · Blocked {ago}",
+  "@blockedAgo": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "unblock": "Unblock",
+  "blockedEmpty": "No blocked accounts",
+  "unblocked": "Unblocked @{username}",
+  "@unblocked": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "timeAgoNow": "just now",
+  "timeAgoMinutes": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoHours": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoDays": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoWeeks": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@timeAgoWeeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoMonths": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@timeAgoMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timeAgoYears": "{count, plural, =1{1 year ago} other{{count} years ago}}",
+  "@timeAgoYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "securityChangeSection": "Change password",
+  "@securityChangeSection": {
+    "description": "Password & security: section label"
+  },
+  "securityCurrentPassword": "Current password",
+  "@securityCurrentPassword": {
+    "description": "Password & security: field label"
+  },
+  "securityUpdate": "Update",
+  "@securityUpdate": {
+    "description": "Password & security: update button"
+  },
+  "securityLoginProtection": "Login protection",
+  "@securityLoginProtection": {
+    "description": "Password & security: section label"
+  },
+  "securityTwoFactor": "Two-factor authentication",
+  "@securityTwoFactor": {
+    "description": "Password & security: switch title"
+  },
+  "securityTwoFactorSub": "Ask for a code when signing in on a new device",
+  "@securityTwoFactorSub": {
+    "description": "Password & security: switch subtitle"
+  },
+  "securityLoginAlerts": "Login alerts",
+  "@securityLoginAlerts": {
+    "description": "Password & security: switch title"
+  },
+  "securityLoginAlertsSub": "Tell me about logins from new places",
+  "@securityLoginAlertsSub": {
+    "description": "Password & security: switch subtitle"
+  },
+  "securityWhereLoggedIn": "Where you're logged in",
+  "@securityWhereLoggedIn": {
+    "description": "Password & security: section label"
+  },
+  "securityThisDevice": "{device} · This device",
+  "@securityThisDevice": {
+    "description": "Password & security: title of this phone's row",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "securityThisDeviceFallback": "This device",
+  "@securityThisDeviceFallback": {
+    "description": "Password & security: title when the phone's name is unknown"
+  },
+  "securityActiveNow": "Active now",
+  "@securityActiveNow": {
+    "description": "Password & security: subtitle of this phone's row"
+  },
+  "securityLogOutOthersTitle": "Log out other devices?",
+  "@securityLogOutOthersTitle": {
+    "description": "Password & security: dialog title"
+  },
+  "securityLogOutOthersBody": "They will need to sign in again.",
+  "@securityLogOutOthersBody": {
+    "description": "Password & security: dialog body"
+  },
+  "securityOthersLoggedOut": "Other devices logged out",
+  "@securityOthersLoggedOut": {
+    "description": "Password & security: notice"
+  },
+  "securityPasswordUpdated": "Password updated",
+  "@securityPasswordUpdated": {
+    "description": "Password & security: notice"
+  },
+  "securityResetSent": "We sent a reset link to your email",
+  "@securityResetSent": {
+    "description": "Password & security: notice"
+  },
+  "securityWrongCurrent": "Current password is wrong",
+  "@securityWrongCurrent": {
+    "description": "Password & security: error under the current password field"
+  },
+  "securityComingSoon": "This is coming soon",
+  "@securityComingSoon": {
+    "description": "Password & security: notice for the items not built yet"
+  },
+  "otherProfileNotFound": "User not found",
+  "otherOptions": "Profile options",
+  "otherOptionsSoon": "Profile options are coming soon",
+  "otherFollowsYou": "Follows you",
+  "otherFollowBack": "Follow back",
+  "otherMessage": "Message",
+  "otherMessageSoon": "Messages are coming soon",
+  "otherTagged": "Tagged",
+  "otherBlockedTitle": "You blocked this account",
+  "otherBlockedBody": "They can't see your profile, posts or message you.",
+  "otherPrivateTitle": "This account is private",
+  "otherPrivateBody": "Follow to see their posts, shorts and stories.",
+  "otherPrivateRequested": "Request sent. You'll see their posts once {name} accepts.",
+  "@otherPrivateRequested": {"placeholders": {"name": {"type": "String"}}},
+  "otherRequestSent": "Follow request sent",
+  "otherRequestSentHint": "Tap Requested to cancel.",
+  "otherCancelRequest": "Cancel request?",
+  "otherCancelRequestBody": "Cancel your follow request?",
+  "otherCancelRequestConfirm": "Cancel request",
+  "otherUnfollowTitle": "Unfollow {name}?",
+  "@otherUnfollowTitle": {"placeholders": {"name": {"type": "String"}}},
+  "otherUnfollowBody": "This account is private. You may have to request to follow again.",
+  "otherUnfollow": "Unfollow",
+  "otherNoPostsBody": "Posts will show up here.",
+  "otherFollowedBy": "Followed by {names}",
+  "@otherFollowedBy": {"placeholders": {"names": {"type": "String"}}},
+  "otherFollowedByMore": "Followed by {names} and {count} others",
+  "@otherFollowedByMore": {"placeholders": {"names": {"type": "String"}, "count": {"type": "int"}}},
+  "profileShare": "Share profile",
+  "profileCopyLink": "Copy profile link",
+  "profileLinkCopied": "Profile link copied",
+  "profileMute": "Mute",
+  "profileMuteSub": "Hide their posts and stories",
+  "profileCloseFriends": "Add to close friends",
+  "profileCloseFriendsSub": "See their stories with the green ring",
+  "profilePostNotifications": "Post notifications",
+  "profilePostNotificationsSub": "Get notified when they post",
+  "profileBlock": "Block @{username}",
+  "@profileBlock": {"placeholders": {"username": {"type": "String"}}},
+  "profileBlockTitle": "Block @{username}?",
+  "@profileBlockTitle": {"placeholders": {"username": {"type": "String"}}},
+  "profileBlockBody": "They won't see your profile or posts and can't message you. They aren't told.",
+  "profileBlockAction": "Block",
+  "profileReport": "Report",
+  "profileReportTitle": "Report profile",
+  "profileReportBody": "Why are you reporting this profile? Your report is anonymous.",
+  "profileReportSent": "We'll review this profile.",
+  "profileReportNote": "Tell us what's wrong with this profile…",
+  "helpTitle": "Help center",
+  "@helpTitle": {"description": "Phase 13; profile help and support"},
+  "helpTopics": "Topics",
+  "@helpTopics": {"description": "Phase 13; profile help and support"},
+  "commonQuestions": "Common questions",
+  "@commonQuestions": {"description": "Phase 13; profile help and support"},
+  "chatWithUs": "Chat with us",
+  "@chatWithUs": {"description": "Phase 13; profile help and support"},
+  "chatSoon": "Chat support is coming soon",
+  "@chatSoon": {"description": "Phase 13; profile help and support"},
+  "helpTopicEmpty": "No questions here yet",
+  "@helpTopicEmpty": {"description": "Phase 13; profile help and support"},
+  "reportTitle": "Report a problem",
+  "@reportTitle": {"description": "Phase 13; profile help and support"},
+  "reportWhatsWrong": "What’s going wrong?",
+  "@reportWhatsWrong": {"description": "Phase 13; profile help and support"},
+  "reportCatFeed": "Feed",
+  "@reportCatFeed": {"description": "Phase 13; profile help and support"},
+  "reportCatShorts": "Shorts",
+  "@reportCatShorts": {"description": "Phase 13; profile help and support"},
+  "reportCatChat": "Chat",
+  "@reportCatChat": {"description": "Phase 13; profile help and support"},
+  "reportCatProfile": "Profile",
+  "@reportCatProfile": {"description": "Phase 13; profile help and support"},
+  "reportCatSigningIn": "Signing in",
+  "@reportCatSigningIn": {"description": "Phase 13; profile help and support"},
+  "reportTellMore": "Tell us more",
+  "@reportTellMore": {"description": "Phase 13; profile help and support"},
+  "reportHint": "What happened, and what did you expect to happen?",
+  "@reportHint": {"description": "Phase 13; profile help and support"},
+  "reportScreenshots": "Screenshots",
+  "@reportScreenshots": {"description": "Phase 13; profile help and support"},
+  "reportAdd": "Add",
+  "@reportAdd": {"description": "Phase 13; profile help and support"},
+  "reportIncludeLogs": "Include device info and app logs to help us fix it faster",
+  "@reportIncludeLogs": {"description": "Phase 13; profile help and support"},
+  "reportThanks": "Thanks, we got your report",
+  "@reportThanks": {"description": "Phase 13; profile help and support"},
+  "reportRemoveScreenshot": "Remove screenshot",
+  "@reportRemoveScreenshot": {"description": "Phase 13; profile help and support"},
+  "reportDiscardBody": "Your report will be lost.",
+  "@reportDiscardBody": {"description": "Phase 13; profile help and support"},
+  "reportImageTooLarge": "The screenshot must be under 5 MB",
+  "@reportImageTooLarge": {"description": "Phase 13; profile help and support"},
+  "helpTermsTitle": "Terms & policies",
+  "@helpTermsTitle": {"description": "Phase 13; profile help and support"},
+  "helpLastUpdated": "Last updated {date}",
+  "@helpLastUpdated": {"description": "Phase 13; profile help and support", "placeholders": {"date": {"type": "String"}}},
+  "helpYourData": "Your data",
+  "@helpYourData": {"description": "Phase 13; profile help and support"},
+  "helpDownloadData": "Download your data",
+  "@helpDownloadData": {"description": "Phase 13; profile help and support"},
+  "helpDownloadDataSub": "Get a copy of your posts, shorts and messages",
+  "@helpDownloadDataSub": {"description": "Phase 13; profile help and support"},
+  "helpAdPreferences": "Ad preferences",
+  "@helpAdPreferences": {"description": "Phase 13; profile help and support"},
+  "helpAdPreferencesSub": "Control how your activity shapes ads",
+  "@helpAdPreferencesSub": {"description": "Phase 13; profile help and support"},
+  "helpDataSoon": "This is coming soon",
+  "@helpDataSoon": {"description": "Phase 13; profile help and support"},
+  "helpCopyright": "© {year} {company}",
+  "@helpCopyright": {"description": "Phase 13; profile help and support", "placeholders": {"year": {"type": "String"}, "company": {"type": "String"}}},
+  "helpTermsOfService": "Terms of service",
+  "@helpTermsOfService": {"description": "Terms and policies document title"},
+  "reportMessageTooShort": "Enter at least 10 characters",
+  "@reportMessageTooShort": {"description": "Report description validation"}
 }

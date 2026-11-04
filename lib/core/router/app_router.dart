@@ -19,6 +19,19 @@ import '../../features/post/presentation/screen/tag_in_photo_screen.dart';
 import '../../features/post/presentation/screen/tag_people_screen.dart';
 import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
+import '../../features/profile/data/enums/people_kind.dart';
+import '../../features/profile/presentation/screen/blocked_screen.dart';
+import '../../features/profile/presentation/screen/help_screen.dart';
+import '../../features/profile/presentation/screen/language_screen.dart';
+import '../../features/profile/presentation/screen/notifications_screen.dart';
+import '../../features/profile/presentation/screen/people_screen.dart';
+import '../../features/profile/presentation/screen/personal_info_screen.dart';
+import '../../features/profile/presentation/screen/privacy_screen.dart';
+import '../../features/profile/presentation/screen/profile_route_screen.dart';
+import '../../features/profile/presentation/screen/report_screen.dart';
+import '../../features/profile/presentation/screen/security_screen.dart';
+import '../../features/profile/presentation/screen/settings_screen.dart';
+import '../../features/profile/presentation/screen/terms_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -92,10 +105,12 @@ abstract final class AppRouter {
       );
     }
 
-    // TODO(story-plan T3): a placeholder until the profile screens exist.
     if (path.startsWith(AppRoutes.profilePrefix) &&
         path.length > AppRoutes.profilePrefix.length) {
-      return _page(settings, PlaceholderScreen(route: path));
+      final id = Uri.decodeComponent(
+        path.substring(AppRoutes.profilePrefix.length),
+      );
+      return _page(settings, ProfileRouteScreen(userId: id));
     }
 
     // `/post/:postId/comments`: the post page with the comment field focused.
@@ -166,6 +181,29 @@ abstract final class AppRouter {
         settings,
         FeelingScreen(current: settings.arguments as PostMoodEntity?),
       ),
+      AppRoutes.settings => _page(settings, const SettingsScreen()),
+      AppRoutes.settingsPersonalInfo => _page(
+        settings,
+        const PersonalInfoScreen(),
+      ),
+      AppRoutes.settingsNotifications => _page(
+        settings,
+        const NotificationsScreen(),
+      ),
+      AppRoutes.settingsLanguage => _page(settings, const LanguageScreen()),
+      AppRoutes.settingsPrivacy => _page(settings, const PrivacyScreen()),
+      AppRoutes.settingsBlocked => _page(settings, const BlockedScreen()),
+      AppRoutes.settingsSecurity => _page(settings, const SecurityScreen()),
+      AppRoutes.settingsHelp => _page(settings, const HelpScreen()),
+      AppRoutes.settingsHelpTopic => _page(
+        settings,
+        HelpScreen(
+          slug: Uri.parse(settings.name ?? '').queryParameters['slug'] ?? '',
+        ),
+      ),
+      AppRoutes.settingsReport => _page(settings, const ReportScreen()),
+      AppRoutes.settingsTerms => _page(settings, const TermsScreen()),
+      AppRoutes.people => _peoplePage(settings),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
       AppRoutes.search ||
       AppRoutes.activity => _page(settings, PlaceholderScreen(route: path)),
@@ -213,6 +251,17 @@ abstract final class AppRouter {
         email: query['email'],
       ),
     );
+  }
+
+  /// `/people?kind=followers|following|mutual&userId=…`; without both, nothing to show.
+  static Route<dynamic> _peoplePage(RouteSettings settings) {
+    final query = Uri.parse(settings.name ?? AppRoutes.people).queryParameters;
+    final kind = PeopleKind.fromJson(query['kind']);
+    final userId = query['userId'];
+    if (kind == null || userId == null || userId.isEmpty) {
+      return _page(settings, const NotFoundScreen());
+    }
+    return _page(settings, PeopleScreen(kind: kind, userId: userId));
   }
 
   /// First launch shows onboarding; afterwards the splash screen picks Sign in, Home or the sign-up step

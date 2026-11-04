@@ -2285,4 +2285,810 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postLikedByYouName => 'you';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsPreferences => 'Preferences';
+
+  @override
+  String get settingsSupport => 'Support';
+
+  @override
+  String get settingsPersonalInfo => 'Personal info';
+
+  @override
+  String get settingsPasswordSecurity => 'Password & security';
+
+  @override
+  String get settingsPrivacy => 'Privacy';
+
+  @override
+  String get settingsBlocked => 'Blocked accounts';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsAutoplay => 'Autoplay shorts';
+
+  @override
+  String get settingsAutoplaySub => 'Play videos automatically on Wi-Fi';
+
+  @override
+  String get settingsDataSaver => 'Data saver';
+
+  @override
+  String get settingsDataSaverSub => 'Load lower-quality media on mobile data';
+
+  @override
+  String get settingsDarkMode => 'Dark mode';
+
+  @override
+  String get settingsDarkModeSub => 'Easier on the eyes at night';
+
+  @override
+  String get settingsHelp => 'Help center';
+
+  @override
+  String get settingsReport => 'Report a problem';
+
+  @override
+  String get settingsTerms => 'Terms & policies';
+
+  @override
+  String get settingsLogOut => 'Log out';
+
+  @override
+  String get settingsDelete => 'Delete account';
+
+  @override
+  String settingsVersion(String version) {
+    return 'Pulse · version $version';
+  }
+
+  @override
+  String get valuePublic => 'Public';
+
+  @override
+  String get valuePrivate => 'Private';
+
+  @override
+  String get valueOn => 'On';
+
+  @override
+  String get valueOff => 'Off';
+
+  @override
+  String get profileTabPosts => 'Posts';
+
+  @override
+  String get profileTabShorts => 'Shorts';
+
+  @override
+  String get profileTabSaved => 'Saved';
+
+  @override
+  String get profilePosts => 'Posts';
+
+  @override
+  String get profileFollowers => 'Followers';
+
+  @override
+  String get profileFollowing => 'Following';
+
+  @override
+  String get profileNoPosts => 'No posts yet';
+
+  @override
+  String get profileNoPostsBody => 'Posts you share will show up here.';
+
+  @override
+  String get profileSharePost => 'Share your first post';
+
+  @override
+  String get profileNoSaved => 'Nothing saved yet';
+
+  @override
+  String get profileNoSavedBody =>
+      'Tap the bookmark on a post to keep it here. Only you can see this.';
+
+  @override
+  String get profileShortsSoon => 'Shorts are coming soon';
+
+  @override
+  String get profileShortsSoonBody => 'Short videos will live here.';
+
+  @override
+  String get profileShareA11y => 'Share profile';
+
+  @override
+  String get profileSettingsA11y => 'Settings';
+
+  @override
+  String get profileViewPhotoA11y => 'View profile photo';
+
+  @override
+  String get profilePostA11y => 'Open post';
+
+  @override
+  String get profileLoadMoreError => 'Couldn\'t load more · Retry';
+
+  @override
+  String get profileCaughtUp => 'That\'s everything';
+
+  @override
+  String get profileOfflineNumbers =>
+      'Connect to the internet to see the numbers.';
+
+  @override
+  String get peopleFollowersTitle => 'Followers';
+
+  @override
+  String get peopleFollowingTitle => 'Following';
+
+  @override
+  String get peopleMutualTitle => 'Followed by';
+
+  @override
+  String get peopleSearchHint => 'Search';
+
+  @override
+  String get peopleSearchClear => 'Clear search';
+
+  @override
+  String get peopleNoFollowers => 'No followers yet';
+
+  @override
+  String get peopleNoFollowersBody =>
+      'When people follow this account, they will show up here.';
+
+  @override
+  String get peopleNoFollowing => 'Not following anyone yet';
+
+  @override
+  String get peopleNoFollowingBody =>
+      'Accounts this person follows will show up here.';
+
+  @override
+  String get peopleNoMutual => 'No mutual followers';
+
+  @override
+  String get peopleNoMutualBody =>
+      'You follow nobody who follows this account.';
+
+  @override
+  String get peopleNoMatches => 'No one found';
+
+  @override
+  String get peopleNoMatchesBody => 'Try a different name or @name.';
+
+  @override
+  String get peoplePrivateTitle => 'This account is private';
+
+  @override
+  String get peoplePrivateBody =>
+      'Follow this account to see who follows it and who it follows.';
+
+  @override
+  String get peopleLoadMoreError => 'Couldn\'t load more · Retry';
+
+  @override
+  String get peopleCaughtUp => 'That\'s everyone';
+
+  @override
+  String get settingsLogOutTitle => 'Log out?';
+
+  @override
+  String get settingsLogOutBody => 'You will need to sign in again.';
+
+  @override
+  String get settingsDeleteTitle => 'Delete your account?';
+
+  @override
+  String get settingsDeleteBody =>
+      'This permanently deletes your profile, posts and stories. This cannot be undone.';
+
+  @override
+  String get settingsDeletePasswordLabel => 'Password';
+
+  @override
+  String get settingsDeletePasswordHint => 'Enter your password';
+
+  @override
+  String get settingsDeleteWrongPassword => 'Wrong password';
+
+  @override
+  String get settingsDarkModeSoon => 'Dark mode is coming soon';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageArabic => 'العربية';
+
+  @override
+  String get personalInfoTitle => 'Personal info';
+
+  @override
+  String get personalInfoChangeCover => 'Change cover photo';
+
+  @override
+  String get personalInfoChangePhotoA11y => 'Change profile photo';
+
+  @override
+  String get personalInfoLocationLabel => 'Location';
+
+  @override
+  String get personalInfoLocationHint => 'Add a place';
+
+  @override
+  String get personalInfoPrivateNote =>
+      'Your email, phone and birthday are private and never shown on your profile.';
+
+  @override
+  String get personalInfoSave => 'Save changes';
+
+  @override
+  String get personalInfoDiscardBody => 'Your edits will be lost.';
+
+  @override
+  String get personalInfoSaved => 'Profile updated';
+
+  @override
+  String get locationCurrentUnavailable =>
+      'Couldn\'t find your location. Check that location is on.';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsPush => 'Push notifications';
+
+  @override
+  String get notificationsPushSub => 'Get alerts on this device';
+
+  @override
+  String get notificationsSectionActivity => 'Activity';
+
+  @override
+  String get notificationsSectionMessages => 'Messages';
+
+  @override
+  String get notificationsSectionPulse => 'From Pulse';
+
+  @override
+  String get notificationsLikes => 'Likes';
+
+  @override
+  String get notificationsLikesSub => 'On your posts and shorts';
+
+  @override
+  String get notificationsComments => 'Comments & replies';
+
+  @override
+  String get notificationsCommentsSub => 'When someone joins the conversation';
+
+  @override
+  String get notificationsMentions => 'Mentions & tags';
+
+  @override
+  String get notificationsMentionsSub => 'When you\'re tagged in a post';
+
+  @override
+  String get notificationsFollowers => 'New followers';
+
+  @override
+  String get notificationsFollowersSub => 'When someone follows you';
+
+  @override
+  String get notificationsDirect => 'Direct messages';
+
+  @override
+  String get notificationsDirectSub => 'One-on-one chats';
+
+  @override
+  String get notificationsGroups => 'Group chats';
+
+  @override
+  String get notificationsGroupsSub => 'Every message in groups you\'re in';
+
+  @override
+  String get notificationsShorts => 'Shorts from people you follow';
+
+  @override
+  String get notificationsShortsSub => 'When they post something new';
+
+  @override
+  String get notificationsDigest => 'Weekly email digest';
+
+  @override
+  String get notificationsDigestSub => 'Highlights you might have missed';
+
+  @override
+  String get notificationsProduct => 'Product updates';
+
+  @override
+  String get notificationsProductSub => 'New features and tips';
+
+  @override
+  String get languageTitle => 'Language';
+
+  @override
+  String get languageSearch => 'Search languages';
+
+  @override
+  String get languageSearchClear => 'Clear search';
+
+  @override
+  String get languageSectionApp => 'App language';
+
+  @override
+  String get languageRtlNote =>
+      'Arabic switches the whole app to right-to-left.';
+
+  @override
+  String get languageNone => 'No languages found';
+
+  @override
+  String get languageNameEnglish => 'English';
+
+  @override
+  String get languageNameArabic => 'Arabic';
+
+  @override
+  String get privacyTitle => 'Privacy';
+
+  @override
+  String get privateAccount => 'Private account';
+
+  @override
+  String get privateAccountSub =>
+      'Only people you approve can see your posts, shorts and followers.';
+
+  @override
+  String get whoCanMessage => 'Who can message you';
+
+  @override
+  String get everyone => 'Everyone';
+
+  @override
+  String get peopleYouFollow => 'People you follow';
+
+  @override
+  String get noOne => 'No one';
+
+  @override
+  String get whoCanComment => 'Who can comment';
+
+  @override
+  String get followersOnly => 'Followers only';
+
+  @override
+  String get turnOffComments => 'Turn off comments';
+
+  @override
+  String get visibility => 'Visibility';
+
+  @override
+  String get activityStatus => 'Show activity status';
+
+  @override
+  String get activityStatusSub => 'Let friends see when you\'re online';
+
+  @override
+  String get appearInSearch => 'Appear in search';
+
+  @override
+  String get appearInSearchSub => 'People can find you by name or email';
+
+  @override
+  String get blockedAccounts => 'Blocked accounts';
+
+  @override
+  String get blockedTitle => 'Blocked accounts';
+
+  @override
+  String get blockedIntro =>
+      'Blocked people can\'t see your profile, message you or find you in search. They aren\'t told you blocked them.';
+
+  @override
+  String blockedAgo(String username, String ago) {
+    return '@$username · Blocked $ago';
+  }
+
+  @override
+  String get unblock => 'Unblock';
+
+  @override
+  String get blockedEmpty => 'No blocked accounts';
+
+  @override
+  String unblocked(String username) {
+    return 'Unblocked @$username';
+  }
+
+  @override
+  String get timeAgoNow => 'just now';
+
+  @override
+  String timeAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks ago',
+      one: '1 week ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months ago',
+      one: '1 month ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years ago',
+      one: '1 year ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get securityChangeSection => 'Change password';
+
+  @override
+  String get securityCurrentPassword => 'Current password';
+
+  @override
+  String get securityUpdate => 'Update';
+
+  @override
+  String get securityLoginProtection => 'Login protection';
+
+  @override
+  String get securityTwoFactor => 'Two-factor authentication';
+
+  @override
+  String get securityTwoFactorSub =>
+      'Ask for a code when signing in on a new device';
+
+  @override
+  String get securityLoginAlerts => 'Login alerts';
+
+  @override
+  String get securityLoginAlertsSub => 'Tell me about logins from new places';
+
+  @override
+  String get securityWhereLoggedIn => 'Where you\'re logged in';
+
+  @override
+  String securityThisDevice(String device) {
+    return '$device · This device';
+  }
+
+  @override
+  String get securityThisDeviceFallback => 'This device';
+
+  @override
+  String get securityActiveNow => 'Active now';
+
+  @override
+  String get securityLogOutOthersTitle => 'Log out other devices?';
+
+  @override
+  String get securityLogOutOthersBody => 'They will need to sign in again.';
+
+  @override
+  String get securityOthersLoggedOut => 'Other devices logged out';
+
+  @override
+  String get securityPasswordUpdated => 'Password updated';
+
+  @override
+  String get securityResetSent => 'We sent a reset link to your email';
+
+  @override
+  String get securityWrongCurrent => 'Current password is wrong';
+
+  @override
+  String get securityComingSoon => 'This is coming soon';
+
+  @override
+  String get otherProfileNotFound => 'User not found';
+
+  @override
+  String get otherOptions => 'Profile options';
+
+  @override
+  String get otherOptionsSoon => 'Profile options are coming soon';
+
+  @override
+  String get otherFollowsYou => 'Follows you';
+
+  @override
+  String get otherFollowBack => 'Follow back';
+
+  @override
+  String get otherMessage => 'Message';
+
+  @override
+  String get otherMessageSoon => 'Messages are coming soon';
+
+  @override
+  String get otherTagged => 'Tagged';
+
+  @override
+  String get otherBlockedTitle => 'You blocked this account';
+
+  @override
+  String get otherBlockedBody =>
+      'They can\'t see your profile, posts or message you.';
+
+  @override
+  String get otherPrivateTitle => 'This account is private';
+
+  @override
+  String get otherPrivateBody =>
+      'Follow to see their posts, shorts and stories.';
+
+  @override
+  String otherPrivateRequested(String name) {
+    return 'Request sent. You\'ll see their posts once $name accepts.';
+  }
+
+  @override
+  String get otherRequestSent => 'Follow request sent';
+
+  @override
+  String get otherRequestSentHint => 'Tap Requested to cancel.';
+
+  @override
+  String get otherCancelRequest => 'Cancel request?';
+
+  @override
+  String get otherCancelRequestBody => 'Cancel your follow request?';
+
+  @override
+  String get otherCancelRequestConfirm => 'Cancel request';
+
+  @override
+  String otherUnfollowTitle(String name) {
+    return 'Unfollow $name?';
+  }
+
+  @override
+  String get otherUnfollowBody =>
+      'This account is private. You may have to request to follow again.';
+
+  @override
+  String get otherUnfollow => 'Unfollow';
+
+  @override
+  String get otherNoPostsBody => 'Posts will show up here.';
+
+  @override
+  String otherFollowedBy(String names) {
+    return 'Followed by $names';
+  }
+
+  @override
+  String otherFollowedByMore(String names, int count) {
+    return 'Followed by $names and $count others';
+  }
+
+  @override
+  String get profileShare => 'Share profile';
+
+  @override
+  String get profileCopyLink => 'Copy profile link';
+
+  @override
+  String get profileLinkCopied => 'Profile link copied';
+
+  @override
+  String get profileMute => 'Mute';
+
+  @override
+  String get profileMuteSub => 'Hide their posts and stories';
+
+  @override
+  String get profileCloseFriends => 'Add to close friends';
+
+  @override
+  String get profileCloseFriendsSub => 'See their stories with the green ring';
+
+  @override
+  String get profilePostNotifications => 'Post notifications';
+
+  @override
+  String get profilePostNotificationsSub => 'Get notified when they post';
+
+  @override
+  String profileBlock(String username) {
+    return 'Block @$username';
+  }
+
+  @override
+  String profileBlockTitle(String username) {
+    return 'Block @$username?';
+  }
+
+  @override
+  String get profileBlockBody =>
+      'They won\'t see your profile or posts and can\'t message you. They aren\'t told.';
+
+  @override
+  String get profileBlockAction => 'Block';
+
+  @override
+  String get profileReport => 'Report';
+
+  @override
+  String get profileReportTitle => 'Report profile';
+
+  @override
+  String get profileReportBody =>
+      'Why are you reporting this profile? Your report is anonymous.';
+
+  @override
+  String get profileReportSent => 'We\'ll review this profile.';
+
+  @override
+  String get profileReportNote => 'Tell us what\'s wrong with this profile…';
+
+  @override
+  String get helpTitle => 'Help center';
+
+  @override
+  String get helpTopics => 'Topics';
+
+  @override
+  String get commonQuestions => 'Common questions';
+
+  @override
+  String get chatWithUs => 'Chat with us';
+
+  @override
+  String get chatSoon => 'Chat support is coming soon';
+
+  @override
+  String get helpTopicEmpty => 'No questions here yet';
+
+  @override
+  String get reportTitle => 'Report a problem';
+
+  @override
+  String get reportWhatsWrong => 'What’s going wrong?';
+
+  @override
+  String get reportCatFeed => 'Feed';
+
+  @override
+  String get reportCatShorts => 'Shorts';
+
+  @override
+  String get reportCatChat => 'Chat';
+
+  @override
+  String get reportCatProfile => 'Profile';
+
+  @override
+  String get reportCatSigningIn => 'Signing in';
+
+  @override
+  String get reportTellMore => 'Tell us more';
+
+  @override
+  String get reportHint => 'What happened, and what did you expect to happen?';
+
+  @override
+  String get reportScreenshots => 'Screenshots';
+
+  @override
+  String get reportAdd => 'Add';
+
+  @override
+  String get reportIncludeLogs =>
+      'Include device info and app logs to help us fix it faster';
+
+  @override
+  String get reportThanks => 'Thanks, we got your report';
+
+  @override
+  String get reportRemoveScreenshot => 'Remove screenshot';
+
+  @override
+  String get reportDiscardBody => 'Your report will be lost.';
+
+  @override
+  String get reportImageTooLarge => 'The screenshot must be under 5 MB';
+
+  @override
+  String get helpTermsTitle => 'Terms & policies';
+
+  @override
+  String helpLastUpdated(String date) {
+    return 'Last updated $date';
+  }
+
+  @override
+  String get helpYourData => 'Your data';
+
+  @override
+  String get helpDownloadData => 'Download your data';
+
+  @override
+  String get helpDownloadDataSub =>
+      'Get a copy of your posts, shorts and messages';
+
+  @override
+  String get helpAdPreferences => 'Ad preferences';
+
+  @override
+  String get helpAdPreferencesSub => 'Control how your activity shapes ads';
+
+  @override
+  String get helpDataSoon => 'This is coming soon';
+
+  @override
+  String helpCopyright(String year, String company) {
+    return '© $year $company';
+  }
+
+  @override
+  String get helpTermsOfService => 'Terms of service';
+
+  @override
+  String get reportMessageTooShort => 'Enter at least 10 characters';
 }

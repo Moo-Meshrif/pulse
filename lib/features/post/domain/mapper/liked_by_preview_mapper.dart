@@ -3,9 +3,11 @@ import '../entity/liked_by_preview_entity.dart';
 
 /// Turns a "Liked by" row from the server into a [LikedByPreviewEntity].
 abstract final class LikedByPreviewMapper {
-  /// The username is what the row names (the board: "Liked by salma.ash"); a row without one is left out.
   static LikedByPreviewEntity? fromModel(LikedByPreviewModel model) {
-    final name = model.firstUsername;
+    final fullName = model.firstFullName?.trim();
+    final name = fullName != null && fullName.isNotEmpty
+        ? fullName
+        : model.firstUsername;
     if (name == null) return null;
     return LikedByPreviewEntity(
       firstName: name,

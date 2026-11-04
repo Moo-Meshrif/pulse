@@ -28,6 +28,7 @@ class AppTextStyles {
     required this.label,
     required this.section,
     required this.meta,
+    required this.tab,
     required this.caption,
     required this.badge,
     required this.action,
@@ -76,6 +77,9 @@ class AppTextStyles {
   final TextStyle label;
   final TextStyle section;
   final TextStyle meta;
+
+  /// Profile tab labels.
+  final TextStyle tab;
   final TextStyle caption;
   final TextStyle badge;
 
@@ -185,6 +189,7 @@ class AppTextStyles {
       label: s(13, FontWeight.w600),
       section: s(13, FontWeight.w700, spacing: 0.4),
       meta: s(13, FontWeight.w600),
+      tab: s(15, FontWeight.w600),
       caption: s(12, FontWeight.w400),
       badge: s(11, FontWeight.w700),
       action: s(14, FontWeight.w700, spacing: 0),
@@ -247,6 +252,7 @@ class AppTextStyles {
       label: f(label),
       section: f(section),
       meta: f(meta),
+      tab: f(tab),
       caption: f(caption),
       badge: f(badge),
       action: f(action),

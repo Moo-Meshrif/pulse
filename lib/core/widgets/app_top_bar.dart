@@ -54,7 +54,14 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               if (titleWidget != null)
                 Expanded(child: titleWidget!)
               else if (title != null)
-                Expanded(child: Text(title!, style: context.text.title)),
+                Expanded(
+                  child: Text(
+                    title!,
+                    style: context.text.title.copyWith(
+                      color: context.appColors.textPrimary,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

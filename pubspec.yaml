@@ -54,13 +54,16 @@ dependencies:
   hive_ce: ^2.22.0
   html: '>=0.15.4 <0.15.6'
   http: ^1.6.0
+  image_cropper: ^13.0.0
   image_picker: ^1.2.4
   injectable: ^3.0.0
   intl: ^0.20.3
   lottie: ^3.6.1
+  package_info_plus: ^10.2.2
   path_provider: ^2.1.6
   permission_handler: ^13.0.2
   pinput: ^6.0.2
+  share_plus: ^13.3.1
   shared_preferences: ^2.5.6
   skeletonizer: ^3.0.0
   supabase_flutter: ^2.18.0
@@ -89,6 +92,7 @@ flutter:
     - assets/animations/
     - assets/images/onboarding/en/
     - assets/images/onboarding/ar/
+    - assets/images/profile/
 
   # Fonts (docs/specs/_theme/typography.md): Sora for headings, Noto Sans for everything
   # else, Noto Sans Arabic for Arabic (see AppTextStyles).

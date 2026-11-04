@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:bloc_test/bloc_test.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/constants/app_assets.dart';
@@ -47,6 +49,8 @@ import 'package:pulse/features/post/presentation/widgets/post_card.dart';
 import 'package:pulse/features/post/presentation/widgets/post_page/post_liked_by_row.dart';
 import 'package:pulse/features/profile/domain/use_case/get_current_user_id_use_case.dart';
 import 'package:pulse/features/profile/domain/use_case/get_last_account_use_case.dart';
+import 'package:pulse/features/profile/presentation/cubit/own_author/own_author_cubit.dart';
+import 'package:pulse/features/profile/presentation/cubit/own_author/own_author_state.dart';
 import 'package:pulse/features/story/domain/entity/story_rail_item_entity.dart';
 import 'package:pulse/features/story/domain/use_case/get_story_rail_use_case.dart';
 import 'package:pulse/shared/content/data/enums/content_audience.dart';
@@ -78,6 +82,8 @@ class _GetFeed extends Mock implements GetHomeFeedUseCase {}
 class _Privacy extends Mock implements GetPrivacyUseCase {}
 
 class _Account extends Mock implements GetLastAccountUseCase {}
+
+class _OwnAuthor extends MockCubit<OwnAuthorState> implements OwnAuthorCubit {}
 
 class _Sign extends Mock implements SignPostMediaUrlsUseCase {}
 
@@ -141,6 +147,8 @@ void main() {
     );
   }
 
+  late _OwnAuthor ownAuthor;
+
   setUpAll(() {
     registerFallbackValue(cursor);
     registerFallbackValue(CommentSort.relevant);
@@ -149,6 +157,8 @@ void main() {
 
   setUp(() async {
     await getIt.reset();
+    ownAuthor = _OwnAuthor();
+    when(() => ownAuthor.state).thenReturn(const OwnAuthorState());
     getFeed = _GetFeed();
     likedBy = quietLikedBy();
     requestCount = _RequestCount();
@@ -282,6 +292,10 @@ void main() {
     addTearDown(getIt.reset);
   });
 
+  /// The control shell provides this cubit above Home; here it is empty (no profile read).
+  Widget withOwnAuthor(Widget child) =>
+      BlocProvider<OwnAuthorCubit>.value(value: ownAuthor, child: child);
+
   Future<void> show(
     WidgetTester tester, {
     Locale locale = const Locale('en'),
@@ -289,7 +303,7 @@ void main() {
   }) => withClock(
     Clock.fixed(now),
     () => tester.pumpApp(
-      const HomeScreen(),
+      withOwnAuthor(const HomeScreen()),
       locale: locale,
       settle: settle,
       onGenerateRoute: AppRouter.onGenerateRoute,
@@ -996,7 +1010,7 @@ void main() {
       await withClock(
         Clock.fixed(now),
         () => tester.pumpApp(
-          const NavClearance(bottom: nav, child: HomeScreen()),
+          withOwnAuthor(const NavClearance(bottom: nav, child: HomeScreen())),
           onGenerateRoute: AppRouter.onGenerateRoute,
         ),
       );

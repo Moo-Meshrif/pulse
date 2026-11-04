@@ -8,6 +8,8 @@ import '../../../../../core/router/app_navigator.dart';
 import '../../../../../core/router/app_routes.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../shared/content/domain/entity/content_publish_status.dart';
+import '../../../../profile/presentation/cubit/own_author/own_author_cubit.dart';
+import '../../../../story/domain/entity/story_rail_item_entity.dart';
 import '../../cubit/story_rail/story_rail_cubit.dart';
 import '../../cubit/story_rail/story_rail_state.dart';
 import '../../dimens/home_dimens.dart';
@@ -30,6 +32,27 @@ class YourStoryItem extends StatelessWidget {
     rootNavigator: true,
   );
 
+  /// The rail item with the name and photo the person has now.
+  StoryRailItemEntity _withOwnAuthor(
+    BuildContext context,
+    StoryRailItemEntity me,
+  ) {
+    final own = context.watch<OwnAuthorCubit>().state;
+    final username = own.username;
+    return username == null
+        ? me
+        : me.copyWith(
+            username: username,
+            fullName: own.fullName,
+            avatarUrl: own.avatarUrl,
+          );
+  }
+
+  StoryRailItemEntity? _mineOrNull(
+    BuildContext context,
+    StoryRailItemEntity? me,
+  ) => me == null ? null : _withOwnAuthor(context, me);
+
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<StoryRailCubit, StoryRailState>(
@@ -47,7 +70,7 @@ class YourStoryItem extends StatelessWidget {
                 tween: Tween(end: progress),
                 duration: _progressDuration,
                 builder: (context, value, _) => RingedPhoto(
-                  me: state.me,
+                  me: _mineOrNull(context, state.me),
                   account: context.read<StoryRailCubit>().account,
                   progress: value,
                   color: colors.primary,
@@ -60,14 +83,14 @@ class YourStoryItem extends StatelessWidget {
               labelColor: colors.warningInk,
               onTap: context.read<StoryRailCubit>().retryUpload,
               child: RingedPhoto(
-                me: state.me,
+                me: _mineOrNull(context, state.me),
                 account: context.read<StoryRailCubit>().account,
                 progress: 1,
                 color: colors.warningInk,
               ),
             ),
             _ when state.me != null => StoryItem(
-              person: state.me!,
+              person: _withOwnAuthor(context, state.me!),
               label: l10n.storyYourStory,
               onAdd: () => _createStory(context),
             ),

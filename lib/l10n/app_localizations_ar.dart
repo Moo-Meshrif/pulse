@@ -2280,4 +2280,828 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get postLikedByYouName => 'أعجبك';
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get settingsAccount => 'الحساب';
+
+  @override
+  String get settingsPreferences => 'التفضيلات';
+
+  @override
+  String get settingsSupport => 'الدعم';
+
+  @override
+  String get settingsPersonalInfo => 'المعلومات الشخصية';
+
+  @override
+  String get settingsPasswordSecurity => 'كلمة المرور والأمان';
+
+  @override
+  String get settingsPrivacy => 'الخصوصية';
+
+  @override
+  String get settingsBlocked => 'الحسابات المحظورة';
+
+  @override
+  String get settingsNotifications => 'الإشعارات';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get settingsAutoplay => 'تشغيل الشورتس تلقائيًا';
+
+  @override
+  String get settingsAutoplaySub => 'شغّل الفيديوهات تلقائيًا عبر الواي فاي';
+
+  @override
+  String get settingsDataSaver => 'توفير البيانات';
+
+  @override
+  String get settingsDataSaverSub =>
+      'حمّل وسائط بجودة أقل عند استخدام بيانات الجوال';
+
+  @override
+  String get settingsDarkMode => 'الوضع الداكن';
+
+  @override
+  String get settingsDarkModeSub => 'أريح للعين ليلًا';
+
+  @override
+  String get settingsHelp => 'مركز المساعدة';
+
+  @override
+  String get settingsReport => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get settingsTerms => 'الشروط والسياسات';
+
+  @override
+  String get settingsLogOut => 'تسجيل الخروج';
+
+  @override
+  String get settingsDelete => 'حذف الحساب';
+
+  @override
+  String settingsVersion(String version) {
+    return 'بولس · الإصدار $version';
+  }
+
+  @override
+  String get valuePublic => 'عام';
+
+  @override
+  String get valuePrivate => 'خاص';
+
+  @override
+  String get valueOn => 'مفعّل';
+
+  @override
+  String get valueOff => 'متوقف';
+
+  @override
+  String get profileTabPosts => 'المنشورات';
+
+  @override
+  String get profileTabShorts => 'الشورتس';
+
+  @override
+  String get profileTabSaved => 'المحفوظات';
+
+  @override
+  String get profilePosts => 'المنشورات';
+
+  @override
+  String get profileFollowers => 'المتابعون';
+
+  @override
+  String get profileFollowing => 'يتابع';
+
+  @override
+  String get profileNoPosts => 'لا توجد منشورات بعد';
+
+  @override
+  String get profileNoPostsBody => 'المنشورات التي تشاركها ستظهر هنا.';
+
+  @override
+  String get profileSharePost => 'شارك أول منشور لك';
+
+  @override
+  String get profileNoSaved => 'لا يوجد شيء محفوظ بعد';
+
+  @override
+  String get profileNoSavedBody =>
+      'اضغط على علامة الحفظ في أي منشور ليظهر هنا. أنت وحدك من يراه.';
+
+  @override
+  String get profileShortsSoon => 'الشورتس قادمة قريبًا';
+
+  @override
+  String get profileShortsSoonBody => 'ستظهر مقاطع الفيديو القصيرة هنا.';
+
+  @override
+  String get profileShareA11y => 'مشاركة الملف الشخصي';
+
+  @override
+  String get profileSettingsA11y => 'الإعدادات';
+
+  @override
+  String get profileViewPhotoA11y => 'عرض صورة الملف الشخصي';
+
+  @override
+  String get profilePostA11y => 'فتح المنشور';
+
+  @override
+  String get profileLoadMoreError => 'تعذّر تحميل المزيد · أعد المحاولة';
+
+  @override
+  String get profileCaughtUp => 'هذا كل شيء';
+
+  @override
+  String get profileOfflineNumbers => 'اتصل بالإنترنت لعرض الأرقام.';
+
+  @override
+  String get peopleFollowersTitle => 'المتابعون';
+
+  @override
+  String get peopleFollowingTitle => 'يتابع';
+
+  @override
+  String get peopleMutualTitle => 'يتابعه';
+
+  @override
+  String get peopleSearchHint => 'بحث';
+
+  @override
+  String get peopleSearchClear => 'مسح البحث';
+
+  @override
+  String get peopleNoFollowers => 'لا يوجد متابعون بعد';
+
+  @override
+  String get peopleNoFollowersBody =>
+      'عندما يتابع الناس هذا الحساب سيظهرون هنا.';
+
+  @override
+  String get peopleNoFollowing => 'لا يتابع أحدًا بعد';
+
+  @override
+  String get peopleNoFollowingBody =>
+      'الحسابات التي يتابعها هذا الشخص ستظهر هنا.';
+
+  @override
+  String get peopleNoMutual => 'لا يوجد متابعون مشتركون';
+
+  @override
+  String get peopleNoMutualBody => 'لا تتابع أحدًا يتابع هذا الحساب.';
+
+  @override
+  String get peopleNoMatches => 'لم يتم العثور على أحد';
+
+  @override
+  String get peopleNoMatchesBody => 'جرّب اسمًا أو @اسم مستخدم آخر.';
+
+  @override
+  String get peoplePrivateTitle => 'هذا الحساب خاص';
+
+  @override
+  String get peoplePrivateBody => 'تابع هذا الحساب لترى من يتابعه ومن يتابع.';
+
+  @override
+  String get peopleLoadMoreError => 'تعذّر تحميل المزيد · أعد المحاولة';
+
+  @override
+  String get peopleCaughtUp => 'هذا كل الأشخاص';
+
+  @override
+  String get settingsLogOutTitle => 'تسجيل الخروج؟';
+
+  @override
+  String get settingsLogOutBody => 'ستحتاج إلى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get settingsDeleteTitle => 'حذف حسابك؟';
+
+  @override
+  String get settingsDeleteBody =>
+      'سيؤدي هذا إلى حذف ملفك ومنشوراتك وقصصك نهائيًا ولا يمكن التراجع.';
+
+  @override
+  String get settingsDeletePasswordLabel => 'كلمة المرور';
+
+  @override
+  String get settingsDeletePasswordHint => 'أدخل كلمة المرور';
+
+  @override
+  String get settingsDeleteWrongPassword => 'كلمة المرور غير صحيحة';
+
+  @override
+  String get settingsDarkModeSoon => 'الوضع الداكن قادم قريبًا';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageArabic => 'العربية';
+
+  @override
+  String get personalInfoTitle => 'المعلومات الشخصية';
+
+  @override
+  String get personalInfoChangeCover => 'تغيير صورة الغلاف';
+
+  @override
+  String get personalInfoChangePhotoA11y => 'تغيير صورة الملف الشخصي';
+
+  @override
+  String get personalInfoLocationLabel => 'الموقع';
+
+  @override
+  String get personalInfoLocationHint => 'أضف مكانًا';
+
+  @override
+  String get personalInfoPrivateNote =>
+      'بريدك الإلكتروني وهاتفك وتاريخ ميلادك خاصة ولا تظهر في ملفك الشخصي.';
+
+  @override
+  String get personalInfoSave => 'حفظ التغييرات';
+
+  @override
+  String get personalInfoDiscardBody => 'ستفقد تعديلاتك.';
+
+  @override
+  String get personalInfoSaved => 'تم تحديث الملف الشخصي';
+
+  @override
+  String get locationCurrentUnavailable =>
+      'تعذّر العثور على موقعك. تأكد من تشغيل الموقع.';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsPush => 'الإشعارات الفورية';
+
+  @override
+  String get notificationsPushSub => 'استلم التنبيهات على هذا الجهاز';
+
+  @override
+  String get notificationsSectionActivity => 'النشاط';
+
+  @override
+  String get notificationsSectionMessages => 'الرسائل';
+
+  @override
+  String get notificationsSectionPulse => 'من بولس';
+
+  @override
+  String get notificationsLikes => 'الإعجابات';
+
+  @override
+  String get notificationsLikesSub => 'على منشوراتك وشورتسك';
+
+  @override
+  String get notificationsComments => 'التعليقات والردود';
+
+  @override
+  String get notificationsCommentsSub => 'عندما يشارك أحد في المحادثة';
+
+  @override
+  String get notificationsMentions => 'الإشارات والوسوم';
+
+  @override
+  String get notificationsMentionsSub => 'عند الإشارة إليك في منشور';
+
+  @override
+  String get notificationsFollowers => 'متابعون جدد';
+
+  @override
+  String get notificationsFollowersSub => 'عندما يتابعك أحد';
+
+  @override
+  String get notificationsDirect => 'الرسائل المباشرة';
+
+  @override
+  String get notificationsDirectSub => 'المحادثات الفردية';
+
+  @override
+  String get notificationsGroups => 'محادثات المجموعات';
+
+  @override
+  String get notificationsGroupsSub => 'كل رسالة في المجموعات التي أنت فيها';
+
+  @override
+  String get notificationsShorts => 'شورتس من تتابعهم';
+
+  @override
+  String get notificationsShortsSub => 'عندما ينشرون شيئًا جديدًا';
+
+  @override
+  String get notificationsDigest => 'ملخص أسبوعي بالبريد';
+
+  @override
+  String get notificationsDigestSub => 'أبرز ما فاتك';
+
+  @override
+  String get notificationsProduct => 'تحديثات المنتج';
+
+  @override
+  String get notificationsProductSub => 'ميزات جديدة ونصائح';
+
+  @override
+  String get languageTitle => 'اللغة';
+
+  @override
+  String get languageSearch => 'ابحث عن لغة';
+
+  @override
+  String get languageSearchClear => 'مسح البحث';
+
+  @override
+  String get languageSectionApp => 'لغة التطبيق';
+
+  @override
+  String get languageRtlNote =>
+      'العربية تحوّل التطبيق بالكامل من اليمين إلى اليسار.';
+
+  @override
+  String get languageNone => 'لم يتم العثور على لغات';
+
+  @override
+  String get languageNameEnglish => 'الإنجليزية';
+
+  @override
+  String get languageNameArabic => 'العربية';
+
+  @override
+  String get privacyTitle => 'الخصوصية';
+
+  @override
+  String get privateAccount => 'حساب خاص';
+
+  @override
+  String get privateAccountSub =>
+      'فقط من توافق عليهم يمكنهم رؤية منشوراتك وشورتسك ومتابعيك.';
+
+  @override
+  String get whoCanMessage => 'من يمكنه مراسلتك';
+
+  @override
+  String get everyone => 'الجميع';
+
+  @override
+  String get peopleYouFollow => 'الأشخاص الذين تتابعهم';
+
+  @override
+  String get noOne => 'لا أحد';
+
+  @override
+  String get whoCanComment => 'من يمكنه التعليق';
+
+  @override
+  String get followersOnly => 'المتابعون فقط';
+
+  @override
+  String get turnOffComments => 'إيقاف التعليقات';
+
+  @override
+  String get visibility => 'الظهور';
+
+  @override
+  String get activityStatus => 'إظهار حالة النشاط';
+
+  @override
+  String get activityStatusSub => 'دع أصدقاءك يرون متى تكون متصلًا';
+
+  @override
+  String get appearInSearch => 'الظهور في البحث';
+
+  @override
+  String get appearInSearchSub =>
+      'يمكن للناس إيجادك بالاسم أو البريد الإلكتروني';
+
+  @override
+  String get blockedAccounts => 'الحسابات المحظورة';
+
+  @override
+  String get blockedTitle => 'الحسابات المحظورة';
+
+  @override
+  String get blockedIntro =>
+      'لا يستطيع المحظورون رؤية ملفك أو مراسلتك أو إيجادك في البحث. ولا يتم إخبارهم بأنك حظرتهم.';
+
+  @override
+  String blockedAgo(String username, String ago) {
+    return '@$username · محظور $ago';
+  }
+
+  @override
+  String get unblock => 'إلغاء الحظر';
+
+  @override
+  String get blockedEmpty => 'لا توجد حسابات محظورة';
+
+  @override
+  String unblocked(String username) {
+    return 'تم إلغاء حظر @$username';
+  }
+
+  @override
+  String get timeAgoNow => 'الآن';
+
+  @override
+  String timeAgoMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count دقيقة',
+      many: 'منذ $count دقيقة',
+      few: 'منذ $count دقائق',
+      two: 'منذ دقيقتين',
+      one: 'منذ دقيقة',
+      zero: 'الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count ساعة',
+      many: 'منذ $count ساعة',
+      few: 'منذ $count ساعات',
+      two: 'منذ ساعتين',
+      one: 'منذ ساعة',
+      zero: 'الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count يوم',
+      many: 'منذ $count يومًا',
+      few: 'منذ $count أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم',
+      zero: 'اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count أسبوع',
+      many: 'منذ $count أسبوعًا',
+      few: 'منذ $count أسابيع',
+      two: 'منذ أسبوعين',
+      one: 'منذ أسبوع',
+      zero: 'هذا الأسبوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count شهر',
+      many: 'منذ $count شهرًا',
+      few: 'منذ $count أشهر',
+      two: 'منذ شهرين',
+      one: 'منذ شهر',
+      zero: 'هذا الشهر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeAgoYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count سنة',
+      many: 'منذ $count سنة',
+      few: 'منذ $count سنوات',
+      two: 'منذ سنتين',
+      one: 'منذ سنة',
+      zero: 'هذا العام',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get securityChangeSection => 'تغيير كلمة المرور';
+
+  @override
+  String get securityCurrentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get securityUpdate => 'تحديث';
+
+  @override
+  String get securityLoginProtection => 'حماية تسجيل الدخول';
+
+  @override
+  String get securityTwoFactor => 'المصادقة الثنائية';
+
+  @override
+  String get securityTwoFactorSub => 'اطلب رمزًا عند تسجيل الدخول من جهاز جديد';
+
+  @override
+  String get securityLoginAlerts => 'تنبيهات تسجيل الدخول';
+
+  @override
+  String get securityLoginAlertsSub => 'أخبرني عن تسجيل الدخول من أماكن جديدة';
+
+  @override
+  String get securityWhereLoggedIn => 'الأجهزة المسجّل عليها';
+
+  @override
+  String securityThisDevice(String device) {
+    return '$device · هذا الجهاز';
+  }
+
+  @override
+  String get securityThisDeviceFallback => 'هذا الجهاز';
+
+  @override
+  String get securityActiveNow => 'نشط الآن';
+
+  @override
+  String get securityLogOutOthersTitle => 'تسجيل الخروج من الأجهزة الأخرى؟';
+
+  @override
+  String get securityLogOutOthersBody => 'سيحتاجون إلى تسجيل الدخول مرة أخرى.';
+
+  @override
+  String get securityOthersLoggedOut => 'تم تسجيل الخروج من الأجهزة الأخرى';
+
+  @override
+  String get securityPasswordUpdated => 'تم تحديث كلمة المرور';
+
+  @override
+  String get securityResetSent =>
+      'أرسلنا رابط إعادة التعيين إلى بريدك الإلكتروني';
+
+  @override
+  String get securityWrongCurrent => 'كلمة المرور الحالية غير صحيحة';
+
+  @override
+  String get securityComingSoon => 'هذه الميزة قادمة قريبًا';
+
+  @override
+  String get otherProfileNotFound => 'المستخدم غير موجود';
+
+  @override
+  String get otherOptions => 'خيارات الملف الشخصي';
+
+  @override
+  String get otherOptionsSoon => 'خيارات الملف الشخصي قادمة قريبًا';
+
+  @override
+  String get otherFollowsYou => 'يتابعك';
+
+  @override
+  String get otherFollowBack => 'رد المتابعة';
+
+  @override
+  String get otherMessage => 'رسالة';
+
+  @override
+  String get otherMessageSoon => 'الرسائل قادمة قريبًا';
+
+  @override
+  String get otherTagged => 'الوسوم';
+
+  @override
+  String get otherBlockedTitle => 'لقد حظرت هذا الحساب';
+
+  @override
+  String get otherBlockedBody => 'لا يستطيع رؤية ملفك أو منشوراتك أو مراسلتك.';
+
+  @override
+  String get otherPrivateTitle => 'هذا الحساب خاص';
+
+  @override
+  String get otherPrivateBody => 'تابعه لترى منشوراته وشورتسه وقصصه.';
+
+  @override
+  String otherPrivateRequested(String name) {
+    return 'تم إرسال الطلب. سترى منشوراته بعد أن يقبل $name.';
+  }
+
+  @override
+  String get otherRequestSent => 'تم إرسال طلب المتابعة';
+
+  @override
+  String get otherRequestSentHint => 'اضغط تم الطلب للإلغاء.';
+
+  @override
+  String get otherCancelRequest => 'إلغاء الطلب؟';
+
+  @override
+  String get otherCancelRequestBody => 'هل تريد إلغاء طلب المتابعة؟';
+
+  @override
+  String get otherCancelRequestConfirm => 'إلغاء الطلب';
+
+  @override
+  String otherUnfollowTitle(String name) {
+    return 'إلغاء متابعة $name؟';
+  }
+
+  @override
+  String get otherUnfollowBody => 'قد تحتاج إلى طلب المتابعة مرة أخرى.';
+
+  @override
+  String get otherUnfollow => 'إلغاء المتابعة';
+
+  @override
+  String get otherNoPostsBody => 'ستظهر المنشورات هنا.';
+
+  @override
+  String otherFollowedBy(String names) {
+    return 'يتابعه $names';
+  }
+
+  @override
+  String otherFollowedByMore(String names, int count) {
+    return 'يتابعه $names و$count آخرون';
+  }
+
+  @override
+  String get profileShare => 'مشاركة الملف الشخصي';
+
+  @override
+  String get profileCopyLink => 'نسخ رابط الملف';
+
+  @override
+  String get profileLinkCopied => 'تم نسخ رابط الملف';
+
+  @override
+  String get profileMute => 'كتم';
+
+  @override
+  String get profileMuteSub => 'إخفاء منشوراتهم وقصصهم';
+
+  @override
+  String get profileCloseFriends => 'إضافة إلى الأصدقاء المقرّبين';
+
+  @override
+  String get profileCloseFriendsSub => 'شاهد قصصهم بالحلقة الخضراء';
+
+  @override
+  String get profilePostNotifications => 'إشعارات المنشورات';
+
+  @override
+  String get profilePostNotificationsSub => 'احصل على إشعار عندما ينشرون';
+
+  @override
+  String profileBlock(String username) {
+    return 'حظر @$username';
+  }
+
+  @override
+  String profileBlockTitle(String username) {
+    return 'حظر @$username؟';
+  }
+
+  @override
+  String get profileBlockBody =>
+      'لن يرى ملفك ومنشوراتك ولن يستطيع مراسلتك. ولن يتم إخباره.';
+
+  @override
+  String get profileBlockAction => 'حظر';
+
+  @override
+  String get profileReport => 'إبلاغ';
+
+  @override
+  String get profileReportTitle => 'الإبلاغ عن الملف الشخصي';
+
+  @override
+  String get profileReportBody => 'لماذا تبلغ عن هذا الملف؟ بلاغك مجهول.';
+
+  @override
+  String get profileReportSent => 'سنراجع هذا الملف الشخصي.';
+
+  @override
+  String get profileReportNote => 'أخبرنا ما المشكلة في هذا الملف…';
+
+  @override
+  String get helpTitle => 'مركز المساعدة';
+
+  @override
+  String get helpTopics => 'المواضيع';
+
+  @override
+  String get commonQuestions => 'الأسئلة الشائعة';
+
+  @override
+  String get chatWithUs => 'تحدث معنا';
+
+  @override
+  String get chatSoon => 'الدردشة مع الدعم قادمة قريبًا';
+
+  @override
+  String get helpTopicEmpty => 'لا توجد أسئلة هنا بعد';
+
+  @override
+  String get reportTitle => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get reportWhatsWrong => 'ما المشكلة؟';
+
+  @override
+  String get reportCatFeed => 'الرئيسية';
+
+  @override
+  String get reportCatShorts => 'الشورتس';
+
+  @override
+  String get reportCatChat => 'المحادثات';
+
+  @override
+  String get reportCatProfile => 'الملف الشخصي';
+
+  @override
+  String get reportCatSigningIn => 'تسجيل الدخول';
+
+  @override
+  String get reportTellMore => 'أخبرنا بالمزيد';
+
+  @override
+  String get reportHint => 'ماذا حدث، وماذا كنت تتوقع أن يحدث؟';
+
+  @override
+  String get reportScreenshots => 'لقطات الشاشة';
+
+  @override
+  String get reportAdd => 'إضافة';
+
+  @override
+  String get reportIncludeLogs =>
+      'أرفق معلومات الجهاز وسجلات التطبيق لمساعدتنا في الإصلاح بشكل أسرع';
+
+  @override
+  String get reportThanks => 'شكرًا، وصل بلاغك';
+
+  @override
+  String get reportRemoveScreenshot => 'إزالة لقطة الشاشة';
+
+  @override
+  String get reportDiscardBody => 'سيتم فقدان بلاغك.';
+
+  @override
+  String get reportImageTooLarge => 'يجب ألا تتجاوز لقطة الشاشة ٥ ميغابايت';
+
+  @override
+  String get helpTermsTitle => 'الشروط والسياسات';
+
+  @override
+  String helpLastUpdated(String date) {
+    return 'آخر تحديث $date';
+  }
+
+  @override
+  String get helpYourData => 'بياناتك';
+
+  @override
+  String get helpDownloadData => 'نزّل بياناتك';
+
+  @override
+  String get helpDownloadDataSub => 'احصل على نسخة من منشوراتك وشورتسك ورسائلك';
+
+  @override
+  String get helpAdPreferences => 'تفضيلات الإعلانات';
+
+  @override
+  String get helpAdPreferencesSub => 'تحكم في كيفية تأثير نشاطك على الإعلانات';
+
+  @override
+  String get helpDataSoon => 'هذه الميزة قادمة قريبًا';
+
+  @override
+  String helpCopyright(String year, String company) {
+    return '© $year $company';
+  }
+
+  @override
+  String get helpTermsOfService => 'شروط الخدمة';
+
+  @override
+  String get reportMessageTooShort => 'أدخل 10 أحرف على الأقل';
 }

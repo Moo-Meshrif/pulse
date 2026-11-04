@@ -3955,6 +3955,1434 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'you'**
   String get postLikedByYouName;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get settingsPreferences;
+
+  /// No description provided for @settingsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSupport;
+
+  /// No description provided for @settingsPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal info'**
+  String get settingsPersonalInfo;
+
+  /// No description provided for @settingsPasswordSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Password & security'**
+  String get settingsPasswordSecurity;
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked accounts'**
+  String get settingsBlocked;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsAutoplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Autoplay shorts'**
+  String get settingsAutoplay;
+
+  /// No description provided for @settingsAutoplaySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Play videos automatically on Wi-Fi'**
+  String get settingsAutoplaySub;
+
+  /// No description provided for @settingsDataSaver.
+  ///
+  /// In en, this message translates to:
+  /// **'Data saver'**
+  String get settingsDataSaver;
+
+  /// No description provided for @settingsDataSaverSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Load lower-quality media on mobile data'**
+  String get settingsDataSaverSub;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Easier on the eyes at night'**
+  String get settingsDarkModeSub;
+
+  /// No description provided for @settingsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help center'**
+  String get settingsHelp;
+
+  /// No description provided for @settingsReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get settingsReport;
+
+  /// No description provided for @settingsTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & policies'**
+  String get settingsTerms;
+
+  /// No description provided for @settingsLogOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get settingsLogOut;
+
+  /// No description provided for @settingsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get settingsDelete;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse · version {version}'**
+  String settingsVersion(String version);
+
+  /// No description provided for @valuePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get valuePublic;
+
+  /// No description provided for @valuePrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get valuePrivate;
+
+  /// No description provided for @valueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get valueOn;
+
+  /// No description provided for @valueOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get valueOff;
+
+  /// Profile tab: the person's posts
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get profileTabPosts;
+
+  /// Profile tab: the person's shorts
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts'**
+  String get profileTabShorts;
+
+  /// Profile tab: posts the signed-in person saved
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get profileTabSaved;
+
+  /// Profile numbers: label under the post count
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get profilePosts;
+
+  /// Profile numbers: label under the followers count
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get profileFollowers;
+
+  /// Profile numbers: label under the following count
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get profileFollowing;
+
+  /// Profile Posts tab: empty title
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get profileNoPosts;
+
+  /// Profile Posts tab: empty message
+  ///
+  /// In en, this message translates to:
+  /// **'Posts you share will show up here.'**
+  String get profileNoPostsBody;
+
+  /// Profile Posts tab: empty button that opens the post composer
+  ///
+  /// In en, this message translates to:
+  /// **'Share your first post'**
+  String get profileSharePost;
+
+  /// Profile Saved tab: empty title
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved yet'**
+  String get profileNoSaved;
+
+  /// Profile Saved tab: empty message
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the bookmark on a post to keep it here. Only you can see this.'**
+  String get profileNoSavedBody;
+
+  /// Profile Shorts tab: title
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts are coming soon'**
+  String get profileShortsSoon;
+
+  /// Profile Shorts tab: message
+  ///
+  /// In en, this message translates to:
+  /// **'Short videos will live here.'**
+  String get profileShortsSoonBody;
+
+  /// Profile: label of the share button
+  ///
+  /// In en, this message translates to:
+  /// **'Share profile'**
+  String get profileShareA11y;
+
+  /// Profile: label of the settings button
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get profileSettingsA11y;
+
+  /// Profile: label of the avatar, which opens the photo
+  ///
+  /// In en, this message translates to:
+  /// **'View profile photo'**
+  String get profileViewPhotoA11y;
+
+  /// Profile grid: label of a post tile
+  ///
+  /// In en, this message translates to:
+  /// **'Open post'**
+  String get profilePostA11y;
+
+  /// Profile grid footer when loading the next page failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get profileLoadMoreError;
+
+  /// Profile grid footer at the end of the list
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s everything'**
+  String get profileCaughtUp;
+
+  /// Profile: note under the saved header shown offline
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet to see the numbers.'**
+  String get profileOfflineNumbers;
+
+  /// People list: title of the followers list
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get peopleFollowersTitle;
+
+  /// People list: title of the following list
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get peopleFollowingTitle;
+
+  /// People list: title of the list of people you follow who follow this person
+  ///
+  /// In en, this message translates to:
+  /// **'Followed by'**
+  String get peopleMutualTitle;
+
+  /// People list: search field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get peopleSearchHint;
+
+  /// People list: clear button label of the search field
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get peopleSearchClear;
+
+  /// People list: empty followers title
+  ///
+  /// In en, this message translates to:
+  /// **'No followers yet'**
+  String get peopleNoFollowers;
+
+  /// People list: empty followers text
+  ///
+  /// In en, this message translates to:
+  /// **'When people follow this account, they will show up here.'**
+  String get peopleNoFollowersBody;
+
+  /// People list: empty following title
+  ///
+  /// In en, this message translates to:
+  /// **'Not following anyone yet'**
+  String get peopleNoFollowing;
+
+  /// People list: empty following text
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts this person follows will show up here.'**
+  String get peopleNoFollowingBody;
+
+  /// People list: empty mutual title
+  ///
+  /// In en, this message translates to:
+  /// **'No mutual followers'**
+  String get peopleNoMutual;
+
+  /// People list: empty mutual text
+  ///
+  /// In en, this message translates to:
+  /// **'You follow nobody who follows this account.'**
+  String get peopleNoMutualBody;
+
+  /// People list: search found nobody, title
+  ///
+  /// In en, this message translates to:
+  /// **'No one found'**
+  String get peopleNoMatches;
+
+  /// People list: search found nobody, text
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different name or @name.'**
+  String get peopleNoMatchesBody;
+
+  /// People list: private account that you do not follow, title
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private'**
+  String get peoplePrivateTitle;
+
+  /// People list: private account that you do not follow, text
+  ///
+  /// In en, this message translates to:
+  /// **'Follow this account to see who follows it and who it follows.'**
+  String get peoplePrivateBody;
+
+  /// People list: the next page failed
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more · Retry'**
+  String get peopleLoadMoreError;
+
+  /// People list: end of the list
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s everyone'**
+  String get peopleCaughtUp;
+
+  /// Settings: title of the log out dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Log out?'**
+  String get settingsLogOutTitle;
+
+  /// Settings: body of the log out dialog
+  ///
+  /// In en, this message translates to:
+  /// **'You will need to sign in again.'**
+  String get settingsLogOutBody;
+
+  /// Settings: title of the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get settingsDeleteTitle;
+
+  /// Settings: body of the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes your profile, posts and stories. This cannot be undone.'**
+  String get settingsDeleteBody;
+
+  /// Settings: label of the password field in the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get settingsDeletePasswordLabel;
+
+  /// Settings: hint of the password field in the delete account dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get settingsDeletePasswordHint;
+
+  /// Settings: error under the password field when it is wrong
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password'**
+  String get settingsDeleteWrongPassword;
+
+  /// Settings: notice when the disabled Dark mode row is tapped
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode is coming soon'**
+  String get settingsDarkModeSoon;
+
+  /// Settings: the English language, as the Language row value
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglish;
+
+  /// Settings: the Arabic language, as the Language row value
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get settingsLanguageArabic;
+
+  /// Personal info: title
+  ///
+  /// In en, this message translates to:
+  /// **'Personal info'**
+  String get personalInfoTitle;
+
+  /// Personal info: link under the avatar
+  ///
+  /// In en, this message translates to:
+  /// **'Change cover photo'**
+  String get personalInfoChangeCover;
+
+  /// Personal info: camera badge label
+  ///
+  /// In en, this message translates to:
+  /// **'Change profile photo'**
+  String get personalInfoChangePhotoA11y;
+
+  /// Personal info: Location field label
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get personalInfoLocationLabel;
+
+  /// Personal info: Location field hint
+  ///
+  /// In en, this message translates to:
+  /// **'Add a place'**
+  String get personalInfoLocationHint;
+
+  /// Personal info: note under phone and birthday
+  ///
+  /// In en, this message translates to:
+  /// **'Your email, phone and birthday are private and never shown on your profile.'**
+  String get personalInfoPrivateNote;
+
+  /// Personal info: save button
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get personalInfoSave;
+
+  /// Personal info: discard dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'Your edits will be lost.'**
+  String get personalInfoDiscardBody;
+
+  /// Personal info: notice after saving
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get personalInfoSaved;
+
+  /// Add location: notice when Use current location finds no place
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t find your location. Check that location is on.'**
+  String get locationCurrentUnavailable;
+
+  /// Notifications page: title
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// Notifications: push switch
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get notificationsPush;
+
+  /// Notifications: push switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Get alerts on this device'**
+  String get notificationsPushSub;
+
+  /// Notifications: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get notificationsSectionActivity;
+
+  /// Notifications: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get notificationsSectionMessages;
+
+  /// Notifications: section label
+  ///
+  /// In en, this message translates to:
+  /// **'From Pulse'**
+  String get notificationsSectionPulse;
+
+  /// Notifications: likes switch
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get notificationsLikes;
+
+  /// Notifications: likes subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'On your posts and shorts'**
+  String get notificationsLikesSub;
+
+  /// Notifications: comments switch
+  ///
+  /// In en, this message translates to:
+  /// **'Comments & replies'**
+  String get notificationsComments;
+
+  /// Notifications: comments subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When someone joins the conversation'**
+  String get notificationsCommentsSub;
+
+  /// Notifications: mentions switch
+  ///
+  /// In en, this message translates to:
+  /// **'Mentions & tags'**
+  String get notificationsMentions;
+
+  /// Notifications: mentions subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When you\'re tagged in a post'**
+  String get notificationsMentionsSub;
+
+  /// Notifications: followers switch
+  ///
+  /// In en, this message translates to:
+  /// **'New followers'**
+  String get notificationsFollowers;
+
+  /// Notifications: followers subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When someone follows you'**
+  String get notificationsFollowersSub;
+
+  /// Notifications: direct messages switch
+  ///
+  /// In en, this message translates to:
+  /// **'Direct messages'**
+  String get notificationsDirect;
+
+  /// Notifications: direct messages subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'One-on-one chats'**
+  String get notificationsDirectSub;
+
+  /// Notifications: group chats switch
+  ///
+  /// In en, this message translates to:
+  /// **'Group chats'**
+  String get notificationsGroups;
+
+  /// Notifications: group chats subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Every message in groups you\'re in'**
+  String get notificationsGroupsSub;
+
+  /// Notifications: shorts switch
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts from people you follow'**
+  String get notificationsShorts;
+
+  /// Notifications: shorts subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'When they post something new'**
+  String get notificationsShortsSub;
+
+  /// Notifications: email digest switch
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly email digest'**
+  String get notificationsDigest;
+
+  /// Notifications: email digest subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights you might have missed'**
+  String get notificationsDigestSub;
+
+  /// Notifications: product updates switch
+  ///
+  /// In en, this message translates to:
+  /// **'Product updates'**
+  String get notificationsProduct;
+
+  /// Notifications: product updates subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'New features and tips'**
+  String get notificationsProductSub;
+
+  /// Language page: title
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageTitle;
+
+  /// Language page: search hint
+  ///
+  /// In en, this message translates to:
+  /// **'Search languages'**
+  String get languageSearch;
+
+  /// Language page: clear search button label
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get languageSearchClear;
+
+  /// Language page: section label
+  ///
+  /// In en, this message translates to:
+  /// **'App language'**
+  String get languageSectionApp;
+
+  /// Language page: footnote
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic switches the whole app to right-to-left.'**
+  String get languageRtlNote;
+
+  /// Language page: empty search result
+  ///
+  /// In en, this message translates to:
+  /// **'No languages found'**
+  String get languageNone;
+
+  /// Language page: English language, second line
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageNameEnglish;
+
+  /// Language page: Arabic language, second line
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get languageNameArabic;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacyTitle;
+
+  /// No description provided for @privateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Private account'**
+  String get privateAccount;
+
+  /// No description provided for @privateAccountSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Only people you approve can see your posts, shorts and followers.'**
+  String get privateAccountSub;
+
+  /// No description provided for @whoCanMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can message you'**
+  String get whoCanMessage;
+
+  /// No description provided for @everyone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone'**
+  String get everyone;
+
+  /// No description provided for @peopleYouFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'People you follow'**
+  String get peopleYouFollow;
+
+  /// No description provided for @noOne.
+  ///
+  /// In en, this message translates to:
+  /// **'No one'**
+  String get noOne;
+
+  /// No description provided for @whoCanComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Who can comment'**
+  String get whoCanComment;
+
+  /// No description provided for @followersOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Followers only'**
+  String get followersOnly;
+
+  /// No description provided for @turnOffComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off comments'**
+  String get turnOffComments;
+
+  /// No description provided for @visibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility'**
+  String get visibility;
+
+  /// No description provided for @activityStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Show activity status'**
+  String get activityStatus;
+
+  /// No description provided for @activityStatusSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Let friends see when you\'re online'**
+  String get activityStatusSub;
+
+  /// No description provided for @appearInSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Appear in search'**
+  String get appearInSearch;
+
+  /// No description provided for @appearInSearchSub.
+  ///
+  /// In en, this message translates to:
+  /// **'People can find you by name or email'**
+  String get appearInSearchSub;
+
+  /// No description provided for @blockedAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked accounts'**
+  String get blockedAccounts;
+
+  /// No description provided for @blockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked accounts'**
+  String get blockedTitle;
+
+  /// No description provided for @blockedIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked people can\'t see your profile, message you or find you in search. They aren\'t told you blocked them.'**
+  String get blockedIntro;
+
+  /// No description provided for @blockedAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'@{username} · Blocked {ago}'**
+  String blockedAgo(String username, String ago);
+
+  /// No description provided for @unblock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get unblock;
+
+  /// No description provided for @blockedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No blocked accounts'**
+  String get blockedEmpty;
+
+  /// No description provided for @unblocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblocked @{username}'**
+  String unblocked(String username);
+
+  /// No description provided for @timeAgoNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeAgoNow;
+
+  /// No description provided for @timeAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String timeAgoMinutes(int count);
+
+  /// No description provided for @timeAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String timeAgoHours(int count);
+
+  /// No description provided for @timeAgoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String timeAgoDays(int count);
+
+  /// No description provided for @timeAgoWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week ago} other{{count} weeks ago}}'**
+  String timeAgoWeeks(int count);
+
+  /// No description provided for @timeAgoMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
+  String timeAgoMonths(int count);
+
+  /// No description provided for @timeAgoYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 year ago} other{{count} years ago}}'**
+  String timeAgoYears(int count);
+
+  /// Password & security: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get securityChangeSection;
+
+  /// Password & security: field label
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get securityCurrentPassword;
+
+  /// Password & security: update button
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get securityUpdate;
+
+  /// Password & security: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Login protection'**
+  String get securityLoginProtection;
+
+  /// Password & security: switch title
+  ///
+  /// In en, this message translates to:
+  /// **'Two-factor authentication'**
+  String get securityTwoFactor;
+
+  /// Password & security: switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a code when signing in on a new device'**
+  String get securityTwoFactorSub;
+
+  /// Password & security: switch title
+  ///
+  /// In en, this message translates to:
+  /// **'Login alerts'**
+  String get securityLoginAlerts;
+
+  /// Password & security: switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me about logins from new places'**
+  String get securityLoginAlertsSub;
+
+  /// Password & security: section label
+  ///
+  /// In en, this message translates to:
+  /// **'Where you\'re logged in'**
+  String get securityWhereLoggedIn;
+
+  /// Password & security: title of this phone's row
+  ///
+  /// In en, this message translates to:
+  /// **'{device} · This device'**
+  String securityThisDevice(String device);
+
+  /// Password & security: title when the phone's name is unknown
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get securityThisDeviceFallback;
+
+  /// Password & security: subtitle of this phone's row
+  ///
+  /// In en, this message translates to:
+  /// **'Active now'**
+  String get securityActiveNow;
+
+  /// Password & security: dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Log out other devices?'**
+  String get securityLogOutOthersTitle;
+
+  /// Password & security: dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'They will need to sign in again.'**
+  String get securityLogOutOthersBody;
+
+  /// Password & security: notice
+  ///
+  /// In en, this message translates to:
+  /// **'Other devices logged out'**
+  String get securityOthersLoggedOut;
+
+  /// Password & security: notice
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get securityPasswordUpdated;
+
+  /// Password & security: notice
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a reset link to your email'**
+  String get securityResetSent;
+
+  /// Password & security: error under the current password field
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is wrong'**
+  String get securityWrongCurrent;
+
+  /// Password & security: notice for the items not built yet
+  ///
+  /// In en, this message translates to:
+  /// **'This is coming soon'**
+  String get securityComingSoon;
+
+  /// No description provided for @otherProfileNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get otherProfileNotFound;
+
+  /// No description provided for @otherOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile options'**
+  String get otherOptions;
+
+  /// No description provided for @otherOptionsSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile options are coming soon'**
+  String get otherOptionsSoon;
+
+  /// No description provided for @otherFollowsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows you'**
+  String get otherFollowsYou;
+
+  /// No description provided for @otherFollowBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow back'**
+  String get otherFollowBack;
+
+  /// No description provided for @otherMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get otherMessage;
+
+  /// No description provided for @otherMessageSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages are coming soon'**
+  String get otherMessageSoon;
+
+  /// No description provided for @otherTagged.
+  ///
+  /// In en, this message translates to:
+  /// **'Tagged'**
+  String get otherTagged;
+
+  /// No description provided for @otherBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You blocked this account'**
+  String get otherBlockedTitle;
+
+  /// No description provided for @otherBlockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They can\'t see your profile, posts or message you.'**
+  String get otherBlockedBody;
+
+  /// No description provided for @otherPrivateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private'**
+  String get otherPrivateTitle;
+
+  /// No description provided for @otherPrivateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow to see their posts, shorts and stories.'**
+  String get otherPrivateBody;
+
+  /// No description provided for @otherPrivateRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. You\'ll see their posts once {name} accepts.'**
+  String otherPrivateRequested(String name);
+
+  /// No description provided for @otherRequestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow request sent'**
+  String get otherRequestSent;
+
+  /// No description provided for @otherRequestSentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Requested to cancel.'**
+  String get otherRequestSentHint;
+
+  /// No description provided for @otherCancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request?'**
+  String get otherCancelRequest;
+
+  /// No description provided for @otherCancelRequestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel your follow request?'**
+  String get otherCancelRequestBody;
+
+  /// No description provided for @otherCancelRequestConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel request'**
+  String get otherCancelRequestConfirm;
+
+  /// No description provided for @otherUnfollowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow {name}?'**
+  String otherUnfollowTitle(String name);
+
+  /// No description provided for @otherUnfollowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is private. You may have to request to follow again.'**
+  String get otherUnfollowBody;
+
+  /// No description provided for @otherUnfollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollow'**
+  String get otherUnfollow;
+
+  /// No description provided for @otherNoPostsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Posts will show up here.'**
+  String get otherNoPostsBody;
+
+  /// No description provided for @otherFollowedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed by {names}'**
+  String otherFollowedBy(String names);
+
+  /// No description provided for @otherFollowedByMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed by {names} and {count} others'**
+  String otherFollowedByMore(String names, int count);
+
+  /// No description provided for @profileShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share profile'**
+  String get profileShare;
+
+  /// No description provided for @profileCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy profile link'**
+  String get profileCopyLink;
+
+  /// No description provided for @profileLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile link copied'**
+  String get profileLinkCopied;
+
+  /// No description provided for @profileMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get profileMute;
+
+  /// No description provided for @profileMuteSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide their posts and stories'**
+  String get profileMuteSub;
+
+  /// No description provided for @profileCloseFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to close friends'**
+  String get profileCloseFriends;
+
+  /// No description provided for @profileCloseFriendsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'See their stories with the green ring'**
+  String get profileCloseFriendsSub;
+
+  /// No description provided for @profilePostNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Post notifications'**
+  String get profilePostNotifications;
+
+  /// No description provided for @profilePostNotificationsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified when they post'**
+  String get profilePostNotificationsSub;
+
+  /// No description provided for @profileBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block @{username}'**
+  String profileBlock(String username);
+
+  /// No description provided for @profileBlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block @{username}?'**
+  String profileBlockTitle(String username);
+
+  /// No description provided for @profileBlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They won\'t see your profile or posts and can\'t message you. They aren\'t told.'**
+  String get profileBlockBody;
+
+  /// No description provided for @profileBlockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get profileBlockAction;
+
+  /// No description provided for @profileReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get profileReport;
+
+  /// No description provided for @profileReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report profile'**
+  String get profileReportTitle;
+
+  /// No description provided for @profileReportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you reporting this profile? Your report is anonymous.'**
+  String get profileReportBody;
+
+  /// No description provided for @profileReportSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll review this profile.'**
+  String get profileReportSent;
+
+  /// No description provided for @profileReportNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what\'s wrong with this profile…'**
+  String get profileReportNote;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Help center'**
+  String get helpTitle;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Topics'**
+  String get helpTopics;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Common questions'**
+  String get commonQuestions;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with us'**
+  String get chatWithUs;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Chat support is coming soon'**
+  String get chatSoon;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'No questions here yet'**
+  String get helpTopicEmpty;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get reportTitle;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'What’s going wrong?'**
+  String get reportWhatsWrong;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Feed'**
+  String get reportCatFeed;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts'**
+  String get reportCatShorts;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get reportCatChat;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get reportCatProfile;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in'**
+  String get reportCatSigningIn;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us more'**
+  String get reportTellMore;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'What happened, and what did you expect to happen?'**
+  String get reportHint;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots'**
+  String get reportScreenshots;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get reportAdd;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Include device info and app logs to help us fix it faster'**
+  String get reportIncludeLogs;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks, we got your report'**
+  String get reportThanks;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Remove screenshot'**
+  String get reportRemoveScreenshot;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Your report will be lost.'**
+  String get reportDiscardBody;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'The screenshot must be under 5 MB'**
+  String get reportImageTooLarge;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & policies'**
+  String get helpTermsTitle;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated {date}'**
+  String helpLastUpdated(String date);
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Your data'**
+  String get helpYourData;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Download your data'**
+  String get helpDownloadData;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Get a copy of your posts, shorts and messages'**
+  String get helpDownloadDataSub;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Ad preferences'**
+  String get helpAdPreferences;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Control how your activity shapes ads'**
+  String get helpAdPreferencesSub;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'This is coming soon'**
+  String get helpDataSoon;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'© {year} {company}'**
+  String helpCopyright(String year, String company);
+
+  /// Terms and policies document title
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service'**
+  String get helpTermsOfService;
+
+  /// Report description validation
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 10 characters'**
+  String get reportMessageTooShort;
 }
 
 class _AppLocalizationsDelegate

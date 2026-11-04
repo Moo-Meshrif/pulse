@@ -14,6 +14,7 @@ class AvatarInitials extends StatelessWidget {
     required this.name,
     required this.seed,
     this.size,
+    this.fontSize,
   });
 
   final String? name;
@@ -21,6 +22,9 @@ class AvatarInitials extends StatelessWidget {
 
   /// Diameter; the list avatar (48) when null.
   final double? size;
+
+  /// Initials size; the `name` text style's own when null.
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +44,9 @@ class AvatarInitials extends StatelessWidget {
           fit: BoxFit.scaleDown,
           child: AppText(
             initialsOf(name),
-            style: context.text.name,
+            style: fontSize == null
+                ? context.text.name
+                : context.text.name.copyWith(fontSize: fontSize),
             color: colors.textOnPrimary,
           ),
         ),

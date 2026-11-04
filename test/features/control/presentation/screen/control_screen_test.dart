@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -10,9 +11,13 @@ import 'package:pulse/features/control/presentation/cubit/control_cubit.dart';
 import 'package:pulse/features/control/presentation/screen/control_screen.dart';
 import 'package:pulse/features/control/presentation/widgets/glass_nav_bar/glass_nav_bar.dart';
 import 'package:pulse/features/home/presentation/screen/home_screen.dart';
+import 'package:pulse/features/profile/presentation/cubit/own_author/own_author_cubit.dart';
+import 'package:pulse/features/profile/presentation/cubit/own_author/own_author_state.dart';
 import 'package:pulse/l10n/app_localizations.dart';
 
 import '../../../home/home_doubles.dart';
+
+class _OwnAuthor extends MockCubit<OwnAuthorState> implements OwnAuthorCubit {}
 
 class MockIsRecoveryPending extends Mock implements IsRecoveryPendingUseCase {}
 
@@ -26,6 +31,12 @@ void main() {
     getIt.registerFactory<ControlCubit>(
       () => ControlCubit(recovery, EventBus()),
     );
+    getIt.registerFactory<OwnAuthorCubit>(() {
+      final own = _OwnAuthor();
+      when(() => own.state).thenReturn(const OwnAuthorState());
+      when(own.start).thenAnswer((_) async {});
+      return own;
+    });
     registerHomeDoubles();
   });
 

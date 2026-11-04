@@ -1,6 +1,6 @@
 import '../dimens/home_dimens.dart';
 
-/// When the "New posts" pill and the back to top button show, from where the feed is scrolled to
+/// When the "New posts" pill shows, from where the feed is scrolled to
 /// (docs/specs/home/screens/s2-new-posts-pill.md). The top is in pixels, the rest in viewport heights.
 abstract final class FeedFloatersRules {
   /// The person is at the top: new posts can go in at once, nothing they read moves.
@@ -14,13 +14,6 @@ abstract final class FeedFloatersRules {
     required bool isScrollingDown,
     required bool isExpired,
   }) => pending > 0 && !isExpired && !isScrollingDown && !isAtTop(offset);
-
-  /// The round button shows when nothing waits and the person is more than three screens down.
-  static bool showBackToTop({
-    required double offset,
-    required double viewport,
-    required int pending,
-  }) => pending == 0 && offset > viewport * HomeDimens.backToTopViewports;
 
   /// Very deep: jump to one screen from the top first, so the scroll back is short.
   static bool jumpsFirst(double offset, double viewport) =>

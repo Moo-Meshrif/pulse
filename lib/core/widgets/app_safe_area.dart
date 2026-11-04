@@ -2,14 +2,19 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// Keeps [child] clear of the system bars (status bar, Android navigation buttons, gesture bar, notch).
-/// Takes every [SafeArea] field, plus [bottomSpace] for the bottom edge.
+/// Keeps [child] clear of system UI elements, including the status bar,
+/// navigation bar, gesture indicator, and display cutouts.
 ///
-/// The bottom edge never stacks on the screen's own padding: pass that padding as [bottomSpace] and the
-/// area adds only what the system bar needs beyond it, i.e. the total is `max(inset, bottomSpace)`. So a
-/// device without navigation buttons (small or no inset) gets no extra space, and one with a tall button
-/// bar gets just the missing part. The keyboard still takes over the bottom edge when it opens (unless
-/// [maintainBottomViewPadding] is set).
+/// Supports all [SafeArea] properties and adds [bottomSpace] to control
+/// the minimum bottom spacing without introducing unnecessary padding.
+///
+/// The effective bottom padding is `max(systemInset, bottomSpace)`,
+/// ensuring sufficient clearance without stacking both values.
+/// Devices with smaller or no system insets retain the specified
+/// [bottomSpace], while larger system bars receive the required space.
+///
+/// When the keyboard appears, the bottom inset adjusts automatically
+/// unless [maintainBottomViewPadding] is enabled.
 class AppSafeArea extends StatelessWidget {
   const AppSafeArea({
     super.key,
@@ -40,16 +45,20 @@ class AppSafeArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The system bar needs `inset`; the content already covers `bottomSpace` of it. Add only the rest.
-    final missing = math.max(0.0, _bottomInset(context) - bottomSpace);
+    // The bottom padding is the larger of the system inset and the desired minimum spacing.
+    final bottomInset = _bottomInset(context);
+    final bottomPadding = bottom
+        ? math.max(bottomInset, math.max(minimum.bottom, bottomSpace))
+        : minimum.bottom;
+
     return SafeArea(
       left: left,
       top: top,
       right: right,
-      bottom: false, // handled below, so it does not stack on the content's own padding
+      bottom: false, // handled below, so it does not stack on the desired bottom spacing
       minimum: minimum.copyWith(bottom: 0),
       child: Padding(
-        padding: EdgeInsets.only(bottom: math.max(minimum.bottom, missing)),
+        padding: EdgeInsets.only(bottom: bottomPadding),
         child: child,
       ),
     );
@@ -57,7 +66,13 @@ class AppSafeArea extends StatelessWidget {
 
   double _bottomInset(BuildContext context) {
     if (!bottom) return 0;
+
+    if (Theme.of(context).platform != TargetPlatform.android) {
+      return 0;
+    }
+
     final media = MediaQuery.of(context);
+
     return maintainBottomViewPadding
         ? media.viewPadding.bottom
         : media.padding.bottom;

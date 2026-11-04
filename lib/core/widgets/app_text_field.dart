@@ -30,6 +30,7 @@ class AppTextField extends StatefulWidget {
     this.isPassword = false,
     this.prefixText,
     this.prefix,
+    this.suffix,
     this.forceLtr = false,
     this.readOnly = false,
     this.enabled = true,
@@ -38,12 +39,16 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.counterMax,
     this.inputFormatters,
+    this.fillColor,
   }) : assert(
          counterMax == null || controller != null,
          'The counter reads the controller',
        );
 
   final String label;
+
+  /// The field's fill; `surface` when null (`surfaceMuted` inside a white card).
+  final Color? fillColor;
   final bool required;
   final String? hint;
   final TextEditingController? controller;
@@ -65,6 +70,9 @@ class AppTextField extends StatefulWidget {
 
   /// A widget before the text, e.g. the phone country code; wins over [prefixText].
   final Widget? prefix;
+
+  /// A widget at the end of the field, e.g. a status icon; ignored for a password field.
+  final Widget? suffix;
   final bool forceLtr;
   final bool readOnly;
   final bool enabled;
@@ -130,7 +138,7 @@ class _AppTextFieldState extends State<AppTextField> {
             textBaseline: TextBaseline.alphabetic,
           ),
           filled: true,
-          fillColor: colors.surface,
+          fillColor: widget.fillColor ?? colors.surface,
           contentPadding: InputDimens.padding,
           prefixIcon: widget.prefix,
           prefix: widget.prefix != null || widget.prefixText == null
@@ -140,7 +148,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   style: context.text.body,
                   color: colors.textSecondary,
                 ),
-          suffixIcon: widget.isPassword ? _eyeButton(context) : null,
+          suffixIcon: widget.isPassword ? _eyeButton(context) : widget.suffix,
           suffixIconConstraints: BoxConstraints(
             minWidth: InputDimens.eyeTapTarget,
             minHeight: InputDimens.eyeTapTarget,
