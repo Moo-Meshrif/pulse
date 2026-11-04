@@ -10,6 +10,7 @@ import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../follow/data/enums/follow_status.dart';
 import '../cubit/post_likes/post_likes_cubit.dart';
 import '../cubit/post_likes/post_likes_state.dart';
 import '../dimens/post_likes_dimens.dart';
@@ -131,6 +132,8 @@ class _People extends StatelessWidget {
                       onTap: () => AppNavigator.push<void>(
                         context,
                         AppRoutes.profileOf(liker.id),
+                        arguments: (FollowStatus status) =>
+                            cubit.updateFollow(liker.id, status),
                       ),
                       onFollow: () => cubit.toggleFollow(liker),
                     );

@@ -22,6 +22,7 @@ import '../widgets/other_profile_details.dart';
 import '../widgets/photo_viewer.dart';
 import '../widgets/post_grid.dart';
 import '../widgets/profile_header.dart';
+import '../widgets/profile_sheets.dart';
 import '../widgets/profile_skeleton.dart';
 import '../widgets/profile_tabs.dart';
 import '../widgets/stats_card.dart';
@@ -123,7 +124,7 @@ class OtherProfileView extends StatelessWidget {
                     trailing: CoverButton(
                       icon: AppAssets.moreHorizontal,
                       label: l10n.otherOptions,
-                      onPressed: () => Notices.info(l10n.otherOptionsSoon),
+                      onPressed: () => ProfileSheets.options(context, cubit),
                     ),
                     onAvatarTap: page.avatarUrl == null || blocked
                         ? null
@@ -192,7 +193,14 @@ class OtherProfileView extends StatelessWidget {
                                         : l10n.following,
                                     onPressed: state.busy
                                         ? null
-                                        : () => _follow(context, state),
+                                        : () =>
+                                              state.follow ==
+                                                  FollowStatus.accepted
+                                              ? ProfileSheets.following(
+                                                  context,
+                                                  cubit,
+                                                )
+                                              : _follow(context, state),
                                   ),
                           ),
                           if (page.canMessage != false &&

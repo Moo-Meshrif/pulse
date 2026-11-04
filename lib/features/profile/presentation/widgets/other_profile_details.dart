@@ -25,6 +25,7 @@ class OtherProfileCard extends StatelessWidget {
         AppText(
           title,
           style: context.text.titleSm,
+          color: context.appColors.textPrimary,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),

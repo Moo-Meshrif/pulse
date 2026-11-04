@@ -2941,4 +2941,63 @@ class AppLocalizationsAr extends AppLocalizations {
   String otherFollowedByMore(String names, int count) {
     return 'يتابعه $names و$count آخرون';
   }
+
+  @override
+  String get profileShare => 'مشاركة الملف الشخصي';
+
+  @override
+  String get profileCopyLink => 'نسخ رابط الملف';
+
+  @override
+  String get profileLinkCopied => 'تم نسخ رابط الملف';
+
+  @override
+  String get profileMute => 'كتم';
+
+  @override
+  String get profileMuteSub => 'إخفاء منشوراتهم وقصصهم';
+
+  @override
+  String get profileCloseFriends => 'إضافة إلى الأصدقاء المقرّبين';
+
+  @override
+  String get profileCloseFriendsSub => 'شاهد قصصهم بالحلقة الخضراء';
+
+  @override
+  String get profilePostNotifications => 'إشعارات المنشورات';
+
+  @override
+  String get profilePostNotificationsSub => 'احصل على إشعار عندما ينشرون';
+
+  @override
+  String profileBlock(String username) {
+    return 'حظر @$username';
+  }
+
+  @override
+  String profileBlockTitle(String username) {
+    return 'حظر @$username؟';
+  }
+
+  @override
+  String get profileBlockBody =>
+      'لن يرى ملفك ومنشوراتك ولن يستطيع مراسلتك. ولن يتم إخباره.';
+
+  @override
+  String get profileBlockAction => 'حظر';
+
+  @override
+  String get profileReport => 'إبلاغ';
+
+  @override
+  String get profileReportTitle => 'الإبلاغ عن الملف الشخصي';
+
+  @override
+  String get profileReportBody => 'لماذا تبلغ عن هذا الملف؟ بلاغك مجهول.';
+
+  @override
+  String get profileReportSent => 'سنراجع هذا الملف الشخصي.';
+
+  @override
+  String get profileReportNote => 'أخبرنا ما المشكلة في هذا الملف…';
 }

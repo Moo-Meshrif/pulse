@@ -5077,6 +5077,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Followed by {names} and {count} others'**
   String otherFollowedByMore(String names, int count);
+
+  /// No description provided for @profileShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share profile'**
+  String get profileShare;
+
+  /// No description provided for @profileCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy profile link'**
+  String get profileCopyLink;
+
+  /// No description provided for @profileLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile link copied'**
+  String get profileLinkCopied;
+
+  /// No description provided for @profileMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get profileMute;
+
+  /// No description provided for @profileMuteSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide their posts and stories'**
+  String get profileMuteSub;
+
+  /// No description provided for @profileCloseFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to close friends'**
+  String get profileCloseFriends;
+
+  /// No description provided for @profileCloseFriendsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'See their stories with the green ring'**
+  String get profileCloseFriendsSub;
+
+  /// No description provided for @profilePostNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Post notifications'**
+  String get profilePostNotifications;
+
+  /// No description provided for @profilePostNotificationsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified when they post'**
+  String get profilePostNotificationsSub;
+
+  /// No description provided for @profileBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block @{username}'**
+  String profileBlock(String username);
+
+  /// No description provided for @profileBlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block @{username}?'**
+  String profileBlockTitle(String username);
+
+  /// No description provided for @profileBlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They won\'t see your profile or posts and can\'t message you. They aren\'t told.'**
+  String get profileBlockBody;
+
+  /// No description provided for @profileBlockAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get profileBlockAction;
+
+  /// No description provided for @profileReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get profileReport;
+
+  /// No description provided for @profileReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report profile'**
+  String get profileReportTitle;
+
+  /// No description provided for @profileReportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Why are you reporting this profile? Your report is anonymous.'**
+  String get profileReportBody;
+
+  /// No description provided for @profileReportSent.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll review this profile.'**
+  String get profileReportSent;
+
+  /// No description provided for @profileReportNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us what\'s wrong with this profile…'**
+  String get profileReportNote;
 }
 
 class _AppLocalizationsDelegate

@@ -96,4 +96,29 @@ void main() {
       expect(cubit.state.followers, 4);
     },
   );
+  test('block reloads the blocked profile and unblock reloads it again', () async {
+    var blocked = false;
+    when(() => pages.getProfilePage('target')).thenAnswer(
+      (_) async => ProfilePageModel(blockedByMe: blocked),
+    );
+    when(() => blocks.block('target')).thenAnswer((_) async => blocked = true);
+    when(() => blocks.unblock('target')).thenAnswer((_) async => blocked = false);
+    await cubit.load();
+    await cubit.block();
+    expect(cubit.state.page?.blockedByMe, isTrue);
+    await cubit.unblock();
+    expect(cubit.state.page?.blockedByMe, isFalse);
+  });
+
+  test('failed block keeps the profile and exposes the failure', () async {
+    when(() => pages.getProfilePage('target')).thenAnswer(
+      (_) async => const ProfilePageModel(blockedByMe: false),
+    );
+    when(() => blocks.block('target')).thenThrow(const NetworkFailure());
+    await cubit.load();
+    await cubit.block();
+    expect(cubit.state.page?.blockedByMe, isFalse);
+    expect(cubit.state.failure, isA<NetworkFailure>());
+  });
+
 }

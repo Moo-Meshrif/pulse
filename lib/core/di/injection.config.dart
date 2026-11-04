@@ -153,6 +153,8 @@ import '../../features/post/presentation/utils/feed_post.dart' as _i992;
 import '../../features/post/presentation/utils/tag_people_args.dart' as _i425;
 import '../../features/profile/data/datasource/app_preferences_datasource.dart'
     as _i875;
+import '../../features/profile/data/datasource/author_prefs_datasource.dart'
+    as _i986;
 import '../../features/profile/data/datasource/blocks_datasource.dart' as _i4;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
@@ -198,6 +200,8 @@ import '../../features/profile/domain/use_case/save_interests_use_case.dart'
     as _i597;
 import '../../features/profile/domain/use_case/save_profile_details_use_case.dart'
     as _i255;
+import '../../features/profile/presentation/cubit/author_prefs/author_prefs_cubit.dart'
+    as _i1060;
 import '../../features/profile/presentation/cubit/blocked/blocked_cubit.dart'
     as _i321;
 import '../../features/profile/presentation/cubit/notifications/notifications_cubit.dart'
@@ -444,6 +448,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i201.LocalStorageService>(
       () => _i201.SharedPrefsStorageService(gh<_i460.SharedPreferences>()),
       dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i986.AuthorPrefsDatasource>(
+      () => _i986.AuthorPrefsDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.factory<_i213.MutualPreviewDatasource>(
       () => _i213.MutualPreviewDatasource(gh<_i454.SupabaseClient>()),
@@ -1006,6 +1013,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i591.PendingContentDatasource>(),
         gh<_i845.PostPublishingRepository>(),
         gh<_i1034.ContentDiscardRepository>(),
+      ),
+    );
+    gh.factoryParam<_i1060.AuthorPrefsCubit, String, dynamic>(
+      (userId, _) => _i1060.AuthorPrefsCubit(
+        gh<_i986.AuthorPrefsDatasource>(),
+        gh<_i71.SetMuteUseCase>(),
+        gh<_i1016.LaunchService>(),
+        userId,
       ),
     );
     gh.lazySingleton<_i358.RecoveryLinkHandler>(

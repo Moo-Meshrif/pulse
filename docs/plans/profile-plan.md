@@ -337,13 +337,13 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, test, run with two accounts, compare with the S12 board in the spec.
 
 ### Phase 12: Following sheet, options sheet, block and report
-**Status:** [ ]
+**Status:** [~] implemented; analysis and profile Cubit tests pass; preference toggle tests, live two-account and visual checks remain. Preferences load when the sheet opens.
 - **Goal:** the Following sheet and the "..." sheet work.
 - **Depends on:** Phases 2, 9, 11.
 - **Spec refs:** screens/s12-other-profile.md (Sheets).
 - **Tasks:**
-  - [ ] Following sheet: close friends, post notifications, mute, unfollow.
-  - [ ] Options sheet: share, copy link, mute, block with confirm, report.
+  - [x] Following sheet: close friends, post notifications, mute, unfollow.
+  - [x] Options sheet: share, copy link, mute, block with confirm, report.
 - **Implementation steps:**
   1. `lib/features/profile/data/datasource/author_prefs_datasource.dart` (new): close-friend on/off (`close_friends` table; if `features/story` already has a use case for it, call that use case instead of the table), post notifications on/off (`post_subscriptions`), read current values together with the profile load.
   2. Mute: reuse `SetMuteUseCase` in `lib/shared/content/domain/use_case/set_mute_use_case.dart` (existing; check its scope enum covers a whole person, else extend `mute_scope.dart` there).

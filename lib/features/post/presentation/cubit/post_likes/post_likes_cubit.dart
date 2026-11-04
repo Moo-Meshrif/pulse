@@ -146,6 +146,11 @@ class PostLikesCubit extends BaseCubit<PostLikesState> {
     return text.isEmpty ? null : text;
   }
 
+  void updateFollow(String id, FollowStatus status) {
+    if (isClosed || _followPending.contains(id)) return;
+    _setFollow(id, status);
+  }
+
   void _setFollow(String id, FollowStatus status) => emit(
     state.copyWith(
       likers: [

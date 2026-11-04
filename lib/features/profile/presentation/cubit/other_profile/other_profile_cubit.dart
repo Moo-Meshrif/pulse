@@ -212,6 +212,17 @@ class OtherProfileCubit extends BaseCubit<OtherProfileState> {
     if (state.follow != before) await loadGrid();
   }
 
+  Future<void> block() async {
+    if (state.busy) return;
+    await run(
+      () => _blocks.block(userId),
+      loading: state.copyWith(busy: true, failure: null),
+      onSuccess: (_) => state.copyWith(busy: false),
+      onFailure: (failure) => state.copyWith(busy: false, failure: failure),
+    );
+    if (state.failure == null) await load();
+  }
+
   Future<void> unblock() async {
     if (state.busy) return;
     await run(

@@ -2926,4 +2926,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String otherFollowedByMore(String names, int count) {
     return 'Followed by $names and $count others';
   }
+
+  @override
+  String get profileShare => 'Share profile';
+
+  @override
+  String get profileCopyLink => 'Copy profile link';
+
+  @override
+  String get profileLinkCopied => 'Profile link copied';
+
+  @override
+  String get profileMute => 'Mute';
+
+  @override
+  String get profileMuteSub => 'Hide their posts and stories';
+
+  @override
+  String get profileCloseFriends => 'Add to close friends';
+
+  @override
+  String get profileCloseFriendsSub => 'See their stories with the green ring';
+
+  @override
+  String get profilePostNotifications => 'Post notifications';
+
+  @override
+  String get profilePostNotificationsSub => 'Get notified when they post';
+
+  @override
+  String profileBlock(String username) {
+    return 'Block @$username';
+  }
+
+  @override
+  String profileBlockTitle(String username) {
+    return 'Block @$username?';
+  }
+
+  @override
+  String get profileBlockBody =>
+      'They won\'t see your profile or posts and can\'t message you. They aren\'t told.';
+
+  @override
+  String get profileBlockAction => 'Block';
+
+  @override
+  String get profileReport => 'Report';
+
+  @override
+  String get profileReportTitle => 'Report profile';
+
+  @override
+  String get profileReportBody =>
+      'Why are you reporting this profile? Your report is anonymous.';
+
+  @override
+  String get profileReportSent => 'We\'ll review this profile.';
+
+  @override
+  String get profileReportNote => 'Tell us what\'s wrong with this profile…';
 }
