@@ -34,24 +34,6 @@ void main() {
     });
   });
 
-  group('the back to top button', () {
-    bool button({double offset = 4000, int pending = 0}) =>
-        FeedFloatersRules.showBackToTop(
-          offset: offset,
-          viewport: viewport,
-          pending: pending,
-        );
-
-    test('shows after three screens with nothing waiting', () {
-      expect(button(), isTrue);
-      expect(button(offset: viewport * 3), isFalse);
-    });
-
-    test('leaves the place to the pill when posts wait', () {
-      expect(button(pending: 2), isFalse);
-    });
-  });
-
   test('at the top is the very top, a few pixels at most', () {
     expect(FeedFloatersRules.isAtTop(0), isTrue);
     expect(FeedFloatersRules.isAtTop(-20), isTrue);

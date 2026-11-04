@@ -165,8 +165,11 @@ class _FeedPostItemState extends State<FeedPostItem> {
     arguments: PostPageArgs(postId: _loaded.id, post: widget.post),
   );
 
-  void _openProfileOf(String userId) =>
-      AppNavigator.push<void>(context, AppRoutes.profileOf(userId));
+  void _openProfileOf(String userId) => AppNavigator.push<void>(
+    context,
+    AppRoutes.profileOf(userId),
+    rootNavigator: true,
+  );
 
   /// The cubit takes the tag off at once; a failure puts it back and is thrown to the dialog flow.
   Future<void> _removeMyTagOf(PostActionsCubit actions, PostEntity loaded) {

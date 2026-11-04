@@ -33,7 +33,6 @@ class ProfileView extends StatelessWidget {
     backgroundColor: context.appColors.background,
     body: AppSafeArea(
       top: false,
-      bottomSpace: NavClearance.of(context),
       child: ContentWidth(child: _Body(showBack: showBack)),
     ),
   );

@@ -66,13 +66,7 @@ abstract final class HomeDimens {
   static double get pillShadowDy => AppScale.scale(8);
   static const scrollToTopDuration = Duration(milliseconds: 450);
   static const double atTopOffset = 8;
-  static const int backToTopViewports = 3;
   static const int jumpFirstViewports = 6;
-  static double get backToTopSize => AppScale.scale(48);
-  static double get backToTopIcon => AppScale.scale(22);
-  static double get backToTopEnd => AppScale.scale(18);
-  static double get backToTopAboveNav => AppScale.scale(16);
-  static const backToTopFillAlpha = 0xEB; // white @ 92%
   // A post that just arrived: a soft ring that fades out.
   static double get freshRing => AppScale.scale(2);
   static const freshRingStay = Duration(seconds: 2);
