@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,10 +34,36 @@ class ControlView extends StatefulWidget {
 
 class _ControlViewState extends State<ControlView> {
   final _handles = {for (final tab in MainTab.values) tab: TabHandle()};
+  final _navHidden = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _navHidden.dispose();
+    super.dispose();
+  }
+
+  bool _onScroll(ScrollNotification notification) {
+    if (notification.depth != 0 || notification.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    if (notification is UserScrollNotification) {
+      if (notification.direction == ScrollDirection.reverse) {
+        _navHidden.value = true;
+      } else if (notification.direction == ScrollDirection.forward) {
+        _navHidden.value = false;
+      }
+    } else if (notification is ScrollUpdateNotification &&
+        notification.dragDetails == null &&
+        (notification.scrollDelta ?? 0) < 0) {
+      _navHidden.value = false;
+    }
+    return false;
+  }
 
   ControlCubit get _cubit => context.read<ControlCubit>();
 
   void _onBack() {
+    _navHidden.value = false;
     final selected = _cubit.state.selected;
     final handle = _handles[selected]!;
     switch (ShellBackAction.resolve(
@@ -57,6 +84,7 @@ class _ControlViewState extends State<ControlView> {
   /// Another tab: switch to it. The selected tab again: go back to its root, or when it is there
   /// already, scroll it to the top (and load the Home feed again).
   void _onTab(MainTab tab) {
+    _navHidden.value = false;
     if (tab != _cubit.state.selected) {
       _cubit.select(tab);
       return;
@@ -92,16 +120,26 @@ class _ControlViewState extends State<ControlView> {
             // Tells the tabs' pages how much room the bar takes at the bottom.
             NavClearance(
               bottom: NavDimens.contentClearance + systemInset,
-              child: _TabStack(
-                handles: _handles,
-                rootBuilder: widget.rootBuilder,
+              child: NotificationListener<ScrollNotification>(
+                onNotification: _onScroll,
+                child: _TabStack(
+                  handles: _handles,
+                  rootBuilder: widget.rootBuilder,
+                ),
               ),
             ),
             Positioned(
               left: 0,
               right: 0,
               bottom: NavDimens.bottomInset + systemInset,
-              child: _NavBar(onTab: _onTab, onCreate: _onCreate),
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _navHidden,
+                builder: (context, hidden, _) => _NavBar(
+                  hiddenByScroll: hidden,
+                  onTab: _onTab,
+                  onCreate: _onCreate,
+                ),
+              ),
             ),
           ],
         ),
@@ -148,16 +186,22 @@ class _TabStackState extends State<_TabStack> {
   }
 }
 
-/// The nav bar, hidden under the keyboard (slides down in 200 ms; instant with reduce motion).
+/// The nav bar slides out for scrolling and the keyboard, respecting reduced motion.
 class _NavBar extends StatelessWidget {
-  const _NavBar({required this.onTab, required this.onCreate});
+  const _NavBar({
+    required this.hiddenByScroll,
+    required this.onTab,
+    required this.onCreate,
+  });
 
+  final bool hiddenByScroll;
   final ValueChanged<MainTab> onTab;
   final VoidCallback onCreate;
 
   @override
   Widget build(BuildContext context) {
-    final hidden = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final hidden =
+        hiddenByScroll || MediaQuery.viewInsetsOf(context).bottom > 0;
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
 
     return AnimatedSlide(
