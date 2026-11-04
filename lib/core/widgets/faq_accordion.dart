@@ -9,9 +9,10 @@ import 'app_text.dart';
 
 /// Questions that open to their answer, one at a time. Which one is open is local to the widget.
 class FaqAccordion extends StatefulWidget {
-  const FaqAccordion({super.key, required this.items});
+  const FaqAccordion({super.key, required this.items, this.firstOpen = false});
 
   final List<FaqItem> items;
+  final bool firstOpen;
 
   @override
   State<FaqAccordion> createState() => _FaqAccordionState();
@@ -26,6 +27,12 @@ class FaqItem {
 
 class _FaqAccordionState extends State<FaqAccordion> {
   int? _open;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.firstOpen && widget.items.isNotEmpty) _open = 0;
+  }
 
   void _toggle(int index) =>
       setState(() => _open = _open == index ? null : index);

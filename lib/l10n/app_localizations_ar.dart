@@ -3000,4 +3000,108 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileReportNote => 'أخبرنا ما المشكلة في هذا الملف…';
+
+  @override
+  String get helpTitle => 'مركز المساعدة';
+
+  @override
+  String get helpTopics => 'المواضيع';
+
+  @override
+  String get commonQuestions => 'الأسئلة الشائعة';
+
+  @override
+  String get chatWithUs => 'تحدث معنا';
+
+  @override
+  String get chatSoon => 'الدردشة مع الدعم قادمة قريبًا';
+
+  @override
+  String get helpTopicEmpty => 'لا توجد أسئلة هنا بعد';
+
+  @override
+  String get reportTitle => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get reportWhatsWrong => 'ما المشكلة؟';
+
+  @override
+  String get reportCatFeed => 'الرئيسية';
+
+  @override
+  String get reportCatShorts => 'الشورتس';
+
+  @override
+  String get reportCatChat => 'المحادثات';
+
+  @override
+  String get reportCatProfile => 'الملف الشخصي';
+
+  @override
+  String get reportCatSigningIn => 'تسجيل الدخول';
+
+  @override
+  String get reportTellMore => 'أخبرنا بالمزيد';
+
+  @override
+  String get reportHint => 'ماذا حدث، وماذا كنت تتوقع أن يحدث؟';
+
+  @override
+  String get reportScreenshots => 'لقطات الشاشة';
+
+  @override
+  String get reportAdd => 'إضافة';
+
+  @override
+  String get reportIncludeLogs =>
+      'أرفق معلومات الجهاز وسجلات التطبيق لمساعدتنا في الإصلاح بشكل أسرع';
+
+  @override
+  String get reportThanks => 'شكرًا، وصل بلاغك';
+
+  @override
+  String get reportRemoveScreenshot => 'إزالة لقطة الشاشة';
+
+  @override
+  String get reportDiscardBody => 'سيتم فقدان بلاغك.';
+
+  @override
+  String get reportImageTooLarge => 'يجب ألا تتجاوز لقطة الشاشة ٥ ميغابايت';
+
+  @override
+  String get helpTermsTitle => 'الشروط والسياسات';
+
+  @override
+  String helpLastUpdated(String date) {
+    return 'آخر تحديث $date';
+  }
+
+  @override
+  String get helpYourData => 'بياناتك';
+
+  @override
+  String get helpDownloadData => 'نزّل بياناتك';
+
+  @override
+  String get helpDownloadDataSub => 'احصل على نسخة من منشوراتك وشورتسك ورسائلك';
+
+  @override
+  String get helpAdPreferences => 'تفضيلات الإعلانات';
+
+  @override
+  String get helpAdPreferencesSub => 'تحكم في كيفية تأثير نشاطك على الإعلانات';
+
+  @override
+  String get helpDataSoon => 'هذه الميزة قادمة قريبًا';
+
+  @override
+  String helpCopyright(String year, String company) {
+    return '© $year $company';
+  }
+
+  @override
+  String get helpTermsOfService => 'شروط الخدمة';
+
+  @override
+  String get reportMessageTooShort => 'أدخل 10 أحرف على الأقل';
 }

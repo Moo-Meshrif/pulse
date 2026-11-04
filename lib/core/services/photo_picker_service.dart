@@ -36,6 +36,8 @@ enum PhotoCrop {
 abstract interface class PhotoPickerService {
   /// With [crop] the person frames the picture first; cancelling the crop returns null.
   Future<PickedPhoto?> pick(PhotoSource source, {PhotoCrop? crop});
+
+  Future<List<PickedPhoto>> pickMany({required int limit});
 }
 
 /// [PhotoPickerService] over `image_picker`.
@@ -45,6 +47,30 @@ final class ImagePickerPhotoPickerService implements PhotoPickerService {
   static const _quality = 85;
 
   final _picker = ImagePicker();
+
+  @override
+  Future<List<PickedPhoto>> pickMany({required int limit}) async {
+    try {
+      final files = await _picker.pickMultiImage(
+        limit: limit,
+        maxWidth: _maxSide,
+        maxHeight: _maxSide,
+        imageQuality: _quality,
+      );
+      return await Future.wait(
+        files
+            .take(limit)
+            .map(
+              (file) async => PickedPhoto(
+                bytes: await file.readAsBytes(),
+                contentType: file.mimeType ?? 'image/jpeg',
+              ),
+            ),
+      );
+    } on Object {
+      return const [];
+    }
+  }
 
   @override
   Future<PickedPhoto?> pick(PhotoSource source, {PhotoCrop? crop}) async {

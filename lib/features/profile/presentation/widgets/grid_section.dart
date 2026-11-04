@@ -88,7 +88,9 @@ class _Message extends StatelessWidget {
         child: SizedBox(
           height: math.max(
             ProfileDimens.emptyMinHeight,
-            constraints.remainingPaintExtent - nav,
+            constraints.viewportMainAxisExtent -
+                constraints.precedingScrollExtent -
+                nav,
           ),
           child: AppEmpty(
             icon: icon,

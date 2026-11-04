@@ -356,15 +356,15 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, tests, compare with board panels 3 and 6.
 
 ### Phase 13: Help center, report a problem and terms
-**Status:** [ ]
+**Status:** [~] implemented; analysis and Cubit tests pass. The legal dates migration, live report upload and device/screenshot checks remain pending.
 - **Goal:** Help center, topic pages, the report form and Terms & policies work.
 - **Depends on:** Phases 2, 3, 6.
 - **Spec refs:** screens/s9-help-center.md, s10-report-problem.md, s11-terms-policies.md, s14-help-topic.md.
 - **Tasks:**
-  - [ ] Help center and topic page from the server.
-  - [ ] Report form with screenshots and device info.
-  - [ ] Terms & policies page.
-  - [ ] TODO markers T2, T7, T8.
+  - [x] Help center and topic page from the server.
+  - [x] Report form with screenshots and device info.
+  - [x] Terms & policies page.
+  - [x] TODO markers T2, T7, T8.
 - **Implementation steps:**
   1. `lib/features/profile/data/datasource/help_datasource.dart` (new): topics, common questions, questions of a topic; language picked by the app's locale (`title_en` / `title_ar`); models `help_topic_model.dart`, `help_article_model.dart` (new).
   2. `cubit/help/help_cubit.dart` + state (new) for S9 and S14 (topic slug optional); accordion open state stays in the view (`ValueNotifier`).

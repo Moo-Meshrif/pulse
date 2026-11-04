@@ -21,14 +21,17 @@ import '../../features/post/presentation/utils/post_page_args.dart';
 import '../../features/post/presentation/utils/tag_people_args.dart';
 import '../../features/profile/data/enums/people_kind.dart';
 import '../../features/profile/presentation/screen/blocked_screen.dart';
+import '../../features/profile/presentation/screen/help_screen.dart';
 import '../../features/profile/presentation/screen/language_screen.dart';
 import '../../features/profile/presentation/screen/notifications_screen.dart';
 import '../../features/profile/presentation/screen/people_screen.dart';
 import '../../features/profile/presentation/screen/personal_info_screen.dart';
 import '../../features/profile/presentation/screen/privacy_screen.dart';
 import '../../features/profile/presentation/screen/profile_route_screen.dart';
+import '../../features/profile/presentation/screen/report_screen.dart';
 import '../../features/profile/presentation/screen/security_screen.dart';
 import '../../features/profile/presentation/screen/settings_screen.dart';
+import '../../features/profile/presentation/screen/terms_screen.dart';
 import '../../features/splash/presentation/screen/splash_screen.dart';
 import '../../features/story/data/enums/audience_list.dart';
 import '../../features/story/domain/entity/captured_story_media.dart';
@@ -191,14 +194,15 @@ abstract final class AppRouter {
       AppRoutes.settingsPrivacy => _page(settings, const PrivacyScreen()),
       AppRoutes.settingsBlocked => _page(settings, const BlockedScreen()),
       AppRoutes.settingsSecurity => _page(settings, const SecurityScreen()),
-      // These Settings pages stay placeholders until their phases of docs/plans/profile-plan.md.
-      AppRoutes.settingsHelp ||
-      AppRoutes.settingsHelpTopic ||
-      AppRoutes.settingsReport ||
-      AppRoutes.settingsTerms => _page(
+      AppRoutes.settingsHelp => _page(settings, const HelpScreen()),
+      AppRoutes.settingsHelpTopic => _page(
         settings,
-        PlaceholderScreen(route: path),
+        HelpScreen(
+          slug: Uri.parse(settings.name ?? '').queryParameters['slug'] ?? '',
+        ),
       ),
+      AppRoutes.settingsReport => _page(settings, const ReportScreen()),
+      AppRoutes.settingsTerms => _page(settings, const TermsScreen()),
       AppRoutes.people => _peoplePage(settings),
       // TODO(control-page-plan T8): New short placeholder until the shorts feature exists.
       AppRoutes.search ||

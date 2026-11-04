@@ -2986,4 +2986,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileReportNote => 'Tell us what\'s wrong with this profile…';
+
+  @override
+  String get helpTitle => 'Help center';
+
+  @override
+  String get helpTopics => 'Topics';
+
+  @override
+  String get commonQuestions => 'Common questions';
+
+  @override
+  String get chatWithUs => 'Chat with us';
+
+  @override
+  String get chatSoon => 'Chat support is coming soon';
+
+  @override
+  String get helpTopicEmpty => 'No questions here yet';
+
+  @override
+  String get reportTitle => 'Report a problem';
+
+  @override
+  String get reportWhatsWrong => 'What’s going wrong?';
+
+  @override
+  String get reportCatFeed => 'Feed';
+
+  @override
+  String get reportCatShorts => 'Shorts';
+
+  @override
+  String get reportCatChat => 'Chat';
+
+  @override
+  String get reportCatProfile => 'Profile';
+
+  @override
+  String get reportCatSigningIn => 'Signing in';
+
+  @override
+  String get reportTellMore => 'Tell us more';
+
+  @override
+  String get reportHint => 'What happened, and what did you expect to happen?';
+
+  @override
+  String get reportScreenshots => 'Screenshots';
+
+  @override
+  String get reportAdd => 'Add';
+
+  @override
+  String get reportIncludeLogs =>
+      'Include device info and app logs to help us fix it faster';
+
+  @override
+  String get reportThanks => 'Thanks, we got your report';
+
+  @override
+  String get reportRemoveScreenshot => 'Remove screenshot';
+
+  @override
+  String get reportDiscardBody => 'Your report will be lost.';
+
+  @override
+  String get reportImageTooLarge => 'The screenshot must be under 5 MB';
+
+  @override
+  String get helpTermsTitle => 'Terms & policies';
+
+  @override
+  String helpLastUpdated(String date) {
+    return 'Last updated $date';
+  }
+
+  @override
+  String get helpYourData => 'Your data';
+
+  @override
+  String get helpDownloadData => 'Download your data';
+
+  @override
+  String get helpDownloadDataSub =>
+      'Get a copy of your posts, shorts and messages';
+
+  @override
+  String get helpAdPreferences => 'Ad preferences';
+
+  @override
+  String get helpAdPreferencesSub => 'Control how your activity shapes ads';
+
+  @override
+  String get helpDataSoon => 'This is coming soon';
+
+  @override
+  String helpCopyright(String year, String company) {
+    return '© $year $company';
+  }
+
+  @override
+  String get helpTermsOfService => 'Terms of service';
+
+  @override
+  String get reportMessageTooShort => 'Enter at least 10 characters';
 }

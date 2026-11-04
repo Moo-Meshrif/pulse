@@ -5185,6 +5185,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tell us what\'s wrong with this profile…'**
   String get profileReportNote;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Help center'**
+  String get helpTitle;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Topics'**
+  String get helpTopics;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Common questions'**
+  String get commonQuestions;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with us'**
+  String get chatWithUs;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Chat support is coming soon'**
+  String get chatSoon;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'No questions here yet'**
+  String get helpTopicEmpty;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get reportTitle;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'What’s going wrong?'**
+  String get reportWhatsWrong;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Feed'**
+  String get reportCatFeed;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Shorts'**
+  String get reportCatShorts;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get reportCatChat;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get reportCatProfile;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in'**
+  String get reportCatSigningIn;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us more'**
+  String get reportTellMore;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'What happened, and what did you expect to happen?'**
+  String get reportHint;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots'**
+  String get reportScreenshots;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get reportAdd;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Include device info and app logs to help us fix it faster'**
+  String get reportIncludeLogs;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks, we got your report'**
+  String get reportThanks;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Remove screenshot'**
+  String get reportRemoveScreenshot;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Your report will be lost.'**
+  String get reportDiscardBody;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'The screenshot must be under 5 MB'**
+  String get reportImageTooLarge;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & policies'**
+  String get helpTermsTitle;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated {date}'**
+  String helpLastUpdated(String date);
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Your data'**
+  String get helpYourData;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Download your data'**
+  String get helpDownloadData;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Get a copy of your posts, shorts and messages'**
+  String get helpDownloadDataSub;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Ad preferences'**
+  String get helpAdPreferences;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'Control how your activity shapes ads'**
+  String get helpAdPreferencesSub;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'This is coming soon'**
+  String get helpDataSoon;
+
+  /// Phase 13; profile help and support
+  ///
+  /// In en, this message translates to:
+  /// **'© {year} {company}'**
+  String helpCopyright(String year, String company);
+
+  /// Terms and policies document title
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service'**
+  String get helpTermsOfService;
+
+  /// Report description validation
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least 10 characters'**
+  String get reportMessageTooShort;
 }
 
 class _AppLocalizationsDelegate

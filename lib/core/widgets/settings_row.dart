@@ -15,6 +15,7 @@ class SettingsRow extends StatelessWidget {
     required this.onTap,
     this.icon,
     this.value,
+    this.subtitle,
   });
 
   final String title;
@@ -23,6 +24,7 @@ class SettingsRow extends StatelessWidget {
   /// Asset of the icon shown in the tile; no tile when null.
   final String? icon;
   final String? value;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class SettingsRow extends StatelessWidget {
     return Semantics(
       button: true,
       excludeSemantics: true,
-      label: value == null ? title : '$title, $value',
+      label: [title, ?subtitle, ?value].join(', '),
       onTap: onTap,
       child: InkWell(
         onTap: onTap,
@@ -60,10 +62,21 @@ class SettingsRow extends StatelessWidget {
                   SizedBox(width: SettingsDimens.rowGap),
                 ],
                 Expanded(
-                  child: AppText(
-                    title,
-                    style: context.text.body,
-                    color: colors.textPrimary,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        title,
+                        style: context.text.body,
+                        color: colors.textPrimary,
+                      ),
+                      if (subtitle != null)
+                        AppText(
+                          subtitle!,
+                          style: context.text.bodySm,
+                          color: colors.textSecondary,
+                        ),
+                    ],
                   ),
                 ),
                 if (value != null) ...[

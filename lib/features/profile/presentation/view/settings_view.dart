@@ -41,7 +41,6 @@ class SettingsView extends StatelessWidget {
     return AppPage(
       backgroundColor: colors.background,
       title: l10n.settingsTitle,
-      bottomSpace: bottom,
       child: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: bottom),
         child: Column(

@@ -23,6 +23,7 @@ export 'confirmation_dialog/confirmation_dialog.dart';
 export 'content_width.dart';
 export 'country_code_sheet.dart';
 export 'danger_button_card.dart';
+export 'dashed_rounded_rect_painter.dart';
 export 'device_tier_scope.dart';
 export 'faq_accordion.dart';
 export 'load_more_listener.dart';

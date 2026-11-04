@@ -156,8 +156,11 @@ import '../../features/profile/data/datasource/app_preferences_datasource.dart'
 import '../../features/profile/data/datasource/author_prefs_datasource.dart'
     as _i986;
 import '../../features/profile/data/datasource/blocks_datasource.dart' as _i4;
+import '../../features/profile/data/datasource/help_datasource.dart' as _i389;
 import '../../features/profile/data/datasource/interests_datasource.dart'
     as _i152;
+import '../../features/profile/data/datasource/legal_dates_datasource.dart'
+    as _i890;
 import '../../features/profile/data/datasource/mutual_preview_datasource.dart'
     as _i213;
 import '../../features/profile/data/datasource/notification_prefs_datasource.dart'
@@ -165,6 +168,8 @@ import '../../features/profile/data/datasource/notification_prefs_datasource.dar
 import '../../features/profile/data/datasource/people_datasource.dart' as _i784;
 import '../../features/profile/data/datasource/privacy_settings_datasource.dart'
     as _i200;
+import '../../features/profile/data/datasource/problem_report_datasource.dart'
+    as _i952;
 import '../../features/profile/data/datasource/profile_datasource.dart'
     as _i320;
 import '../../features/profile/data/datasource/profile_local_datasource.dart'
@@ -179,7 +184,7 @@ import '../../features/profile/data/repository/profile_repository.dart'
 import '../../features/profile/domain/use_case/clear_local_profile_use_case.dart'
     as _i428;
 import '../../features/profile/domain/use_case/complete_signup_use_case.dart'
-    as _i890;
+    as _i891;
 import '../../features/profile/domain/use_case/forget_last_account_use_case.dart'
     as _i1067;
 import '../../features/profile/domain/use_case/get_current_user_id_use_case.dart'
@@ -204,6 +209,8 @@ import '../../features/profile/presentation/cubit/author_prefs/author_prefs_cubi
     as _i1060;
 import '../../features/profile/presentation/cubit/blocked/blocked_cubit.dart'
     as _i321;
+import '../../features/profile/presentation/cubit/help/help_cubit.dart'
+    as _i196;
 import '../../features/profile/presentation/cubit/notifications/notifications_cubit.dart'
     as _i1000;
 import '../../features/profile/presentation/cubit/other_profile/other_profile_cubit.dart'
@@ -218,6 +225,8 @@ import '../../features/profile/presentation/cubit/privacy/privacy_cubit.dart'
     as _i300;
 import '../../features/profile/presentation/cubit/profile/profile_cubit.dart'
     as _i771;
+import '../../features/profile/presentation/cubit/report/report_cubit.dart'
+    as _i245;
 import '../../features/profile/presentation/cubit/security/security_cubit.dart'
     as _i558;
 import '../../features/profile/presentation/cubit/settings/settings_cubit.dart'
@@ -317,6 +326,7 @@ import '../services/blurhash_service.dart' as _i905;
 import '../services/camera_device.dart' as _i64;
 import '../services/camera_permission_service.dart' as _i754;
 import '../services/connectivity_service.dart' as _i47;
+import '../services/device_diagnostics_service.dart' as _i665;
 import '../services/device_name_service.dart' as _i586;
 import '../services/device_tier.dart' as _i876;
 import '../services/gallery_service.dart' as _i841;
@@ -485,6 +495,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i784.PeopleDatasource>(
       () => _i784.SupabasePeopleDatasource(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i389.HelpDatasource>(
+      () => _i389.SupabaseHelpDatasource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i568.ActivityDatasource>(
       () => _i568.SupabaseActivityDatasource(gh<_i454.SupabaseClient>()),
     );
@@ -496,6 +509,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i434.StoryRailLocalDatasource>(
       () => _i434.StoryRailLocalDatasource(gh<_i261.SnapshotStorage>()),
+    );
+    gh.lazySingleton<_i890.LegalDatesDatasource>(
+      () => _i890.SupabaseLegalDatesDatasource(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i591.PendingContentDatasource>(
       () => _i591.SupabasePendingContentDatasource(gh<_i454.SupabaseClient>()),
@@ -582,6 +598,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i604.LegalDatasource>(),
         gh<_i1016.LaunchService>(),
       ),
+    );
+    gh.lazySingleton<_i665.DeviceDiagnosticsService>(
+      () => _i665.DeviceInfoDiagnosticsService(gh<_i212.AppVersionService>()),
     );
     gh.lazySingleton<_i1007.PostDraftDatasource>(
       () => _i1007.LocalPostDraftDatasource(
@@ -703,8 +722,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i428.ClearLocalProfileUseCase>(
       () => _i428.ClearLocalProfileUseCase(gh<_i508.ProfileRepository>()),
     );
-    gh.factory<_i890.CompleteSignupUseCase>(
-      () => _i890.CompleteSignupUseCase(gh<_i508.ProfileRepository>()),
+    gh.factory<_i891.CompleteSignupUseCase>(
+      () => _i891.CompleteSignupUseCase(gh<_i508.ProfileRepository>()),
     );
     gh.factory<_i1067.ForgetLastAccountUseCase>(
       () => _i1067.ForgetLastAccountUseCase(gh<_i508.ProfileRepository>()),
@@ -759,6 +778,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i727.GetLastAccountUseCase>(),
         gh<_i1067.ForgetLastAccountUseCase>(),
       ),
+    );
+    gh.factory<_i196.HelpCubit>(
+      () => _i196.HelpCubit(gh<_i389.HelpDatasource>()),
     );
     gh.factory<_i148.MediaUploadQueue>(
       () => _i148.MediaUploadQueue(gh<_i463.ContentMediaRepository>()),
@@ -856,12 +878,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i557.EventBus>(),
       ),
     );
+    gh.lazySingleton<_i952.ProblemReportDatasource>(
+      () => _i952.SupabaseProblemReportDatasource(
+        gh<_i454.SupabaseClient>(),
+        gh<_i665.DeviceDiagnosticsService>(),
+      ),
+    );
     gh.lazySingleton<_i999.ContentPublishRepository>(
       () => _i999.ContentPublishRepositoryImpl(
         gh<_i557.EventBus>(),
         gh<_i1034.ContentDiscardRepository>(),
         gh<_i47.ConnectivityService>(),
       ),
+    );
+    gh.factory<_i245.ReportCubit>(
+      () => _i245.ReportCubit(gh<_i952.ProblemReportDatasource>()),
     );
     gh.factory<_i782.SignUpCubit>(
       () => _i782.SignUpCubit(
@@ -874,7 +905,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i250.GetSuggestedProfilesUseCase>(),
         gh<_i130.ToggleFollowUseCase>(),
         gh<_i740.FollowAllUseCase>(),
-        gh<_i890.CompleteSignupUseCase>(),
+        gh<_i891.CompleteSignupUseCase>(),
         gh<_i428.ClearLocalProfileUseCase>(),
         gh<_i697.GetSignupStepUseCase>(),
         gh<_i199.GetSignupDraftUseCase>(),
