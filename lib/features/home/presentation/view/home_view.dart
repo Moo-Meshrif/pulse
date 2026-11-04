@@ -33,7 +33,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: context.appColors.background,
     body: AppSafeArea(
-      bottomSpace: NavClearance.of(context),
+      bottom: false,
       child: const ContentWidth(child: _Body()),
     ),
   );
