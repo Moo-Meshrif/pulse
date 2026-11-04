@@ -37,6 +37,11 @@ class _SecurityPasswordFormState extends State<SecurityPasswordForm> {
     _confirm.clear();
   }
 
+  void _sendReset() {
+    FocusScope.of(context).unfocus();
+    context.read<SecurityCubit>().sendReset();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -93,12 +98,24 @@ class _SecurityPasswordFormState extends State<SecurityPasswordForm> {
                 Expanded(
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
-                    child: TextButton(
-                      onPressed: cubit.sendReset,
-                      child: AppText(
-                        l10n.forgotPassword,
-                        style: context.text.button,
-                        color: colors.primary,
+                    child: BlocSelector<SecurityCubit, SecurityState, bool>(
+                      selector: (state) => state.isSendingReset,
+                      builder: (context, isSendingReset) => TextButton(
+                        onPressed: isSendingReset ? null : _sendReset,
+                        child: isSendingReset
+                            ? Semantics(
+                                label: l10n.loading,
+                                liveRegion: true,
+                                child: PulseLineLoader(
+                                  color: colors.primary,
+                                  width: ButtonDimens.loaderWidth,
+                                ),
+                              )
+                            : AppText(
+                                l10n.forgotPassword,
+                                style: context.text.button,
+                                color: colors.primary,
+                              ),
                       ),
                     ),
                   ),
@@ -110,7 +127,8 @@ class _SecurityPasswordFormState extends State<SecurityPasswordForm> {
                   builder: (context, state) => PrimaryButton(
                     label: l10n.securityUpdate,
                     loading: state.isUpdating,
-                    horizontalPadding: AppSpacing.s24,
+                    horizontalPadding: AppSpacing.s16,
+                    buttonHeight: ButtonDimens.pillHeight,
                     onPressed: state.canUpdate ? cubit.update : null,
                   ),
                 ),

@@ -50,20 +50,33 @@ class SecurityCubit extends BaseCubit<SecurityState> {
     ),
     onSuccess: (_) => SecurityState(
       deviceName: state.deviceName,
+      isSendingReset: state.isSendingReset,
+      isLoggingOutOthers: state.isLoggingOutOthers,
       notice: SecurityNotice.passwordUpdated,
     ),
     onFailure: (failure) =>
         failure is AuthFailure &&
             failure.reason == AuthFailureReason.invalidCredentials
-        ? state.copyWith(isUpdating: false, currentWrong: true)
-        : state.copyWith(isUpdating: false, failure: failure),
+        ? state.copyWith(
+            isUpdating: false,
+            currentWrong: true,
+            notice: null,
+            failure: null,
+          )
+        : state.copyWith(isUpdating: false, failure: failure, notice: null),
   );
 
   Future<void> sendReset() => run(
     _sendReset.call,
-    loading: state.copyWith(failure: null, notice: null),
-    onSuccess: (_) => state.copyWith(notice: SecurityNotice.resetEmailSent),
-    onFailure: (failure) => state.copyWith(failure: failure),
+    prevent: state.isSendingReset,
+    loading: state.copyWith(isSendingReset: true, failure: null, notice: null),
+    onSuccess: (_) => state.copyWith(
+      isSendingReset: false,
+      notice: SecurityNotice.resetEmailSent,
+      failure: null,
+    ),
+    onFailure: (failure) =>
+        state.copyWith(isSendingReset: false, failure: failure, notice: null),
   );
 
   Future<void> logOutOthers() => run(
@@ -77,8 +90,9 @@ class SecurityCubit extends BaseCubit<SecurityState> {
     onSuccess: (_) => state.copyWith(
       isLoggingOutOthers: false,
       notice: SecurityNotice.othersLoggedOut,
+      failure: null,
     ),
     onFailure: (failure) =>
-        state.copyWith(isLoggingOutOthers: false, failure: failure),
+        state.copyWith(isLoggingOutOthers: false, failure: failure, notice: null),
   );
 }

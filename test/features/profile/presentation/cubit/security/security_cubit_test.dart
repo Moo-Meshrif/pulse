@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pulse/core/enums/auth_failure_reason.dart';
@@ -93,8 +95,56 @@ void main() {
   });
 
   test('forgot password emails the reset link', () async {
+    final pending = Completer<void>();
+    when(() => reset()).thenAnswer((_) => pending.future);
+    final sending = cubit.sendReset();
+    expect(cubit.state.isSendingReset, isTrue);
+    await cubit.sendReset();
+    verify(() => reset()).called(1);
+    pending.complete();
+    await sending;
+    expect(cubit.state.isSendingReset, isFalse);
+    expect(cubit.state.notice, SecurityNotice.resetEmailSent);
+  });
+
+  test('forgot password reports a failure and keeps the fields', () async {
+    when(() => reset()).thenThrow(const NetworkFailure());
+    fill();
+    await cubit.sendReset();
+    expect(cubit.state.isSendingReset, isFalse);
+    expect(cubit.state.failure, const NetworkFailure());
+    expect(cubit.state.current, 'old');
+  });
+
+  test('an overlapping update failure replaces a reset success', () async {
+    final pendingUpdate = Completer<void>();
+    when(() => change(current: 'old', next: 'Newpass1'))
+        .thenAnswer((_) => pendingUpdate.future);
     when(() => reset()).thenAnswer((_) async {});
+    fill();
+
+    final updating = cubit.update();
     await cubit.sendReset();
     expect(cubit.state.notice, SecurityNotice.resetEmailSent);
+
+    pendingUpdate.completeError(const NetworkFailure());
+    await updating;
+    expect(cubit.state.notice, isNull);
+    expect(cubit.state.failure, const NetworkFailure());
+  });
+
+  test('an overlapping logout failure replaces a reset success', () async {
+    final pendingLogout = Completer<void>();
+    when(() => others()).thenAnswer((_) => pendingLogout.future);
+    when(() => reset()).thenAnswer((_) async {});
+
+    final loggingOut = cubit.logOutOthers();
+    await cubit.sendReset();
+    expect(cubit.state.notice, SecurityNotice.resetEmailSent);
+
+    pendingLogout.completeError(const NetworkFailure());
+    await loggingOut;
+    expect(cubit.state.notice, isNull);
+    expect(cubit.state.failure, const NetworkFailure());
   });
 }

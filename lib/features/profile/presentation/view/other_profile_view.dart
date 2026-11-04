@@ -11,6 +11,7 @@ import '../../../../core/router/app_navigator.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/state/load_more_status.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../follow/data/enums/follow_status.dart';
 import '../../data/enums/people_kind.dart';
@@ -137,7 +138,12 @@ class OtherProfileView extends StatelessWidget {
                       if (page.followsMe == true)
                         SliverToBoxAdapter(
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                            padding: EdgeInsets.fromLTRB(
+                              AppSpacing.s16,
+                              AppSpacing.s8,
+                              AppSpacing.s16,
+                              0,
+                            ),
                             child: AppText(
                               l10n.otherFollowsYou,
                               style: context.text.label,
@@ -158,7 +164,7 @@ class OtherProfileView extends StatelessWidget {
                         ),
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 16),
+                          padding: EdgeInsets.only(top: AppSpacing.s16),
                           child: StatsCard(
                             posts: page.postsCount ?? 0,
                             followers: state.followers,
@@ -178,7 +184,7 @@ class OtherProfileView extends StatelessWidget {
                       ),
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(AppSpacing.s16),
                           child: Row(
                             children: [
                               Expanded(
@@ -211,7 +217,7 @@ class OtherProfileView extends StatelessWidget {
                               ),
                               if (page.canMessage != false &&
                                   state.follow != FollowStatus.pending) ...[
-                                const SizedBox(width: 8),
+                                SizedBox(width: AppSpacing.s8),
                                 Expanded(
                                   child: PillButton.outline(
                                     label: l10n.otherMessage,
@@ -297,7 +303,7 @@ class OtherProfileView extends StatelessWidget {
                           child: Text(l10n.tryAgain),
                         ),
                       ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 32)),
+                    SliverToBoxAdapter(child: SizedBox(height: AppSpacing.s32)),
                   ],
                 ),
               ),

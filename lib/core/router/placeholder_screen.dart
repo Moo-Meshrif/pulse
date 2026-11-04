@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../extensions/context_extensions.dart';
 import '../widgets/widgets.dart';
 
 /// Stand-in for a screen that has not been specced yet (Sign in, Registration).
@@ -10,6 +11,7 @@ class PlaceholderScreen extends StatelessWidget {
   final String route;
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(body: Center(child: AppText(route)));
+  Widget build(BuildContext context) => Scaffold(
+    body: Center(child: AppText(route, color: context.appColors.textSecondary)),
+  );
 }

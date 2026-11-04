@@ -48,6 +48,12 @@ class _HelpView extends StatelessWidget {
               ? AppEmpty.failed(
                   onRetry: () => context.read<HelpCubit>().load(slug: slug),
                 )
+              : slug != null && state.articles.isEmpty
+              ? AppEmpty(
+                  icon: AppAssets.help,
+                  title: l10n.helpTopicEmpty,
+                  message: '',
+                )
               : CustomScrollView(
                   slivers: [
                     if (slug == null) ...[
@@ -113,10 +119,6 @@ class _HelpView extends StatelessWidget {
                             ],
                           ),
                         ),
-                      ),
-                    if (slug != null && state.articles.isEmpty)
-                      SliverFillRemaining(
-                        child: Center(child: AppText(l10n.helpTopicEmpty)),
                       ),
                     if (slug == null)
                       SliverToBoxAdapter(

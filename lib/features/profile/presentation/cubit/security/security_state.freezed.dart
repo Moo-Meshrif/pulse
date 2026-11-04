@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SecurityState {
 
- String get current; String get next; String get confirm; bool get isUpdating; bool get isLoggingOutOthers;/// The current password typed was wrong; shown under that field.
+ String get current; String get next; String get confirm; bool get isUpdating; bool get isSendingReset; bool get isLoggingOutOthers;/// The current password typed was wrong; shown under that field.
  bool get currentWrong;/// This phone's name; null until read.
  String? get deviceName;/// One-shot: what the screen tells the user.
  SecurityNotice? get notice;/// Why the last action failed; the screen shows it once.
@@ -31,20 +31,20 @@ $SecurityStateCopyWith<SecurityState> get copyWith => _$SecurityStateCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as SecurityState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityState&&(identical(other.current, _this.current) || other.current == _this.current)&&(identical(other.next, _this.next) || other.next == _this.next)&&(identical(other.confirm, _this.confirm) || other.confirm == _this.confirm)&&(identical(other.isUpdating, _this.isUpdating) || other.isUpdating == _this.isUpdating)&&(identical(other.isLoggingOutOthers, _this.isLoggingOutOthers) || other.isLoggingOutOthers == _this.isLoggingOutOthers)&&(identical(other.currentWrong, _this.currentWrong) || other.currentWrong == _this.currentWrong)&&(identical(other.deviceName, _this.deviceName) || other.deviceName == _this.deviceName)&&(identical(other.notice, _this.notice) || other.notice == _this.notice)&&(identical(other.failure, _this.failure) || other.failure == _this.failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityState&&(identical(other.current, _this.current) || other.current == _this.current)&&(identical(other.next, _this.next) || other.next == _this.next)&&(identical(other.confirm, _this.confirm) || other.confirm == _this.confirm)&&(identical(other.isUpdating, _this.isUpdating) || other.isUpdating == _this.isUpdating)&&(identical(other.isSendingReset, _this.isSendingReset) || other.isSendingReset == _this.isSendingReset)&&(identical(other.isLoggingOutOthers, _this.isLoggingOutOthers) || other.isLoggingOutOthers == _this.isLoggingOutOthers)&&(identical(other.currentWrong, _this.currentWrong) || other.currentWrong == _this.currentWrong)&&(identical(other.deviceName, _this.deviceName) || other.deviceName == _this.deviceName)&&(identical(other.notice, _this.notice) || other.notice == _this.notice)&&(identical(other.failure, _this.failure) || other.failure == _this.failure));
 }
 
 
 @override
 int get hashCode {
   final _this = this as SecurityState;
-  return Object.hash(runtimeType,_this.current,_this.next,_this.confirm,_this.isUpdating,_this.isLoggingOutOthers,_this.currentWrong,_this.deviceName,_this.notice,_this.failure);
+  return Object.hash(runtimeType,_this.current,_this.next,_this.confirm,_this.isUpdating,_this.isSendingReset,_this.isLoggingOutOthers,_this.currentWrong,_this.deviceName,_this.notice,_this.failure);
 }
 
 @override
 String toString() {
   final _this = this as SecurityState;
-  return 'SecurityState(current: ${_this.current}, next: ${_this.next}, confirm: ${_this.confirm}, isUpdating: ${_this.isUpdating}, isLoggingOutOthers: ${_this.isLoggingOutOthers}, currentWrong: ${_this.currentWrong}, deviceName: ${_this.deviceName}, notice: ${_this.notice}, failure: ${_this.failure})';
+  return 'SecurityState(current: ${_this.current}, next: ${_this.next}, confirm: ${_this.confirm}, isUpdating: ${_this.isUpdating}, isSendingReset: ${_this.isSendingReset}, isLoggingOutOthers: ${_this.isLoggingOutOthers}, currentWrong: ${_this.currentWrong}, deviceName: ${_this.deviceName}, notice: ${_this.notice}, failure: ${_this.failure})';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $SecurityStateCopyWith<$Res>  {
   factory $SecurityStateCopyWith(SecurityState value, $Res Function(SecurityState) _then) = _$SecurityStateCopyWithImpl;
 @useResult
 $Res call({
- String current, String next, String confirm, bool isUpdating, bool isLoggingOutOthers, bool currentWrong, String? deviceName, SecurityNotice? notice, Failure? failure
+ String current, String next, String confirm, bool isUpdating, bool isSendingReset, bool isLoggingOutOthers, bool currentWrong, String? deviceName, SecurityNotice? notice, Failure? failure
 });
 
 
@@ -72,12 +72,13 @@ class _$SecurityStateCopyWithImpl<$Res>
 
 /// Create a copy of SecurityState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? current = null,Object? next = null,Object? confirm = null,Object? isUpdating = null,Object? isLoggingOutOthers = null,Object? currentWrong = null,Object? deviceName = freezed,Object? notice = freezed,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? current = null,Object? next = null,Object? confirm = null,Object? isUpdating = null,Object? isSendingReset = null,Object? isLoggingOutOthers = null,Object? currentWrong = null,Object? deviceName = freezed,Object? notice = freezed,Object? failure = freezed,}) {
   return _then(SecurityState(
 current: null == current ? _self.current : current // ignore: cast_nullable_to_non_nullable
 as String,next: null == next ? _self.next : next // ignore: cast_nullable_to_non_nullable
 as String,confirm: null == confirm ? _self.confirm : confirm // ignore: cast_nullable_to_non_nullable
 as String,isUpdating: null == isUpdating ? _self.isUpdating : isUpdating // ignore: cast_nullable_to_non_nullable
+as bool,isSendingReset: null == isSendingReset ? _self.isSendingReset : isSendingReset // ignore: cast_nullable_to_non_nullable
 as bool,isLoggingOutOthers: null == isLoggingOutOthers ? _self.isLoggingOutOthers : isLoggingOutOthers // ignore: cast_nullable_to_non_nullable
 as bool,currentWrong: null == currentWrong ? _self.currentWrong : currentWrong // ignore: cast_nullable_to_non_nullable
 as bool,deviceName: freezed == deviceName ? _self.deviceName : deviceName // ignore: cast_nullable_to_non_nullable
@@ -168,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String current,  String next,  String confirm,  bool isUpdating,  bool isLoggingOutOthers,  bool currentWrong,  String? deviceName,  SecurityNotice? notice,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String current,  String next,  String confirm,  bool isUpdating,  bool isSendingReset,  bool isLoggingOutOthers,  bool currentWrong,  String? deviceName,  SecurityNotice? notice,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SecurityState() when $default != null:
-return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.isLoggingOutOthers,_that.currentWrong,_that.deviceName,_that.notice,_that.failure);case _:
+return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.isSendingReset,_that.isLoggingOutOthers,_that.currentWrong,_that.deviceName,_that.notice,_that.failure);case _:
   return orElse();
 
 }
@@ -189,10 +190,10 @@ return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String current,  String next,  String confirm,  bool isUpdating,  bool isLoggingOutOthers,  bool currentWrong,  String? deviceName,  SecurityNotice? notice,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String current,  String next,  String confirm,  bool isUpdating,  bool isSendingReset,  bool isLoggingOutOthers,  bool currentWrong,  String? deviceName,  SecurityNotice? notice,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _SecurityState():
-return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.isLoggingOutOthers,_that.currentWrong,_that.deviceName,_that.notice,_that.failure);case _:
+return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.isSendingReset,_that.isLoggingOutOthers,_that.currentWrong,_that.deviceName,_that.notice,_that.failure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +210,10 @@ return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String current,  String next,  String confirm,  bool isUpdating,  bool isLoggingOutOthers,  bool currentWrong,  String? deviceName,  SecurityNotice? notice,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String current,  String next,  String confirm,  bool isUpdating,  bool isSendingReset,  bool isLoggingOutOthers,  bool currentWrong,  String? deviceName,  SecurityNotice? notice,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _SecurityState() when $default != null:
-return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.isLoggingOutOthers,_that.currentWrong,_that.deviceName,_that.notice,_that.failure);case _:
+return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.isSendingReset,_that.isLoggingOutOthers,_that.currentWrong,_that.deviceName,_that.notice,_that.failure);case _:
   return null;
 
 }
@@ -224,13 +225,14 @@ return $default(_that.current,_that.next,_that.confirm,_that.isUpdating,_that.is
 
 
 class _SecurityState extends SecurityState {
-  const _SecurityState({this.current = '', this.next = '', this.confirm = '', this.isUpdating = false, this.isLoggingOutOthers = false, this.currentWrong = false, this.deviceName, this.notice, this.failure}): super._();
+  const _SecurityState({this.current = '', this.next = '', this.confirm = '', this.isUpdating = false, this.isSendingReset = false, this.isLoggingOutOthers = false, this.currentWrong = false, this.deviceName, this.notice, this.failure}): super._();
   
 
 @override@JsonKey() final  String current;
 @override@JsonKey() final  String next;
 @override@JsonKey() final  String confirm;
 @override@JsonKey() final  bool isUpdating;
+@override@JsonKey() final  bool isSendingReset;
 @override@JsonKey() final  bool isLoggingOutOthers;
 /// The current password typed was wrong; shown under that field.
 @override@JsonKey() final  bool currentWrong;
@@ -251,18 +253,18 @@ _$SecurityStateCopyWith<_SecurityState> get copyWith => __$SecurityStateCopyWith
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityState&&(identical(other.current, current) || other.current == current)&&(identical(other.next, next) || other.next == next)&&(identical(other.confirm, confirm) || other.confirm == confirm)&&(identical(other.isUpdating, isUpdating) || other.isUpdating == isUpdating)&&(identical(other.isLoggingOutOthers, isLoggingOutOthers) || other.isLoggingOutOthers == isLoggingOutOthers)&&(identical(other.currentWrong, currentWrong) || other.currentWrong == currentWrong)&&(identical(other.deviceName, deviceName) || other.deviceName == deviceName)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityState&&(identical(other.current, current) || other.current == current)&&(identical(other.next, next) || other.next == next)&&(identical(other.confirm, confirm) || other.confirm == confirm)&&(identical(other.isUpdating, isUpdating) || other.isUpdating == isUpdating)&&(identical(other.isSendingReset, isSendingReset) || other.isSendingReset == isSendingReset)&&(identical(other.isLoggingOutOthers, isLoggingOutOthers) || other.isLoggingOutOthers == isLoggingOutOthers)&&(identical(other.currentWrong, currentWrong) || other.currentWrong == currentWrong)&&(identical(other.deviceName, deviceName) || other.deviceName == deviceName)&&(identical(other.notice, notice) || other.notice == notice)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,current,next,confirm,isUpdating,isLoggingOutOthers,currentWrong,deviceName,notice,failure);
+    return Object.hash(runtimeType,current,next,confirm,isUpdating,isSendingReset,isLoggingOutOthers,currentWrong,deviceName,notice,failure);
 }
 
 @override
 String toString() {
-    return 'SecurityState(current: $current, next: $next, confirm: $confirm, isUpdating: $isUpdating, isLoggingOutOthers: $isLoggingOutOthers, currentWrong: $currentWrong, deviceName: $deviceName, notice: $notice, failure: $failure)';
+    return 'SecurityState(current: $current, next: $next, confirm: $confirm, isUpdating: $isUpdating, isSendingReset: $isSendingReset, isLoggingOutOthers: $isLoggingOutOthers, currentWrong: $currentWrong, deviceName: $deviceName, notice: $notice, failure: $failure)';
 }
 
 
@@ -273,7 +275,7 @@ abstract mixin class _$SecurityStateCopyWith<$Res> implements $SecurityStateCopy
   factory _$SecurityStateCopyWith(_SecurityState value, $Res Function(_SecurityState) _then) = __$SecurityStateCopyWithImpl;
 @override @useResult
 $Res call({
- String current, String next, String confirm, bool isUpdating, bool isLoggingOutOthers, bool currentWrong, String? deviceName, SecurityNotice? notice, Failure? failure
+ String current, String next, String confirm, bool isUpdating, bool isSendingReset, bool isLoggingOutOthers, bool currentWrong, String? deviceName, SecurityNotice? notice, Failure? failure
 });
 
 
@@ -290,12 +292,13 @@ class __$SecurityStateCopyWithImpl<$Res>
 
 /// Create a copy of SecurityState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? current = null,Object? next = null,Object? confirm = null,Object? isUpdating = null,Object? isLoggingOutOthers = null,Object? currentWrong = null,Object? deviceName = freezed,Object? notice = freezed,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? current = null,Object? next = null,Object? confirm = null,Object? isUpdating = null,Object? isSendingReset = null,Object? isLoggingOutOthers = null,Object? currentWrong = null,Object? deviceName = freezed,Object? notice = freezed,Object? failure = freezed,}) {
   return _then(_SecurityState(
 current: null == current ? _self.current : current // ignore: cast_nullable_to_non_nullable
 as String,next: null == next ? _self.next : next // ignore: cast_nullable_to_non_nullable
 as String,confirm: null == confirm ? _self.confirm : confirm // ignore: cast_nullable_to_non_nullable
 as String,isUpdating: null == isUpdating ? _self.isUpdating : isUpdating // ignore: cast_nullable_to_non_nullable
+as bool,isSendingReset: null == isSendingReset ? _self.isSendingReset : isSendingReset // ignore: cast_nullable_to_non_nullable
 as bool,isLoggingOutOthers: null == isLoggingOutOthers ? _self.isLoggingOutOthers : isLoggingOutOthers // ignore: cast_nullable_to_non_nullable
 as bool,currentWrong: null == currentWrong ? _self.currentWrong : currentWrong // ignore: cast_nullable_to_non_nullable
 as bool,deviceName: freezed == deviceName ? _self.deviceName : deviceName // ignore: cast_nullable_to_non_nullable

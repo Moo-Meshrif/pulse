@@ -15,6 +15,7 @@ abstract class SecurityState with _$SecurityState {
     @Default('') String next,
     @Default('') String confirm,
     @Default(false) bool isUpdating,
+    @Default(false) bool isSendingReset,
     @Default(false) bool isLoggingOutOthers,
 
     /// The current password typed was wrong; shown under that field.

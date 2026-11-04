@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
+import '../../../../core/theme/app_scale.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class OtherProfileCard extends StatelessWidget {
@@ -17,25 +19,29 @@ class OtherProfileCard extends StatelessWidget {
   final Widget? action;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.all(24),
+    padding: EdgeInsets.all(AppSpacing.s24),
     child: Column(
       children: [
-        AppSvgIcon(icon, size: 48, color: context.appColors.textSecondary),
-        const SizedBox(height: 16),
+        AppSvgIcon(
+          icon,
+          size: AppScale.scale(48),
+          color: context.appColors.textSecondary,
+        ),
+        SizedBox(height: AppSpacing.s16),
         AppText(
           title,
           style: context.text.titleSm,
           color: context.appColors.textPrimary,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.s8),
         AppText(
           body,
           style: context.text.bodySm,
           color: context.appColors.textSecondary,
           textAlign: TextAlign.center,
         ),
-        if (action != null) ...[const SizedBox(height: 16), action!],
+        if (action != null) ...[SizedBox(height: AppSpacing.s16), action!],
       ],
     ),
   );
@@ -61,20 +67,25 @@ class FollowedByRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.s16,
+          AppSpacing.s12,
+          AppSpacing.s16,
+          0,
+        ),
         child: Row(
           children: [
             for (final entry in avatars)
               Padding(
-                padding: const EdgeInsetsDirectional.only(end: 2),
+                padding: EdgeInsetsDirectional.only(end: AppScale.scale(2)),
                 child: CircleAvatar(
-                  radius: 11,
+                  radius: AppScale.scale(11),
                   backgroundImage: (entry as Map)['avatar_url'] == null
                       ? null
                       : NetworkImage(entry['avatar_url'] as String),
                 ),
               ),
-            const SizedBox(width: 8),
+            SizedBox(width: AppSpacing.s8),
             Expanded(
               child: AppText(
                 rest > 0

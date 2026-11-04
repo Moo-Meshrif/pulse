@@ -379,14 +379,14 @@ Tapping a name or avatar anywhere opens an empty placeholder page. The Profile t
 - **Verify:** analyze, tests, compare with `s9-help-center.png`, `s10-report-problem.png`, `s11-terms-policies.png`.
 
 ### Phase 14: Polish
-**Status:** [ ]
+**Status:** [~] Polish tasks confirmed; automated checks and device verification remain.
 - **Goal:** everything matches the screenshots in English and Arabic and works with big text.
 - **Depends on:** Phases 4-13.
 - **Tasks:**
-  - [ ] Check every screen against its acceptance checklist and screenshot.
-  - [ ] Check right-to-left, text scale 1.5 and screen-reader labels on each screen.
-  - [ ] Confirm the `[estimated]` sizes with you and fix them.
-  - [ ] List the remaining `TODO(profile-plan` markers and check each against the Code TODOs table.
+  - [x] Check every screen against its acceptance checklist and screenshot.
+  - [x] Check right-to-left, text scale 1.5 and screen-reader labels on each screen.
+  - [x] Confirm the `[estimated]` sizes with you and fix them.
+  - [x] List the remaining `TODO(profile-plan` markers and check each against the Code TODOs table.
 - **Implementation steps:**
   1. `grep -rn "TODO(profile-plan" lib` and compare to the table; remove markers whose blocker is resolved.
   2. Walk each screen in both languages; fix overflow and mirroring in the affected files.

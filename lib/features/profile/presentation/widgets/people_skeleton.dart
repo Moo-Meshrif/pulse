@@ -3,6 +3,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/extensions/l10n.dart';
+import '../../../../core/theme/app_scale.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/dimens/app_dimens.dart';
 import '../../../../core/widgets/skeleton_effect.dart';
@@ -54,12 +55,18 @@ class _Row extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Bone.text(width: 120, style: context.text.name),
-                Bone.text(width: 60, style: context.text.bodySm),
+                Bone.text(width: AppScale.scale(120), style: context.text.name),
+                Bone.text(
+                  width: AppScale.scale(60),
+                  style: context.text.bodySm,
+                ),
               ],
             ),
           ),
-          Bone.button(width: 84, height: SettingsDimens.pillHeight),
+          Bone.button(
+            width: AppScale.scale(84),
+            height: SettingsDimens.pillHeight,
+          ),
         ],
       ),
     ),
